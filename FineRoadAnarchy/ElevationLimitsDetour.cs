@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-
-using ColossalFramework.Math;
-
-using FineRoadAnarchy.Redirection;
+﻿using FineRoadAnarchy.Redirection;
 
 namespace FineRoadAnarchy
 {
@@ -12,8 +8,8 @@ namespace FineRoadAnarchy
         [RedirectMethod]
         public override void GetElevationLimits(out int min, out int max)
         {
-            min = -255;
-            max = 255;
+            min = int.MinValue / 256;
+            max = int.MaxValue / 256;
         }
     }
 
@@ -23,8 +19,8 @@ namespace FineRoadAnarchy
         [RedirectMethod]
         public override void GetElevationLimits(out int min, out int max)
         {
-            min = -255;
-            max = 255;
+            min = int.MinValue / 256;
+            max = int.MaxValue / 256;
         }
     }
 
@@ -34,8 +30,8 @@ namespace FineRoadAnarchy
         [RedirectMethod]
         public override void GetElevationLimits(out int min, out int max)
         {
-            min = -255;
-            max = 255;
+            min = int.MinValue / 256;
+            max = int.MaxValue / 256;
         }
     }
 }

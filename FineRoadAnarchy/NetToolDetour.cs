@@ -324,11 +324,6 @@ namespace FineRoadAnarchy
         [RedirectMethod]
         private static ToolBase.ToolErrors TestNodeBuilding(BuildingInfo info, Vector3 position, Vector3 direction, ushort ignoreNode, ushort ignoreSegment, ushort ignoreBuilding, bool test, ulong[] collidingSegmentBuffer, ulong[] collidingBuildingBuffer)
         {
-            if (!BuildingManager.instance.CheckLimits())
-            {
-                return ToolBase.ToolErrors.TooManyObjects;
-            }
-
             return ToolBase.ToolErrors.None;
 
             /*Vector2 vector = new Vector2(direction.x, direction.z);
@@ -422,7 +417,6 @@ namespace FineRoadAnarchy
             }
             else
             {
-                int num3 = 0;
                 bool flag3 = false;
                 for (int j = 1; j < nodeBuffer.m_size; j++)
                 {
@@ -454,7 +448,7 @@ namespace FineRoadAnarchy
                     NetTool.NodePosition nodePosition6 = nodeBuffer.m_buffer[l];
                     if (nodePosition6.m_minY > nodePosition6.m_maxY)
                     {
-                        return ToolBase.ToolErrors.SlopeTooSteep;
+                        return ToolBase.ToolErrors.None; /*SlopeTooSteep;*/
                     }
                     if (nodePosition6.m_position.y > nodePosition6.m_maxY)
                     {
@@ -476,9 +470,9 @@ namespace FineRoadAnarchy
                     }
                     nodeBuffer.m_buffer[l] = nodePosition6;
                 }
-                if (num3++ == nodeBuffer.m_size << 1)
+                if (nodeBuffer.m_size << 1 == 0)
                 {
-                    return ToolBase.ToolErrors.SlopeTooSteep;
+                    return ToolBase.ToolErrors.None; /*SlopeTooSteep;*/
                 }
                 if (!flag3)
                 {

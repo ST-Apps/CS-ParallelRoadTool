@@ -5,6 +5,8 @@ using System;
 using ColossalFramework;
 using ColossalFramework.UI;
 
+using ColossalFramework.Steamworks;
+
 namespace FineRoadAnarchy
 {
     public class ModInfo : IUserMod
@@ -15,6 +17,9 @@ namespace FineRoadAnarchy
             {
                 // Creating setting file
                 GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = FineRoadAnarchy.settingsFileName } });
+
+                // Unsubscribe from SJA
+                Steam.workshop.Unsubscribe(new PublishedFileId(553184329));
             }
             catch (Exception e)
             {
@@ -30,7 +35,7 @@ namespace FineRoadAnarchy
 
         public string Description
         {
-            get { return "Goodbye Sharp Junction Angle."; }
+            get { return "Goodbye Sharp Junction Angle"; }
         }
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -51,6 +56,6 @@ namespace FineRoadAnarchy
             }
         }
 
-        public const string version = "0.1.0";
+        public const string version = "1.0.0";
     }
 }

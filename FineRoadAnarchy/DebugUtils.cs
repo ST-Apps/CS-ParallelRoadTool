@@ -7,7 +7,7 @@ namespace FineRoadAnarchy
 {
     public class DebugUtils
     {
-        public const string modPrefix = "[PropPrecision " + ModInfo.version + "] ";
+        public const string modPrefix = "[Fine Road Anarchy " + ModInfo.version + "] ";
 
         public static void Message(string message)
         {

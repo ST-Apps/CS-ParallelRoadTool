@@ -22,100 +22,190 @@ namespace FineRoadAnarchy
         public static FineRoadAnarchy instance;
 
         public static FastList<NetInfo> bendingPrefabs = new FastList<NetInfo>();
+        
+        public ToolController m_toolController;
+        public NetTool m_netTool;
 
-        public static bool bendingEnabled = true;
-        public static bool snappingEnabled = true;
+        private OptionsPanel m_panel;
+
+        private int m_tries;
 
         public void Start()
         {
-            bendingPrefabs.Clear();
-            int count = PrefabCollection<NetInfo>.PrefabCount();
-            for (uint i = 0; i < count; i++)
+            try
             {
-                NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(i);
-                if(prefab != null && prefab.m_enableBendingSegments)
+                m_toolController = GameObject.Find("Tool Controller").GetComponent<ToolController>();
+                m_netTool = m_toolController.GetComponent<NetTool>();
+
+                m_tries = 0;
+                bendingPrefabs.Clear();
+
+                int count = PrefabCollection<NetInfo>.PrefabCount();
+                for (uint i = 0; i < count; i++)
                 {
-                    bendingPrefabs.Add(prefab);
+                    NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(i);
+                    if (prefab != null)
+                    {
+                        if (prefab.m_enableBendingSegments)
+                        {
+                            bendingPrefabs.Add(prefab);
+                        }
+                    }
+                }
+                Redirector<NetInfoDetour>.Deploy();
+
+                m_panel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
+            }
+            catch(Exception e)
+            {
+                DebugUtils.Log("Start failed");
+                DebugUtils.LogException(e);
+            }
+        }
+        
+        public void Update()
+        {
+            try
+            {
+                if (m_netTool.m_prefab != null)
+                {
+                    if (m_netTool.enabled)
+                    {
+                        m_netTool.m_prefab.m_canCollide = anarchy;
+                    }
+                    else
+                    {
+                        m_netTool.m_prefab.m_canCollide = false;
+                    }
+                }
+
+                if (m_tries < 5)
+                {
+                    UIPanel frtPanel = UIView.GetAView().FindUIComponent<UIPanel>("FRT_ToolOptionsPanel");
+
+                    if (frtPanel != null)
+                    {
+                        frtPanel.height += m_panel.height + 8;
+
+                        frtPanel.AttachUIComponent(m_panel.gameObject);
+                        m_panel.relativePosition = new Vector3(8, frtPanel.height - m_panel.height - 8);
+                        m_panel.width = frtPanel.width - 16;
+
+                        frtPanel.GetComponentInChildren<UIDragHandle>().height = frtPanel.height;
+
+                        m_tries = 5;
+                    }
+
+                    m_tries++;
+                }
+                else if (m_tries == 5)
+                {
+                    UIMainWindow window = UIView.GetAView().AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
+
+                    window.AttachUIComponent(m_panel.gameObject);
+                    window.size = new Vector2(228, 180);
+                    m_panel.relativePosition = new Vector3(8, 28);
+                    m_panel.width = window.width - 16;
+
+                    window.height = 36 + m_panel.height;
+
+                    m_tries++;
                 }
             }
-            Redirector<NetInfoDetour>.Deploy();
+            catch (Exception e)
+            {
+                m_tries = 6;
+
+                DebugUtils.Log("Update failed");
+                DebugUtils.LogException(e);
+            }
         }
 
         public void OnDestroy()
         {
             Redirector<NetInfoDetour>.Revert();
-            DisableAnarchy();
+            anarchy = false;
         }
 
-        public void EnableAnarchy()
+        public bool anarchy
         {
-            Redirector<NetToolDetour>.Deploy();
-            Redirector<BuildingToolDetour>.Deploy();
-            Redirector<RoadAIDetour>.Deploy();
-            Redirector<PedestrianPathAIDetour>.Deploy();
-            Redirector<TrainTrackAIDetour>.Deploy();
-
-        }
-
-        public void DisableAnarchy()
-        {
-            Redirector<NetToolDetour>.Revert();
-            Redirector<BuildingToolDetour>.Revert();
-            Redirector<RoadAIDetour>.Revert();
-            Redirector<PedestrianPathAIDetour>.Revert();
-            Redirector<TrainTrackAIDetour>.Revert();
-        }
-
-        public void EnableBending()
-        {
-            for(int i = 0; i<bendingPrefabs.m_size; i++)
+            get
             {
-                bendingPrefabs.m_buffer[i].m_enableBendingSegments = true;
+                return Redirector<NetToolDetour>.IsDeployed();
             }
-            bendingEnabled = true;
+
+            set
+            {
+                if(anarchy != value)
+                {
+                    if(value)
+                    {
+                        Redirector<NetToolDetour>.Deploy();
+                        Redirector<BuildingToolDetour>.Deploy();
+                        Redirector<RoadAIDetour>.Deploy();
+                        Redirector<PedestrianPathAIDetour>.Deploy();
+                        Redirector<TrainTrackAIDetour>.Deploy();
+                    }
+                    else
+                    {
+                        Redirector<NetToolDetour>.Revert();
+                        Redirector<BuildingToolDetour>.Revert();
+                        Redirector<RoadAIDetour>.Revert();
+                        Redirector<PedestrianPathAIDetour>.Revert();
+                        Redirector<TrainTrackAIDetour>.Revert();
+                    }
+                }
+            }
         }
 
-        public void DisableBending()
+        public bool bending
         {
-            for (int i = 0; i < bendingPrefabs.m_size; i++)
+            get
             {
-                bendingPrefabs.m_buffer[i].m_enableBendingSegments = false;
+                return bendingPrefabs.m_size > 0 && bendingPrefabs.m_buffer[0].m_enableBendingSegments;
             }
-            bendingEnabled = false;
+
+            set
+            {
+                if (bending != value)
+                {
+                    DebugUtils.Log("Bending: " + value);
+                    for (int i = 0; i < bendingPrefabs.m_size; i++)
+                    {
+                        bendingPrefabs.m_buffer[i].m_enableBendingSegments = value;
+                    }
+                }
+            }
+        }
+
+
+        public bool snapping
+        {
+            set;
+            get;
         }
 
         public void OnGUI()
         {
             try
             {
-                Event e = Event.current;
+                if (!m_toolController.IsInsideUI && Cursor.visible)
+                {
+                    Event e = Event.current;
 
-                // Checking key presses
-                if (OptionsKeymapping.toggleAnarchy.IsPressed(e))
-                {
-                    if(Redirector<NetToolDetour>.IsDeployed())
+                    // Checking key presses
+                    if (OptionsKeymapping.toggleAnarchy.IsPressed(e))
                     {
-                        DisableAnarchy();
+                        m_panel.m_anarchy.SimulateClick();
                     }
-                    else
+                    else if (OptionsKeymapping.toggleBending.IsPressed(e))
                     {
-                        EnableAnarchy();
+                        m_panel.m_bending.SimulateClick();
                     }
-                }
-                else if (OptionsKeymapping.toggleBending.IsPressed(e))
-                {
-                    if(bendingEnabled)
+                    else if (OptionsKeymapping.toggleSnapping.IsPressed(e))
                     {
-                        DisableBending();
+                        m_panel.m_snapping.SimulateClick();
                     }
-                    else
-                    {
-                        EnableBending();
-                    }
-                }
-                else if (OptionsKeymapping.toggleSnapping.IsPressed(e))
-                {
-                    snappingEnabled = !snappingEnabled;
                 }
             }
             catch (Exception e)
