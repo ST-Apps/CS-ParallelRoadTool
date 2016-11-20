@@ -22,6 +22,10 @@ namespace FineRoadAnarchy
         public static FineRoadAnarchy instance;
 
         public static FastList<NetInfo> bendingPrefabs = new FastList<NetInfo>();
+
+        public static UIButton chirperButton;
+        public static UITextureAtlas chirperAtlasAnarchy;
+        public static UITextureAtlas chirperAtlasNormal;
         
         public ToolController m_toolController;
         public NetTool m_netTool;
@@ -34,8 +38,21 @@ namespace FineRoadAnarchy
         {
             try
             {
-                m_toolController = GameObject.Find("Tool Controller").GetComponent<ToolController>();
-                m_netTool = m_toolController.GetComponent<NetTool>();
+                m_toolController = GameObject.FindObjectOfType<ToolController>();
+                if(m_toolController == null)
+                {
+                    DebugUtils.Log("Tool Controller not found");
+                    enabled = false;
+                    return;
+                }
+
+                m_netTool = GameObject.FindObjectOfType<NetTool>();
+                if (m_netTool == null)
+                {
+                    DebugUtils.Log("Net Tool not found");
+                    enabled = false;
+                    return;
+                }
 
                 m_tries = 0;
                 bendingPrefabs.Clear();
@@ -54,7 +71,17 @@ namespace FineRoadAnarchy
                 }
                 Redirector<NetInfoDetour>.Deploy();
 
-                m_panel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
+                if (m_panel == null)
+                {
+                    m_panel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
+                }
+
+                if (chirperAtlasAnarchy == null)
+                {
+                    LoadChirperAtlas();
+                }
+
+                chirperButton = UIView.GetAView().FindUIComponent<UIButton>("Zone");
 
                 DebugUtils.Log("Initialized");
             }
@@ -62,6 +89,7 @@ namespace FineRoadAnarchy
             {
                 DebugUtils.Log("Start failed");
                 DebugUtils.LogException(e);
+                enabled = false;
             }
         }
         
@@ -69,7 +97,7 @@ namespace FineRoadAnarchy
         {
             try
             {
-                if (m_netTool.m_prefab != null)
+                if (ToolManager.instance.m_properties.m_mode == ItemClass.Availability.AssetEditor && m_netTool.m_prefab != null)
                 {
                     if (m_netTool.enabled)
                     {
@@ -87,6 +115,8 @@ namespace FineRoadAnarchy
 
                     if (frtPanel != null)
                     {
+                        DebugUtils.Log("Fine Road Tool window found");
+
                         frtPanel.height += m_panel.height + 8;
 
                         frtPanel.AttachUIComponent(m_panel.gameObject);
@@ -102,6 +132,8 @@ namespace FineRoadAnarchy
                 }
                 else if (m_tries == 5)
                 {
+                    DebugUtils.Log("Fine Road Tool window not found");
+
                     UIMainWindow window = UIView.GetAView().AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                     window.AttachUIComponent(m_panel.gameObject);
@@ -165,6 +197,12 @@ namespace FineRoadAnarchy
                         Redirector<RoadAIDetour>.Deploy();
                         Redirector<PedestrianPathAIDetour>.Deploy();
                         Redirector<TrainTrackAIDetour>.Deploy();
+
+                        if (chirperButton != null && chirperAtlasAnarchy != null)
+                        {
+                            chirperAtlasNormal = chirperButton.atlas;
+                            chirperButton.atlas = chirperAtlasAnarchy;
+                        }
                     }
                     else
                     {
@@ -174,6 +212,11 @@ namespace FineRoadAnarchy
                         Redirector<RoadAIDetour>.Revert();
                         Redirector<PedestrianPathAIDetour>.Revert();
                         Redirector<TrainTrackAIDetour>.Revert();
+
+                        if (chirperButton != null && chirperAtlasNormal != null)
+                        {
+                            chirperButton.atlas = chirperAtlasNormal;
+                        }
                     }
                 }
             }
@@ -216,15 +259,15 @@ namespace FineRoadAnarchy
                     // Checking key presses
                     if (OptionsKeymapping.toggleAnarchy.IsPressed(e))
                     {
-                        m_panel.m_anarchy.SimulateClick();
+                        m_panel.m_anarchy.isChecked = !m_panel.m_anarchy.isChecked;
                     }
                     else if (OptionsKeymapping.toggleBending.IsPressed(e))
                     {
-                        m_panel.m_bending.SimulateClick();
+                        m_panel.m_bending.isChecked = !m_panel.m_bending.isChecked;
                     }
                     else if (OptionsKeymapping.toggleSnapping.IsPressed(e))
                     {
-                        m_panel.m_snapping.SimulateClick();
+                        m_panel.m_snapping.isChecked = !m_panel.m_snapping.isChecked;
                     }
                 }
             }
@@ -233,6 +276,53 @@ namespace FineRoadAnarchy
                 DebugUtils.Log("OnGUI failed");
                 DebugUtils.LogException(e);
             }
+        }
+
+
+        private void LoadChirperAtlas()
+        {
+            string[] spriteNames = new string[]
+			{
+				"Chirper",
+                "ChirperChristmas",
+                "ChirperChristmasDisabled",
+                "ChirperChristmasFocused",
+                "ChirperChristmasHovered",
+                "ChirperChristmasPressed",
+                "Chirpercrown",
+                "ChirpercrownDisabled",
+                "ChirpercrownFocused",
+                "ChirpercrownHovered",
+                "ChirpercrownPressed",
+                "ChirperDeluxe",
+                "ChirperDeluxeDisabled",
+                "ChirperDeluxeFocused",
+                "ChirperDeluxeHovered",
+                "ChirperDeluxePressed",
+                "ChirperDisabled",
+                "ChirperFocused",
+                "ChirperFootball",
+                "ChirperFootballDisabled",
+                "ChirperFootballFocused",
+                "ChirperFootballHovered",
+                "ChirperFootballPressed",
+                "ChirperHovered",
+                "ChirperIcon",
+                "ChirperLumberjack",
+                "ChirperLumberjackDisabled",
+                "ChirperLumberjackFocused",
+                "ChirperLumberjackHovered",
+                "ChirperLumberjackPressed",
+                "ChirperPressed",
+                "ChirperWintercap",
+                "ChirperWintercapDisabled",
+                "ChirperWintercapFocused",
+                "ChirperWintercapHovered",
+                "ChirperWintercapPressed",
+                "EmptySprite"
+			};
+
+            chirperAtlasAnarchy = ResourceLoader.CreateTextureAtlas("ChirperAtlasAnarchy", spriteNames, "FineRoadAnarchy.ChirperAtlas.");
         }
     }
 

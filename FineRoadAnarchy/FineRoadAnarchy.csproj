@@ -70,7 +70,45 @@
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="UIMainWindow.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="ChirperAtlas\Chirper.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperChristmas.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\Chirpercrown.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirpercrownDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirpercrownFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirpercrownHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirpercrownPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxe.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxeDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxeFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxeHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxePressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperFootball.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperFootballDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperFootballFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperFootballHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperFootballPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperIcon.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjack.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperWintercap.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\EmptySprite.png" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Anarchy.png" />
     <EmbeddedResource Include="Icons\AnarchyDisabled.png" />

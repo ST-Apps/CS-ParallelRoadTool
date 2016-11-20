@@ -17,9 +17,6 @@ namespace FineRoadAnarchy
             {
                 // Creating setting file
                 GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = FineRoadAnarchy.settingsFileName } });
-
-                // Unsubscribe from SJA
-                Steam.workshop.Unsubscribe(new PublishedFileId(553184329));
             }
             catch (Exception e)
             {
@@ -48,6 +45,9 @@ namespace FineRoadAnarchy
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
                 group.AddSpace(10);
+
+                // Unsubscribe from SJA
+                Steam.workshop.Unsubscribe(new PublishedFileId(553184329));
             }
             catch (Exception e)
             {
@@ -56,6 +56,6 @@ namespace FineRoadAnarchy
             }
         }
 
-        public const string version = "1.0.1";
+        public const string version = "1.1.1";
     }
 }
