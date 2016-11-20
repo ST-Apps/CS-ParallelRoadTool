@@ -55,6 +55,8 @@ namespace FineRoadAnarchy
                 Redirector<NetInfoDetour>.Deploy();
 
                 m_panel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
+
+                DebugUtils.Log("Initialized");
             }
             catch(Exception e)
             {
@@ -71,11 +73,11 @@ namespace FineRoadAnarchy
                 {
                     if (m_netTool.enabled)
                     {
-                        m_netTool.m_prefab.m_canCollide = anarchy;
+                        CanCollide(m_netTool.m_prefab, !anarchy);
                     }
                     else
                     {
-                        m_netTool.m_prefab.m_canCollide = false;
+                        CanCollide(m_netTool.m_prefab, true);
                     }
                 }
 
@@ -127,6 +129,23 @@ namespace FineRoadAnarchy
             anarchy = false;
         }
 
+        public void CanCollide(NetInfo prefab, bool value)
+        {
+            if(prefab != null)
+            {
+                prefab.m_canCollide = value;
+
+                RoadAI roadAI = prefab.m_netAI as RoadAI;
+                if(roadAI != null)
+                {
+                    if (roadAI.m_elevatedInfo != null) roadAI.m_elevatedInfo.m_canCollide = value;
+                    if (roadAI.m_bridgeInfo != null) roadAI.m_bridgeInfo.m_canCollide = value;
+                    if (roadAI.m_tunnelInfo != null) roadAI.m_tunnelInfo.m_canCollide = value;
+                    if (roadAI.m_slopeInfo != null) roadAI.m_slopeInfo.m_canCollide = value;
+                }
+            }
+        }
+
         public bool anarchy
         {
             get
@@ -140,6 +159,7 @@ namespace FineRoadAnarchy
                 {
                     if(value)
                     {
+                        DebugUtils.Log("Enabling anarchy");
                         Redirector<NetToolDetour>.Deploy();
                         Redirector<BuildingToolDetour>.Deploy();
                         Redirector<RoadAIDetour>.Deploy();
@@ -148,6 +168,7 @@ namespace FineRoadAnarchy
                     }
                     else
                     {
+                        DebugUtils.Log("Disabling anarchy");
                         Redirector<NetToolDetour>.Revert();
                         Redirector<BuildingToolDetour>.Revert();
                         Redirector<RoadAIDetour>.Revert();
@@ -169,7 +190,6 @@ namespace FineRoadAnarchy
             {
                 if (bending != value)
                 {
-                    DebugUtils.Log("Bending: " + value);
                     for (int i = 0; i < bendingPrefabs.m_size; i++)
                     {
                         bendingPrefabs.m_buffer[i].m_enableBendingSegments = value;
