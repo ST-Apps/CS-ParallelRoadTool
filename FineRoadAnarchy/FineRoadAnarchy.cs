@@ -54,7 +54,6 @@ namespace FineRoadAnarchy
                     return;
                 }
 
-                m_tries = 0;
                 bendingPrefabs.Clear();
 
                 int count = PrefabCollection<NetInfo>.PrefabCount();
@@ -69,12 +68,9 @@ namespace FineRoadAnarchy
                         }
                     }
                 }
-                Redirector<NetInfoDetour>.Deploy();
 
-                if (m_panel == null)
-                {
-                    m_panel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
-                }
+                Redirector<NetInfoDetour>.Deploy();
+                collision = ToolManager.instance.m_properties.m_mode != ItemClass.Availability.AssetEditor;
 
                 if (chirperAtlasAnarchy == null)
                 {
@@ -82,6 +78,19 @@ namespace FineRoadAnarchy
                 }
 
                 chirperButton = UIView.GetAView().FindUIComponent<UIButton>("Zone");
+
+                if (m_panel == null)
+                {
+                    m_tries = 0;
+                    m_panel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
+                }
+                else
+                {
+                    m_panel.m_anarchy.isChecked = false;
+                    m_panel.m_bending.isChecked = true;
+                    m_panel.m_snapping.isChecked = true;
+                    m_panel.m_collision.isChecked = collision;
+                }
 
                 DebugUtils.Log("Initialized");
             }
@@ -97,11 +106,11 @@ namespace FineRoadAnarchy
         {
             try
             {
-                if (ToolManager.instance.m_properties.m_mode == ItemClass.Availability.AssetEditor && m_netTool.m_prefab != null)
+                if (m_netTool.m_prefab != null)
                 {
                     if (m_netTool.enabled)
                     {
-                        CanCollide(m_netTool.m_prefab, !anarchy);
+                        CanCollide(m_netTool.m_prefab, collision);
                     }
                     else
                     {
@@ -178,7 +187,7 @@ namespace FineRoadAnarchy
             }
         }
 
-        public bool anarchy
+        public static bool anarchy
         {
             get
             {
@@ -222,7 +231,7 @@ namespace FineRoadAnarchy
             }
         }
 
-        public bool bending
+        public static bool bending
         {
             get
             {
@@ -241,12 +250,9 @@ namespace FineRoadAnarchy
             }
         }
 
+        public static bool snapping = true;
 
-        public bool snapping
-        {
-            set;
-            get;
-        }
+        public static bool collision = true;
 
         public void OnGUI()
         {
@@ -268,6 +274,10 @@ namespace FineRoadAnarchy
                     else if (OptionsKeymapping.toggleSnapping.IsPressed(e))
                     {
                         m_panel.m_snapping.isChecked = !m_panel.m_snapping.isChecked;
+                    }
+                    else if (OptionsKeymapping.toggleCollision.IsPressed(e))
+                    {
+                        m_panel.m_collision.isChecked = !m_panel.m_collision.isChecked;
                     }
                 }
             }

@@ -12,7 +12,7 @@ namespace FineRoadAnarchy
         [RedirectMethod]
         new public float GetMinNodeDistance()
         {
-            if(FineRoadAnarchy.instance != null && !FineRoadAnarchy.instance.snapping)
+            if(!FineRoadAnarchy.snapping)
             {
                 return 3f;
             }

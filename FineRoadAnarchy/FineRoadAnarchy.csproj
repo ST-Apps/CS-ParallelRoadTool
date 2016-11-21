@@ -126,6 +126,13 @@
     <EmbeddedResource Include="Icons\SnappingHovered.png" />
     <EmbeddedResource Include="Icons\SnappingPressed.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Collision.png" />
+    <EmbeddedResource Include="Icons\CollisionDisabled.png" />
+    <EmbeddedResource Include="Icons\CollisionFocused.png" />
+    <EmbeddedResource Include="Icons\CollisionHovered.png" />
+    <EmbeddedResource Include="Icons\CollisionPressed.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"

@@ -1,6 +1,7 @@
 ﻿using ICities;
 
 using System;
+using System.Linq;
 
 using ColossalFramework;
 using ColossalFramework.UI;
@@ -47,7 +48,11 @@ namespace FineRoadAnarchy
                 group.AddSpace(10);
 
                 // Unsubscribe from SJA
-                Steam.workshop.Unsubscribe(new PublishedFileId(553184329));
+                PublishedFileId SJA = new PublishedFileId(553184329);
+                if (Steam.active && Steam.workshop.GetSubscribedItems().Contains(SJA))
+                {
+                    Steam.workshop.Unsubscribe(SJA);
+                }
             }
             catch (Exception e)
             {
@@ -56,6 +61,6 @@ namespace FineRoadAnarchy
             }
         }
 
-        public const string version = "1.1.1";
+        public const string version = "1.1.4";
     }
 }

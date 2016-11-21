@@ -18,6 +18,7 @@ namespace FineRoadAnarchy
         public static readonly SavedInputKey toggleAnarchy = new SavedInputKey("toggleAnarchy", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.A, true, false, false), true);
         public static readonly SavedInputKey toggleBending = new SavedInputKey("toggleBending", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.B, true, false, false), true);
         public static readonly SavedInputKey toggleSnapping = new SavedInputKey("toggleSnapping", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.S, true, false, false), true);
+        public static readonly SavedInputKey toggleCollision = new SavedInputKey("toggleCollision", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.C, false, false, true), true);
 
         private int count = 0;
 
@@ -26,6 +27,7 @@ namespace FineRoadAnarchy
             AddKeymapping("Toggle Anarchy", toggleAnarchy);
             AddKeymapping("Toggle Bending", toggleBending);
             AddKeymapping("Toggle Snapping", toggleSnapping);
+            AddKeymapping("Toggle Collision", toggleCollision);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)

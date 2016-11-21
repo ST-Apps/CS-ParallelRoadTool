@@ -12,6 +12,7 @@ namespace FineRoadAnarchy
         public UICheckBox m_anarchy;
         public UICheckBox m_bending;
         public UICheckBox m_snapping;
+        public UICheckBox m_collision;
 
         public override void Start()
         {
@@ -31,6 +32,7 @@ namespace FineRoadAnarchy
             m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);
             m_bending = CreateCheckBox(this, "Bending", "Toggle road bending", true);
             m_snapping = CreateCheckBox(this, "Snapping", "Toggle node snapping", true);
+            m_collision = CreateCheckBox(this, "Collision", "Toggle road collision", FineRoadAnarchy.collision);
 
             autoLayout = true;
         }
@@ -43,6 +45,7 @@ namespace FineRoadAnarchy
             UIButton button = checkBox.AddUIComponent<UIButton>();
             button.name = "FRA_" + spriteName;
             button.atlas = m_atlas;
+            button.tooltip = toolTip;
             button.relativePosition = new Vector2(0, 0);
 
             button.normalBgSprite = "OptionBase";
@@ -83,9 +86,10 @@ namespace FineRoadAnarchy
 
         private void UpdateOptions()
         {
-            FineRoadAnarchy.instance.anarchy = m_anarchy.isChecked;
-            FineRoadAnarchy.instance.bending = m_bending.isChecked;
-            FineRoadAnarchy.instance.snapping = m_snapping.isChecked;
+            FineRoadAnarchy.anarchy = m_anarchy.isChecked;
+            FineRoadAnarchy.bending = m_bending.isChecked;
+            FineRoadAnarchy.snapping = m_snapping.isChecked;
+            FineRoadAnarchy.collision = m_collision.isChecked;
         }
 
         private void LoadResources()
@@ -106,7 +110,12 @@ namespace FineRoadAnarchy
 				"SnappingDisabled",
 				"SnappingFocused",
 				"SnappingHovered",
-				"SnappingPressed"
+				"SnappingPressed",
+				"Collision",
+				"CollisionDisabled",
+				"CollisionFocused",
+				"CollisionHovered",
+				"CollisionPressed"
 			};
 
             m_atlas = ResourceLoader.CreateTextureAtlas("FineRoadAnarchy", spriteNames, "FineRoadAnarchy.Icons.");
