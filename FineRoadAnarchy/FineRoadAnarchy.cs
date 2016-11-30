@@ -27,7 +27,6 @@ namespace FineRoadAnarchy
         public static UITextureAtlas chirperAtlasAnarchy;
         public static UITextureAtlas chirperAtlasNormal;
         
-        public ToolController m_toolController;
         public NetTool m_netTool;
 
         private OptionsPanel m_panel;
@@ -38,14 +37,6 @@ namespace FineRoadAnarchy
         {
             try
             {
-                m_toolController = GameObject.FindObjectOfType<ToolController>();
-                if(m_toolController == null)
-                {
-                    DebugUtils.Log("Tool Controller not found");
-                    enabled = false;
-                    return;
-                }
-
                 m_netTool = GameObject.FindObjectOfType<NetTool>();
                 if (m_netTool == null)
                 {
@@ -254,11 +245,31 @@ namespace FineRoadAnarchy
 
         public static bool collision = true;
 
+        public static bool grid
+        {
+            get
+            {
+                return (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) != ItemClass.Availability.None;
+            }
+
+            set
+            {
+                if(value)
+                {
+                    ToolManager.instance.m_properties.m_mode = ToolManager.instance.m_properties.m_mode | ItemClass.Availability.AssetEditor;
+                }
+                else
+                {
+                    ToolManager.instance.m_properties.m_mode = ToolManager.instance.m_properties.m_mode & ~ItemClass.Availability.AssetEditor;
+                }
+            }
+        }
+
         public void OnGUI()
         {
             try
             {
-                if (!m_toolController.IsInsideUI && Cursor.visible)
+                if (!UIView.HasModalInput() && !UIView.HasInputFocus())
                 {
                     Event e = Event.current;
 
@@ -278,6 +289,10 @@ namespace FineRoadAnarchy
                     else if (OptionsKeymapping.toggleCollision.IsPressed(e))
                     {
                         m_panel.m_collision.isChecked = !m_panel.m_collision.isChecked;
+                    }
+                    else if (m_panel.m_grid != null && OptionsKeymapping.toggleGrid.IsPressed(e))
+                    {
+                        m_panel.m_grid.isChecked = !m_panel.m_grid.isChecked;
                     }
                 }
             }
@@ -310,6 +325,21 @@ namespace FineRoadAnarchy
                 "ChirperDeluxeHovered",
                 "ChirperDeluxePressed",
                 "ChirperDisabled",
+                "ChirperDisastersHazmat",
+                "ChirperDisastersHazmatDisabled",
+                "ChirperDisastersHazmatFocused",
+                "ChirperDisastersHazmatHovered",
+                "ChirperDisastersHazmatPressed",
+                "ChirperDisastersPilot",
+                "ChirperDisastersPilotDisabled",
+                "ChirperDisastersPilotFocused",
+                "ChirperDisastersPilotHovered",
+                "ChirperDisastersPilotPressed",
+                "ChirperDisastersWorker",
+                "ChirperDisastersWorkerDisabled",
+                "ChirperDisastersWorkerFocused",
+                "ChirperDisastersWorkerHovered",
+                "ChirperDisastersWorkerPressed",
                 "ChirperFocused",
                 "ChirperFootball",
                 "ChirperFootballDisabled",
@@ -348,6 +378,16 @@ namespace FineRoadAnarchy
             else
             {
                 FineRoadAnarchy.instance.Start();
+            }
+
+            if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
+            {
+                GameAreaManager.instance.m_maxAreaCount = GameAreaManager.AREAGRID_RESOLUTION * GameAreaManager.AREAGRID_RESOLUTION;
+                for (int i = 0; i < GameAreaManager.instance.m_maxAreaCount; i++)
+                {
+                    GameAreaManager.instance.m_areaGrid[i] = i + 1;
+                }
+                GameAreaManager.instance.m_areaCount = GameAreaManager.instance.m_maxAreaCount;
             }
         }
     }

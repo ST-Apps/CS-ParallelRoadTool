@@ -19,10 +19,10 @@ namespace FineRoadAnarchy
     public class BuildingToolDetour : BuildingTool
     {
         [RedirectMethod]
-        new public static ToolBase.ToolErrors CheckSpace(BuildingInfo info, int relocating, Vector3 pos, float minY, float maxY, float angle, int width, int length, bool test, ulong[] collidingSegmentBuffer, ulong[] collidingBuildingBuffer)
+        new public static ToolBase.ToolErrors CheckSpace(BuildingInfo info, BuildingInfo.PlacementMode placementMode, int relocating, Vector3 pos, float minY, float maxY, float angle, int width, int length, bool test, ulong[] collidingSegmentBuffer, ulong[] collidingBuildingBuffer)
         {
             return ToolBase.ToolErrors.None;
-            /*ToolBase.ToolErrors toolErrors = BuildingTool.CheckSpaceImpl(info, relocating, pos, minY, maxY, angle, width, length, test, collidingSegmentBuffer, collidingBuildingBuffer);
+            /*ToolBase.ToolErrors toolErrors = BuildingTool.CheckSpaceImpl(info, placementMode, relocating, pos, minY, maxY, angle, width, length, test, collidingSegmentBuffer, collidingBuildingBuffer);
             if (info.m_subBuildings != null && info.m_subBuildings.Length != 0)
             {
                 Matrix4x4 matrix4x = default(Matrix4x4);
@@ -36,7 +36,7 @@ namespace FineRoadAnarchy
                     float maxY2;
                     float num;
                     Building.SampleBuildingHeight(vector, angle2, buildingInfo.m_cellWidth, buildingInfo.m_cellLength, buildingInfo, out minY2, out maxY2, out num);
-                    toolErrors |= BuildingTool.CheckSpaceImpl(buildingInfo, relocating, vector, minY2, maxY2, angle2, buildingInfo.m_cellWidth, buildingInfo.m_cellLength, test, collidingSegmentBuffer, collidingBuildingBuffer);
+                    toolErrors |= BuildingTool.CheckSpaceImpl(buildingInfo, placementMode, relocating, vector, minY2, maxY2, angle2, buildingInfo.m_cellWidth, buildingInfo.m_cellLength, test, collidingSegmentBuffer, collidingBuildingBuffer);
                 }
             }
             if (!test)

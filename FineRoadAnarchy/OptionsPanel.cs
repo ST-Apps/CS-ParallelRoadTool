@@ -13,6 +13,7 @@ namespace FineRoadAnarchy
         public UICheckBox m_bending;
         public UICheckBox m_snapping;
         public UICheckBox m_collision;
+        public UICheckBox m_grid;
 
         public override void Start()
         {
@@ -33,6 +34,11 @@ namespace FineRoadAnarchy
             m_bending = CreateCheckBox(this, "Bending", "Toggle road bending", true);
             m_snapping = CreateCheckBox(this, "Snapping", "Toggle node snapping", true);
             m_collision = CreateCheckBox(this, "Collision", "Toggle road collision", FineRoadAnarchy.collision);
+
+            if((ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) != ItemClass.Availability.None)
+            {
+                m_grid = CreateCheckBox(this, "Grid", "Toggle editor grid", true);
+            }
 
             autoLayout = true;
         }
@@ -90,6 +96,11 @@ namespace FineRoadAnarchy
             FineRoadAnarchy.bending = m_bending.isChecked;
             FineRoadAnarchy.snapping = m_snapping.isChecked;
             FineRoadAnarchy.collision = m_collision.isChecked;
+
+            if(m_grid != null)
+            {
+                FineRoadAnarchy.grid = m_grid.isChecked;
+            }
         }
 
         private void LoadResources()
@@ -115,7 +126,12 @@ namespace FineRoadAnarchy
 				"CollisionDisabled",
 				"CollisionFocused",
 				"CollisionHovered",
-				"CollisionPressed"
+				"CollisionPressed",
+				"Grid",
+				"GridDisabled",
+				"GridFocused",
+				"GridHovered",
+				"GridPressed"
 			};
 
             m_atlas = ResourceLoader.CreateTextureAtlas("FineRoadAnarchy", spriteNames, "FineRoadAnarchy.Icons.");

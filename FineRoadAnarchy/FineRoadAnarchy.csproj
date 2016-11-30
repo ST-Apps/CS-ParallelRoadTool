@@ -133,6 +133,30 @@
     <EmbeddedResource Include="Icons\CollisionHovered.png" />
     <EmbeddedResource Include="Icons\CollisionPressed.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmat.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilot.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorker.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerPressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Grid.png" />
+    <EmbeddedResource Include="Icons\GridDisabled.png" />
+    <EmbeddedResource Include="Icons\GridFocused.png" />
+    <EmbeddedResource Include="Icons\GridHovered.png" />
+    <EmbeddedResource Include="Icons\GridPressed.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"

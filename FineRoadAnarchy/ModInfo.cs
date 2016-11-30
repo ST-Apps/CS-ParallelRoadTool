@@ -6,7 +6,7 @@ using System.Linq;
 using ColossalFramework;
 using ColossalFramework.UI;
 
-using ColossalFramework.Steamworks;
+using ColossalFramework.PlatformServices;
 
 namespace FineRoadAnarchy
 {
@@ -49,9 +49,9 @@ namespace FineRoadAnarchy
 
                 // Unsubscribe from SJA
                 PublishedFileId SJA = new PublishedFileId(553184329);
-                if (Steam.active && Steam.workshop.GetSubscribedItems().Contains(SJA))
+                if (PlatformService.active && PlatformService.workshop.GetSubscribedItems().Contains(SJA))
                 {
-                    Steam.workshop.Unsubscribe(SJA);
+                    PlatformService.workshop.Unsubscribe(SJA);
                 }
             }
             catch (Exception e)
@@ -61,6 +61,6 @@ namespace FineRoadAnarchy
             }
         }
 
-        public const string version = "1.1.4";
+        public const string version = "1.2.0";
     }
 }
