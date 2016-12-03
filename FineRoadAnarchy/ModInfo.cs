@@ -7,6 +7,7 @@ using ColossalFramework;
 using ColossalFramework.UI;
 
 using ColossalFramework.PlatformServices;
+using ColossalFramework.Plugins;
 
 namespace FineRoadAnarchy
 {
@@ -47,11 +48,20 @@ namespace FineRoadAnarchy
 
                 group.AddSpace(10);
 
-                // Unsubscribe from SJA
-                PublishedFileId SJA = new PublishedFileId(553184329);
-                if (PlatformService.active && PlatformService.workshop.GetSubscribedItems().Contains(SJA))
+                // Disable SJA
+                PublishedFileId SJA_ID = new PublishedFileId(553184329);
+
+                foreach (PluginManager.PluginInfo plugin in PluginManager.instance.GetPluginsInfo())
                 {
-                    PlatformService.workshop.Unsubscribe(SJA);
+                    if (plugin.publishedFileID == SJA_ID && plugin.isEnabled)
+                    {
+                        try
+                        {
+                            DebugUtils.Log("Disabling SJA");
+                            plugin.isEnabled = false;
+                        }
+                        catch { }
+                    }
                 }
             }
             catch (Exception e)
@@ -61,6 +71,6 @@ namespace FineRoadAnarchy
             }
         }
 
-        public const string version = "1.2.0";
+        public const string version = "1.2.1";
     }
 }

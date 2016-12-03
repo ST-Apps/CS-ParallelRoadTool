@@ -30,6 +30,8 @@ namespace FineRoadAnarchy
             label.relativePosition = new Vector2(8, 8);
             label.SendToBack();
 
+            absolutePosition = new Vector3(savedWindowX.value , savedWindowY.value);
+
             DebugUtils.Log("UIMainWindow created");
         }
 

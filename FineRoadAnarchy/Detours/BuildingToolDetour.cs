@@ -13,7 +13,7 @@ using ColossalFramework.UI;
 
 using FineRoadAnarchy.Redirection;
 
-namespace FineRoadAnarchy
+namespace FineRoadAnarchy.Detours
 {
     [TargetType(typeof(BuildingTool))]
     public class BuildingToolDetour : BuildingTool

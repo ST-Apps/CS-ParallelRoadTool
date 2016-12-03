@@ -40,6 +40,8 @@ namespace FineRoadAnarchy
                 m_grid = CreateCheckBox(this, "Grid", "Toggle editor grid", true);
             }
 
+            UpdateOptions();
+
             autoLayout = true;
         }
 

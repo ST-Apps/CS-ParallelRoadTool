@@ -1,6 +1,6 @@
 ﻿using FineRoadAnarchy.Redirection;
 
-namespace FineRoadAnarchy
+namespace FineRoadAnarchy.Detours
 {
     [TargetType(typeof(RoadAI))]
     public class RoadAIDetour : RoadAI

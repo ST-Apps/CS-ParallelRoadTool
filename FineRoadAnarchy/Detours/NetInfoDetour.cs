@@ -4,7 +4,7 @@ using ColossalFramework.Math;
 
 using FineRoadAnarchy.Redirection;
 
-namespace FineRoadAnarchy
+namespace FineRoadAnarchy.Detours
 {
     [TargetType(typeof(NetInfo))]
     public class NetInfoDetour : NetInfo

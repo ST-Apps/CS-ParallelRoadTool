@@ -12,6 +12,7 @@ using ColossalFramework.Math;
 using ColossalFramework.UI;
 
 using FineRoadAnarchy.Redirection;
+using FineRoadAnarchy.Detours;
 
 namespace FineRoadAnarchy
 {
@@ -32,6 +33,7 @@ namespace FineRoadAnarchy
         private OptionsPanel m_panel;
 
         private int m_tries;
+        private static NetInfo m_prefab;
 
         public void Start()
         {
@@ -61,7 +63,7 @@ namespace FineRoadAnarchy
                 }
 
                 Redirector<NetInfoDetour>.Deploy();
-                collision = ToolManager.instance.m_properties.m_mode != ItemClass.Availability.AssetEditor;
+                collision = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) == ItemClass.Availability.None;
 
                 if (chirperAtlasAnarchy == null)
                 {
@@ -97,8 +99,9 @@ namespace FineRoadAnarchy
         {
             try
             {
-                if (m_netTool.m_prefab != null)
+                if (m_netTool.m_prefab != null && m_netTool.m_prefab != m_prefab)
                 {
+                    m_prefab = m_netTool.m_prefab;
                     if (m_netTool.enabled)
                     {
                         CanCollide(m_netTool.m_prefab, collision);
@@ -193,6 +196,7 @@ namespace FineRoadAnarchy
                     {
                         DebugUtils.Log("Enabling anarchy");
                         Redirector<NetToolDetour>.Deploy();
+                        //Redirector<NetNodeDetour>.Deploy();
                         Redirector<BuildingToolDetour>.Deploy();
                         Redirector<RoadAIDetour>.Deploy();
                         Redirector<PedestrianPathAIDetour>.Deploy();
@@ -208,6 +212,7 @@ namespace FineRoadAnarchy
                     {
                         DebugUtils.Log("Disabling anarchy");
                         Redirector<NetToolDetour>.Revert();
+                        //Redirector<NetNodeDetour>.Revert();
                         Redirector<BuildingToolDetour>.Revert();
                         Redirector<RoadAIDetour>.Revert();
                         Redirector<PedestrianPathAIDetour>.Revert();
@@ -243,7 +248,30 @@ namespace FineRoadAnarchy
 
         public static bool snapping = true;
 
-        public static bool collision = true;
+        public static bool collision
+        {
+            get
+            {
+                return !Redirector<NetNodeDetour>.IsDeployed();
+            }
+
+            set
+            {
+                if (value != collision)
+                {
+                    if (value)
+                    {
+                        Redirector<NetNodeDetour>.Revert();
+                    }
+                    else
+                    {
+                        Redirector<NetNodeDetour>.Deploy();
+                    }
+
+                    m_prefab = null;
+                }
+            }
+        }
 
         public static bool grid
         {
