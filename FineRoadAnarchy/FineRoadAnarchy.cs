@@ -23,6 +23,7 @@ namespace FineRoadAnarchy
         public static FineRoadAnarchy instance;
 
         public static FastList<NetInfo> bendingPrefabs = new FastList<NetInfo>();
+        public static FastList<NetInfo> collidePrefabs = new FastList<NetInfo>();
 
         public static UIButton chirperButton;
         public static UITextureAtlas chirperAtlasAnarchy;
@@ -33,7 +34,6 @@ namespace FineRoadAnarchy
         private OptionsPanel m_panel;
 
         private int m_tries;
-        private static NetInfo m_prefab;
 
         public void Start()
         {
@@ -48,6 +48,7 @@ namespace FineRoadAnarchy
                 }
 
                 bendingPrefabs.Clear();
+                collidePrefabs.Clear();
 
                 int count = PrefabCollection<NetInfo>.PrefabCount();
                 for (uint i = 0; i < count; i++)
@@ -58,6 +59,10 @@ namespace FineRoadAnarchy
                         if (prefab.m_enableBendingSegments)
                         {
                             bendingPrefabs.Add(prefab);
+                        }
+                        if(prefab.m_canCollide)
+                        {
+                            collidePrefabs.Add(prefab);
                         }
                     }
                 }
@@ -99,19 +104,6 @@ namespace FineRoadAnarchy
         {
             try
             {
-                if (m_netTool.m_prefab != null && m_netTool.m_prefab != m_prefab)
-                {
-                    m_prefab = m_netTool.m_prefab;
-                    if (m_netTool.enabled)
-                    {
-                        CanCollide(m_netTool.m_prefab, collision);
-                    }
-                    else
-                    {
-                        CanCollide(m_netTool.m_prefab, true);
-                    }
-                }
-
                 if (m_tries < 5)
                 {
                     UIPanel frtPanel = UIView.GetAView().FindUIComponent<UIPanel>("FRT_ToolOptionsPanel");
@@ -164,23 +156,6 @@ namespace FineRoadAnarchy
             anarchy = false;
         }
 
-        public void CanCollide(NetInfo prefab, bool value)
-        {
-            if(prefab != null)
-            {
-                prefab.m_canCollide = value;
-
-                RoadAI roadAI = prefab.m_netAI as RoadAI;
-                if(roadAI != null)
-                {
-                    if (roadAI.m_elevatedInfo != null) roadAI.m_elevatedInfo.m_canCollide = value;
-                    if (roadAI.m_bridgeInfo != null) roadAI.m_bridgeInfo.m_canCollide = value;
-                    if (roadAI.m_tunnelInfo != null) roadAI.m_tunnelInfo.m_canCollide = value;
-                    if (roadAI.m_slopeInfo != null) roadAI.m_slopeInfo.m_canCollide = value;
-                }
-            }
-        }
-
         public static bool anarchy
         {
             get
@@ -196,7 +171,6 @@ namespace FineRoadAnarchy
                     {
                         DebugUtils.Log("Enabling anarchy");
                         Redirector<NetToolDetour>.Deploy();
-                        //Redirector<NetNodeDetour>.Deploy();
                         Redirector<BuildingToolDetour>.Deploy();
                         Redirector<RoadAIDetour>.Deploy();
                         Redirector<PedestrianPathAIDetour>.Deploy();
@@ -212,7 +186,6 @@ namespace FineRoadAnarchy
                     {
                         DebugUtils.Log("Disabling anarchy");
                         Redirector<NetToolDetour>.Revert();
-                        //Redirector<NetNodeDetour>.Revert();
                         Redirector<BuildingToolDetour>.Revert();
                         Redirector<RoadAIDetour>.Revert();
                         Redirector<PedestrianPathAIDetour>.Revert();
@@ -268,7 +241,10 @@ namespace FineRoadAnarchy
                         Redirector<NetNodeDetour>.Deploy();
                     }
 
-                    m_prefab = null;
+                    for (int i = 0; i < collidePrefabs.m_size; i++)
+                    {
+                        collidePrefabs.m_buffer[i].m_canCollide = value;
+                    }
                 }
             }
         }
