@@ -71,6 +71,6 @@ namespace FineRoadAnarchy
             }
         }
 
-        public const string version = "1.2.3";
+        public const string version = "1.2.2";
     }
 }
