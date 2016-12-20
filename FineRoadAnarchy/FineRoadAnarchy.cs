@@ -104,6 +104,14 @@ namespace FineRoadAnarchy
         {
             try
             {
+                if (m_netTool.m_prefab != null && m_netTool.m_prefab.m_canCollide && !collision)
+                {
+                    for (int i = 0; i < collidePrefabs.m_size; i++)
+                    {
+                        collidePrefabs.m_buffer[i].m_canCollide = false;
+                    }
+                }
+
                 if (m_tries < 5)
                 {
                     UIPanel frtPanel = UIView.GetAView().FindUIComponent<UIPanel>("FRT_ToolOptionsPanel");
