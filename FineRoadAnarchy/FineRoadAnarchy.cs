@@ -33,7 +33,6 @@ namespace FineRoadAnarchy
         private OptionsPanel m_panel;
 
         private int m_tries;
-        private static NetInfo m_prefab;
 
         public void Start()
         {
@@ -99,19 +98,6 @@ namespace FineRoadAnarchy
         {
             try
             {
-                if (m_netTool.m_prefab != null && m_netTool.m_prefab != m_prefab)
-                {
-                    m_prefab = m_netTool.m_prefab;
-                    if (m_netTool.enabled)
-                    {
-                        CanCollide(m_netTool.m_prefab, collision);
-                    }
-                    else
-                    {
-                        CanCollide(m_netTool.m_prefab, true);
-                    }
-                }
-
                 if (m_tries < 5)
                 {
                     UIPanel frtPanel = UIView.GetAView().FindUIComponent<UIPanel>("FRT_ToolOptionsPanel");
@@ -164,23 +150,6 @@ namespace FineRoadAnarchy
             anarchy = false;
         }
 
-        public void CanCollide(NetInfo prefab, bool value)
-        {
-            if(prefab != null)
-            {
-                prefab.m_canCollide = value;
-
-                RoadAI roadAI = prefab.m_netAI as RoadAI;
-                if(roadAI != null)
-                {
-                    if (roadAI.m_elevatedInfo != null) roadAI.m_elevatedInfo.m_canCollide = value;
-                    if (roadAI.m_bridgeInfo != null) roadAI.m_bridgeInfo.m_canCollide = value;
-                    if (roadAI.m_tunnelInfo != null) roadAI.m_tunnelInfo.m_canCollide = value;
-                    if (roadAI.m_slopeInfo != null) roadAI.m_slopeInfo.m_canCollide = value;
-                }
-            }
-        }
-
         public static bool anarchy
         {
             get
@@ -196,7 +165,6 @@ namespace FineRoadAnarchy
                     {
                         DebugUtils.Log("Enabling anarchy");
                         Redirector<NetToolDetour>.Deploy();
-                        //Redirector<NetNodeDetour>.Deploy();
                         Redirector<BuildingToolDetour>.Deploy();
                         Redirector<RoadAIDetour>.Deploy();
                         Redirector<PedestrianPathAIDetour>.Deploy();
@@ -212,7 +180,6 @@ namespace FineRoadAnarchy
                     {
                         DebugUtils.Log("Disabling anarchy");
                         Redirector<NetToolDetour>.Revert();
-                        //Redirector<NetNodeDetour>.Revert();
                         Redirector<BuildingToolDetour>.Revert();
                         Redirector<RoadAIDetour>.Revert();
                         Redirector<PedestrianPathAIDetour>.Revert();
@@ -252,7 +219,7 @@ namespace FineRoadAnarchy
         {
             get
             {
-                return !Redirector<NetNodeDetour>.IsDeployed();
+                return !Redirector<CollisionNetNodeDetour>.IsDeployed();
             }
 
             set
@@ -261,14 +228,20 @@ namespace FineRoadAnarchy
                 {
                     if (value)
                     {
-                        Redirector<NetNodeDetour>.Revert();
+                        DebugUtils.Log("Enabling collision");
+                        Redirector<CollisionBuildingManagerDetour>.Revert();
+                        Redirector<CollisionNetManagerDetour>.Revert();
+                        Redirector<CollisionNetNodeDetour>.Revert();
+                        CollisionZoneBlockDetour.Revert();
                     }
                     else
                     {
-                        Redirector<NetNodeDetour>.Deploy();
+                        DebugUtils.Log("Disabling collision");
+                        Redirector<CollisionBuildingManagerDetour>.Deploy();
+                        Redirector<CollisionNetManagerDetour>.Deploy();
+                        Redirector<CollisionNetNodeDetour>.Deploy();
+                        CollisionZoneBlockDetour.Deploy();
                     }
-
-                    m_prefab = null;
                 }
             }
         }

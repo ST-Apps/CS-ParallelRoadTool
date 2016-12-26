@@ -51,8 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Detours\BuildingToolDetour.cs" />
+    <Compile Include="Detours\CollisionDetour.cs" />
     <Compile Include="Detours\ElevationLimitsDetour.cs" />
-    <Compile Include="Detours\NetNodeDetour.cs" />
     <Compile Include="FineRoadAnarchy.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="DebugUtils.cs" />

@@ -82,7 +82,7 @@ namespace FineRoadAnarchy.Redirection
                             return ((RedirectMethodAttribute)redirectAttributes[0]).OnCreated == onCreated;
                         }))
             {
-                DebugUtils.Log("Redirecting " + targetType.Name + "#" + method.Name);
+                //DebugUtils.Log("Redirecting " + targetType.Name + "#" + method.Name);
                 RedirectMethod(targetType, method, redirects);
             }
 
@@ -102,14 +102,14 @@ namespace FineRoadAnarchy.Redirection
                 var getMethod = property.GetGetMethod();
                 if (getMethod != null)
                 {
-                    DebugUtils.Log("Redirecting " + targetType.Name + "#" + getMethod.Name);
+                    //DebugUtils.Log("Redirecting " + targetType.Name + "#" + getMethod.Name);
                     RedirectMethod(targetType, getMethod, redirects);
                 }
 
                 var setMethod = property.GetSetMethod();
                 if (setMethod != null)
                 {
-                    DebugUtils.Log("Redirecting " + targetType.Name + "#" + setMethod.Name);
+                    //DebugUtils.Log("Redirecting " + targetType.Name + "#" + setMethod.Name);
                     RedirectMethod(targetType, setMethod, redirects);
                 }
             }
@@ -130,7 +130,7 @@ namespace FineRoadAnarchy.Redirection
                             return false;
                         }))
             {
-                DebugUtils.Log("Redirecting reverse " + targetType.Name + "#" + method.Name);
+                //DebugUtils.Log("Redirecting reverse " + targetType.Name + "#" + method.Name);
                 RedirectMethod(targetType, method, redirects, true);
             }
 
@@ -150,14 +150,14 @@ namespace FineRoadAnarchy.Redirection
                 var getMethod = property.GetGetMethod();
                 if (getMethod != null)
                 {
-                    DebugUtils.Log("Redirecting reverse " + targetType.Name + "#" + getMethod.Name);
+                    //DebugUtils.Log("Redirecting reverse " + targetType.Name + "#" + getMethod.Name);
                     RedirectMethod(targetType, getMethod, redirects, true);
                 }
 
                 var setMethod = property.GetSetMethod();
                 if (setMethod != null)
                 {
-                    DebugUtils.Log("Redirecting reverse " + targetType.Name + "#" + setMethod.Name);
+                    //DebugUtils.Log("Redirecting reverse " + targetType.Name + "#" + setMethod.Name);
                     RedirectMethod(targetType, setMethod, redirects, true);
                 }
             }
