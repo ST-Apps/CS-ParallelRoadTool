@@ -169,7 +169,7 @@ namespace FineRoadAnarchy
                         Redirector<RoadAIDetour>.Deploy();
                         Redirector<PedestrianPathAIDetour>.Deploy();
                         Redirector<TrainTrackAIDetour>.Deploy();
-
+			Redirector<NetAIDetour>.Deploy();
                         if (chirperButton != null && chirperAtlasAnarchy != null)
                         {
                             chirperAtlasNormal = chirperButton.atlas;
@@ -184,7 +184,7 @@ namespace FineRoadAnarchy
                         Redirector<RoadAIDetour>.Revert();
                         Redirector<PedestrianPathAIDetour>.Revert();
                         Redirector<TrainTrackAIDetour>.Revert();
-
+			Redirector<NetAIDetour>.Revert();
                         if (chirperButton != null && chirperAtlasNormal != null)
                         {
                             chirperButton.atlas = chirperAtlasNormal;
