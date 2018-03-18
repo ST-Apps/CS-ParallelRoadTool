@@ -169,7 +169,8 @@ namespace FineRoadAnarchy
                         Redirector<RoadAIDetour>.Deploy();
                         Redirector<PedestrianPathAIDetour>.Deploy();
                         Redirector<TrainTrackAIDetour>.Deploy();
-			Redirector<NetAIDetour>.Deploy();
+                        Redirector<NetAIDetour>.Deploy();
+
                         if (chirperButton != null && chirperAtlasAnarchy != null)
                         {
                             chirperAtlasNormal = chirperButton.atlas;
@@ -184,7 +185,8 @@ namespace FineRoadAnarchy
                         Redirector<RoadAIDetour>.Revert();
                         Redirector<PedestrianPathAIDetour>.Revert();
                         Redirector<TrainTrackAIDetour>.Revert();
-			Redirector<NetAIDetour>.Revert();
+                        Redirector<NetAIDetour>.Revert();
+
                         if (chirperButton != null && chirperAtlasNormal != null)
                         {
                             chirperButton.atlas = chirperAtlasNormal;
@@ -315,6 +317,11 @@ namespace FineRoadAnarchy
                 "ChirperChristmasFocused",
                 "ChirperChristmasHovered",
                 "ChirperChristmasPressed",
+                "ChirperConcerts",
+                "ChirperConcertsDisabled",
+                "ChirperConcertsFocused",
+                "ChirperConcertsHovered",
+                "ChirperConcertsPressed",
                 "Chirpercrown",
                 "ChirpercrownDisabled",
                 "ChirpercrownFocused",
@@ -355,12 +362,52 @@ namespace FineRoadAnarchy
                 "ChirperLumberjackHovered",
                 "ChirperLumberjackPressed",
                 "ChirperPressed",
+                "ChirperRally",
+                "ChirperRallyDisabled",
+                "ChirperRallyFocused",
+                "ChirperRallyHovered",
+                "ChirperRallyPressed",
+                "ChirperRudolph",
+                "ChirperRudolphDisabled",
+                "ChirperRudolphFocused",
+                "ChirperRudolphHovered",
+                "ChirperRudolphPressed",
+                "ChirperSurvivingMars",
+                "ChirperSurvivingMarsDisabled",
+                "ChirperSurvivingMarsFocused",
+                "ChirperSurvivingMarsHovered",
+                "ChirperSurvivingMarsPressed",
+                "ChirperTrafficCone",
+                "ChirperTrafficConeDisabled",
+                "ChirperTrafficConeFocused",
+                "ChirperTrafficConeHovered",
+                "ChirperTrafficConePressed",
+                "ChirperTrainConductor",
+                "ChirperTrainConductorDisabled",
+                "ChirperTrainConductorFocused",
+                "ChirperTrainConductorHovered",
+                "ChirperTrainConductorPressed",
                 "ChirperWintercap",
                 "ChirperWintercapDisabled",
                 "ChirperWintercapFocused",
                 "ChirperWintercapHovered",
                 "ChirperWintercapPressed",
-                "EmptySprite"
+                "EmptySprite",
+                "ThumbChirperBeanie",
+                "ThumbChirperBeanieDisabled",
+                "ThumbChirperBeanieFocused",
+                "ThumbChirperBeanieHovered",
+                "ThumbChirperBeaniePressed",
+                "ThumbChirperFlower",
+                "ThumbChirperFlowerDisabled",
+                "ThumbChirperFlowerFocused",
+                "ThumbChirperFlowerHovered",
+                "ThumbChirperFlowerPressed",
+                "ThumbChirperTech",
+                "ThumbChirperTechDisabled",
+                "ThumbChirperTechFocused",
+                "ThumbChirperTechHovered",
+                "ThumbChirperTechPressed"
 			};
 
             chirperAtlasAnarchy = ResourceLoader.CreateTextureAtlas("ChirperAtlasAnarchy", spriteNames, "FineRoadAnarchy.ChirperAtlas.");

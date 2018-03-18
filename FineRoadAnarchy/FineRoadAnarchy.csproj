@@ -53,6 +53,7 @@
     <Compile Include="Detours\BuildingToolDetour.cs" />
     <Compile Include="Detours\CollisionDetour.cs" />
     <Compile Include="Detours\ElevationLimitsDetour.cs" />
+    <Compile Include="Detours\NetAIDetour.cs" />
     <Compile Include="FineRoadAnarchy.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="DebugUtils.cs" />
@@ -157,6 +158,53 @@
     <EmbeddedResource Include="Icons\GridFocused.png" />
     <EmbeddedResource Include="Icons\GridHovered.png" />
     <EmbeddedResource Include="Icons\GridPressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ChirperAtlas\ChirperConcerts.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRally.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRallyDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRallyFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRallyHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRallyPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRudolph.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMars.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficCone.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConeDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConeFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConeHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConePressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductor.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanie.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanieDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanieFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanieHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeaniePressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlower.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerPressed.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTech.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechDisabled.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechFocused.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechHovered.png" />
+    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechPressed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
