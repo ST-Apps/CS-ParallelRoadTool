@@ -34,7 +34,7 @@ namespace FineRoadAnarchy
 
         public string Description
         {
-            get { return "Goodbye Sharp Junction Angle"; }
+            get { return "This mod adds additional options when building road"; }
         }
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -47,22 +47,6 @@ namespace FineRoadAnarchy
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
                 group.AddSpace(10);
-
-                // Disable SJA
-                PublishedFileId SJA_ID = new PublishedFileId(553184329);
-
-                foreach (PluginManager.PluginInfo plugin in PluginManager.instance.GetPluginsInfo())
-                {
-                    if (plugin.publishedFileID == SJA_ID && plugin.isEnabled)
-                    {
-                        try
-                        {
-                            DebugUtils.Log("Disabling SJA");
-                            plugin.isEnabled = false;
-                        }
-                        catch { }
-                    }
-                }
             }
             catch (Exception e)
             {
