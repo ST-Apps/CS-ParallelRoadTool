@@ -22,7 +22,7 @@ namespace ParallelRoadTool
 
         public static ParallelRoadTool instance;
 
-        public static FastList<NetInfo> bendingPrefabs = new FastList<NetInfo>();
+        public static List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
 
         public static UIButton chirperButton;
         public static UITextureAtlas chirperAtlasAnarchy;
@@ -46,18 +46,19 @@ namespace ParallelRoadTool
                     return;
                 }
 
-                bendingPrefabs.Clear();
+                AvailableRoadTypes.Clear();
 
-                int count = PrefabCollection<NetInfo>.PrefabCount();
-                for (uint i = 0; i < count; i++)
+                int count = PrefabCollection<NetInfo>.PrefabCount() + 1;
+
+                // Default item, creates a net with the same type as source
+                AvailableRoadTypes.Add(null);
+
+                for (uint i = 1; i < count; i++)
                 {
                     NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(i);
                     if (prefab != null)
                     {
-                        if (prefab.m_enableBendingSegments)
-                        {
-                            bendingPrefabs.Add(prefab);
-                        }
+                        AvailableRoadTypes.Add(prefab);
                     }
                 }
 
@@ -79,9 +80,6 @@ namespace ParallelRoadTool
                 else
                 {
                     m_panel.m_anarchy.isChecked = false;
-                    m_panel.m_bending.isChecked = true;
-                    m_panel.m_snapping.isChecked = true;
-                    m_panel.m_collision.isChecked = collision;
                 }
 
                 DebugUtils.Log("Initialized");
@@ -196,25 +194,6 @@ namespace ParallelRoadTool
             }
         }
 
-        public static bool bending
-        {
-            get
-            {
-                return bendingPrefabs.m_size > 0 && bendingPrefabs.m_buffer[0].m_enableBendingSegments;
-            }
-
-            set
-            {
-                if (bending != value)
-                {
-                    for (int i = 0; i < bendingPrefabs.m_size; i++)
-                    {
-                        bendingPrefabs.m_buffer[i].m_enableBendingSegments = value;
-                    }
-                }
-            }
-        }
-
         public static bool snapping = true;
 
         public static bool collision
@@ -280,22 +259,6 @@ namespace ParallelRoadTool
                     if (OptionsKeymapping.toggleAnarchy.IsPressed(e))
                     {
                         m_panel.m_anarchy.isChecked = !m_panel.m_anarchy.isChecked;
-                    }
-                    else if (OptionsKeymapping.toggleBending.IsPressed(e))
-                    {
-                        m_panel.m_bending.isChecked = !m_panel.m_bending.isChecked;
-                    }
-                    else if (OptionsKeymapping.toggleSnapping.IsPressed(e))
-                    {
-                        m_panel.m_snapping.isChecked = !m_panel.m_snapping.isChecked;
-                    }
-                    else if (OptionsKeymapping.toggleCollision.IsPressed(e))
-                    {
-                        m_panel.m_collision.isChecked = !m_panel.m_collision.isChecked;
-                    }
-                    else if (m_panel.m_grid != null && OptionsKeymapping.toggleGrid.IsPressed(e))
-                    {
-                        m_panel.m_grid.isChecked = !m_panel.m_grid.isChecked;
                     }
                 }
             }

@@ -2,6 +2,9 @@
 
 using ColossalFramework;
 using ColossalFramework.UI;
+using NetworkSkins.Props;
+using NetworkSkins.Meshes;
+using System.Collections.Generic;
 
 namespace ParallelRoadTool
 {
@@ -10,10 +13,8 @@ namespace ParallelRoadTool
         private UITextureAtlas m_atlas;
 
         public UICheckBox m_anarchy;
-        public UICheckBox m_bending;
-        public UICheckBox m_snapping;
-        public UICheckBox m_collision;
-        public UICheckBox m_grid;
+
+        public List<UINetTypeOption> m_networks;
 
         public override void Start()
         {
@@ -30,15 +31,20 @@ namespace ParallelRoadTool
             autoLayoutPadding = new RectOffset(0, 4, 0, 0);
             autoLayoutDirection = LayoutDirection.Horizontal;
 
-            m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);
-            m_bending = CreateCheckBox(this, "Bending", "Toggle road bending", true);
-            m_snapping = CreateCheckBox(this, "Snapping", "Toggle node snapping", true);
-            m_collision = CreateCheckBox(this, "Collision", "Toggle road collision", ParallelRoadTool.collision);
+            m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);            
 
-            if((ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) != ItemClass.Availability.None)
-            {
-                m_grid = CreateCheckBox(this, "Grid", "Toggle editor grid", true);
+            DebugUtils.Log("OptionsPanel.Start - START m_networks");
+
+            m_networks = new List<UINetTypeOption>{
+                AddUIComponent<UINetTypeOption>()
+            };
+
+            foreach (var network in m_networks)
+            {                
+                network.Populate();
             }
+
+            DebugUtils.Log("OptionsPanel.Start - END m_networks");
 
             UpdateOptions();
 
@@ -54,7 +60,7 @@ namespace ParallelRoadTool
             button.name = "PRT_" + spriteName;
             button.atlas = m_atlas;
             button.tooltip = toolTip;
-            button.relativePosition = new Vector2(0, 0);
+            button.relativePosition = new Vector2(100, -36);            
 
             button.normalBgSprite = "OptionBase";
             button.hoveredBgSprite = "OptionBaseHovered";
@@ -95,14 +101,6 @@ namespace ParallelRoadTool
         private void UpdateOptions()
         {
             ParallelRoadTool.anarchy = m_anarchy.isChecked;
-            ParallelRoadTool.bending = m_bending.isChecked;
-            ParallelRoadTool.snapping = m_snapping.isChecked;
-            ParallelRoadTool.collision = m_collision.isChecked;
-
-            if(m_grid != null)
-            {
-                ParallelRoadTool.grid = m_grid.isChecked;
-            }
         }
 
         private void LoadResources()

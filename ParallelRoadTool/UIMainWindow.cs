@@ -22,9 +22,10 @@ namespace ParallelRoadTool
             dragHandle.relativePosition = Vector3.zero;
             dragHandle.size = size;
             dragHandle.SendToBack();
-
+            
             // Control panel
             UILabel label = AddUIComponent<UILabel>();
+            label.name = "PRT_TitleLabel";
             label.textScale = 0.9f;
             label.text = "Parallel Road Tool";
             label.relativePosition = new Vector2(8, 8);
