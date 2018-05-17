@@ -34,7 +34,8 @@ namespace ParallelRoadTool
 
         public string Description
         {
-            get { return "This mod adds additional options when building road"; }
+            // TODO: write a description that actually makes sense
+            get { return "This mod adds the ability to automatically create a parallel network of any kind while drawing a road"; }
         }
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -55,6 +56,6 @@ namespace ParallelRoadTool
             }
         }
 
-        public const string version = "1.3.3";
+        public const string version = "0.0.1";
     }
 }

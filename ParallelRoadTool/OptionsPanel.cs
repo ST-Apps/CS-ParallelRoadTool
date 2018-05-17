@@ -12,7 +12,7 @@ namespace ParallelRoadTool
     {
         private UITextureAtlas m_atlas;
 
-        public UICheckBox m_anarchy;
+        public UICheckBox m_parallel;
 
         public UIButton m_addMoreNetworks;
 
@@ -33,8 +33,13 @@ namespace ParallelRoadTool
             autoLayoutPadding = new RectOffset(0, 4, 0, 0);
             autoLayoutDirection = LayoutDirection.Horizontal;
 
-            m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);
-            m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) => { });
+            m_parallel = CreateCheckBox(this, "Anarchy", "Toggle parallel road tool", false);
+            /*m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) => {
+                // TODO: support for multiple parallel networks
+                var network = AddUIComponent<UINetTypeOption>();
+                m_networks.Add(network);
+                network.Populate();
+            });*/
 
             m_networks = new List<UINetTypeOption>{
                 AddUIComponent<UINetTypeOption>()
@@ -56,7 +61,7 @@ namespace ParallelRoadTool
             button.name = "PRT_" + spriteName;
             button.atlas = m_atlas;
             button.tooltip = toolTip;
-            button.relativePosition = new Vector2(150, -36);
+            button.relativePosition = new Vector2(186, -36);
 
             button.normalBgSprite = "OptionBase";
             button.hoveredBgSprite = "OptionBaseHovered";
@@ -122,7 +127,7 @@ namespace ParallelRoadTool
 
         private void UpdateOptions()
         {
-            ParallelRoadTool.anarchy = m_anarchy.isChecked;
+            ParallelRoadTool.IsParallelEnabled = m_parallel.isChecked;
         }
 
         private void LoadResources()

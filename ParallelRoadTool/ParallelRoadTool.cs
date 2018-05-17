@@ -66,7 +66,7 @@ namespace ParallelRoadTool
                 }
                 else
                 {
-                    m_panel.m_anarchy.isChecked = false;
+                    m_panel.m_parallel.isChecked = false;
                 }
 
                 DebugUtils.Log("Initialized");
@@ -132,10 +132,10 @@ namespace ParallelRoadTool
         public void OnDestroy()
         {
             Redirector<NetToolDetour>.Revert();
-            anarchy = false;
+            IsParallelEnabled = false;
         }
 
-        public static bool anarchy
+        public static bool IsParallelEnabled
         {
             get
             {
@@ -144,16 +144,16 @@ namespace ParallelRoadTool
 
             set
             {
-                if(anarchy != value)
+                if(IsParallelEnabled != value)
                 {
                     if(value)
                     {
-                        DebugUtils.Log("Enabling anarchy");
+                        DebugUtils.Log("Enabling parallel road support");
                         Redirector<NetToolDetour>.Deploy();
                     }
                     else
                     {
-                        DebugUtils.Log("Disabling anarchy");
+                        DebugUtils.Log("Disabling parallel road support");
                         Redirector<NetToolDetour>.Revert();
                     }
                 }
@@ -171,7 +171,7 @@ namespace ParallelRoadTool
                     // Checking key presses
                     if (OptionsKeymapping.toggleAnarchy.IsPressed(e))
                     {
-                        m_panel.m_anarchy.isChecked = !m_panel.m_anarchy.isChecked;
+                        m_panel.m_parallel.isChecked = !m_panel.m_parallel.isChecked;
                     }
                 }
             }

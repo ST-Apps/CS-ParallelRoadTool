@@ -6,7 +6,6 @@ namespace NetworkSkins.Meshes
 {
     public class UINetTypeOption : UIDropDownOption
     {
-
         public NetInfo selectedNetInfo;
 
         protected override void Initialize()
