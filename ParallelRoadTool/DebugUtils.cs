@@ -3,11 +3,11 @@ using ColossalFramework.Plugins;
 
 using System;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
     public class DebugUtils
     {
-        public const string modPrefix = "[Fine Road Anarchy " + ModInfo.version + "] ";
+        public const string modPrefix = "[Parallel Road Tool " + ModInfo.version + "] ";
 
         public static void Message(string message)
         {

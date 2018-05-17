@@ -9,7 +9,7 @@ using ColossalFramework.UI;
 using ColossalFramework.PlatformServices;
 using ColossalFramework.Plugins;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
@@ -18,7 +18,7 @@ namespace FineRoadAnarchy
             try
             {
                 // Creating setting file
-                GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = FineRoadAnarchy.settingsFileName } });
+                GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = ParallelRoadTool.settingsFileName } });
             }
             catch (Exception e)
             {
@@ -29,7 +29,7 @@ namespace FineRoadAnarchy
 
         public string Name
         {
-            get { return "Fine Road Anarchy " + version; }
+            get { return "Parallel Road Tool " + version; }
         }
 
         public string Description

@@ -5,9 +5,9 @@ using UnityEngine;
 
 using ColossalFramework.Math;
 
-using FineRoadAnarchy.Redirection;
+using ParallelRoadTool.Redirection;
 
-namespace FineRoadAnarchy.Detours
+namespace ParallelRoadTool.Detours
 {
     [TargetType(typeof(BuildingManager))]
     public class CollisionBuildingManagerDetour

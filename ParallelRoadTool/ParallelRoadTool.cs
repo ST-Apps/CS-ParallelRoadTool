@@ -11,16 +11,16 @@ using ColossalFramework;
 using ColossalFramework.Math;
 using ColossalFramework.UI;
 
-using FineRoadAnarchy.Redirection;
-using FineRoadAnarchy.Detours;
+using ParallelRoadTool.Redirection;
+using ParallelRoadTool.Detours;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
-    public class FineRoadAnarchy : MonoBehaviour
+    public class ParallelRoadTool : MonoBehaviour
     {
-        public const string settingsFileName = "FineRoadAnarchy";
+        public const string settingsFileName = "ParallelRoadTool";
 
-        public static FineRoadAnarchy instance;
+        public static ParallelRoadTool instance;
 
         public static FastList<NetInfo> bendingPrefabs = new FastList<NetInfo>();
 
@@ -100,11 +100,11 @@ namespace FineRoadAnarchy
             {
                 if (m_tries < 5)
                 {
-                    UIPanel frtPanel = UIView.GetAView().FindUIComponent<UIPanel>("FRT_ToolOptionsPanel");
+                    UIPanel frtPanel = UIView.GetAView().FindUIComponent<UIPanel>("PRT_ToolOptionsPanel");
 
                     if (frtPanel != null)
                     {
-                        DebugUtils.Log("Fine Road Tool window found");
+                        DebugUtils.Log("Parallel Road Tool window found");
 
                         frtPanel.height += m_panel.height + 8;
 
@@ -121,7 +121,7 @@ namespace FineRoadAnarchy
                 }
                 else if (m_tries == 5)
                 {
-                    DebugUtils.Log("Fine Road Tool window not found");
+                    DebugUtils.Log("Parallel Road Tool window not found");
 
                     UIMainWindow window = UIView.GetAView().AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
@@ -410,22 +410,22 @@ namespace FineRoadAnarchy
                 "ThumbChirperTechPressed"
 			};
 
-            chirperAtlasAnarchy = ResourceLoader.CreateTextureAtlas("ChirperAtlasAnarchy", spriteNames, "FineRoadAnarchy.ChirperAtlas.");
+            chirperAtlasAnarchy = ResourceLoader.CreateTextureAtlas("ChirperAtlasAnarchy", spriteNames, "ParallelRoadTool.ChirperAtlas.");
         }
     }
 
-    public class FineRoadAnarchyLoader : LoadingExtensionBase
+    public class ParallelRoadToolLoader : LoadingExtensionBase
     {
         public override void OnLevelLoaded(LoadMode mode)
         {
-            if (FineRoadAnarchy.instance == null)
+            if (ParallelRoadTool.instance == null)
             {
                 // Creating the instance
-                FineRoadAnarchy.instance = new GameObject("FineRoadAnarchy").AddComponent<FineRoadAnarchy>();
+                ParallelRoadTool.instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
             }
             else
             {
-                FineRoadAnarchy.instance.Start();
+                ParallelRoadTool.instance.Start();
             }
 
             if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)

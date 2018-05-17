@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FineRoadAnarchy.Redirection
+namespace ParallelRoadTool.Redirection
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
     internal class RedirectMethodAttribute : Attribute

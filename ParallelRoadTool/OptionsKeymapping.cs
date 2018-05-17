@@ -5,7 +5,7 @@ using ColossalFramework.UI;
 using System.Reflection;
 using UnityEngine;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
     public class OptionsKeymapping : UICustomControl
     {
@@ -15,11 +15,11 @@ namespace FineRoadAnarchy
 
         private string m_EditingBindingCategory;
 
-        public static readonly SavedInputKey toggleAnarchy = new SavedInputKey("toggleAnarchy", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.A, true, false, false), true);
-        public static readonly SavedInputKey toggleBending = new SavedInputKey("toggleBending", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.B, true, false, false), true);
-        public static readonly SavedInputKey toggleSnapping = new SavedInputKey("toggleSnapping", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.S, true, false, false), true);
-        public static readonly SavedInputKey toggleCollision = new SavedInputKey("toggleCollision", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.C, false, false, true), true);
-        public static readonly SavedInputKey toggleGrid = new SavedInputKey("toggleGrid", FineRoadAnarchy.settingsFileName, SavedInputKey.Encode(KeyCode.G, false, false, true), true);
+        public static readonly SavedInputKey toggleAnarchy = new SavedInputKey("toggleAnarchy", ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.A, true, false, false), true);
+        public static readonly SavedInputKey toggleBending = new SavedInputKey("toggleBending", ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.B, true, false, false), true);
+        public static readonly SavedInputKey toggleSnapping = new SavedInputKey("toggleSnapping", ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.S, true, false, false), true);
+        public static readonly SavedInputKey toggleCollision = new SavedInputKey("toggleCollision", ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.C, false, false, true), true);
+        public static readonly SavedInputKey toggleGrid = new SavedInputKey("toggleGrid", ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.G, false, false, true), true);
 
         private int count = 0;
 

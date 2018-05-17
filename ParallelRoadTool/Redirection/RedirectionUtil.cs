@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Linq.Expressions;
 
-namespace FineRoadAnarchy.Redirection
+namespace ParallelRoadTool.Redirection
 {
     public class NameOf
     {

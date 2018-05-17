@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FineRoadAnarchy.Redirection
+namespace ParallelRoadTool.Redirection
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class TargetTypeAttribute : Attribute

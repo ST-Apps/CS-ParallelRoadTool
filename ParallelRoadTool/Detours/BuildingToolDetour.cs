@@ -11,9 +11,9 @@ using ColossalFramework;
 using ColossalFramework.Math;
 using ColossalFramework.UI;
 
-using FineRoadAnarchy.Redirection;
+using ParallelRoadTool.Redirection;
 
-namespace FineRoadAnarchy.Detours
+namespace ParallelRoadTool.Detours
 {
     [TargetType(typeof(BuildingTool))]
     public class BuildingToolDetour : BuildingTool

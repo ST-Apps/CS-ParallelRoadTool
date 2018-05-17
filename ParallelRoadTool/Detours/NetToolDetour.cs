@@ -2,9 +2,9 @@
 
 using ColossalFramework.Math;
 
-using FineRoadAnarchy.Redirection;
+using ParallelRoadTool.Redirection;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
     [TargetType(typeof(NetTool))]
     public class NetToolDetour : NetTool

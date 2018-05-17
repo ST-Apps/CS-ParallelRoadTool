@@ -3,7 +3,7 @@
 using ColossalFramework;
 using ColossalFramework.UI;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
     public class OptionsPanel: UIPanel
     {
@@ -19,7 +19,7 @@ namespace FineRoadAnarchy
         {
             LoadResources();
 
-            name = "FRA_OptionsPanel";
+            name = "PRT_OptionsPanel";
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "GenericPanel";
             color = new Color32(206, 206, 206, 255);
@@ -33,7 +33,7 @@ namespace FineRoadAnarchy
             m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);
             m_bending = CreateCheckBox(this, "Bending", "Toggle road bending", true);
             m_snapping = CreateCheckBox(this, "Snapping", "Toggle node snapping", true);
-            m_collision = CreateCheckBox(this, "Collision", "Toggle road collision", FineRoadAnarchy.collision);
+            m_collision = CreateCheckBox(this, "Collision", "Toggle road collision", ParallelRoadTool.collision);
 
             if((ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) != ItemClass.Availability.None)
             {
@@ -51,7 +51,7 @@ namespace FineRoadAnarchy
             checkBox.size = new Vector2(36, 36);
 
             UIButton button = checkBox.AddUIComponent<UIButton>();
-            button.name = "FRA_" + spriteName;
+            button.name = "PRT_" + spriteName;
             button.atlas = m_atlas;
             button.tooltip = toolTip;
             button.relativePosition = new Vector2(0, 0);
@@ -94,14 +94,14 @@ namespace FineRoadAnarchy
 
         private void UpdateOptions()
         {
-            FineRoadAnarchy.anarchy = m_anarchy.isChecked;
-            FineRoadAnarchy.bending = m_bending.isChecked;
-            FineRoadAnarchy.snapping = m_snapping.isChecked;
-            FineRoadAnarchy.collision = m_collision.isChecked;
+            ParallelRoadTool.anarchy = m_anarchy.isChecked;
+            ParallelRoadTool.bending = m_bending.isChecked;
+            ParallelRoadTool.snapping = m_snapping.isChecked;
+            ParallelRoadTool.collision = m_collision.isChecked;
 
             if(m_grid != null)
             {
-                FineRoadAnarchy.grid = m_grid.isChecked;
+                ParallelRoadTool.grid = m_grid.isChecked;
             }
         }
 
@@ -136,7 +136,7 @@ namespace FineRoadAnarchy
 				"GridPressed"
 			};
 
-            m_atlas = ResourceLoader.CreateTextureAtlas("FineRoadAnarchy", spriteNames, "FineRoadAnarchy.Icons.");
+            m_atlas = ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
 
             UITextureAtlas defaultAtlas = ResourceLoader.GetAtlas("Ingame");
             Texture2D[] textures = new Texture2D[]

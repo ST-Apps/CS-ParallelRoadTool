@@ -3,16 +3,16 @@
 using ColossalFramework;
 using ColossalFramework.UI;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
     public class UIMainWindow : UIPanel
     {
-        public static readonly SavedInt savedWindowX = new SavedInt("windowX", FineRoadAnarchy.settingsFileName, -1000, true);
-        public static readonly SavedInt savedWindowY = new SavedInt("windowY", FineRoadAnarchy.settingsFileName, -1000, true);
+        public static readonly SavedInt savedWindowX = new SavedInt("windowX", ParallelRoadTool.settingsFileName, -1000, true);
+        public static readonly SavedInt savedWindowY = new SavedInt("windowY", ParallelRoadTool.settingsFileName, -1000, true);
 
         public override void Start()
         {
-            name = "FRA_MainWindow";
+            name = "PRT_MainWindow";
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             isVisible = false;
@@ -26,7 +26,7 @@ namespace FineRoadAnarchy
             // Control panel
             UILabel label = AddUIComponent<UILabel>();
             label.textScale = 0.9f;
-            label.text = "Fine Road Anarchy";
+            label.text = "Parallel Road Tool";
             label.relativePosition = new Vector2(8, 8);
             label.SendToBack();
 
@@ -37,7 +37,7 @@ namespace FineRoadAnarchy
 
         public override void Update()
         {
-            isVisible = FineRoadAnarchy.instance.m_netTool.enabled;
+            isVisible = ParallelRoadTool.instance.m_netTool.enabled;
 
             base.Update();
         }

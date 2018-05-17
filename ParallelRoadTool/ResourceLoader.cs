@@ -5,7 +5,7 @@ using UnityEngine;
 using System.IO;
 using System.Reflection;
 
-namespace FineRoadAnarchy
+namespace ParallelRoadTool
 {
     class ResourceLoader
     {

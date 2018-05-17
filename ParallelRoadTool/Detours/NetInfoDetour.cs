@@ -2,9 +2,9 @@
 
 using ColossalFramework.Math;
 
-using FineRoadAnarchy.Redirection;
+using ParallelRoadTool.Redirection;
 
-namespace FineRoadAnarchy.Detours
+namespace ParallelRoadTool.Detours
 {
     [TargetType(typeof(NetInfo))]
     public class NetInfoDetour : NetInfo
@@ -12,7 +12,7 @@ namespace FineRoadAnarchy.Detours
         [RedirectMethod]
         new public float GetMinNodeDistance()
         {
-            if(!FineRoadAnarchy.snapping)
+            if(!ParallelRoadTool.snapping)
             {
                 return 3f;
             }
