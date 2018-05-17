@@ -12,6 +12,8 @@ using ColossalFramework.Math;
 using ColossalFramework.UI;
 
 using ParallelRoadTool.Redirection;
+using ParallelRoadTool.Detours;
+using System.Collections.ObjectModel;
 
 namespace ParallelRoadTool
 {
@@ -22,7 +24,9 @@ namespace ParallelRoadTool
         public static ParallelRoadTool instance;
 
         public static List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
-        
+
+        public static List<NetInfo> SelectedRoadTypes = new List<NetInfo>();
+
         public NetTool m_netTool;
 
         private OptionsPanel m_panel;
@@ -41,14 +45,16 @@ namespace ParallelRoadTool
                     return;
                 }
 
+                DebugUtils.Log("Loading all available networks.");
+
                 AvailableRoadTypes.Clear();
 
-                int count = PrefabCollection<NetInfo>.PrefabCount() + 1;
+                int count = PrefabCollection<NetInfo>.PrefabCount();
 
                 // Default item, creates a net with the same type as source
                 AvailableRoadTypes.Add(null);
 
-                for (uint i = 1; i < count; i++)
+                for (uint i = 0; i < count; i++)
                 {
                     NetInfo prefab = PrefabCollection<NetInfo>.GetPrefab(i);
                     if (prefab != null)
@@ -57,7 +63,9 @@ namespace ParallelRoadTool
                     }
                 }
 
-                Redirector<NetToolDetour>.Deploy();                
+                DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
+
+                NetManagerDetour.Deploy();
 
                 if (m_panel == null)
                 {
@@ -131,7 +139,7 @@ namespace ParallelRoadTool
 
         public void OnDestroy()
         {
-            Redirector<NetToolDetour>.Revert();
+            NetManagerDetour.Revert();
             IsParallelEnabled = false;
         }
 
@@ -139,7 +147,7 @@ namespace ParallelRoadTool
         {
             get
             {
-                return Redirector<NetToolDetour>.IsDeployed();
+                return NetManagerDetour.IsDeployed();
             }
 
             set
@@ -149,16 +157,18 @@ namespace ParallelRoadTool
                     if(value)
                     {
                         DebugUtils.Log("Enabling parallel road support");
-                        Redirector<NetToolDetour>.Deploy();
+                        NetManagerDetour.Deploy();
                     }
                     else
                     {
                         DebugUtils.Log("Disabling parallel road support");
-                        Redirector<NetToolDetour>.Revert();
+                        NetManagerDetour.Revert();
                     }
                 }
             }
         }        
+
+        public static List<NetInfo> SelectedNetworks { get; set; }
 
         public void OnGUI()
         {

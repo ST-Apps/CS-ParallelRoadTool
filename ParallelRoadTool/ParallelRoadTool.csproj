@@ -50,10 +50,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Detours\NetManagerDetour.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="DebugUtils.cs" />
-    <Compile Include="Detours\NetToolDetour.cs" />
     <Compile Include="OptionsKeymapping.cs" />
     <Compile Include="OptionsPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

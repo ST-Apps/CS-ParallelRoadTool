@@ -2,9 +2,9 @@
 
 using ColossalFramework;
 using ColossalFramework.UI;
-using NetworkSkins.Props;
 using NetworkSkins.Meshes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ParallelRoadTool
 {
@@ -36,23 +36,32 @@ namespace ParallelRoadTool
             m_parallel = CreateCheckBox(this, "Anarchy", "Toggle parallel road tool", false);
             /*m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) => {
                 // TODO: support for multiple parallel networks
-                var network = AddUIComponent<UINetTypeOption>();
+                var network = CreateNetworksDropdown();
                 m_networks.Add(network);
                 network.Populate();
             });*/
 
             m_networks = new List<UINetTypeOption>{
-                AddUIComponent<UINetTypeOption>()
-            };
-
-            foreach (var network in m_networks)
-            {                
-                network.Populate();
-            }            
+                CreateNetworksDropdown()
+            };      
 
             UpdateOptions();
 
             autoLayout = true;
+        }
+
+        private UINetTypeOption CreateNetworksDropdown()
+        {
+            var dropdown = AddUIComponent<UINetTypeOption>();
+            dropdown.Populate();
+
+            dropdown.SelectionChangedCallback = () =>
+            {
+                DebugUtils.Log($"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.selectedNetInfo.name}");
+                UpdateOptions();
+            };
+
+            return dropdown;
         }
 
         private UIButton CreateButton(UIComponent parent, string spriteName, string toolTip, MouseEventHandler clickAction)
@@ -127,7 +136,10 @@ namespace ParallelRoadTool
 
         private void UpdateOptions()
         {
+            DebugUtils.Log("OptionsPanel.UpdateOptions()");
+
             ParallelRoadTool.IsParallelEnabled = m_parallel.isChecked;
+            ParallelRoadTool.SelectedRoadTypes = m_networks.Select(n => n.selectedNetInfo).ToList();
         }
 
         private void LoadResources()
