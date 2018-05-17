@@ -59,7 +59,7 @@ namespace ParallelRoadTool
             {
                 DebugUtils.Log($"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.selectedNetInfo.name}");
                 UpdateOptions();
-            };
+            };            
 
             return dropdown;
         }
@@ -140,6 +140,11 @@ namespace ParallelRoadTool
 
             ParallelRoadTool.IsParallelEnabled = m_parallel.isChecked;
             ParallelRoadTool.SelectedRoadTypes = m_networks.Select(n => n.selectedNetInfo).ToList();
+
+            foreach (var item in m_networks)
+            {
+                item.enabled = m_parallel.isChecked;
+            }
         }
 
         private void LoadResources()
