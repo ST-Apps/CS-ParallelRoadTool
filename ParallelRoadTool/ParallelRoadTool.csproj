@@ -75,7 +75,6 @@
     <Compile Include="UI\Base\UIDropDownOption.cs" />
     <Compile Include="UI\Base\UIDropDownTextFieldOption.cs" />
     <Compile Include="UI\UILightDistanceOption.cs" />
-    <Compile Include="UI\UIParallelRoadToolPanel.cs" />
     <Compile Include="UI\Base\UIOption.cs" />
     <Compile Include="UI\Base\UISliderOption.cs" />
     <Compile Include="UI\Base\UIUtil.cs" />
@@ -91,25 +90,6 @@
     <EmbeddedResource Include="Icons\BendingFocused.png" />
     <EmbeddedResource Include="Icons\BendingHovered.png" />
     <EmbeddedResource Include="Icons\BendingPressed.png" />
-    <EmbeddedResource Include="Icons\Snapping.png" />
-    <EmbeddedResource Include="Icons\SnappingDisabled.png" />
-    <EmbeddedResource Include="Icons\SnappingFocused.png" />
-    <EmbeddedResource Include="Icons\SnappingHovered.png" />
-    <EmbeddedResource Include="Icons\SnappingPressed.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Icons\Collision.png" />
-    <EmbeddedResource Include="Icons\CollisionDisabled.png" />
-    <EmbeddedResource Include="Icons\CollisionFocused.png" />
-    <EmbeddedResource Include="Icons\CollisionHovered.png" />
-    <EmbeddedResource Include="Icons\CollisionPressed.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Icons\Grid.png" />
-    <EmbeddedResource Include="Icons\GridDisabled.png" />
-    <EmbeddedResource Include="Icons\GridFocused.png" />
-    <EmbeddedResource Include="Icons\GridHovered.png" />
-    <EmbeddedResource Include="Icons\GridPressed.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icons\DragCursor.png" />

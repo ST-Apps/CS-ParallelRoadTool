@@ -12,10 +12,6 @@ namespace ParallelRoadTool.Detours
         [RedirectMethod]
         new public float GetMinNodeDistance()
         {
-            if(!ParallelRoadTool.snapping)
-            {
-                return 3f;
-            }
             if (this.m_halfWidth < 3.5f)
             {
                 return 7f;

@@ -34,7 +34,7 @@ namespace ParallelRoadTool
             autoLayoutDirection = LayoutDirection.Horizontal;
 
             m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);
-            m_addMoreNetworks = CreateButton(this, "Anarchy", "Add another parallel network", (c, p) => { });
+            m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) => { });
 
             m_networks = new List<UINetTypeOption>{
                 AddUIComponent<UINetTypeOption>()
@@ -138,22 +138,7 @@ namespace ParallelRoadTool
 				"BendingDisabled",
 				"BendingFocused",
 				"BendingHovered",
-				"BendingPressed",
-				"Snapping",
-				"SnappingDisabled",
-				"SnappingFocused",
-				"SnappingHovered",
-				"SnappingPressed",
-				"Collision",
-				"CollisionDisabled",
-				"CollisionFocused",
-				"CollisionHovered",
-				"CollisionPressed",
-				"Grid",
-				"GridDisabled",
-				"GridFocused",
-				"GridHovered",
-				"GridPressed"
+				"BendingPressed"
 			};
 
             m_atlas = ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");

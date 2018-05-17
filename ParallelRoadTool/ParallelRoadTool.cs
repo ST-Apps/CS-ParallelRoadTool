@@ -58,8 +58,7 @@ namespace ParallelRoadTool
                     }
                 }
 
-                Redirector<NetInfoDetour>.Deploy();
-                collision = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) == ItemClass.Availability.None;                
+                Redirector<NetInfoDetour>.Deploy();                
 
                 if (m_panel == null)
                 {
@@ -170,60 +169,7 @@ namespace ParallelRoadTool
                     }
                 }
             }
-        }
-
-        public static bool snapping = true;
-
-        public static bool collision
-        {
-            get
-            {
-                return !Redirector<CollisionNetNodeDetour>.IsDeployed();
-            }
-
-            set
-            {
-                if (value != collision)
-                {
-                    if (value)
-                    {
-                        DebugUtils.Log("Enabling collision");
-                        Redirector<CollisionBuildingManagerDetour>.Revert();
-                        Redirector<CollisionNetManagerDetour>.Revert();
-                        Redirector<CollisionNetNodeDetour>.Revert();
-                        CollisionZoneBlockDetour.Revert();
-                    }
-                    else
-                    {
-                        DebugUtils.Log("Disabling collision");
-                        Redirector<CollisionBuildingManagerDetour>.Deploy();
-                        Redirector<CollisionNetManagerDetour>.Deploy();
-                        Redirector<CollisionNetNodeDetour>.Deploy();
-                        CollisionZoneBlockDetour.Deploy();
-                    }
-                }
-            }
-        }
-
-        public static bool grid
-        {
-            get
-            {
-                return (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) != ItemClass.Availability.None;
-            }
-
-            set
-            {
-                if(value)
-                {
-                    ToolManager.instance.m_properties.m_mode = ToolManager.instance.m_properties.m_mode | ItemClass.Availability.AssetEditor;
-                }
-                else
-                {
-                    ToolManager.instance.m_properties.m_mode = ToolManager.instance.m_properties.m_mode & ~ItemClass.Availability.AssetEditor;
-                }
-            }
-        }
+        }        
 
         public void OnGUI()
         {

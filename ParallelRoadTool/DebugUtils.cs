@@ -23,6 +23,7 @@ namespace ParallelRoadTool
 
         public static void Log(string message)
         {
+#if DEBUG
             if (message == m_lastLog)
             {
                 m_duplicates++;
@@ -38,6 +39,7 @@ namespace ParallelRoadTool
                 Debug.Log(modPrefix + message);
             }
             m_lastLog = message;
+#endif
         }
 
         public static void LogException(Exception e)
