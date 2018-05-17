@@ -14,6 +14,8 @@ namespace ParallelRoadTool
 
         public UICheckBox m_anarchy;
 
+        public UIButton m_addMoreNetworks;
+
         public List<UINetTypeOption> m_networks;
 
         public override void Start()
@@ -31,9 +33,8 @@ namespace ParallelRoadTool
             autoLayoutPadding = new RectOffset(0, 4, 0, 0);
             autoLayoutDirection = LayoutDirection.Horizontal;
 
-            m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);            
-
-            DebugUtils.Log("OptionsPanel.Start - START m_networks");
+            m_anarchy = CreateCheckBox(this, "Anarchy", "Toggle road anarchy", false);
+            m_addMoreNetworks = CreateButton(this, "Anarchy", "Add another parallel network", (c, p) => { });
 
             m_networks = new List<UINetTypeOption>{
                 AddUIComponent<UINetTypeOption>()
@@ -42,13 +43,34 @@ namespace ParallelRoadTool
             foreach (var network in m_networks)
             {                
                 network.Populate();
-            }
-
-            DebugUtils.Log("OptionsPanel.Start - END m_networks");
+            }            
 
             UpdateOptions();
 
             autoLayout = true;
+        }
+
+        private UIButton CreateButton(UIComponent parent, string spriteName, string toolTip, MouseEventHandler clickAction)
+        {
+            UIButton button = parent.AddUIComponent<UIButton>();
+            button.name = "PRT_" + spriteName;
+            button.atlas = m_atlas;
+            button.tooltip = toolTip;
+            button.relativePosition = new Vector2(150, -36);
+
+            button.normalBgSprite = "OptionBase";
+            button.hoveredBgSprite = "OptionBaseHovered";
+            button.pressedBgSprite = "OptionBasePressed";
+            button.disabledBgSprite = "OptionBaseDisabled";
+
+            button.normalFgSprite = spriteName;
+            button.hoveredFgSprite = spriteName + "Hovered";
+            button.pressedFgSprite = spriteName + "Pressed";
+            button.disabledFgSprite = spriteName + "Disabled";
+
+            button.eventClicked += clickAction;
+
+            return button;
         }
 
         private UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
@@ -60,7 +82,7 @@ namespace ParallelRoadTool
             button.name = "PRT_" + spriteName;
             button.atlas = m_atlas;
             button.tooltip = toolTip;
-            button.relativePosition = new Vector2(100, -36);            
+            button.relativePosition = new Vector2(150, -36);            
 
             button.normalBgSprite = "OptionBase";
             button.hoveredBgSprite = "OptionBaseHovered";

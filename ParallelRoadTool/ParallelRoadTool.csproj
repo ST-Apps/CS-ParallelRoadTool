@@ -81,45 +81,6 @@
     <Compile Include="UI\Base\UIUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ChirperAtlas\Chirper.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperChristmas.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperChristmasPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\Chirpercrown.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirpercrownDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirpercrownFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirpercrownHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirpercrownPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxe.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxeDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxeFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxeHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDeluxePressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperFootball.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperFootballDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperFootballFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperFootballHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperFootballPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperIcon.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjack.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperLumberjackPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperWintercap.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperWintercapPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\EmptySprite.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Icons\Anarchy.png" />
     <EmbeddedResource Include="Icons\AnarchyDisabled.png" />
     <EmbeddedResource Include="Icons\AnarchyFocused.png" />
@@ -144,75 +105,11 @@
     <EmbeddedResource Include="Icons\CollisionPressed.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmat.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersHazmatPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilot.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersPilotPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorker.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperDisastersWorkerPressed.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Icons\Grid.png" />
     <EmbeddedResource Include="Icons\GridDisabled.png" />
     <EmbeddedResource Include="Icons\GridFocused.png" />
     <EmbeddedResource Include="Icons\GridHovered.png" />
     <EmbeddedResource Include="Icons\GridPressed.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ChirperAtlas\ChirperConcerts.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperConcertsPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRally.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRallyDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRallyFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRallyHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRallyPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRudolph.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperRudolphPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMars.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperSurvivingMarsPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficCone.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConeDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConeFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConeHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrafficConePressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductor.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ChirperTrainConductorPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanie.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanieDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanieFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeanieHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperBeaniePressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlower.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperFlowerPressed.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTech.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechDisabled.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechFocused.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechHovered.png" />
-    <EmbeddedResource Include="ChirperAtlas\ThumbChirperTechPressed.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icons\DragCursor.png" />

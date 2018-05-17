@@ -23,10 +23,6 @@ namespace ParallelRoadTool
         public static ParallelRoadTool instance;
 
         public static List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
-
-        public static UIButton chirperButton;
-        public static UITextureAtlas chirperAtlasAnarchy;
-        public static UITextureAtlas chirperAtlasNormal;
         
         public NetTool m_netTool;
 
@@ -63,14 +59,7 @@ namespace ParallelRoadTool
                 }
 
                 Redirector<NetInfoDetour>.Deploy();
-                collision = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) == ItemClass.Availability.None;
-
-                if (chirperAtlasAnarchy == null)
-                {
-                    LoadChirperAtlas();
-                }
-
-                chirperButton = UIView.GetAView().FindUIComponent<UIButton>("Zone");
+                collision = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) == ItemClass.Availability.None;                
 
                 if (m_panel == null)
                 {
@@ -168,12 +157,6 @@ namespace ParallelRoadTool
                         Redirector<PedestrianPathAIDetour>.Deploy();
                         Redirector<TrainTrackAIDetour>.Deploy();
                         Redirector<NetAIDetour>.Deploy();
-
-                        if (chirperButton != null && chirperAtlasAnarchy != null)
-                        {
-                            chirperAtlasNormal = chirperButton.atlas;
-                            chirperButton.atlas = chirperAtlasAnarchy;
-                        }
                     }
                     else
                     {
@@ -184,11 +167,6 @@ namespace ParallelRoadTool
                         Redirector<PedestrianPathAIDetour>.Revert();
                         Redirector<TrainTrackAIDetour>.Revert();
                         Redirector<NetAIDetour>.Revert();
-
-                        if (chirperButton != null && chirperAtlasNormal != null)
-                        {
-                            chirperButton.atlas = chirperAtlasNormal;
-                        }
                     }
                 }
             }
@@ -267,114 +245,7 @@ namespace ParallelRoadTool
                 DebugUtils.Log("OnGUI failed");
                 DebugUtils.LogException(e);
             }
-        }
-
-
-        private void LoadChirperAtlas()
-        {
-            string[] spriteNames = new string[]
-			{
-				"Chirper",
-                "ChirperChristmas",
-                "ChirperChristmasDisabled",
-                "ChirperChristmasFocused",
-                "ChirperChristmasHovered",
-                "ChirperChristmasPressed",
-                "ChirperConcerts",
-                "ChirperConcertsDisabled",
-                "ChirperConcertsFocused",
-                "ChirperConcertsHovered",
-                "ChirperConcertsPressed",
-                "Chirpercrown",
-                "ChirpercrownDisabled",
-                "ChirpercrownFocused",
-                "ChirpercrownHovered",
-                "ChirpercrownPressed",
-                "ChirperDeluxe",
-                "ChirperDeluxeDisabled",
-                "ChirperDeluxeFocused",
-                "ChirperDeluxeHovered",
-                "ChirperDeluxePressed",
-                "ChirperDisabled",
-                "ChirperDisastersHazmat",
-                "ChirperDisastersHazmatDisabled",
-                "ChirperDisastersHazmatFocused",
-                "ChirperDisastersHazmatHovered",
-                "ChirperDisastersHazmatPressed",
-                "ChirperDisastersPilot",
-                "ChirperDisastersPilotDisabled",
-                "ChirperDisastersPilotFocused",
-                "ChirperDisastersPilotHovered",
-                "ChirperDisastersPilotPressed",
-                "ChirperDisastersWorker",
-                "ChirperDisastersWorkerDisabled",
-                "ChirperDisastersWorkerFocused",
-                "ChirperDisastersWorkerHovered",
-                "ChirperDisastersWorkerPressed",
-                "ChirperFocused",
-                "ChirperFootball",
-                "ChirperFootballDisabled",
-                "ChirperFootballFocused",
-                "ChirperFootballHovered",
-                "ChirperFootballPressed",
-                "ChirperHovered",
-                "ChirperIcon",
-                "ChirperLumberjack",
-                "ChirperLumberjackDisabled",
-                "ChirperLumberjackFocused",
-                "ChirperLumberjackHovered",
-                "ChirperLumberjackPressed",
-                "ChirperPressed",
-                "ChirperRally",
-                "ChirperRallyDisabled",
-                "ChirperRallyFocused",
-                "ChirperRallyHovered",
-                "ChirperRallyPressed",
-                "ChirperRudolph",
-                "ChirperRudolphDisabled",
-                "ChirperRudolphFocused",
-                "ChirperRudolphHovered",
-                "ChirperRudolphPressed",
-                "ChirperSurvivingMars",
-                "ChirperSurvivingMarsDisabled",
-                "ChirperSurvivingMarsFocused",
-                "ChirperSurvivingMarsHovered",
-                "ChirperSurvivingMarsPressed",
-                "ChirperTrafficCone",
-                "ChirperTrafficConeDisabled",
-                "ChirperTrafficConeFocused",
-                "ChirperTrafficConeHovered",
-                "ChirperTrafficConePressed",
-                "ChirperTrainConductor",
-                "ChirperTrainConductorDisabled",
-                "ChirperTrainConductorFocused",
-                "ChirperTrainConductorHovered",
-                "ChirperTrainConductorPressed",
-                "ChirperWintercap",
-                "ChirperWintercapDisabled",
-                "ChirperWintercapFocused",
-                "ChirperWintercapHovered",
-                "ChirperWintercapPressed",
-                "EmptySprite",
-                "ThumbChirperBeanie",
-                "ThumbChirperBeanieDisabled",
-                "ThumbChirperBeanieFocused",
-                "ThumbChirperBeanieHovered",
-                "ThumbChirperBeaniePressed",
-                "ThumbChirperFlower",
-                "ThumbChirperFlowerDisabled",
-                "ThumbChirperFlowerFocused",
-                "ThumbChirperFlowerHovered",
-                "ThumbChirperFlowerPressed",
-                "ThumbChirperTech",
-                "ThumbChirperTechDisabled",
-                "ThumbChirperTechFocused",
-                "ThumbChirperTechHovered",
-                "ThumbChirperTechPressed"
-			};
-
-            chirperAtlasAnarchy = ResourceLoader.CreateTextureAtlas("ChirperAtlasAnarchy", spriteNames, "ParallelRoadTool.ChirperAtlas.");
-        }
+        }        
     }
 
     public class ParallelRoadToolLoader : LoadingExtensionBase
