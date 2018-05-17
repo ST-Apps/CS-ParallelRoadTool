@@ -12,7 +12,6 @@ using ColossalFramework.Math;
 using ColossalFramework.UI;
 
 using ParallelRoadTool.Redirection;
-using ParallelRoadTool.Detours;
 
 namespace ParallelRoadTool
 {
@@ -58,7 +57,7 @@ namespace ParallelRoadTool
                     }
                 }
 
-                Redirector<NetInfoDetour>.Deploy();                
+                Redirector<NetToolDetour>.Deploy();                
 
                 if (m_panel == null)
                 {
@@ -132,7 +131,7 @@ namespace ParallelRoadTool
 
         public void OnDestroy()
         {
-            Redirector<NetInfoDetour>.Revert();
+            Redirector<NetToolDetour>.Revert();
             anarchy = false;
         }
 
@@ -151,21 +150,11 @@ namespace ParallelRoadTool
                     {
                         DebugUtils.Log("Enabling anarchy");
                         Redirector<NetToolDetour>.Deploy();
-                        Redirector<BuildingToolDetour>.Deploy();
-                        Redirector<RoadAIDetour>.Deploy();
-                        Redirector<PedestrianPathAIDetour>.Deploy();
-                        Redirector<TrainTrackAIDetour>.Deploy();
-                        Redirector<NetAIDetour>.Deploy();
                     }
                     else
                     {
                         DebugUtils.Log("Disabling anarchy");
                         Redirector<NetToolDetour>.Revert();
-                        Redirector<BuildingToolDetour>.Revert();
-                        Redirector<RoadAIDetour>.Revert();
-                        Redirector<PedestrianPathAIDetour>.Revert();
-                        Redirector<TrainTrackAIDetour>.Revert();
-                        Redirector<NetAIDetour>.Revert();
                     }
                 }
             }

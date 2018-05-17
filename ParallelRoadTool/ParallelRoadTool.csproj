@@ -50,10 +50,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Detours\BuildingToolDetour.cs" />
-    <Compile Include="Detours\CollisionDetour.cs" />
-    <Compile Include="Detours\RoadAIDetour.cs" />
-    <Compile Include="Detours\NetAIDetour.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="DebugUtils.cs" />
@@ -68,7 +64,6 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
-    <Compile Include="Detours\NetInfoDetour.cs" />
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="UIMainWindow.cs" />
     <Compile Include="UI\UINetTypeOption.cs" />
