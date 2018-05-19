@@ -6,20 +6,20 @@ using ICities;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace NetworkSkins.UI
+namespace ParallelRoadTool.UI.Base
 {
     public static class UIUtil
     {
-        private static readonly string kSliderTemplate = "OptionsSliderTemplate";
-
         private const float LABEL_RELATIVE_WIDTH = .25f;
         private const float COLUMN_PADDING = 5f;
+        private static readonly string kSliderTemplate = "OptionsSliderTemplate";
 
-        public static UIDropDown CreateDropDownWithLabel(out UILabel label, UIComponent parent, string labelText, float width)
+        public static UIDropDown CreateDropDownWithLabel(out UILabel label, UIComponent parent, string labelText,
+            float width)
         {
             var labelWidth = Mathf.Round(width * LABEL_RELATIVE_WIDTH);
 
-            var dropDown = UIUtil.CreateDropDown(parent);
+            var dropDown = CreateDropDown(parent);
             dropDown.relativePosition = new Vector3(labelWidth + COLUMN_PADDING, 0);
             dropDown.width = width - labelWidth - COLUMN_PADDING;
 
@@ -29,18 +29,19 @@ namespace NetworkSkins.UI
         }
 
 
-        public static UIDropDown CreateDropDownTextFieldWithLabel(out UILabel label, out UITextField textField, UIComponent parent, string labelText, float width)
+        public static UIDropDown CreateDropDownTextFieldWithLabel(out UILabel label, out UITextField textField,
+            UIComponent parent, string labelText, float width)
         {
             var labelWidth = Mathf.Round(width * LABEL_RELATIVE_WIDTH);
             var textFieldWidth = 35f;
             var dropDownWidth = width - labelWidth - textFieldWidth - 2 * COLUMN_PADDING;
 
 
-            var dropDown = UIUtil.CreateDropDown(parent);
+            var dropDown = CreateDropDown(parent);
             dropDown.relativePosition = new Vector3(labelWidth + COLUMN_PADDING, 0);
             dropDown.width = dropDownWidth;
 
-            textField = UIUtil.CreateTextField(parent);
+            textField = CreateTextField(parent);
             textField.relativePosition = new Vector3(labelWidth + dropDownWidth + 2 * COLUMN_PADDING, 0);
             textField.width = textFieldWidth;
             textField.height = dropDown.height;
@@ -134,7 +135,8 @@ namespace NetworkSkins.UI
 
             dropDown.eventSizeChanged += (c, t) =>
             {
-                button.size = t; dropDown.listWidth = (int)t.x;
+                button.size = t;
+                dropDown.listWidth = (int) t.x;
             };
 
             return dropDown;
@@ -154,24 +156,22 @@ namespace NetworkSkins.UI
             return slider;
         }*/
 
-        public static UIPanel CreateSlider(UIComponent parent, string text, float min, float max, float step, float defaultValue, [NotNull] OnValueChanged eventCallback)
+        public static UIPanel CreateSlider(UIComponent parent, string text, float min, float max, float step,
+            float defaultValue, [NotNull] OnValueChanged eventCallback)
         {
             if (eventCallback == null) throw new ArgumentNullException(nameof(eventCallback));
 
-            UIPanel uIPanel = parent.AttachUIComponent(UITemplateManager.GetAsGameObject(kSliderTemplate)) as UIPanel;
+            var uIPanel = parent.AttachUIComponent(UITemplateManager.GetAsGameObject(kSliderTemplate)) as UIPanel;
             uIPanel.position = Vector3.zero;
 
             uIPanel.Find<UILabel>("Label").text = text;
 
-            UISlider uISlider = uIPanel.Find<UISlider>("Slider");
+            var uISlider = uIPanel.Find<UISlider>("Slider");
             uISlider.minValue = min;
             uISlider.maxValue = max;
             uISlider.stepSize = step;
             uISlider.value = defaultValue;
-            uISlider.eventValueChanged += delegate (UIComponent c, float val)
-            {
-                eventCallback(val);
-            };
+            uISlider.eventValueChanged += delegate(UIComponent c, float val) { eventCallback(val); };
             return uIPanel;
         }
 
@@ -215,9 +215,11 @@ namespace NetworkSkins.UI
             for (var i = 1; i < text.Length; i++)
             {
                 if (char.IsUpper(text[i]))
-                    if (text[i - 1] != ' ' && !char.IsUpper(text[i - 1])) newText.Append(' ');
+                    if (text[i - 1] != ' ' && !char.IsUpper(text[i - 1]))
+                        newText.Append(' ');
                 newText.Append(text[i]);
             }
+
             return newText.ToString();
         }
     }

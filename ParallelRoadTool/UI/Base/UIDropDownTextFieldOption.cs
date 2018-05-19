@@ -1,30 +1,29 @@
-﻿using System;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using UnityEngine;
 
-namespace NetworkSkins.UI
+namespace ParallelRoadTool.UI.Base
 {
     public abstract class UIDropDownTextFieldOption : UIOption
     {
-        private UILabel label;
-        private string _description = String.Empty;
+        private string _description = string.Empty;
+        private UILabel _label;
         protected UIDropDown DropDown { get; private set; }
         protected UITextField TextField { get; private set; }
 
         protected string Description
         {
-            get { return _description; }
+            get => _description;
             set
             {
                 _description = value;
-                if (label != null) label.text = value;
+                if (_label != null) _label.text = value;
             }
         }
 
         protected override void Initialize()
         {
             UITextField field;
-            DropDown = UIUtil.CreateDropDownTextFieldWithLabel(out label, out field, this, Description, ParentWidth);
+            DropDown = UIUtil.CreateDropDownTextFieldWithLabel(out _label, out field, this, Description, ParentWidth);
             DropDown.eventSelectedIndexChanged += DropDown_eventSelectedIndexChanged;
             TextField = field;
             TextField.eventTextSubmitted += TextField_eventTextSubmitted;

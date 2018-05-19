@@ -1,13 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
 using ColossalFramework.Plugins;
-
-using System;
+using UnityEngine;
 
 namespace ParallelRoadTool
 {
     public class DebugUtils
     {
         public const string modPrefix = "[Parallel Road Tool " + ModInfo.version + "] ";
+
+        private static string m_lastLog;
+        private static int m_duplicates;
 
         public static void Message(string message)
         {
@@ -38,6 +40,7 @@ namespace ParallelRoadTool
             {
                 Debug.Log(modPrefix + message);
             }
+
             m_lastLog = message;
 #endif
         }
@@ -47,8 +50,5 @@ namespace ParallelRoadTool
             Log("Intercepted exception (not game breaking):");
             Debug.LogException(e);
         }
-
-        private static string m_lastLog;
-        private static int m_duplicates = 0;
     }
 }

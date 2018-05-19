@@ -1,13 +1,13 @@
 ﻿using ColossalFramework.UI;
 
-namespace NetworkSkins
+namespace ParallelRoadTool.UI.Base
 {
     public abstract class UIOption : UIPanel
     {
         protected bool Populating { get; private set; }
 
 
-        protected float ParentWidth => this.transform.parent.gameObject.GetComponent<UIComponent>().width;
+        protected float ParentWidth => transform.parent.gameObject.GetComponent<UIComponent>().width;
 
         public bool Populate()
         {
@@ -22,10 +22,10 @@ namespace NetworkSkins
         public override void Awake()
         {
             base.Awake();
-            this.Initialize();
+            Initialize();
 
-            this.width = ParentWidth;
-            this.FitChildrenVertically();
+            width = ParentWidth;
+            FitChildrenVertically();
         }
 
         protected abstract void Initialize();
