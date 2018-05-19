@@ -10,20 +10,8 @@ namespace ParallelRoadTool
     {
         private static readonly string kKeyBindingTemplate = "KeyBindingTemplate";
 
-        public static readonly SavedInputKey toggleAnarchy = new SavedInputKey("toggleAnarchy",
-            ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.A, true, false, false), true);
-
-        public static readonly SavedInputKey toggleBending = new SavedInputKey("toggleBending",
-            ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.B, true, false, false), true);
-
-        public static readonly SavedInputKey toggleSnapping = new SavedInputKey("toggleSnapping",
-            ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.S, true, false, false), true);
-
-        public static readonly SavedInputKey toggleCollision = new SavedInputKey("toggleCollision",
-            ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.C, false, false, true), true);
-
-        public static readonly SavedInputKey toggleGrid = new SavedInputKey("toggleGrid",
-            ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.G, false, false, true), true);
+        public static readonly SavedInputKey toggleParallelRoads = new SavedInputKey("toggleParallelRoads",
+            ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.P, true, false, false), true);
 
         private int count;
 
@@ -33,11 +21,7 @@ namespace ParallelRoadTool
 
         private void Awake()
         {
-            AddKeymapping("Toggle Anarchy", toggleAnarchy);
-            AddKeymapping("Toggle Bending", toggleBending);
-            AddKeymapping("Toggle Snapping", toggleSnapping);
-            AddKeymapping("Toggle Collision", toggleCollision);
-            AddKeymapping("Toggle Editor Grid", toggleGrid);
+            AddKeymapping("Toggle Parallel Roads", toggleParallelRoads);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)

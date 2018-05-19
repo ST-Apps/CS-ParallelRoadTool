@@ -159,14 +159,12 @@ namespace ParallelRoadTool
         {
             try
             {
-                if (!UIView.HasModalInput() && !UIView.HasInputFocus())
-                {
-                    var e = Event.current;
+                if (UIView.HasModalInput() || UIView.HasInputFocus()) return;
+                var e = Event.current;
 
-                    // Checking key presses
-                    if (OptionsKeymapping.toggleAnarchy.IsPressed(e))
-                        m_panel.m_parallel.isChecked = !m_panel.m_parallel.isChecked;
-                }
+                // Checking key presses
+                if (OptionsKeymapping.toggleParallelRoads.IsPressed(e))
+                    m_panel.m_parallel.isChecked = !m_panel.m_parallel.isChecked;
             }
             catch (Exception e)
             {

@@ -142,20 +142,6 @@ namespace ParallelRoadTool.UI.Base
             return dropDown;
         }
 
-        /*
-        public static UISlider CreatSliderWithLabel(out UILabel label, UIComponent parent, string labelText, float width)
-        {
-            var labelWidth = Mathf.Round(width * LABEL_RELATIVE_WIDTH);
-
-            var slider = UIUtil.CreateSlider(parent);
-            slider.relativePosition = new Vector3(labelWidth + COLUMN_PADDING, 0);
-            slider.width = width - labelWidth - COLUMN_PADDING;
-
-            label = AddLabel(parent, labelText, labelWidth, dropDown.height);
-
-            return slider;
-        }*/
-
         public static UIPanel CreateSlider(UIComponent parent, string text, float min, float max, float step,
             float defaultValue, [NotNull] OnValueChanged eventCallback)
         {
