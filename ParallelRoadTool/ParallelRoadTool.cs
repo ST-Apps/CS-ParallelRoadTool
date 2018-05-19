@@ -25,7 +25,7 @@ namespace ParallelRoadTool
 
         public static List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
 
-        public static List<NetInfo> SelectedRoadTypes = new List<NetInfo>();
+        public static List<Tuple<NetInfo, float>> SelectedRoadTypes = new List<Tuple<NetInfo, float>>();
 
         public NetTool m_netTool;
 
@@ -119,7 +119,7 @@ namespace ParallelRoadTool
                     UIMainWindow window = UIView.GetAView().AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                     window.AttachUIComponent(m_panel.gameObject);
-                    window.size = new Vector2(228, 180);
+                    window.size = new Vector2(400, 180);
                     m_panel.relativePosition = new Vector3(8, 28);
                     m_panel.width = window.width - 16;
 

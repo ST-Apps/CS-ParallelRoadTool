@@ -23,7 +23,19 @@ namespace ParallelRoadTool.Detours
         private static Randomizer _randomizer = Singleton<SimulationManager>.instance.m_randomizer;
 
         // We store nodes from previous iteration so that we know which node to connect to
-        private static ushort? _endNodeId, _clonedEndNodeId;
+        private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
+        private static bool _previousInvert;
+
+        public static int NetworksCount
+        {
+            set
+            {
+                _endNodeId = new ushort?[value];
+                _clonedEndNodeId = new ushort?[value];
+                _startNodeId = new ushort?[value];
+                _clonedStartNodeId = new ushort?[value];
+            }
+        }
 
         public static bool IsDeployed() => m_deployed;
 
@@ -33,6 +45,9 @@ namespace ParallelRoadTool.Detours
             {
                 m_state = RedirectionHelper.RedirectCalls(from, to);
                 m_deployed = true;
+
+                if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null || _clonedStartNodeId == null)
+                    NetworksCount = 1;
             }
         }
 
@@ -43,7 +58,7 @@ namespace ParallelRoadTool.Detours
                 RedirectionHelper.RevertRedirect(from, m_state);
                 m_deployed = false;
             }
-        }
+        }        
 
         #region Utility
 
@@ -108,63 +123,73 @@ namespace ParallelRoadTool.Detours
         /// <returns></returns>
         private bool CreateSegment(out ushort segment, ref Randomizer randomizer, NetInfo info, ushort startNode, ushort endNode, Vector3 startDirection, Vector3 endDirection, uint buildIndex, uint modifiedIndex, bool invert)
         {
-
             // Let's create the segment that the user requested
-            CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection, endDirection, buildIndex, modifiedIndex, invert);            
+            var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection, endDirection, buildIndex, modifiedIndex, invert);                        
 
-            // TODO: support for multiple networks, we need to loop from there to the end
-            // If the user didn't select a NetInfo we'll use the one he's using for the main road
-            var selectedNetInfo = ParallelRoadTool.SelectedRoadTypes[0] ?? info;
-            DebugUtils.Log($"Using netInfo {selectedNetInfo.name}");
+            for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++) {
+                var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
+                
+                // If the user didn't select a NetInfo we'll use the one he's using for the main road
+                var selectedNetInfo = currentRoadInfos.First ?? info;
+                DebugUtils.Log($"Using netInfo {selectedNetInfo.name}");
+                
+                var offset = currentRoadInfos.Second;
+                DebugUtils.Log($"Using offset {offset}");
 
-            // TODO: we have to get this from the UI but the UI is not showing the textinput right now. Also, we need to input that in meters and convert it into units.
-            var offset = 15f;
-            DebugUtils.Log($"Using offset {offset}");
+                // Get original nodes to clone them
+                var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
+                var endNetNode = NetManager.instance.m_nodes.m_buffer[endNode];
 
-            // Get original nodes to clone them
-            var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
-            var endNetNode = NetManager.instance.m_nodes.m_buffer[endNode];
+                // Create two clone nodes by offsetting the original ones.
+                // If we're not in "invert" mode (aka final part of a curve) and we already have an ending node with the same id of our starting node, we need to use that so that the segments can be connected
+                // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment
+                ushort newStartNodeId;
+                if (!invert && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
+                {
+                    DebugUtils.Log($"[START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
+                    newStartNodeId = _clonedEndNodeId[i].Value;
+                    DebugUtils.Log($"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                }
+                else if (!invert && _previousInvert && _startNodeId[i].HasValue && _startNodeId[i].Value == startNode)
+                {
+                    DebugUtils.Log($"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
+                    newStartNodeId = _clonedStartNodeId[i].Value;
+                    DebugUtils.Log($"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                }
+                else
+                {
+                    var newStartPosition = Offset(startNetNode.m_position, startDirection, offset, invert);
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert}");
+                    NetManager.instance.CreateNode(out newStartNodeId, ref randomizer, info, newStartPosition, Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+                }
 
-            // Create two clone nodes by offsetting the original ones.
-            // If we're not in "invert" mode (aka final part of a curve) and we already have an ending node with the same id of our starting node, we need to use that so that the segments can be connected
-            // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment
-            ushort newStartNodeId;
-            if (!invert && _endNodeId.HasValue && _endNodeId.Value == startNode)
-            {
-                DebugUtils.Log($"Using old node from previous iteration {_clonedEndNodeId.Value} instead of the given one {startNode}");
-                newStartNodeId = _clonedEndNodeId.Value;
-                DebugUtils.Log($"Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
+                ushort newEndNodeId;
+                if (invert && _endNodeId[i].HasValue && _endNodeId[i].Value == endNode)
+                {
+                    DebugUtils.Log($"[END] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {endNode}");
+                    newEndNodeId = _clonedEndNodeId[i].Value;
+                    DebugUtils.Log($"[END] End node{endNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newEndNodeId].m_position}");
+                }
+                else
+                {
+                    var newEndPosition = Offset(endNetNode.m_position, endDirection, offset);
+                    DebugUtils.Log($"[END] {endNetNode.m_position} --> {newEndPosition} | {invert}");
+                    NetManager.instance.CreateNode(out newEndNodeId, ref randomizer, info, newEndPosition, Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+                }                
+
+                // Store current end nodes in case we may need to connect the following segment to them
+                _endNodeId[i] = endNode;
+                _clonedEndNodeId[i] = newEndNodeId;
+                _startNodeId[i] = startNode;
+                _clonedStartNodeId[i] = newStartNodeId;
+
+                // Create the segment between the two cloned nodes
+                result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newStartNodeId, newEndNodeId, startDirection, endDirection, Singleton<SimulationManager>.instance.m_currentBuildIndex + 1, Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
             }
-            else
-            {
-                var newStartPosition = Offset(startNetNode.m_position, startDirection, offset, invert);
-                DebugUtils.Log($"{startNetNode.m_position} --> {newStartPosition}");
-                NetManager.instance.CreateNode(out newStartNodeId, ref randomizer, info, newStartPosition, Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
-            }
 
-            // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
-            ushort newEndNodeId;
-            if (invert && _endNodeId.HasValue && _endNodeId.Value == endNode)
-            {
-                DebugUtils.Log($"Using old node from previous iteration {_clonedEndNodeId.Value} instead of the given one {endNode}");
-                newEndNodeId = _clonedEndNodeId.Value;
-                DebugUtils.Log($"Start node{endNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newEndNodeId].m_position}");
-            }
-            else
-            {
-                var newEndPosition = Offset(endNetNode.m_position, endDirection, offset);
-                DebugUtils.Log($"{endNetNode.m_position} --> {newEndPosition}");
-                NetManager.instance.CreateNode(out newEndNodeId, ref randomizer, info, newEndPosition, Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
-            }
-
-            // TODO: if curve has more than two segments they won't be connected
-
-            // Store current end nodes in case we may need to connect the following segment to them
-            _endNodeId = endNode;
-            _clonedEndNodeId = newEndNodeId;
-
-            // Create the segment between the two cloned nodes
-            return CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newStartNodeId, newEndNodeId, startDirection, endDirection, Singleton<SimulationManager>.instance.m_currentBuildIndex + 1, Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
+            _previousInvert = invert;
+            return result;
         }
     }
 }

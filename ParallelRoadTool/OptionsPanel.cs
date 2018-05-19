@@ -5,6 +5,8 @@ using ColossalFramework.UI;
 using NetworkSkins.Meshes;
 using System.Collections.Generic;
 using System.Linq;
+using ParallelRoadTool.Redirection;
+using ParallelRoadTool.Detours;
 
 namespace ParallelRoadTool
 {
@@ -26,7 +28,7 @@ namespace ParallelRoadTool
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "GenericPanel";
             color = new Color32(206, 206, 206, 255);
-            size = new Vector2(300, 52);
+            size = new Vector2(400, 52);
             relativePosition = new Vector2(8, 92);
 
             padding = new RectOffset(8, 8, 8, 8);
@@ -34,12 +36,10 @@ namespace ParallelRoadTool
             autoLayoutDirection = LayoutDirection.Horizontal;
 
             m_parallel = CreateCheckBox(this, "Anarchy", "Toggle parallel road tool", false);
-            /*m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) => {
-                // TODO: support for multiple parallel networks
-                var network = CreateNetworksDropdown();
-                m_networks.Add(network);
-                network.Populate();
-            });*/
+            //m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) => {
+            //    // TODO: support for multiple parallel networks                
+            //    m_networks.Add(CreateNetworksDropdown());                
+            //});
 
             m_networks = new List<UINetTypeOption>{
                 CreateNetworksDropdown()
@@ -53,11 +53,12 @@ namespace ParallelRoadTool
         private UINetTypeOption CreateNetworksDropdown()
         {
             var dropdown = AddUIComponent<UINetTypeOption>();
+            dropdown.relativePosition = Vector2.zero;
             dropdown.Populate();
 
-            dropdown.SelectionChangedCallback = () =>
+            dropdown.OnChangedCallback = () =>
             {
-                DebugUtils.Log($"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.selectedNetInfo.name}");
+                DebugUtils.Log($"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.selectedNetInfo.name} with offset {dropdown.offset}");
                 UpdateOptions();
             };            
 
@@ -139,7 +140,8 @@ namespace ParallelRoadTool
             DebugUtils.Log("OptionsPanel.UpdateOptions()");
 
             ParallelRoadTool.IsParallelEnabled = m_parallel.isChecked;
-            ParallelRoadTool.SelectedRoadTypes = m_networks.Select(n => n.selectedNetInfo).ToList();
+            ParallelRoadTool.SelectedRoadTypes = m_networks.Select(n => new Tuple<NetInfo, float>(n.selectedNetInfo, n.offset)).ToList();
+            NetManagerDetour.NetworksCount = ParallelRoadTool.SelectedRoadTypes.Count;
 
             foreach (var item in m_networks)
             {

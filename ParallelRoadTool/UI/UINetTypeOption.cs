@@ -5,15 +5,16 @@ using System.Linq;
 
 namespace NetworkSkins.Meshes
 {
-    public class UINetTypeOption : UIDropDownOption
+    public class UINetTypeOption : UIDropDownTextFieldOption
     {
         public NetInfo selectedNetInfo;
+        public float offset = 15f;
 
-        public Action SelectionChangedCallback { private get; set; }
+        public Action OnChangedCallback { private get; set; }
 
         protected override void Initialize()
         {
-            Description = "Net Type";
+            Description = "Net Type";            
             base.Initialize();
         }
 
@@ -22,18 +23,30 @@ namespace NetworkSkins.Meshes
             DropDown.items = ParallelRoadTool.ParallelRoadTool.AvailableRoadTypes.Select(ni => ni.GenerateBeautifiedNetName()).ToArray();
             DropDown.selectedIndex = 0;
 
+            TextField.text = $"{offset}";
+
             DebugUtils.Log($"UINetTypeOption.PopulateDropDown - Loaded {DropDown.items.Length} items in dropdown.");
 
             return true;
         }
 
         protected override void OnSelectionChanged(int index)
-        {            
+        {
             selectedNetInfo = ParallelRoadTool.ParallelRoadTool.AvailableRoadTypes[index];
 
             DebugUtils.Log($"UINetTypeOption.OnSelectionChanged - Selected net info {selectedNetInfo.name}");
 
-            SelectionChangedCallback?.Invoke();
+            OnChangedCallback?.Invoke();
+        }
+
+        protected override void OnTextChanged(string value)
+        {
+            if (float.TryParse(value, out offset))
+            {
+                DebugUtils.Log($"UINetTypeOption.OnTextChanged - Selected offset {offset}");
+
+                OnChangedCallback?.Invoke();
+            }
         }
     }
 }
