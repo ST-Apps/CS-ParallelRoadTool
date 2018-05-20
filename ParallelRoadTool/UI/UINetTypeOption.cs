@@ -40,13 +40,11 @@ namespace ParallelRoadTool.UI
         }
 
         protected override void OnTextChanged(string value)
-        {
-            if (float.TryParse(value, out Offset))
-            {
-                DebugUtils.Log($"UINetTypeOption.OnTextChanged - Selected offset {Offset}");
+        {            
+            if (!float.TryParse(value, out Offset)) return;
+            DebugUtils.Log($"UINetTypeOption.OnTextChanged - Selected offset {Offset}");
 
-                OnChangedCallback?.Invoke();
-            }
+            OnChangedCallback?.Invoke();
         }
     }
 }

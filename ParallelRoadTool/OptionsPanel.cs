@@ -30,13 +30,15 @@ namespace ParallelRoadTool
 
             padding = new RectOffset(8, 8, 8, 8);
             autoLayoutPadding = new RectOffset(0, 4, 0, 0);
-            autoLayoutDirection = LayoutDirection.Horizontal;
+            autoLayoutDirection = LayoutDirection.Vertical;
 
             m_parallel = CreateCheckBox(this, "Anarchy", "Toggle parallel road tool", false);
-            //m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) => {
-            //    // TODO: support for multiple parallel networks                
-            //    m_networks.Add(CreateNetworksDropdown());                
-            //});
+            m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) =>
+            {
+                // TODO: added networks should also be removable or, as for now, once you add another network you can't removed it anymore
+                // TODO: UI MUST be fixed before release, current one sucks.
+                m_networks.Add(CreateNetworksDropdown());
+            });
 
             m_networks = new List<UINetTypeOption>
             {
@@ -57,7 +59,7 @@ namespace ParallelRoadTool
             dropdown.OnChangedCallback = () =>
             {
                 DebugUtils.Log(
-                    $"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.SelectedNetInfo.name} with offset {dropdown.Offset}");
+                    $"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.SelectedNetInfo?.name} with offset {dropdown.Offset}");
                 UpdateOptions();
             };
 
