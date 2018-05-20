@@ -5,28 +5,22 @@ namespace ParallelRoadTool.UI.Base
 {
     public abstract class UIDropDownTextFieldOption : UIOption
     {
-        private string _description = string.Empty;
-        private UILabel _label;
-        protected UIDropDown DropDown { get; private set; }
         protected UITextField TextField { get; private set; }
+        protected UIDropDown DropDown { get; private set; }
+        protected UIButton DeleteButton { get; private set; }
 
-        protected string Description
-        {
-            get => _description;
-            set
-            {
-                _description = value;
-                if (_label != null) _label.text = value;
-            }
-        }
+        protected string Description { get; set; } = string.Empty;
 
         protected override void Initialize()
-        {
-            UITextField field;
-            DropDown = UIUtil.CreateDropDownTextFieldWithLabel(out _label, out field, this, Description, ParentWidth);
+        {            
+            DropDown = UIUtil.CreateDropDownTextFieldWithLabel(out var deleteButton, out var textField, this, Description, ParentWidth);
             DropDown.eventSelectedIndexChanged += DropDown_eventSelectedIndexChanged;
-            TextField = field;
+
+            TextField = textField;
             TextField.eventTextSubmitted += TextField_eventTextSubmitted;
+
+            DeleteButton = deleteButton;
+            DeleteButton.eventClicked += DeleteButton_eventClicked;
         }
 
         protected override bool PopulateImpl()
@@ -56,10 +50,22 @@ namespace ParallelRoadTool.UI.Base
             OnTextChanged(value);
         }
 
+        private void DeleteButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            if (Populating) return;
+
+#if DEBUG
+            Debug.LogFormat("Changing " + Description);
+#endif
+            OnDeleteButtonClicked();
+        }
+
         protected abstract bool PopulateDropDown();
 
         protected abstract void OnSelectionChanged(int index);
 
         protected abstract void OnTextChanged(string value);
+
+        protected abstract void OnDeleteButtonClicked();
     }
 }

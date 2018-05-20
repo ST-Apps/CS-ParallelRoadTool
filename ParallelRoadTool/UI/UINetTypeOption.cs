@@ -7,9 +7,15 @@ namespace ParallelRoadTool.UI
     public class UINetTypeOption : UIDropDownTextFieldOption
     {
         public float Offset = 15f;
-        public NetInfo SelectedNetInfo;
-
+        
         public Action OnChangedCallback { private get; set; }
+        public Action OnDeleteButtonCallback { private get; set; }
+
+        public NetInfo SelectedNetInfo { get; private set; }
+        public bool HideDeleteButton
+        {
+            set => DeleteButton.enabled = value;
+        }
 
         protected override void Initialize()
         {
@@ -45,6 +51,13 @@ namespace ParallelRoadTool.UI
             DebugUtils.Log($"UINetTypeOption.OnTextChanged - Selected offset {Offset}");
 
             OnChangedCallback?.Invoke();
+        }
+
+        protected override void OnDeleteButtonClicked()
+        {
+            DebugUtils.Log("UINetTypeOption.OnDeleteButtonClicked");
+
+            OnDeleteButtonCallback?.Invoke();
         }
     }
 }

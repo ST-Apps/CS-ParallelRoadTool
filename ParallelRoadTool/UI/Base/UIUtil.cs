@@ -10,60 +10,47 @@ namespace ParallelRoadTool.UI.Base
 {
     public static class UIUtil
     {
-        private const float LABEL_RELATIVE_WIDTH = .25f;
         private const float COLUMN_PADDING = 5f;
+        private const float TEXT_FIELD_WIDTH = 35f;
         private static readonly string kSliderTemplate = "OptionsSliderTemplate";
 
-        public static UIDropDown CreateDropDownWithLabel(out UILabel label, UIComponent parent, string labelText,
-            float width)
-        {
-            var labelWidth = Mathf.Round(width * LABEL_RELATIVE_WIDTH);
-
-            var dropDown = CreateDropDown(parent);
-            dropDown.relativePosition = new Vector3(labelWidth + COLUMN_PADDING, 0);
-            dropDown.width = width - labelWidth - COLUMN_PADDING;
-
-            label = AddLabel(parent, labelText, labelWidth, dropDown.height);
-
-            return dropDown;
-        }
-
-
-        public static UIDropDown CreateDropDownTextFieldWithLabel(out UILabel label, out UITextField textField,
+        public static UIDropDown CreateDropDownTextFieldWithLabel(out UIButton deleteButton, out UITextField textField,
             UIComponent parent, string labelText, float width)
         {
-            var labelWidth = Mathf.Round(width * LABEL_RELATIVE_WIDTH);
-            var textFieldWidth = 35f;
-            var dropDownWidth = width - labelWidth - textFieldWidth - 2 * COLUMN_PADDING;
-
-
-            var dropDown = CreateDropDown(parent);
-            dropDown.relativePosition = new Vector3(labelWidth + COLUMN_PADDING, 0);
-            dropDown.width = dropDownWidth;
+            
+            var dropDownWidth = width - TEXT_FIELD_WIDTH - 5 * COLUMN_PADDING;
 
             textField = CreateTextField(parent);
-            textField.relativePosition = new Vector3(labelWidth + dropDownWidth + 2 * COLUMN_PADDING, 0);
-            textField.width = textFieldWidth;
+            textField.relativePosition = new Vector3(COLUMN_PADDING, 8f);
+            textField.width = TEXT_FIELD_WIDTH;
+
+            var dropDown = CreateDropDown(parent);
+            dropDown.relativePosition = new Vector3(TEXT_FIELD_WIDTH + 2 * COLUMN_PADDING, 8f);
+            dropDown.width = dropDownWidth;
+
             textField.height = dropDown.height;
 
-            label = AddLabel(parent, labelText, labelWidth, dropDown.height);
+            // Buttons
+            deleteButton = parent.AddUIComponent<UIButton>();
+            deleteButton.text = "";
+            deleteButton.tooltip = "Delete network";
+            deleteButton.size = new Vector2(36, 36);
+            deleteButton.relativePosition = new Vector3(0f, 0f);
+            deleteButton.textVerticalAlignment = UIVerticalAlignment.Middle;
+            deleteButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
+            deleteButton.normalFgSprite = "buttonclose";
+            deleteButton.hoveredFgSprite = "buttonclosehover";
+            deleteButton.pressedFgSprite = "buttonclosepressed";
+            deleteButton.focusedFgSprite = "buttonclosehover";
+            deleteButton.disabledFgSprite = "buttonclose";
+            deleteButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+            deleteButton.horizontalAlignment = UIHorizontalAlignment.Right;
+            deleteButton.verticalAlignment = UIVerticalAlignment.Middle;
+            deleteButton.zOrder = 0;
+            deleteButton.textScale = 0.8f;
+            deleteButton.relativePosition = new Vector3(TEXT_FIELD_WIDTH + dropDown.width + 3 * COLUMN_PADDING, 4f);
 
             return dropDown;
-        }
-
-        private static UILabel AddLabel(UIComponent parent, string text, float width, float dropDownHeight)
-        {
-            var label = parent.AddUIComponent<UILabel>();
-            label.text = text;
-            label.textScale = .85f;
-            label.textColor = new Color32(200, 200, 200, 255);
-            label.autoSize = false;
-            label.autoHeight = true;
-            label.width = width;
-            label.textAlignment = UIHorizontalAlignment.Right;
-            label.relativePosition = new Vector3(0, Mathf.Round((dropDownHeight - label.height) / 2));
-
-            return label;
         }
 
         private static UITextField CreateTextField(UIComponent parent)
@@ -136,31 +123,11 @@ namespace ParallelRoadTool.UI.Base
             dropDown.eventSizeChanged += (c, t) =>
             {
                 button.size = t;
-                dropDown.listWidth = (int) t.x;
+                dropDown.listWidth = (int)t.x;
             };
 
             return dropDown;
         }
-
-        public static UIPanel CreateSlider(UIComponent parent, string text, float min, float max, float step,
-            float defaultValue, [NotNull] OnValueChanged eventCallback)
-        {
-            if (eventCallback == null) throw new ArgumentNullException(nameof(eventCallback));
-
-            var uIPanel = parent.AttachUIComponent(UITemplateManager.GetAsGameObject(kSliderTemplate)) as UIPanel;
-            uIPanel.position = Vector3.zero;
-
-            uIPanel.Find<UILabel>("Label").text = text;
-
-            var uISlider = uIPanel.Find<UISlider>("Slider");
-            uISlider.minValue = min;
-            uISlider.maxValue = max;
-            uISlider.stepSize = step;
-            uISlider.value = defaultValue;
-            uISlider.eventValueChanged += delegate(UIComponent c, float val) { eventCallback(val); };
-            return uIPanel;
-        }
-
 
         public static string GenerateBeautifiedNetName(this NetInfo prefab)
         {
@@ -174,14 +141,6 @@ namespace ParallelRoadTool.UI.Base
             {
                 itemName = prefab.GetUncheckedLocalizedTitle();
 
-                /*
-                var index1 = itemName.IndexOf('.');
-                if (index1 > -1) itemName = itemName.Substring(index1 + 1);
-
-                var index2 = itemName.IndexOf("_Data", StringComparison.Ordinal);
-                if (index2 > -1) itemName = itemName.Substring(0, index2);
-                */
-
                 // replace spaces at start and end
                 itemName = itemName.Trim();
 
@@ -194,19 +153,5 @@ namespace ParallelRoadTool.UI.Base
             return itemName;
         }
 
-        private static string AddSpacesToSentence(string text)
-        {
-            var newText = new StringBuilder(text.Length * 2);
-            newText.Append(text[0]);
-            for (var i = 1; i < text.Length; i++)
-            {
-                if (char.IsUpper(text[i]))
-                    if (text[i - 1] != ' ' && !char.IsUpper(text[i - 1]))
-                        newText.Append(' ');
-                newText.Append(text[i]);
-            }
-
-            return newText.ToString();
-        }
     }
 }

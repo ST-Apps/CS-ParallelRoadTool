@@ -131,7 +131,7 @@ namespace ParallelRoadTool
                     var window = UIView.GetAView().AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                     window.AttachUIComponent(m_panel.gameObject);
-                    window.size = new Vector2(400, 180);
+                    window.size = new Vector2(450, 180);
                     m_panel.relativePosition = new Vector3(8, 28);
                     m_panel.width = window.width - 16;
 
