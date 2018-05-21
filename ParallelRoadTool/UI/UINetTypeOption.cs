@@ -8,7 +8,10 @@ namespace ParallelRoadTool.UI
     {
         public float Offset = 15f;
         
-        public Action OnChangedCallback { private get; set; }
+        public Action OnSelectionChangedCallback { private get; set; }
+        public Action OnHorizontalOffsetChangedCallback { private get; set; }
+        // TODO: vertical offset support for stacked roads
+        public Action OnVerticalOffsetChangedCallback { private get; set; }
         public Action OnDeleteButtonCallback { private get; set; }
 
         public NetInfo SelectedNetInfo { get; private set; }
@@ -42,7 +45,7 @@ namespace ParallelRoadTool.UI
 
             DebugUtils.Log($"UINetTypeOption.OnSelectionChanged - Selected net info {SelectedNetInfo.name}");
 
-            OnChangedCallback?.Invoke();
+            OnSelectionChangedCallback?.Invoke();
         }
 
         protected override void OnTextChanged(string value)
@@ -50,7 +53,7 @@ namespace ParallelRoadTool.UI
             if (!float.TryParse(value, out Offset)) return;
             DebugUtils.Log($"UINetTypeOption.OnTextChanged - Selected offset {Offset}");
 
-            OnChangedCallback?.Invoke();
+            OnHorizontalOffsetChangedCallback?.Invoke();
         }
 
         protected override void OnDeleteButtonClicked()

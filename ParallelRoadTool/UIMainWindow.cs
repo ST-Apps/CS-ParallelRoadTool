@@ -7,10 +7,10 @@ namespace ParallelRoadTool
     public class UIMainWindow : UIPanel
     {
         public static readonly SavedInt savedWindowX =
-            new SavedInt("windowX", ParallelRoadTool.settingsFileName, -1000, true);
+            new SavedInt("windowX", ParallelRoadTool.SettingsFileName, -1000, true);
 
         public static readonly SavedInt savedWindowY =
-            new SavedInt("windowY", ParallelRoadTool.settingsFileName, -1000, true);
+            new SavedInt("windowY", ParallelRoadTool.SettingsFileName, -1000, true);
 
         public override void Start()
         {
@@ -40,7 +40,7 @@ namespace ParallelRoadTool
 
         public override void Update()
         {
-            isVisible = ParallelRoadTool.instance.m_netTool.enabled;
+            isVisible = ParallelRoadTool.Instance.NetTool.enabled;
 
             base.Update();
         }

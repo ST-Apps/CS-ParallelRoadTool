@@ -14,7 +14,7 @@ namespace ParallelRoadTool
             try
             {
                 // Creating setting file
-                GameSettings.AddSettingsFile(new SettingsFile {fileName = ParallelRoadTool.settingsFileName});
+                GameSettings.AddSettingsFile(new SettingsFile {fileName = ParallelRoadTool.SettingsFileName});
             }
             catch (Exception e)
             {

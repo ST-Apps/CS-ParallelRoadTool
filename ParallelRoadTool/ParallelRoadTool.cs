@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool.Detours;
+using ParallelRoadTool.EventArgs;
 using ParallelRoadTool.Redirection;
 using UnityEngine;
 
@@ -10,55 +12,51 @@ namespace ParallelRoadTool
 {
     public class ParallelRoadTool : MonoBehaviour
     {
-        public const string settingsFileName = "ParallelRoadTool";
+        public const string SettingsFileName = "ParallelRoadTool";
 
-        public static ParallelRoadTool instance;
+        public static ParallelRoadTool Instance;
 
         public static List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
-
         public static List<Tuple<NetInfo, float>> SelectedRoadTypes = new List<Tuple<NetInfo, float>>();
 
-        public NetTool m_netTool;
+        public NetTool NetTool { get; private set; }
 
-        private OptionsPanel m_panel;
-
-        private int m_tries;
+        private OptionsPanel _mainPanel;
+        private UIMainWindow _mainWindow;        
 
         public static bool IsParallelEnabled
         {
             get => NetManagerDetour.IsDeployed();
 
             set
-            {
-                if (IsParallelEnabled != value)
+            {                
+                if (IsParallelEnabled == value) return;
+                if (value)
                 {
-                    if (value)
-                    {
-                        DebugUtils.Log("Enabling parallel road support");
-                        NetManagerDetour.Deploy();
-                    }
-                    else
-                    {
-                        DebugUtils.Log("Disabling parallel road support");
-                        NetManagerDetour.Revert();
-                    }
+                    DebugUtils.Log("Enabling parallel road support");
+                    NetManagerDetour.Deploy();
+                }
+                else
+                {
+                    DebugUtils.Log("Disabling parallel road support");
+                    NetManagerDetour.Revert();
                 }
             }
         }
 
-        public static List<NetInfo> SelectedNetworks { get; set; }
+        #region Unity
 
         public void Start()
         {
             try
             {
-                m_netTool = FindObjectOfType<NetTool>();
-                if (m_netTool == null)
+                NetTool = FindObjectOfType<NetTool>();
+                if (NetTool == null)
                 {
                     DebugUtils.Log("Net Tool not found");
                     enabled = false;
                     return;
-                }
+                }                
 
                 DebugUtils.Log("Loading all available networks.");
 
@@ -79,15 +77,16 @@ namespace ParallelRoadTool
 
                 NetManagerDetour.Deploy();
 
-                if (m_panel == null)
+                if (_mainPanel == null)
                 {
-                    m_tries = 0;
-                    m_panel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
+                    _mainPanel = UIView.GetAView().AddUIComponent(typeof(OptionsPanel)) as OptionsPanel;
                 }
                 else
                 {
-                    m_panel.m_parallel.isChecked = false;
+                    _mainPanel.m_parallel.isChecked = false;
                 }
+
+                SubscribeToUiEvents();
 
                 DebugUtils.Log("Initialized");
             }
@@ -103,47 +102,24 @@ namespace ParallelRoadTool
         {
             try
             {
-                if (m_tries < 5)
-                {
-                    var frtPanel = UIView.GetAView().FindUIComponent<UIPanel>("PRT_ToolOptionsPanel");
-
-                    if (frtPanel != null)
-                    {
-                        DebugUtils.Log("Parallel Road Tool window found");
-
-                        frtPanel.height += m_panel.height + 8;
-
-                        frtPanel.AttachUIComponent(m_panel.gameObject);
-                        m_panel.relativePosition = new Vector3(8, frtPanel.height - m_panel.height - 8);
-                        m_panel.width = frtPanel.width - 16;
-
-                        frtPanel.GetComponentInChildren<UIDragHandle>().height = frtPanel.height;
-
-                        m_tries = 5;
-                    }
-
-                    m_tries++;
-                }
-                else if (m_tries == 5)
+                if (_mainWindow == null)
                 {
                     DebugUtils.Log("Parallel Road Tool window not found");
 
-                    var window = UIView.GetAView().AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
+                    _mainWindow = UIView.GetAView().AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
-                    window.AttachUIComponent(m_panel.gameObject);
-                    window.size = new Vector2(450, 180);
-                    m_panel.relativePosition = new Vector3(8, 28);
-                    m_panel.width = window.width - 16;
+                    if (_mainWindow == null) return;
 
-                    window.height = 36 + m_panel.height;
-
-                    m_tries++;
+                    _mainWindow.AttachUIComponent(_mainPanel.gameObject);
+                    _mainWindow.size = new Vector2(450, 180);
+                    _mainPanel.relativePosition = new Vector3(8, 28);                    
                 }
+
+                _mainPanel.width = _mainWindow.width - 16;
+                _mainWindow.height = 36 + _mainPanel.height;
             }
             catch (Exception e)
             {
-                m_tries = 6;
-
                 DebugUtils.Log("Update failed");
                 DebugUtils.LogException(e);
             }
@@ -152,6 +128,7 @@ namespace ParallelRoadTool
         public void OnDestroy()
         {
             NetManagerDetour.Revert();
+            UnsubscribeToUiEvents();
             IsParallelEnabled = false;
         }
 
@@ -164,7 +141,7 @@ namespace ParallelRoadTool
 
                 // Checking key presses
                 if (OptionsKeymapping.toggleParallelRoads.IsPressed(e))
-                    m_panel.m_parallel.isChecked = !m_panel.m_parallel.isChecked;
+                    _mainPanel.m_parallel.isChecked = !_mainPanel.m_parallel.isChecked;
             }
             catch (Exception e)
             {
@@ -172,25 +149,57 @@ namespace ParallelRoadTool
                 DebugUtils.LogException(e);
             }
         }
+
+        #endregion
+
+        #region Events
+
+        private void SubscribeToUiEvents()
+        {
+            _mainPanel.OnParallelToolToggled += MainPanelOnOnParallelToolToggled;
+            _mainPanel.OnNetworksSelectionChanged += MainPanelOnOnNetworksSelectionChanged;
+        }
+
+        private void UnsubscribeToUiEvents()
+        {
+            _mainPanel.OnParallelToolToggled -= MainPanelOnOnParallelToolToggled;
+            _mainPanel.OnNetworksSelectionChanged -= MainPanelOnOnNetworksSelectionChanged;
+        }
+
+        private void MainPanelOnOnNetworksSelectionChanged(object sender, NetworksSelectionChangedEventArgs e)
+        {
+            DebugUtils.Log("ParallelRoadTool.MainPanelOnOnNetworksSelectionChanged()");
+            SelectedRoadTypes = e.SelectedNetworks.ToList();
+            // TODO: NetworksCount should be reworked
+            NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+        }
+
+        private void MainPanelOnOnParallelToolToggled(object sender, ParallelToolToggledEventArgs e)
+        {
+            DebugUtils.Log("ParallelRoadTool.MainPanelOnOnParallelToolToggled()");
+            IsParallelEnabled = e.IsEnabled;
+            _mainPanel.ToggleDropdowns(IsParallelEnabled);
+        }
+
+        #endregion
     }
 
     public class ParallelRoadToolLoader : LoadingExtensionBase
     {
         public override void OnLevelLoaded(LoadMode mode)
         {
-            if (ParallelRoadTool.instance == null)
-                ParallelRoadTool.instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
+            if (ParallelRoadTool.Instance == null)
+                ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
             else
-                ParallelRoadTool.instance.Start();
+                ParallelRoadTool.Instance.Start();
 
-            if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
-            {
-                GameAreaManager.instance.m_maxAreaCount =
-                    GameAreaManager.AREAGRID_RESOLUTION * GameAreaManager.AREAGRID_RESOLUTION;
-                for (var i = 0; i < GameAreaManager.instance.m_maxAreaCount; i++)
-                    GameAreaManager.instance.m_areaGrid[i] = i + 1;
-                GameAreaManager.instance.m_areaCount = GameAreaManager.instance.m_maxAreaCount;
-            }
+            if (mode != LoadMode.LoadAsset && mode != LoadMode.NewAsset) return;
+
+            GameAreaManager.instance.m_maxAreaCount =
+                GameAreaManager.AREAGRID_RESOLUTION * GameAreaManager.AREAGRID_RESOLUTION;
+            for (var i = 0; i < GameAreaManager.instance.m_maxAreaCount; i++)
+                GameAreaManager.instance.m_areaGrid[i] = i + 1;
+            GameAreaManager.instance.m_areaCount = GameAreaManager.instance.m_maxAreaCount;
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ColossalFramework.UI;
 using ParallelRoadTool.Detours;
+using ParallelRoadTool.EventArgs;
 using ParallelRoadTool.Redirection;
 using ParallelRoadTool.UI;
 using UnityEngine;
@@ -45,7 +47,7 @@ namespace ParallelRoadTool
                 CreateNetworksDropdown()
             };
 
-            UpdateOptions();
+            // UpdateOptions();
 
             autoLayout = true;
         }
@@ -54,13 +56,21 @@ namespace ParallelRoadTool
         {
             var dropdown = AddUIComponent<UINetTypeOption>();
             dropdown.relativePosition = Vector2.zero;
+            dropdown.enabled = false;
             dropdown.Populate();
 
-            dropdown.OnChangedCallback = () =>
+            dropdown.OnSelectionChangedCallback = () =>
             {
                 DebugUtils.Log(
-                    $"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.SelectedNetInfo?.name} with offset {dropdown.Offset}");
-                UpdateOptions();
+                    $"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.SelectedNetInfo?.name} | index {m_networks.IndexOf(dropdown)}");                
+
+                OnNetworksSelectionChanged?.Invoke(dropdown, new NetworksSelectionChangedEventArgs
+                {                    
+                    // TODO: check if this updated the offsets too, in that case rename it.
+                    SelectedNetworks = m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset))
+                });
+            
+                // UpdateOptions();
             };
 
             return dropdown;
@@ -131,23 +141,38 @@ namespace ParallelRoadTool
                     button.normalFgSprite = spriteName;
                 }
 
-                UpdateOptions();
+                OnParallelToolToggled?.Invoke(checkBox, new ParallelToolToggledEventArgs {IsEnabled = checkBox.isChecked});
+
+                // UpdateOptions();
             };
 
             return checkBox;
         }
 
-        private void UpdateOptions()
+        #region Events 
+
+        public event EventHandler<ParallelToolToggledEventArgs> OnParallelToolToggled;
+
+        public event EventHandler<NetworksSelectionChangedEventArgs> OnNetworksSelectionChanged;
+
+        #endregion
+
+        public void ToggleDropdowns(bool show)
         {
-            DebugUtils.Log("OptionsPanel.UpdateOptions()");
-
-            ParallelRoadTool.IsParallelEnabled = m_parallel.isChecked;
-            ParallelRoadTool.SelectedRoadTypes =
-                m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset)).ToList();
-            NetManagerDetour.NetworksCount = ParallelRoadTool.SelectedRoadTypes.Count;
-
-            foreach (var item in m_networks) item.enabled = m_parallel.isChecked;
+            foreach (var item in m_networks) item.enabled = show;
         }
+
+        //private void UpdateOptions()
+        //{
+        //    DebugUtils.Log("OptionsPanel.UpdateOptions()");
+
+        //    ParallelRoadTool.IsParallelEnabled = m_parallel.isChecked;
+        //    ParallelRoadTool.SelectedRoadTypes =
+        //        m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset)).ToList();
+        //    NetManagerDetour.NetworksCount = ParallelRoadTool.SelectedRoadTypes.Count; // <-- Non deve esserci collegamento tra questo e OptionsPanel, OptionsPanel chiama solo ParallelRoadTool che poi chiama il detour
+
+        //    foreach (var item in m_networks) item.enabled = m_parallel.isChecked;
+        //}
 
         private void LoadResources()
         {

@@ -11,7 +11,7 @@ namespace ParallelRoadTool
         private static readonly string kKeyBindingTemplate = "KeyBindingTemplate";
 
         public static readonly SavedInputKey toggleParallelRoads = new SavedInputKey("toggleParallelRoads",
-            ParallelRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.P, true, false, false), true);
+            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.P, true, false, false), true);
 
         private int count;
 

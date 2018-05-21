@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Detours\NetManagerDetour.cs" />
+    <Compile Include="EventArgs\NetworksSelectionChangedEventArgs.cs" />
+    <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="DebugUtils.cs" />

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using ColossalFramework;
 using ColossalFramework.Math;
 using ParallelRoadTool.Redirection;
@@ -43,7 +44,7 @@ namespace ParallelRoadTool.Detours
         public static void Deploy()
         {
             if (m_deployed) return;
-            m_state = RedirectionHelper.RedirectCalls(@from, to);
+            m_state = RedirectionHelper.RedirectCalls(from, to);
             m_deployed = true;
 
             // Initialize helper structures
