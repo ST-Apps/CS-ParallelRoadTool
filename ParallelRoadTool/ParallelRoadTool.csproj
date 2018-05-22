@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Detours\NetManagerDetour.cs" />
-    <Compile Include="EventArgs\NetworksSelectionChangedEventArgs.cs" />
+    <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
     <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
@@ -68,6 +68,7 @@
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="UIMainWindow.cs" />
+    <Compile Include="UI\ParallelRoadToolUIPanel.cs" />
     <Compile Include="UI\UINetTypeOption.cs" />
     <Compile Include="UI\Base\UIDropDownTextFieldOption.cs" />
     <Compile Include="UI\Base\UIOption.cs" />

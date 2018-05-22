@@ -10,9 +10,14 @@ using UnityEngine;
 
 namespace ParallelRoadTool
 {
+    /// <summary>
+    /// Mod's "launcher" class.
+    /// It also acts as a "controller" to connect the mod with its UI.
+    /// </summary>
     public class ParallelRoadTool : MonoBehaviour
     {
         public const string SettingsFileName = "ParallelRoadTool";
+        public const float DefaultHorizontalOffset = 15f;
 
         public static ParallelRoadTool Instance;
 
@@ -42,6 +47,11 @@ namespace ParallelRoadTool
                     NetManagerDetour.Revert();
                 }
             }
+        }
+
+        private static void Initialize()
+        {
+            SelectedRoadTypes.Add(new Tuple<NetInfo, float>(null, DefaultHorizontalOffset));
         }
 
         #region Unity
@@ -86,6 +96,7 @@ namespace ParallelRoadTool
                     _mainPanel.m_parallel.isChecked = false;
                 }
 
+                Initialize();
                 SubscribeToUiEvents();
 
                 DebugUtils.Log("Initialized");
@@ -156,20 +167,20 @@ namespace ParallelRoadTool
 
         private void SubscribeToUiEvents()
         {
-            _mainPanel.OnParallelToolToggled += MainPanelOnOnParallelToolToggled;
-            _mainPanel.OnNetworksSelectionChanged += MainPanelOnOnNetworksSelectionChanged;
+            _mainPanel.ParallelToolToggled += MainPanelOnOnParallelToolToggled;
+            _mainPanel.NetworksConfigurationChanged += MainPanelOnOnNetworksConfigurationChanged;
         }
 
         private void UnsubscribeToUiEvents()
         {
-            _mainPanel.OnParallelToolToggled -= MainPanelOnOnParallelToolToggled;
-            _mainPanel.OnNetworksSelectionChanged -= MainPanelOnOnNetworksSelectionChanged;
+            _mainPanel.ParallelToolToggled -= MainPanelOnOnParallelToolToggled;
+            _mainPanel.NetworksConfigurationChanged -= MainPanelOnOnNetworksConfigurationChanged;
         }
 
-        private void MainPanelOnOnNetworksSelectionChanged(object sender, NetworksSelectionChangedEventArgs e)
+        private void MainPanelOnOnNetworksConfigurationChanged(object sender, NetworksConfigurationChangedEventArgs e)
         {
-            DebugUtils.Log("ParallelRoadTool.MainPanelOnOnNetworksSelectionChanged()");
-            SelectedRoadTypes = e.SelectedNetworks.ToList();
+            DebugUtils.Log("ParallelRoadTool.MainPanelOnOnNetworksConfigurationChanged()");
+            SelectedRoadTypes = e.NetworkConfigurations.ToList();
             // TODO: NetworksCount should be reworked
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
         }

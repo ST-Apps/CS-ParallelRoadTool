@@ -10,13 +10,13 @@ using UnityEngine;
 
 namespace ParallelRoadTool
 {
-    public class OptionsPanel : UIPanel
+    /// <summary>
+    /// TODO: this class is a mess because this won't be in the final release.
+    /// </summary>
+    public class OptionsPanel : ParallelRoadToolUIPanel
     {
         public UIButton m_addMoreNetworks;
-        private UITextureAtlas m_atlas;
-
         public List<UINetTypeOption> m_networks;
-
         public UICheckBox m_parallel;
 
         public override void Start()
@@ -59,19 +59,19 @@ namespace ParallelRoadTool
             dropdown.enabled = false;
             dropdown.Populate();
 
-            dropdown.OnSelectionChangedCallback = () =>
+            dropdown.OnSelectionChangedCallback = dropdown.OnHorizontalOffsetChangedCallback = () =>
             {
                 DebugUtils.Log(
                     $"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.SelectedNetInfo?.name} | index {m_networks.IndexOf(dropdown)}");                
 
-                OnNetworksSelectionChanged?.Invoke(dropdown, new NetworksSelectionChangedEventArgs
+                OnNetworksConfigurationChanged(dropdown, new NetworksConfigurationChangedEventArgs
                 {                    
                     // TODO: check if this updated the offsets too, in that case rename it.
-                    SelectedNetworks = m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset))
+                    NetworkConfigurations = m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset))
                 });
             
                 // UpdateOptions();
-            };
+            };            
 
             return dropdown;
         }
@@ -81,7 +81,7 @@ namespace ParallelRoadTool
         {
             var button = parent.AddUIComponent<UIButton>();
             button.name = "PRT_" + spriteName;
-            button.atlas = m_atlas;
+            button.atlas = TextureAtlas;
             button.tooltip = toolTip;
             button.relativePosition = new Vector2(186, -36);
 
@@ -107,7 +107,7 @@ namespace ParallelRoadTool
 
             var button = checkBox.AddUIComponent<UIButton>();
             button.name = "PRT_" + spriteName;
-            button.atlas = m_atlas;
+            button.atlas = TextureAtlas;
             button.tooltip = toolTip;
             button.relativePosition = new Vector2(150, -36);
 
@@ -141,7 +141,7 @@ namespace ParallelRoadTool
                     button.normalFgSprite = spriteName;
                 }
 
-                OnParallelToolToggled?.Invoke(checkBox, new ParallelToolToggledEventArgs {IsEnabled = checkBox.isChecked});
+                OnParallelToolToggled(checkBox, new ParallelToolToggledEventArgs {IsEnabled = checkBox.isChecked});
 
                 // UpdateOptions();
             };
@@ -149,60 +149,10 @@ namespace ParallelRoadTool
             return checkBox;
         }
 
-        #region Events 
-
-        public event EventHandler<ParallelToolToggledEventArgs> OnParallelToolToggled;
-
-        public event EventHandler<NetworksSelectionChangedEventArgs> OnNetworksSelectionChanged;
-
-        #endregion
-
         public void ToggleDropdowns(bool show)
         {
             foreach (var item in m_networks) item.enabled = show;
         }
 
-        //private void UpdateOptions()
-        //{
-        //    DebugUtils.Log("OptionsPanel.UpdateOptions()");
-
-        //    ParallelRoadTool.IsParallelEnabled = m_parallel.isChecked;
-        //    ParallelRoadTool.SelectedRoadTypes =
-        //        m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset)).ToList();
-        //    NetManagerDetour.NetworksCount = ParallelRoadTool.SelectedRoadTypes.Count; // <-- Non deve esserci collegamento tra questo e OptionsPanel, OptionsPanel chiama solo ParallelRoadTool che poi chiama il detour
-
-        //    foreach (var item in m_networks) item.enabled = m_parallel.isChecked;
-        //}
-
-        private void LoadResources()
-        {
-            string[] spriteNames = 
-            {
-                "Anarchy",
-                "AnarchyDisabled",
-                "AnarchyFocused",
-                "AnarchyHovered",
-                "AnarchyPressed",
-                "Bending",
-                "BendingDisabled",
-                "BendingFocused",
-                "BendingHovered",
-                "BendingPressed"
-            };
-
-            m_atlas = ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
-
-            var defaultAtlas = ResourceLoader.GetAtlas("Ingame");
-            Texture2D[] textures =
-            {
-                defaultAtlas["OptionBase"].texture,
-                defaultAtlas["OptionBaseFocused"].texture,
-                defaultAtlas["OptionBaseHovered"].texture,
-                defaultAtlas["OptionBasePressed"].texture,
-                defaultAtlas["OptionBaseDisabled"].texture
-            };
-
-            ResourceLoader.AddTexturesInAtlas(m_atlas, textures);
-        }
     }
 }

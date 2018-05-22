@@ -6,10 +6,10 @@ using ParallelRoadTool.Redirection;
 
 namespace ParallelRoadTool.EventArgs
 {
-    public class NetworksSelectionChangedEventArgs : System.EventArgs
+    public class NetworksConfigurationChangedEventArgs : System.EventArgs
     {
 
-        public IEnumerable<Tuple<NetInfo, float>> SelectedNetworks { get; set; }
+        public IEnumerable<Tuple<NetInfo, float>> NetworkConfigurations { get; set; }
 
     }
 }
