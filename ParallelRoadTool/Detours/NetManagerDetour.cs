@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using ColossalFramework;
 using ColossalFramework.Math;
 using ParallelRoadTool.Redirection;
@@ -7,25 +6,25 @@ using UnityEngine;
 
 namespace ParallelRoadTool.Detours
 {
+    /// <summary>
+    /// Mod's core class, it executes the detour to intercept segment's creation.
+    /// </summary>
     public struct NetManagerDetour
     {
-        private static readonly MethodInfo from = typeof(NetManager).GetMethod("CreateSegment",
+        private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
-        private static readonly MethodInfo to =
+        private static readonly MethodInfo To =
             typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static RedirectCallsState m_state;
-        private static bool m_deployed;
+        private static RedirectCallsState _state;
+        private static bool _deployed;
 
         // We store nodes from previous iteration so that we know which node to connect to
-        private static ushort?[] m_endNodeId, m_clonedEndNodeId, m_startNodeId, m_clonedStartNodeId;
-        private static bool m_previousInvert;
+        private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
+        private static bool _previousInvert;
 
-        public static bool IsDeployed()
-        {
-            return m_deployed;
-        }
+        public static bool IsDeployed() => _deployed;
 
         /// <summary>
         ///     Sets the number of enabled parallel networks
@@ -33,31 +32,31 @@ namespace ParallelRoadTool.Detours
         public static int NetworksCount
         {
             set
-            {
-                m_endNodeId = new ushort?[value];
-                m_clonedEndNodeId = new ushort?[value];
-                m_startNodeId = new ushort?[value];
-                m_clonedStartNodeId = new ushort?[value];
+            {                
+                _endNodeId = new ushort?[value];
+                _clonedEndNodeId = new ushort?[value];
+                _startNodeId = new ushort?[value];
+                _clonedStartNodeId = new ushort?[value];
             }
         }
 
         public static void Deploy()
         {
-            if (m_deployed) return;
-            m_state = RedirectionHelper.RedirectCalls(from, to);
-            m_deployed = true;
+            if (_deployed) return;
+            _state = RedirectionHelper.RedirectCalls(From, To);
+            _deployed = true;
 
             // Initialize helper structures
-            if (m_endNodeId == null || m_clonedEndNodeId == null || m_startNodeId == null ||
-                m_clonedStartNodeId == null)
+            if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
+                _clonedStartNodeId == null)
                 NetworksCount = 1;
         }
 
         public static void Revert()
         {
-            if (!m_deployed) return;
-            RedirectionHelper.RevertRedirect(@from, m_state);
-            m_deployed = false;
+            if (!_deployed) return;
+            RedirectionHelper.RevertRedirect(From, _state);
+            _deployed = false;
         }
 
         #region Utility
@@ -156,20 +155,20 @@ namespace ParallelRoadTool.Detours
                 // If the previous segment was in "invert" mode and the current startNode is the same as the previous one, we need to connect them.
                 // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment.
                 ushort newStartNodeId;
-                if (!invert && m_endNodeId[i].HasValue && m_endNodeId[i].Value == startNode)
+                if (!invert && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
                 {
                     DebugUtils.Log(
-                        $"[START] Using old node from previous iteration {m_clonedEndNodeId[i].Value} instead of the given one {startNode}");
-                    newStartNodeId = m_clonedEndNodeId[i].Value;
+                        $"[START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
+                    newStartNodeId = _clonedEndNodeId[i].Value;
                     DebugUtils.Log(
                         $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                 }
-                else if (!invert && m_previousInvert && m_startNodeId[i].HasValue &&
-                         m_startNodeId[i].Value == startNode)
+                else if (!invert && _previousInvert && _startNodeId[i].HasValue &&
+                         _startNodeId[i].Value == startNode)
                 {
                     DebugUtils.Log(
-                        $"[START] Using old node from previous iteration {m_clonedStartNodeId[i].Value} instead of the given one {startNode}");
-                    newStartNodeId = m_clonedStartNodeId[i].Value;
+                        $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
+                    newStartNodeId = _clonedStartNodeId[i].Value;
                     DebugUtils.Log(
                         $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                 }
@@ -183,11 +182,11 @@ namespace ParallelRoadTool.Detours
 
                 // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
                 ushort newEndNodeId;
-                if (invert && m_endNodeId[i].HasValue && m_endNodeId[i].Value == endNode)
+                if (invert && _endNodeId[i].HasValue && _endNodeId[i].Value == endNode)
                 {
                     DebugUtils.Log(
-                        $"[END] Using old node from previous iteration {m_clonedEndNodeId[i].Value} instead of the given one {endNode}");
-                    newEndNodeId = m_clonedEndNodeId[i].Value;
+                        $"[END] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {endNode}");
+                    newEndNodeId = _clonedEndNodeId[i].Value;
                     DebugUtils.Log(
                         $"[END] End node{endNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newEndNodeId].m_position}");
                 }
@@ -200,10 +199,10 @@ namespace ParallelRoadTool.Detours
                 }
 
                 // Store current end nodes in case we may need to connect the following segment to them
-                m_endNodeId[i] = endNode;
-                m_clonedEndNodeId[i] = newEndNodeId;
-                m_startNodeId[i] = startNode;
-                m_clonedStartNodeId[i] = newStartNodeId;
+                _endNodeId[i] = endNode;
+                _clonedEndNodeId[i] = newEndNodeId;
+                _startNodeId[i] = startNode;
+                _clonedStartNodeId[i] = newStartNodeId;
 
                 // Create the segment between the two cloned nodes
                 result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newStartNodeId,
@@ -212,7 +211,7 @@ namespace ParallelRoadTool.Detours
                     Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
             }
 
-            m_previousInvert = invert;
+            _previousInvert = invert;
             return result;
         }
     }

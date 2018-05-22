@@ -16,7 +16,7 @@ namespace ParallelRoadTool
     public class OptionsPanel : ParallelRoadToolUIPanel
     {
         public UIButton m_addMoreNetworks;
-        public List<UINetTypeOption> m_networks;
+        public List<UINetTypeOption> m_networks = new List<UINetTypeOption>();
         public UICheckBox m_parallel;
 
         public override void Start()
@@ -38,42 +38,48 @@ namespace ParallelRoadTool
             m_addMoreNetworks = CreateButton(this, "Bending", "Add another parallel network", (c, p) =>
             {
                 // TODO: added networks should also be removable or, as for now, once you add another network you can't removed it anymore
-                // TODO: UI MUST be fixed before release, current one sucks.
-                m_networks.Add(CreateNetworksDropdown());
+                // TODO: UI MUST be fixed before release, current one sucks.                
+                CreateNetworksDropdown();
             });
 
-            m_networks = new List<UINetTypeOption>
-            {
-                CreateNetworksDropdown()
-            };
+            CreateNetworksDropdown();
 
             // UpdateOptions();
 
             autoLayout = true;
         }
 
-        private UINetTypeOption CreateNetworksDropdown()
+        private void RaiseOnNetworksConfigurationChanged(object sender)
         {
+            OnNetworksConfigurationChanged(sender, new NetworksConfigurationChangedEventArgs
+            {                
+                NetworkConfigurations = m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset))
+            });
+        }
+
+        private void RaiseOnParallelToolToggled(object sender)
+        {
+            OnParallelToolToggled(sender, new ParallelToolToggledEventArgs { IsEnabled = (sender as UICheckBox).isChecked });
+        }
+
+        private void CreateNetworksDropdown()
+        {            
             var dropdown = AddUIComponent<UINetTypeOption>();
             dropdown.relativePosition = Vector2.zero;
             dropdown.enabled = false;
             dropdown.Populate();
 
-            dropdown.OnSelectionChangedCallback = dropdown.OnHorizontalOffsetChangedCallback = () =>
+            dropdown.OnSelectionChangedCallback = dropdown.OnHorizontalOffsetChangedCallback = dropdown.OnDeleteButtonCallback = () =>
             {
                 DebugUtils.Log(
-                    $"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.SelectedNetInfo?.name} | index {m_networks.IndexOf(dropdown)}");                
+                    $"OptionsPanel.SelectionChangedCallback() - Selected {dropdown.SelectedNetInfo?.name} | index {m_networks.IndexOf(dropdown)}");
 
-                OnNetworksConfigurationChanged(dropdown, new NetworksConfigurationChangedEventArgs
-                {                    
-                    // TODO: check if this updated the offsets too, in that case rename it.
-                    NetworkConfigurations = m_networks.Select(n => new Tuple<NetInfo, float>(n.SelectedNetInfo, n.Offset))
-                });
-            
-                // UpdateOptions();
+                RaiseOnNetworksConfigurationChanged(dropdown);
             };            
 
-            return dropdown;
+            m_networks.Add(dropdown);
+
+            RaiseOnNetworksConfigurationChanged(dropdown);            
         }
 
         private UIButton CreateButton(UIComponent parent, string spriteName, string toolTip,
@@ -141,7 +147,7 @@ namespace ParallelRoadTool
                     button.normalFgSprite = spriteName;
                 }
 
-                OnParallelToolToggled(checkBox, new ParallelToolToggledEventArgs {IsEnabled = checkBox.isChecked});
+                RaiseOnParallelToolToggled(checkBox);
 
                 // UpdateOptions();
             };

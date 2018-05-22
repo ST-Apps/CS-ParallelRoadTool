@@ -49,11 +49,6 @@ namespace ParallelRoadTool
             }
         }
 
-        private static void Initialize()
-        {
-            SelectedRoadTypes.Add(new Tuple<NetInfo, float>(null, DefaultHorizontalOffset));
-        }
-
         #region Unity
 
         public void Start()
@@ -96,7 +91,6 @@ namespace ParallelRoadTool
                     _mainPanel.m_parallel.isChecked = false;
                 }
 
-                Initialize();
                 SubscribeToUiEvents();
 
                 DebugUtils.Log("Initialized");
@@ -180,8 +174,7 @@ namespace ParallelRoadTool
         private void MainPanelOnOnNetworksConfigurationChanged(object sender, NetworksConfigurationChangedEventArgs e)
         {
             DebugUtils.Log("ParallelRoadTool.MainPanelOnOnNetworksConfigurationChanged()");
-            SelectedRoadTypes = e.NetworkConfigurations.ToList();
-            // TODO: NetworksCount should be reworked
+            SelectedRoadTypes = e.NetworkConfigurations.ToList();            
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
         }
 
