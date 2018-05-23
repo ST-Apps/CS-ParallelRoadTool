@@ -51,13 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Detours\NetManagerDetour.cs" />
-    <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
-    <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
+    <Compile Include="NetTypeItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="OptionsKeymapping.cs" />
-    <Compile Include="OptionsPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
@@ -67,12 +65,14 @@
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourceLoader.cs" />
-    <Compile Include="UIMainWindow.cs" />
-    <Compile Include="UI\ParallelRoadToolUIPanel.cs" />
+    <Compile Include="UI\UIMainWindow.cs" />
+    <Compile Include="UI\UINetList.cs" />
+    <Compile Include="UI\UINetTypeItem.cs" />
     <Compile Include="UI\UINetTypeOption.cs" />
     <Compile Include="UI\Base\UIDropDownTextFieldOption.cs" />
     <Compile Include="UI\Base\UIOption.cs" />
     <Compile Include="UI\Base\UIUtil.cs" />
+    <Compile Include="UI\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Anarchy.png" />
@@ -87,6 +87,21 @@
     <EmbeddedResource Include="Icons\BendingPressed.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Icons\Parallel.png" />
+    <EmbeddedResource Include="Icons\ParallelDisabled.png" />
+    <EmbeddedResource Include="Icons\ParallelFocused.png" />
+    <EmbeddedResource Include="Icons\ParallelHovered.png" />
+    <EmbeddedResource Include="Icons\ParallelPressed.png" />
+    <EmbeddedResource Include="Icons\Remove.png" />
+    <EmbeddedResource Include="Icons\RemoveDisabled.png" />
+    <EmbeddedResource Include="Icons\RemoveFocused.png" />
+    <EmbeddedResource Include="Icons\RemoveHovered.png" />
+    <EmbeddedResource Include="Icons\RemovePressed.png" />
+    <EmbeddedResource Include="Icons\Add.png" />
+    <EmbeddedResource Include="Icons\AddDisabled.png" />
+    <EmbeddedResource Include="Icons\AddFocused.png" />
+    <EmbeddedResource Include="Icons\AddHovered.png" />
+    <EmbeddedResource Include="Icons\AddPressed.png" />
     <Content Include="Icons\DragCursor.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

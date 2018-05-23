@@ -8,10 +8,7 @@ namespace ParallelRoadTool.UI
     {
         public float Offset = 15f;
         
-        public Action OnSelectionChangedCallback { private get; set; }
-        public Action OnHorizontalOffsetChangedCallback { private get; set; }
-        // TODO: vertical offset support for stacked roads
-        public Action OnVerticalOffsetChangedCallback { private get; set; }
+        public Action OnChangedCallback { private get; set; }
         public Action OnDeleteButtonCallback { private get; set; }
 
         public NetInfo SelectedNetInfo { get; private set; }
@@ -28,32 +25,34 @@ namespace ParallelRoadTool.UI
 
         protected override bool PopulateDropDown()
         {
-            DropDown.items = ParallelRoadTool.AvailableRoadTypes
+            return false;
+            /*DropDown.items = ParallelRoadTool.AvailableRoadTypes
                 .Select(ni => ni.GenerateBeautifiedNetName()).ToArray();
             DropDown.selectedIndex = 0;
 
-            TextField.text = $"{Offset}";
+            TextField.text = $"{HorizontalOffset}";
 
             DebugUtils.Log($"UINetTypeOption.PopulateDropDown - Loaded {DropDown.items.Length} items in dropdown.");
 
             return true;
+            */
         }
 
         protected override void OnSelectionChanged(int index)
         {
-            SelectedNetInfo = ParallelRoadTool.AvailableRoadTypes[index];
+            //SelectedNetInfo = ParallelRoadTool.AvailableRoadTypes[index];
 
             DebugUtils.Log($"UINetTypeOption.OnSelectionChanged - Selected net info {SelectedNetInfo.name}");
 
-            OnSelectionChangedCallback?.Invoke();
+            OnChangedCallback?.Invoke();
         }
 
         protected override void OnTextChanged(string value)
         {            
             if (!float.TryParse(value, out Offset)) return;
-            DebugUtils.Log($"UINetTypeOption.OnTextChanged - Selected offset {Offset}");
+            DebugUtils.Log($"UINetTypeOption.OnTextChanged - Selected HorizontalOffset {Offset}");
 
-            OnHorizontalOffsetChangedCallback?.Invoke();
+            OnChangedCallback?.Invoke();
         }
 
         protected override void OnDeleteButtonClicked()

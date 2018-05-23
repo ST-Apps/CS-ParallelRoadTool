@@ -2,7 +2,7 @@
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ParallelRoadTool
+namespace ParallelRoadTool.UI
 {
     public class UIMainWindow : UIPanel
     {
@@ -18,36 +18,44 @@ namespace ParallelRoadTool
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             isVisible = false;
+            size = new Vector2(450, 280);
+            padding = new RectOffset(8, 8, 8, 8);
+            autoLayoutPadding = new RectOffset(0, 0, 0, 4);
 
-            var dragHandle = AddUIComponent<UIDragHandle>();
-            dragHandle.target = parent;
-            dragHandle.relativePosition = Vector3.zero;
-            dragHandle.size = size;
-            dragHandle.SendToBack();
-
-            // Control panel
             var label = AddUIComponent<UILabel>();
             label.name = "PRT_TitleLabel";
             label.textScale = 0.9f;
-            label.text = "Parallel Road Tool";
-            label.relativePosition = new Vector2(8, 8);
+            label.text = "Parallel Road Tool 7";
+            label.autoSize = false;
+            label.width = 450;
             label.SendToBack();
+
+            var dragHandle = label.AddUIComponent<UIDragHandle>();
+            dragHandle.target = this;
+            dragHandle.relativePosition = Vector3.zero;
+            dragHandle.size = label.size;
+ 
+            autoFitChildrenVertically = true;
+            autoLayout = true;
+            autoLayoutDirection = LayoutDirection.Vertical;
 
             absolutePosition = new Vector3(savedWindowX.value, savedWindowY.value);
 
-            DebugUtils.Log("UIMainWindow created");
+            OnPositionChanged();
+            DebugUtils.Log($"UIMainWindow created {size} | {position}");
         }
 
         public override void Update()
         {
-            isVisible = ParallelRoadTool.Instance.NetTool.enabled;
-
+            if (ParallelRoadTool.Instance != null)
+                isVisible = ParallelRoadTool.Instance.IsToolActive();
+       
             base.Update();
         }
-
+ 
         protected override void OnPositionChanged()
-        {
-            var resolution = GetUIView().GetScreenResolution();
+        {            
+            var resolution = GetUIView().GetScreenResolution();            
 
             if (absolutePosition.x == -1000)
                 absolutePosition = new Vector2((resolution.x - width) / 2, (resolution.y - height) / 2);
@@ -56,10 +64,11 @@ namespace ParallelRoadTool
                 (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
                 (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
+            DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
+
             savedWindowX.value = (int) absolutePosition.x;
             savedWindowY.value = (int) absolutePosition.y;
-
-            base.OnPositionChanged();
         }
+ 
     }
 }

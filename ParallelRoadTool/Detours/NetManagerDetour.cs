@@ -32,7 +32,7 @@ namespace ParallelRoadTool.Detours
         public static int NetworksCount
         {
             set
-            {                
+            {
                 _endNodeId = new ushort?[value];
                 _clonedEndNodeId = new ushort?[value];
                 _startNodeId = new ushort?[value];
@@ -140,10 +140,10 @@ namespace ParallelRoadTool.Detours
                 var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road
-                var selectedNetInfo = currentRoadInfos.First ?? info;
+                var selectedNetInfo = currentRoadInfos.NetInfo ?? info;
                 DebugUtils.Log($"Using netInfo {selectedNetInfo.name}");
 
-                var offset = currentRoadInfos.Second;
+                var offset = currentRoadInfos.HorizontalOffset;
                 DebugUtils.Log($"Using offset {offset}");
 
                 // Get original nodes to clone them

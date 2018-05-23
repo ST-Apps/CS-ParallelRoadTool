@@ -7,7 +7,7 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        public const string version = "0.0.1";
+        public const string Version = "0.0.1";
 
         public ModInfo()
         {
@@ -18,12 +18,12 @@ namespace ParallelRoadTool
             }
             catch (Exception e)
             {
-                DebugUtils.Log("Could load/create the setting file.");
+                DebugUtils.Log("Could not load/create the setting file.");
                 DebugUtils.LogException(e);
             }
         }
 
-        public string Name => "Parallel Road Tool " + version;
+        public string Name => "Parallel Road Tool " + Version;
 
         public string Description =>
             "This mod adds the ability to automatically create a parallel network of any kind while drawing a road";
