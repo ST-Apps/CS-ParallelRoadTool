@@ -220,12 +220,21 @@ namespace ParallelRoadTool.Detours
                 //    Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                 //    Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
 
-                startDirection = new Vector3(-startDirection.x, startDirection.y, -startDirection.z);
-                endDirection = new Vector3(-endDirection.x, endDirection.y, -endDirection.z);
-
-                DebugUtils.Log($"[{invert}] {startDirection} | {endDirection}");
-
-                // TODO: testing inverted roads (working on straight roads only for now)
+                // TODO: testing inverted roads
+                if (startDirection == -endDirection)
+                {
+                    // Straight segment, we invert both directions
+                    startDirection = -startDirection;
+                    endDirection = -endDirection;
+                }
+                else
+                {
+                    // Curve, we need to swap start and end direction
+                    var tmpDirection = startDirection;
+                    startDirection = endDirection;
+                    endDirection = tmpDirection;
+                }                
+                
                 result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newEndNodeId, newStartNodeId, 
                     startDirection, endDirection,
                     Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
