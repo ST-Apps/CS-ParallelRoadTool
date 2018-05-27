@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
+using FineRoadTool;
 using ParallelRoadTool.Redirection;
 using UnityEngine;
 
@@ -76,6 +77,9 @@ namespace ParallelRoadTool.Detours
                                   (isClockwise ? -1 : 1) * direction.x);
             offsetPoint.y = point.y;
 
+            // TODO: testing vertical offset for stacking roads
+            // var offsetPoint = new Vector3(point.x, point.y + distance, point.z);
+
             return offsetPoint;
         }
 
@@ -137,12 +141,18 @@ namespace ParallelRoadTool.Detours
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
                 endDirection, buildIndex, modifiedIndex, invert);
 
+            // TODO: testing upgrade-mode bugfixing
+            if (Singleton<NetTool>.instance.m_mode == NetTool.Mode.Upgrade) return result;
+
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
             {
                 var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road
                 var selectedNetInfo = currentRoadInfos.NetInfo ?? info;
+                // TODO: testing vertical offset for stacking roads (loading elevated netinfo when possible)
+                // selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+
                 DebugUtils.Log($"Using netInfo {selectedNetInfo.name}");
 
                 var offset = currentRoadInfos.HorizontalOffset;
@@ -207,8 +217,28 @@ namespace ParallelRoadTool.Detours
                 _clonedStartNodeId[i] = newStartNodeId;
 
                 // Create the segment between the two cloned nodes
-                result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newStartNodeId,
-                    newEndNodeId, startDirection, endDirection,
+                //result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newStartNodeId,
+                //    newEndNodeId, startDirection, endDirection,
+                //    Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
+                //    Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
+
+                // TODO: testing inverted roads
+                /* if (startDirection == -endDirection)
+                {
+                    // Straight segment, we invert both directions
+                    startDirection = -startDirection;
+                    endDirection = -endDirection;
+                }
+                else
+                {
+                    // Curve, we need to swap start and end direction
+                    var tmpDirection = startDirection;
+                    startDirection = endDirection;
+                    endDirection = tmpDirection;
+                }  */              
+                
+                result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newEndNodeId, newStartNodeId, 
+                    startDirection, endDirection,
                     Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                     Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
             }
