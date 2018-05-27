@@ -6,7 +6,7 @@ namespace ParallelRoadTool.UI
 {
     public class UIOptionsPanel : UIPanel
     {
-        public UICheckBox ToolToggleButton;
+        
 
         public override void Start()
         {
@@ -22,13 +22,14 @@ namespace ParallelRoadTool.UI
             autoLayout = true;
             autoSize = false;
 
+            /* Example
             ToolToggleButton = UIUtil.CreateCheckBox(this, "Parallel", "Toggle parallel road tool", false);
             ToolToggleButton.eventCheckChanged += (component, value) =>
             {
                 UpdateOptions();
-            };
-            //AddCheckBox("Anarchy", "Toggle parallel road tool", false);
-            //AddCheckBox("Anarchy", "Toggle parallel road tool", false);
+            };*/
+            //UIUtil.CreateCheckBox("Anarchy", "Toggle parallel road tool", false);
+            //UIUtil.CreateCheckBox("Anarchy", "Toggle parallel road tool", false);
 
             DebugUtils.Log($"UIOptionsPanel created {size} | {position}");
 
@@ -37,25 +38,12 @@ namespace ParallelRoadTool.UI
 
         public override void Update()
         {
-            /*var sel = ParallelRoadTool.instance.NetTool.m_prefab;
-            if (netToolSelection != sel)
-            {
-                netToolSelection = sel;
-                m_nettoolSelection.text = netToolSelection.GenerateBeautifiedNetName();
-                //m_nettoolSelection.
-                //AddMoreNetworks.relativePosition = new Vector2(-20, m_nettoolSelection.width);
-            }
-            size = new Vector2(400 + 4 * 8, 80 + 40 * m_networks.Count);
-            base.Update();
-            */
+
         }
 
         private void UpdateOptions()
         {
             DebugUtils.Log("UIOptionsPanel.UpdateOptions()");
-
-            ParallelRoadTool.IsParallelEnabled = ToolToggleButton.isChecked;
-
         }
     }
 }

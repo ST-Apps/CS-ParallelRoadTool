@@ -25,7 +25,7 @@ namespace ParallelRoadTool.UI
             var label = AddUIComponent<UILabel>();
             label.name = "PRT_TitleLabel";
             label.textScale = 0.9f;
-            label.text = "Parallel Road Tool 7";
+            label.text = "Parallel Road Tool";
             label.autoSize = false;
             label.width = 450;
             label.SendToBack();

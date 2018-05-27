@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ColossalFramework.UI;
+using ParallelRoadTool.UI.Base;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -36,17 +37,22 @@ namespace ParallelRoadTool.UI
             {
                 DebugUtils.Log("Adding item to list");
 
-                // get sum of current offsets
+                // get offset of previuous item
                 float prevOffset = 0;
                 if (List.Any())
                     prevOffset = List.Last().HorizontalOffset;
 
-                var netInfo = PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name);
+                NetInfo netInfo = null;
+                if (_currentTool.DropDown.selectedIndex == 0)
+                    netInfo = PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name);
+                else
+                    netInfo = ParallelRoadTool.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
 
                 DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
 
                 var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2);
                 List.Add(item);
+                //List.Insert(0, item);
 
                 RenderList();
 
@@ -61,6 +67,7 @@ namespace ParallelRoadTool.UI
         {
             _currentTool.NetInfo = tool;
             _currentTool.RenderItem();
+            
         }
 
         public void Changed()
@@ -87,8 +94,8 @@ namespace ParallelRoadTool.UI
                 var comp = AddUIComponent<UINetTypeItem>();
                 comp.NetInfo = item.NetInfo;
                 comp.HorizontalOffset = item.HorizontalOffset;
+                comp.VerticalOffset = item.VerticalOffset;
                 comp.Index = index++;
-                //comp.RenderItem();
 
                 comp.OnDeleteCallback = () =>
                 {
@@ -100,11 +107,16 @@ namespace ParallelRoadTool.UI
 
                 comp.OnChangedCallback = () =>
                 {
-                    //item.HorizontalOffset = comp.HorizontalOffset;
                     var i = List[comp.Index];
                     i.HorizontalOffset = comp.HorizontalOffset;
+                    i.VerticalOffset = comp.VerticalOffset;
 
-                    DebugUtils.Message($"OnChangedCallback {comp.Index} now at {item.HorizontalOffset}");
+                    if (comp.DropDown.selectedIndex == 0)
+                        i.NetInfo = PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name);
+                    else
+                        i.NetInfo = ParallelRoadTool.AvailableRoadTypes[comp.DropDown.selectedIndex];
+
+                    DebugUtils.Message($"OnChangedCallback item #{comp.Index}, net={i.NetInfo.GenerateBeautifiedNetName()}, HorizontalOffset={item.HorizontalOffset}, VerticalOffset={item.VerticalOffset}");
 
                     Changed();
                 };
