@@ -1,16 +1,21 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
+using ParallelRoadTool.UI.Base;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
     public class UIMainWindow : UIPanel
     {
-        public static readonly SavedInt savedWindowX =
+        private static readonly SavedInt savedWindowX =
             new SavedInt("windowX", ParallelRoadTool.SettingsFileName, -1000, true);
 
-        public static readonly SavedInt savedWindowY =
+        private static readonly SavedInt savedWindowY =
             new SavedInt("windowY", ParallelRoadTool.SettingsFileName, -1000, true);
+
+        private UIOptionsPanel _mainPanel;
+        private UINetList _netList;
+        private UICheckBox _toolToggleButton;
 
         public override void Start()
         {
@@ -40,6 +45,40 @@ namespace ParallelRoadTool.UI
             autoLayoutDirection = LayoutDirection.Vertical;
 
             absolutePosition = new Vector3(savedWindowX.value, savedWindowY.value);
+
+            _mainPanel = AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
+            _netList = AddUIComponent(typeof(UINetList)) as UINetList;
+            if (_netList != null)
+            {
+                _netList.List = ParallelRoadTool.SelectedRoadTypes;
+                _netList.OnChangedCallback = () =>
+                {
+                    DebugUtils.Log($"_netList.OnChangedCallback (selected {ParallelRoadTool.SelectedRoadTypes.Count} nets)");
+                    // TODO: callback to ParallelRoadTool -> NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+                };
+            }
+
+            var space = AddUIComponent<UIPanel>();
+            space.size = new Vector2(1, 1);
+
+            // Add main tool button to road options panel
+            if (_toolToggleButton != null) return;
+
+            var roadsOptionPanel = UIUtil.FindComponent<UIComponent>("RoadsOptionPanel", null, UIUtil.FindOptions.NameContains);
+            if (roadsOptionPanel == null || !roadsOptionPanel.gameObject.activeInHierarchy) return;
+            var button = UIUtil.FindComponent<UICheckBox>("PRT_Parallel");
+            if (button != null)
+                Destroy(button);
+            _toolToggleButton = UIUtil.CreateCheckBox(roadsOptionPanel, "Parallel", "Parallel Road Tool", false);
+            _toolToggleButton.relativePosition = new Vector3(166, 38);
+
+            DebugUtils.Log($"Assigning event to _toolToggleButton checkbox.");
+
+            _toolToggleButton.eventCheckChanged += (component, value) =>
+            {
+                DebugUtils.Log("tool toggle changed");
+                // TODO: callback to -> ParallelRoadTool.IsParallelEnabled = _toolToggleButton.isChecked;
+            };
 
             OnPositionChanged();
             DebugUtils.Log($"UIMainWindow created {size} | {position}");

@@ -16,7 +16,6 @@ namespace ParallelRoadTool
     /// TODO: Drag & drop is not as smooth as before.
     /// TODO: Window should be also visible when a network is selected, we can't rely on shortcuts only.
     /// TODO: Removing a network while continuing a segment leads to wrong connections.
-    /// TODO: When updating a road with the tool enabled, weird stuff happens. We must disable the tool during upgrade.
     /// TODO: Move UI to an event-based system again.
     /// </summary>
     public class ParallelRoadTool : MonoBehaviour
@@ -25,18 +24,15 @@ namespace ParallelRoadTool
 
         public static ParallelRoadTool Instance;
 
-        public static List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
-        public static List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
+        public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
+        public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
 
-        private UIOptionsPanel _mainPanel;
-        private UIMainWindow _mainWindow;
-        private UINetList _netList;
-        public UICheckBox ToolToggleButton;
+        private UIMainWindow _mainWindow;                
 
-        public NetTool NetTool;
-        public NetInfo NetToolSelection;
+        private NetTool _netTool;
+        private NetInfo _netToolSelection;
 
-        public static bool IsParallelEnabled
+        private static bool IsParallelEnabled
         {
             get => NetManagerDetour.IsDeployed();
 
@@ -58,7 +54,9 @@ namespace ParallelRoadTool
 
         public bool IsToolActive()
         {
-            return ToolToggleButton.isChecked && NetTool.enabled;
+            // DebugUtils.Log($"IsToolActive: {_toolToggleButton.isChecked} && {_netTool.enabled}");
+            // TODO: return _toolToggleButton.isChecked && _netTool.enabled;
+            return true;
         }
 
         private void AdjustNetOffset(float step)
@@ -71,19 +69,18 @@ namespace ParallelRoadTool
                 index++;
             }
 
-            _netList.RenderList();
+            //TODO: _netList.RenderList();
         }
 
         #region Unity
 
         public void Start()
         {
-
             // Find NetTool and deploy
             try
             {
-                NetTool = FindObjectOfType<NetTool>();
-                if (NetTool == null)
+                _netTool = FindObjectOfType<NetTool>();
+                if (_netTool == null)
                 {
                     DebugUtils.Log("Net Tool not found");
                     enabled = false;
@@ -127,41 +124,6 @@ namespace ParallelRoadTool
 
             DebugUtils.Log("Adding UI components");
             _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
-            if (_mainWindow != null)
-            {
-                _mainPanel = _mainWindow.AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
-                _netList = _mainWindow.AddUIComponent(typeof(UINetList)) as UINetList;
-                if (_netList != null)
-                {
-                    _netList.List = SelectedRoadTypes;
-                    _netList.OnChangedCallback = () =>
-                    {
-                        DebugUtils.Log($"_netList.OnChangedCallback (selected {SelectedRoadTypes.Count} nets)");
-                        NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
-                    };
-                }
-
-                var space = _mainWindow.AddUIComponent<UIPanel>();
-                space.size = new Vector2(1, 1);
-            }
-
-            // Add main tool button to road options panel
-            if (ToolToggleButton == null)
-            {
-                UIComponent roadsOptionPanel = UIUtil.FindComponent<UIComponent>("RoadsOptionPanel", null, UIUtil.FindOptions.NameContains);
-                if (roadsOptionPanel == null || !roadsOptionPanel.gameObject.activeInHierarchy) return;
-                UICheckBox button = UIUtil.FindComponent<UICheckBox>("PRT_Parallel");
-                if (button != null)
-                    UIView.Destroy(button);
-                ToolToggleButton = UIUtil.CreateCheckBox(roadsOptionPanel, "Parallel", "Parallel Road Tool", false);
-                ToolToggleButton.relativePosition = new Vector3(166, 38);
-                ToolToggleButton.eventCheckChanged += (component, value) =>
-                {
-                    DebugUtils.Log("tool toggle changed");
-                    ParallelRoadTool.IsParallelEnabled = ToolToggleButton.isChecked;
-                };
-            }
-            
         }
 
         public void OnDestroy()
@@ -179,16 +141,18 @@ namespace ParallelRoadTool
 
                 // Checking key presses
                 if (OptionsKeymapping.toggleParallelRoads.IsPressed(e))
-                    ToolToggleButton.isChecked = !ToolToggleButton.isChecked;
+                {
+                    // TODO: _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
+                }
 
                 if (OptionsKeymapping.decreaseOffset.IsPressed(e)) AdjustNetOffset(-1f);
 
                 if (OptionsKeymapping.increaseOffset.IsPressed(e)) AdjustNetOffset(1f);
 
-                var currentSelectedNetwork = NetTool.m_prefab;
-                if (NetToolSelection == currentSelectedNetwork) return;
-                NetToolSelection = currentSelectedNetwork;
-                _netList.UpdateCurrrentTool(NetToolSelection);
+                var currentSelectedNetwork = _netTool.m_prefab;
+                if (_netToolSelection == currentSelectedNetwork) return;
+                _netToolSelection = currentSelectedNetwork;
+                // TODO: _netList.UpdateCurrrentTool(_netToolSelection);
             }
             catch (Exception e)
             {
