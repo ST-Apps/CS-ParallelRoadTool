@@ -13,9 +13,7 @@ namespace ParallelRoadTool
     ///     Mod's "launcher" class.
     ///     It also acts as a "controller" to connect the mod with its UI.
     ///
-    /// TODO: Drag & drop is not as smooth as before.
-    /// TODO: Window should be also visible when a network is selected, we can't rely on shortcuts only.
-    /// TODO: Removing a network while continuing a segment leads to wrong connections.    
+    /// TODO: Drag & drop is not as smooth as before.        
     /// </summary>
     public class ParallelRoadTool : MonoBehaviour
     {
@@ -27,15 +25,14 @@ namespace ParallelRoadTool
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
 
         private UIMainWindow _mainWindow;                
-        private NetTool _netTool;
-        private NetInfo _netToolSelection;
+        public static NetTool NetTool;        
 
         private bool _isToolActive;
 
         public bool IsToolActive
         {
             // TODO: checkbox outside main panel is not working, so we need to show the panel even if the tool has been disabled
-            get => /*_isToolActive &&*/ _netTool.enabled;
+            get => /*_isToolActive &&*/ NetTool.enabled;
 
             private set
             {
@@ -104,8 +101,8 @@ namespace ParallelRoadTool
             // Find NetTool and deploy
             try
             {
-                _netTool = FindObjectOfType<NetTool>();
-                if (_netTool == null)
+                NetTool = FindObjectOfType<NetTool>();
+                if (NetTool == null)
                 {
                     DebugUtils.Log("Net Tool not found");
                     enabled = false;
@@ -175,12 +172,7 @@ namespace ParallelRoadTool
 
                 if (OptionsKeymapping.decreaseOffset.IsPressed(e)) AdjustNetOffset(-1f);
 
-                if (OptionsKeymapping.increaseOffset.IsPressed(e)) AdjustNetOffset(1f);
-
-                var currentSelectedNetwork = _netTool.m_prefab;
-                if (_netToolSelection == currentSelectedNetwork) return;
-                _netToolSelection = currentSelectedNetwork;
-                _mainWindow.UpdateCurrrentTool(_netToolSelection);
+                if (OptionsKeymapping.increaseOffset.IsPressed(e)) AdjustNetOffset(1f);                
             }
             catch (Exception e)
             {

@@ -17,6 +17,7 @@ namespace ParallelRoadTool.UI
         private UIOptionsPanel _mainPanel;
         private UINetList _netList;
         private UICheckBox _toolToggleButton;
+        private NetInfo _netToolSelection;
 
         #region Events/Callbacks
 
@@ -54,11 +55,6 @@ namespace ParallelRoadTool.UI
         public void RenderNetList()
         {
             _netList.RenderList();
-        }
-
-        public void UpdateCurrrentTool(NetInfo tool)
-        {
-            _netList.UpdateCurrrentTool(tool);
         }
 
         public void ToggleToolCheckbox()
@@ -163,6 +159,17 @@ namespace ParallelRoadTool.UI
 
             SavedWindowX.value = (int) absolutePosition.x;
             SavedWindowY.value = (int) absolutePosition.y;
+        }
+
+        public void OnGUI()
+        {
+            var currentSelectedNetwork = ParallelRoadTool.NetTool.m_prefab;
+
+            DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
+
+            if (_netToolSelection == currentSelectedNetwork) return;
+            _netToolSelection = currentSelectedNetwork;
+            _netList.UpdateCurrentTool(currentSelectedNetwork);
         }
 
         #endregion

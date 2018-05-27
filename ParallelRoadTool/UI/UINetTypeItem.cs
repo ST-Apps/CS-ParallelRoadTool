@@ -13,22 +13,22 @@ namespace ParallelRoadTool.UI
         private const int LabelWidth = 230;
         private const float ColumnPadding = 8f;
         private const int ReverseButtonWidth = 36;
-
-        public UILabel Label;
-        protected UITextField HorizontalOffsetField { get; private set; }
-        protected UITextField VerticalOffsetField { get; private set; }
-        protected UIButton DeleteButton { get; private set; }
-        protected UIButton AddButton { get; private set; }
-        public UICheckBox ReverseCheckbox;
-        public UIDropDown DropDown { get; private set; }
-
-        public NetInfo NetInfo;
-        public bool IsCurrentItem { get; set; } = false;
         public float HorizontalOffset;
-        public float VerticalOffset;
         public int Index;
 
-        public bool populated { get; set; } = false;
+        public NetInfo NetInfo;
+        public float VerticalOffset;
+
+        private UILabel Label { get; set; }
+        private UITextField HorizontalOffsetField { get; set; }
+        private UITextField VerticalOffsetField { get; set; }
+        private UIButton DeleteButton { get; set; }
+        private UIButton AddButton { get; set; }
+        public UICheckBox ReverseCheckbox { get; set; }
+        public UIDropDown DropDown { get; private set; }
+        public bool IsCurrentItem { get; set; }
+
+        private bool Populated { get; set; }
 
         public Action OnChangedCallback { private get; set; }
         public Action OnDeleteCallback { private get; set; }
@@ -40,7 +40,7 @@ namespace ParallelRoadTool.UI
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             color = new Color32(255, 255, 255, 255);
-            size = new Vector2(450 - 8*2 - 4*2, 40);
+            size = new Vector2(450 - 8 * 2 - 4 * 2, 40);
 
 
             DropDown = UIUtil.CreateDropDown(this);
@@ -50,14 +50,17 @@ namespace ParallelRoadTool.UI
 
             ReverseCheckbox = UIUtil.CreateCheckBox(this, "Reverse", "Toggle reverse road", false);
             ReverseCheckbox.relativePosition = new Vector3(LabelWidth + ColumnPadding, 2);
+            ReverseCheckbox.eventCheckChanged += ReverseCheckboxOnEventCheckChanged;
 
             HorizontalOffsetField = UIUtil.CreateTextField(this);
-            HorizontalOffsetField.relativePosition = new Vector3(LabelWidth + 2 * ColumnPadding + ReverseButtonWidth, 10);
+            HorizontalOffsetField.relativePosition =
+                new Vector3(LabelWidth + 2 * ColumnPadding + ReverseButtonWidth, 10);
             HorizontalOffsetField.width = TextFieldWidth;
             HorizontalOffsetField.eventTextSubmitted += HorizontalOffsetField_eventTextSubmitted;
 
             VerticalOffsetField = UIUtil.CreateTextField(this);
-            VerticalOffsetField.relativePosition = new Vector3(LabelWidth + 3*ColumnPadding + ReverseButtonWidth + TextFieldWidth, 10);
+            VerticalOffsetField.relativePosition =
+                new Vector3(LabelWidth + 3 * ColumnPadding + ReverseButtonWidth + TextFieldWidth, 10);
             VerticalOffsetField.width = TextFieldWidth;
             VerticalOffsetField.eventTextSubmitted += VerticalOffsetField_eventTextSubmitted;
 
@@ -73,7 +76,8 @@ namespace ParallelRoadTool.UI
             DeleteButton = UIUtil.CreateUiButton(this, string.Empty, "Remove network", new Vector2(36, 36), "Remove");
             DeleteButton.zOrder = 0;
             DeleteButton.textScale = 0.8f;
-            DeleteButton.relativePosition = new Vector3(2 * TextFieldWidth + LabelWidth + ReverseButtonWidth + 3 * ColumnPadding, 0);
+            DeleteButton.relativePosition =
+                new Vector3(2 * TextFieldWidth + LabelWidth + ReverseButtonWidth + 3 * ColumnPadding, 0);
 
             DeleteButton.eventClicked += DeleteButton_eventClicked;
 
@@ -81,19 +85,20 @@ namespace ParallelRoadTool.UI
             AddButton.zOrder = 1;
             AddButton.isVisible = false;
             AddButton.textScale = 0.8f;
-            AddButton.relativePosition = new Vector3(2*TextFieldWidth + LabelWidth + ReverseButtonWidth + 3 * ColumnPadding, 0);
+            AddButton.relativePosition =
+                new Vector3(2 * TextFieldWidth + LabelWidth + ReverseButtonWidth + 3 * ColumnPadding, 0);
 
             AddButton.eventClicked += AddButton_eventClicked;
 
             RenderItem();
         }
 
-        public void PopulateDropDown()
+        private void PopulateDropDown()
         {
             DropDown.items = ParallelRoadTool.AvailableRoadTypes
                 .Select(ni => ni.GenerateBeautifiedNetName()).ToArray();
             DropDown.selectedIndex = 0;
-            populated = true;
+            Populated = true;
 
             DebugUtils.Log($"UINetTypeItem.PopulateDropDown - Loaded {DropDown.items.Length} items in dropdown.");
         }
@@ -104,18 +109,17 @@ namespace ParallelRoadTool.UI
             if (NetInfo != null)
                 Label.text = NetInfo.GenerateBeautifiedNetName();
 
-            if (!populated) PopulateDropDown();
+            if (!Populated) PopulateDropDown();
 
             HorizontalOffsetField.text = HorizontalOffset.ToString(CultureInfo.InvariantCulture);
             VerticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
             if (!IsCurrentItem)
             {
-                int index = ParallelRoadTool.AvailableRoadTypes.FindIndex(ni => ni != null && ni.name == NetInfo.name);
+                var index = ParallelRoadTool.AvailableRoadTypes.FindIndex(ni => ni != null && ni.name == NetInfo.name);
                 DebugUtils.Log($"selecting index {index}");
                 DropDown.selectedIndex = index;
+                return;
             }
-
-            if (!IsCurrentItem) return;
 
             DeleteButton.isVisible = false;
             HorizontalOffsetField.isVisible = false;
@@ -124,8 +128,7 @@ namespace ParallelRoadTool.UI
             DropDown.isVisible = false;
             Label.isVisible = true;
             AddButton.isVisible = true;
-            //Label.text = $"Current: {Label.text}";
-            Label.text = "Same as selected";
+            Label.text = $"Same as selected";
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)
@@ -146,6 +149,11 @@ namespace ParallelRoadTool.UI
             OnChangedCallback?.Invoke();
         }
 
+        private void ReverseCheckboxOnEventCheckChanged(UIComponent component, bool value)
+        {
+            OnChangedCallback?.Invoke();
+        }
+
         private void AddButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             DebugUtils.Log("UINetTypeItem.AddButton_eventClicked");
@@ -157,6 +165,5 @@ namespace ParallelRoadTool.UI
             DebugUtils.Log("UINetTypeItem.DeleteButton_eventClicked");
             OnDeleteCallback?.Invoke();
         }
-
     }
 }
