@@ -28,9 +28,16 @@ namespace ParallelRoadTool
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
 
         private UIMainWindow _mainWindow;                
-
         private NetTool _netTool;
         private NetInfo _netToolSelection;
+
+        private bool _isToolActive;
+
+        public bool IsToolActive
+        {
+            get => _isToolActive && _netTool.enabled;
+            private set => _isToolActive = value;
+        }
 
         private static bool IsParallelEnabled
         {
@@ -52,12 +59,33 @@ namespace ParallelRoadTool
             }
         }
 
-        public bool IsToolActive()
+        #region Handlers
+
+        private void UnsubscribeToUIEvents()
         {
-            // DebugUtils.Log($"IsToolActive: {_toolToggleButton.isChecked} && {_netTool.enabled}");
-            // TODO: return _toolToggleButton.isChecked && _netTool.enabled;
-            return true;
+            _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
+            _mainWindow.OnNetworksListCountChanged -= MainWindowOnOnNetworksListCountChanged;
         }
+
+        private void SubscribeToUIEvents()
+        {
+            _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
+            _mainWindow.OnNetworksListCountChanged += MainWindowOnOnNetworksListCountChanged;
+        }
+
+        private void MainWindowOnOnNetworksListCountChanged(object sender, System.EventArgs e)
+        {
+            NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+        }        
+
+        private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
+        {
+            IsParallelEnabled = value;
+        }
+
+        #endregion
+
+        #region Utils
 
         private void AdjustNetOffset(float step)
         {
@@ -69,8 +97,10 @@ namespace ParallelRoadTool
                 index++;
             }
 
-            //TODO: _netList.RenderList();
+            _mainWindow.RenderNetList();            
         }
+
+        #endregion
 
         #region Unity
 
@@ -107,6 +137,17 @@ namespace ParallelRoadTool
 
                 NetManagerDetour.Deploy();
 
+                // Main UI init
+                var view = UIView.GetAView();
+                _mainWindow = view.FindUIComponent<UIMainWindow>("PRT_MainWindow");
+                if (_mainWindow != null)
+                    Destroy(_mainWindow);
+
+                DebugUtils.Log("Adding UI components");
+                _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
+
+                SubscribeToUIEvents();
+
                 DebugUtils.Log("Initialized");
             }
             catch (Exception e)
@@ -114,20 +155,12 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Start failed");
                 DebugUtils.LogException(e);
                 enabled = false;
-            }
-
-            // Main UI init
-            var view = UIView.GetAView();
-            _mainWindow = view.FindUIComponent<UIMainWindow>("PRT_MainWindow");
-            if (_mainWindow != null)
-                Destroy(_mainWindow);
-
-            DebugUtils.Log("Adding UI components");
-            _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
+            }            
         }
 
         public void OnDestroy()
         {
+            UnsubscribeToUIEvents();
             NetManagerDetour.Revert();
             IsParallelEnabled = false;
         }
@@ -142,7 +175,7 @@ namespace ParallelRoadTool
                 // Checking key presses
                 if (OptionsKeymapping.toggleParallelRoads.IsPressed(e))
                 {
-                    // TODO: _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
+                    _mainWindow.ToggleToolCheckbox();
                 }
 
                 if (OptionsKeymapping.decreaseOffset.IsPressed(e)) AdjustNetOffset(-1f);
@@ -152,7 +185,7 @@ namespace ParallelRoadTool
                 var currentSelectedNetwork = _netTool.m_prefab;
                 if (_netToolSelection == currentSelectedNetwork) return;
                 _netToolSelection = currentSelectedNetwork;
-                // TODO: _netList.UpdateCurrrentTool(_netToolSelection);
+                _mainWindow.UpdateCurrrentTool(_netToolSelection);
             }
             catch (Exception e)
             {

@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using System;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.UI.Base;
 using UnityEngine;
@@ -7,15 +8,62 @@ namespace ParallelRoadTool.UI
 {
     public class UIMainWindow : UIPanel
     {
-        private static readonly SavedInt savedWindowX =
+        private static readonly SavedInt SavedWindowX =
             new SavedInt("windowX", ParallelRoadTool.SettingsFileName, -1000, true);
 
-        private static readonly SavedInt savedWindowY =
+        private static readonly SavedInt SavedWindowY =
             new SavedInt("windowY", ParallelRoadTool.SettingsFileName, -1000, true);
-
-        private UIOptionsPanel _mainPanel;
+        
         private UINetList _netList;
         private UICheckBox _toolToggleButton;
+
+        #region Events/Callbacks
+
+        public event PropertyChangedEventHandler<bool> OnParallelToolToggled;
+        public event EventHandler OnNetworksListCountChanged;
+
+        private void SubscribeToUIEvents()
+        {
+            _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;            
+        }
+
+        private void UnsubscribeToUIEvents()
+        {
+            _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
+        }
+
+        private void ToolToggleButtonOnEventCheckChanged(UIComponent component, bool value)
+        {
+            DebugUtils.Log("Tool toggle pressed.");
+            OnParallelToolToggled?.Invoke(component, value);
+        }
+
+        private void NetListOnChangedCallback()
+        {
+            DebugUtils.Log($"_netList.OnChangedCallback (selected {ParallelRoadTool.SelectedRoadTypes.Count} nets)");
+            OnNetworksListCountChanged?.Invoke(_netList, null);            
+        }
+
+        #endregion
+
+        #region Control
+
+        public void RenderNetList()
+        {
+            _netList.RenderList();
+        }
+
+        public void UpdateCurrrentTool(NetInfo tool)
+        {
+            _netList.UpdateCurrrentTool(tool);
+        }
+
+        public void ToggleToolCheckbox()
+        {
+            _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
+        }
+
+        #endregion
 
         public override void Start()
         {
@@ -44,18 +92,13 @@ namespace ParallelRoadTool.UI
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Vertical;
 
-            absolutePosition = new Vector3(savedWindowX.value, savedWindowY.value);
+            absolutePosition = new Vector3(SavedWindowX.value, SavedWindowY.value);
 
-            _mainPanel = AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
             _netList = AddUIComponent(typeof(UINetList)) as UINetList;
             if (_netList != null)
             {
                 _netList.List = ParallelRoadTool.SelectedRoadTypes;
-                _netList.OnChangedCallback = () =>
-                {
-                    DebugUtils.Log($"_netList.OnChangedCallback (selected {ParallelRoadTool.SelectedRoadTypes.Count} nets)");
-                    // TODO: callback to ParallelRoadTool -> NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
-                };
+                _netList.OnChangedCallback = NetListOnChangedCallback;
             }
 
             var space = AddUIComponent<UIPanel>();
@@ -71,23 +114,17 @@ namespace ParallelRoadTool.UI
                 Destroy(button);
             _toolToggleButton = UIUtil.CreateCheckBox(roadsOptionPanel, "Parallel", "Parallel Road Tool", false);
             _toolToggleButton.relativePosition = new Vector3(166, 38);
-
-            DebugUtils.Log($"Assigning event to _toolToggleButton checkbox.");
-
-            _toolToggleButton.eventCheckChanged += (component, value) =>
-            {
-                DebugUtils.Log("tool toggle changed");
-                // TODO: callback to -> ParallelRoadTool.IsParallelEnabled = _toolToggleButton.isChecked;
-            };
+            
+            SubscribeToUIEvents();
 
             OnPositionChanged();
             DebugUtils.Log($"UIMainWindow created {size} | {position}");
-        }
+        }        
 
         public override void Update()
         {
             if (ParallelRoadTool.Instance != null)
-                isVisible = ParallelRoadTool.Instance.IsToolActive();
+                isVisible = ParallelRoadTool.Instance.IsToolActive;
        
             base.Update();
         }
@@ -105,8 +142,8 @@ namespace ParallelRoadTool.UI
 
             DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
 
-            savedWindowX.value = (int) absolutePosition.x;
-            savedWindowY.value = (int) absolutePosition.y;
+            SavedWindowX.value = (int) absolutePosition.x;
+            SavedWindowY.value = (int) absolutePosition.y;
         }
  
     }

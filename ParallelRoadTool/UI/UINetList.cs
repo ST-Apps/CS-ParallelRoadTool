@@ -42,17 +42,14 @@ namespace ParallelRoadTool.UI
                 if (List.Any())
                     prevOffset = List.Last().HorizontalOffset;
 
-                NetInfo netInfo = null;
-                if (_currentTool.DropDown.selectedIndex == 0)
-                    netInfo = PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name);
-                else
-                    netInfo = ParallelRoadTool.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
+                var netInfo = _currentTool.DropDown.selectedIndex == 0 ? 
+                    PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name) : 
+                    ParallelRoadTool.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
 
                 DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
 
-                var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2);
+                var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0);
                 List.Add(item);
-                //List.Insert(0, item);
 
                 RenderList();
 
@@ -66,16 +63,15 @@ namespace ParallelRoadTool.UI
         public void UpdateCurrrentTool(NetInfo tool)
         {
             _currentTool.NetInfo = tool;
-            _currentTool.RenderItem();
-            
+            _currentTool.RenderItem();            
         }
 
-        public void Changed()
+        private void Changed()
         {
             OnChangedCallback?.Invoke();
         }
 
-        public void RenderList()
+        internal void RenderList()
         {
             // Remove items
             foreach (var child in _items)
@@ -110,11 +106,9 @@ namespace ParallelRoadTool.UI
                     var i = List[comp.Index];
                     i.HorizontalOffset = comp.HorizontalOffset;
                     i.VerticalOffset = comp.VerticalOffset;
-
-                    if (comp.DropDown.selectedIndex == 0)
-                        i.NetInfo = PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name);
-                    else
-                        i.NetInfo = ParallelRoadTool.AvailableRoadTypes[comp.DropDown.selectedIndex];
+                    i.NetInfo = comp.DropDown.selectedIndex == 0 ? 
+                        PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name) : 
+                        ParallelRoadTool.AvailableRoadTypes[comp.DropDown.selectedIndex];
 
                     DebugUtils.Message($"OnChangedCallback item #{comp.Index}, net={i.NetInfo.GenerateBeautifiedNetName()}, HorizontalOffset={item.HorizontalOffset}, VerticalOffset={item.VerticalOffset}");
 

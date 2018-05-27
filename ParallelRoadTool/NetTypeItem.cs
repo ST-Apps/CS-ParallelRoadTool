@@ -10,9 +10,8 @@ namespace ParallelRoadTool
         public NetInfo NetInfo;
         public float HorizontalOffset;
         public float VerticalOffset;
-
-        // TODO: remove default verticalOffset once implemented
-        public NetTypeItem(NetInfo netInfo, float horizontalOffset, float verticalOffset = 0)
+        
+        public NetTypeItem(NetInfo netInfo, float horizontalOffset, float verticalOffset)
         {
             NetInfo = netInfo;
             HorizontalOffset = horizontalOffset;
