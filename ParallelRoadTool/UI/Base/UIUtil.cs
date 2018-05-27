@@ -10,9 +10,85 @@ namespace ParallelRoadTool.UI.Base
 {
     public static class UIUtil
     {
+        public static readonly UITextureAtlas TextureAtlas = LoadResources();
+
         private const float COLUMN_PADDING = 5f;
         private const float TEXT_FIELD_WIDTH = 35f;
-        private static readonly string kSliderTemplate = "OptionsSliderTemplate";
+
+        [Flags]
+        public enum FindOptions
+        {
+            None = 0,
+            NameContains = 1 << 0
+        }
+
+        public static UIView uiRoot = null;
+
+        // some helper functions from https://github.com/bernardd/Crossings/blob/master/Crossings/UIUtils.cs
+        private static void FindUIRoot()
+        {
+            uiRoot = null;
+
+            foreach (UIView view in UIView.FindObjectsOfType<UIView>())
+            {
+                if (view.transform.parent == null && view.name == "UIView")
+                {
+                    uiRoot = view;
+                    break;
+                }
+            }
+        }
+
+        public static string GetTransformPath(Transform transform)
+        {
+            string path = transform.name;
+            Transform t = transform.parent;
+            while (t != null)
+            {
+                path = t.name + "/" + path;
+                t = t.parent;
+            }
+            return path;
+        }
+
+        public static T FindComponent<T>(string name, UIComponent parent = null, FindOptions options = FindOptions.None) where T : UIComponent
+        {
+            if (uiRoot == null)
+            {
+                FindUIRoot();
+                if (uiRoot == null)
+                {
+                    return null;
+                }
+            }
+
+            foreach (T component in UIComponent.FindObjectsOfType<T>())
+            {
+
+                bool nameMatches;
+                if ((options & FindOptions.NameContains) != 0) nameMatches = component.name.Contains(name);
+                else nameMatches = component.name == name;
+
+                if (!nameMatches) continue;
+
+                Transform parentTransform;
+                if (parent != null) parentTransform = parent.transform;
+                else parentTransform = uiRoot.transform;
+
+                Transform t = component.transform.parent;
+                while (t != null && t != parentTransform)
+                {
+                    t = t.parent;
+                }
+
+                if (t == null) continue;
+
+                return component;
+            }
+
+
+            return null;
+        }
 
         public static UIDropDown CreateDropDownTextFieldWithLabel(out UIButton deleteButton, out UITextField textField,
             UIComponent parent, string labelText, float width)
@@ -53,7 +129,7 @@ namespace ParallelRoadTool.UI.Base
             return dropDown;
         }
 
-        private static UITextField CreateTextField(UIComponent parent)
+        public static UITextField CreateTextField(UIComponent parent)
         {
             var textField = parent.AddUIComponent<UITextField>();
 
@@ -79,7 +155,7 @@ namespace ParallelRoadTool.UI.Base
         public static UIDropDown CreateDropDown(UIComponent parent)
         {
             var dropDown = parent.AddUIComponent<UIDropDown>();
-            dropDown.size = new Vector2(90f, 30f);
+            dropDown.size = new Vector2(250f, 40f);
             dropDown.listBackground = "GenericPanelLight";
             dropDown.itemHeight = 25;
             dropDown.itemHover = "ListItemHover";
@@ -88,7 +164,7 @@ namespace ParallelRoadTool.UI.Base
             dropDown.disabledBgSprite = "ButtonMenuDisabled";
             dropDown.hoveredBgSprite = "ButtonMenuHovered";
             dropDown.focusedBgSprite = "ButtonMenu";
-            dropDown.listWidth = 90;
+            dropDown.listWidth = 250;
             dropDown.listHeight = 300;
             dropDown.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
             dropDown.popupColor = new Color32(45, 52, 61, 255);
@@ -98,9 +174,10 @@ namespace ParallelRoadTool.UI.Base
             dropDown.verticalAlignment = UIVerticalAlignment.Middle;
             dropDown.horizontalAlignment = UIHorizontalAlignment.Left;
             dropDown.selectedIndex = 0;
-            dropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
+            dropDown.textFieldPadding = new RectOffset(14, 0, 14, 0);
             dropDown.itemPadding = new RectOffset(14, 0, 8, 0);
-            dropDown.listPosition = UIDropDown.PopupListPosition.Above;
+            dropDown.listPosition = UIDropDown.PopupListPosition.Automatic;
+            dropDown.listOffset = new Vector2(0, 0);
 
             var button = dropDown.AddUIComponent<UIButton>();
             dropDown.triggerButton = button;
@@ -153,5 +230,128 @@ namespace ParallelRoadTool.UI.Base
             return itemName;
         }
 
+        public static UIButton CreateUiButton(UIComponent parent, string text, string tooltip, Vector2 size, string sprite)
+        {
+            var uiButton = parent.AddUIComponent<UIButton>();
+            uiButton.atlas = TextureAtlas;
+            uiButton.text = text;
+            uiButton.tooltip = tooltip;
+            uiButton.size = new Vector2(36, 36);
+            uiButton.textVerticalAlignment = UIVerticalAlignment.Middle;
+            uiButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
+            uiButton.normalFgSprite = sprite;
+            uiButton.hoveredFgSprite = $"{sprite}Hovered";
+            uiButton.pressedFgSprite = $"{sprite}Pressed";
+            uiButton.focusedFgSprite = $"{sprite}Focussed";
+            uiButton.disabledFgSprite = $"{sprite}Disabled";
+            uiButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+            uiButton.horizontalAlignment = UIHorizontalAlignment.Right;
+            uiButton.verticalAlignment = UIVerticalAlignment.Middle;
+
+            return uiButton;
+        }
+
+        //public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
+        //{
+        //    return CreateCheckBox(parent, spriteName, toolTip, value, new Vector2(36, 36));
+       // }
+
+        public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
+        {
+            var checkBox = parent.AddUIComponent<UICheckBox>();
+            checkBox.size = new Vector2(36, 36);
+
+            var button = checkBox.AddUIComponent<UIButton>();
+            button.name = "PRT_" + spriteName;
+            button.atlas = TextureAtlas;
+            button.tooltip = toolTip;
+            button.relativePosition = new Vector2(0, 0);
+
+            button.normalBgSprite = "OptionBase";
+            button.hoveredBgSprite = "OptionBaseHovered";
+            button.pressedBgSprite = "OptionBasePressed";
+            button.disabledBgSprite = "OptionBaseDisabled";
+
+            button.normalFgSprite = spriteName;
+            button.hoveredFgSprite = spriteName + "Hovered";
+            button.pressedFgSprite = spriteName + "Pressed";
+            button.disabledFgSprite = spriteName + "Disabled";
+
+            checkBox.isChecked = value;
+            if (value)
+            {
+                button.normalBgSprite = "OptionBaseFocused";
+                button.normalFgSprite = spriteName + "Focused";
+            }
+
+            checkBox.eventCheckChanged += (c, s) =>
+            {
+                if (s)
+                {
+                    button.normalBgSprite = "OptionBaseFocused";
+                    button.normalFgSprite = spriteName + "Focused";
+                }
+                else
+                {
+                    button.normalBgSprite = "OptionBase";
+                    button.normalFgSprite = spriteName;
+                }                
+            };
+
+            return checkBox;
+        }
+
+        private static UITextureAtlas LoadResources()
+        {
+            string[] spriteNames =
+            {
+                "Anarchy",
+                "AnarchyDisabled",
+                "AnarchyFocused",
+                "AnarchyHovered",
+                "AnarchyPressed",
+                "Add",
+                "AddDisabled",
+                "AddFocused",
+                "AddHovered",
+                "AddPressed",
+                "Remove",
+                "RemoveDisabled",
+                "RemoveFocused",
+                "RemoveHovered",
+                "RemovePressed",
+                "Bending",
+                "BendingDisabled",
+                "BendingFocused",
+                "BendingHovered",
+                "BendingPressed",
+                "Parallel",
+                "ParallelDisabled",
+                "ParallelFocused",
+                "ParallelHovered",
+                "ParallelPressed",
+                "Reverse",
+                "ReverseDisabled",
+                "ReverseFocused",
+                "ReverseHovered",
+                "ReversePressed"
+            };
+
+            var textureAtlas = ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
+
+            var defaultAtlas = ResourceLoader.GetAtlas("Ingame");
+            Texture2D[] textures =
+            {
+                defaultAtlas["OptionBase"].texture,
+                defaultAtlas["OptionBaseFocused"].texture,
+                defaultAtlas["OptionBaseHovered"].texture,
+                defaultAtlas["OptionBasePressed"].texture,
+                defaultAtlas["OptionBaseDisabled"].texture
+            };
+
+            ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
+
+            return textureAtlas;
+        }
     }
 }

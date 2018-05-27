@@ -6,7 +6,7 @@ namespace ParallelRoadTool
 {
     public class DebugUtils
     {
-        public const string modPrefix = "[Parallel Road Tool " + ModInfo.version + "] ";
+        public const string modPrefix = "[Parallel Road Tool " + ModInfo.Version + "] ";
 
         private static string m_lastLog;
         private static int m_duplicates;
