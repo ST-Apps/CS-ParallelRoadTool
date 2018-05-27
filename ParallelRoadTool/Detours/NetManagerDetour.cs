@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
 using FineRoadTool;
@@ -24,8 +25,6 @@ namespace ParallelRoadTool.Detours
         // We store nodes from previous iteration so that we know which node to connect to
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
         private static bool _isPreviousInvert;
-
-        public static bool IsDeployed() => _deployed;
 
         /// <summary>
         ///     Sets the number of enabled parallel networks
@@ -82,25 +81,39 @@ namespace ParallelRoadTool.Detours
         }
 
         /// <summary>
-        /// TODO: this should return a destination NetInfo with the same road type (elevated, tunnel etc.) as source one. Not working atm.
+        /// Returns a destination NetInfo with the same road type (elevated, tunnel etc.) as source one.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns></returns>
         private NetInfo GetNetInfoWithElevation(NetInfo source, NetInfo destination)
         {
-            var sourceWrapper = new RoadAIWrapper(source.m_netAI);
-            var isElevated = sourceWrapper.elevated.m_netAI?.name == source.m_netAI?.name;
-            var isTunnel = sourceWrapper.tunnel.m_netAI?.name == source.m_netAI?.name;
-            var isBridge = sourceWrapper.bridge.m_netAI?.name == source.m_netAI?.name;
-
-            DebugUtils.Log($"Getting AI from {source.m_netAI?.name}: {isElevated} | {isTunnel} | {isBridge}");
-
+            if (destination.m_netAI == null || source.m_netAI == null) return destination;
             var destinationWrapper = new RoadAIWrapper(destination.m_netAI);
-            return isElevated ? destinationWrapper.elevated :
-                isTunnel ? destinationWrapper.tunnel :
-                isBridge ? destinationWrapper.bridge :
-                destination;
+            NetInfo result;
+            switch (source.m_netAI.GetCollisionType())
+            {
+                case ItemClass.CollisionType.Undefined:
+                case ItemClass.CollisionType.Zoned:
+                case ItemClass.CollisionType.Terrain:                
+                    result = destinationWrapper.info;
+                    break;
+                case ItemClass.CollisionType.Underground:
+                    result = destinationWrapper.tunnel;
+                    break;
+                case ItemClass.CollisionType.Elevated:
+                    result = destinationWrapper.elevated;
+                    break;
+                default:
+                    result = null;
+                    break;
+            }
+
+            result = result ?? destination;
+
+            DebugUtils.Log($"Got a {source.m_netAI.GetCollisionType()}, new road is {result.name}");
+
+            return result;
         }
 
         /// <summary>
@@ -172,11 +185,10 @@ namespace ParallelRoadTool.Detours
                 var verticalOffset = currentRoadInfos.VerticalOffset;
                 DebugUtils.Log($"Using offsets: h {horizontalOffset} | v {verticalOffset}");
 
-                // If the user didn't select a NetInfo we'll use the one he's using for the main road
-                // TODO: if user starts with an elevated segment, we get a ground segment with the same height as the elevated one. We need to get an elevated segment too if available.
+                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                 var selectedNetInfo = GetNetInfoWithElevation(info, currentRoadInfos.NetInfo ?? info);
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0)
+                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
                 {
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
                 }
