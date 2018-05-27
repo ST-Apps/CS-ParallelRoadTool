@@ -155,7 +155,7 @@ namespace ParallelRoadTool.UI.Base
         public static UIDropDown CreateDropDown(UIComponent parent)
         {
             var dropDown = parent.AddUIComponent<UIDropDown>();
-            dropDown.size = new Vector2(90f, 30f);
+            dropDown.size = new Vector2(250f, 40f);
             dropDown.listBackground = "GenericPanelLight";
             dropDown.itemHeight = 25;
             dropDown.itemHover = "ListItemHover";
@@ -164,7 +164,7 @@ namespace ParallelRoadTool.UI.Base
             dropDown.disabledBgSprite = "ButtonMenuDisabled";
             dropDown.hoveredBgSprite = "ButtonMenuHovered";
             dropDown.focusedBgSprite = "ButtonMenu";
-            dropDown.listWidth = 90;
+            dropDown.listWidth = 250;
             dropDown.listHeight = 300;
             dropDown.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
             dropDown.popupColor = new Color32(45, 52, 61, 255);
@@ -174,9 +174,10 @@ namespace ParallelRoadTool.UI.Base
             dropDown.verticalAlignment = UIVerticalAlignment.Middle;
             dropDown.horizontalAlignment = UIHorizontalAlignment.Left;
             dropDown.selectedIndex = 0;
-            dropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
+            dropDown.textFieldPadding = new RectOffset(14, 0, 14, 0);
             dropDown.itemPadding = new RectOffset(14, 0, 8, 0);
-            dropDown.listPosition = UIDropDown.PopupListPosition.Above;
+            dropDown.listPosition = UIDropDown.PopupListPosition.Automatic;
+            dropDown.listOffset = new Vector2(0, 0);
 
             var button = dropDown.AddUIComponent<UIButton>();
             dropDown.triggerButton = button;
@@ -249,6 +250,11 @@ namespace ParallelRoadTool.UI.Base
 
             return uiButton;
         }
+
+        //public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
+        //{
+        //    return CreateCheckBox(parent, spriteName, toolTip, value, new Vector2(36, 36));
+       // }
 
         public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
         {
@@ -323,7 +329,12 @@ namespace ParallelRoadTool.UI.Base
                 "ParallelDisabled",
                 "ParallelFocused",
                 "ParallelHovered",
-                "ParallelPressed"
+                "ParallelPressed",
+                "Reverse",
+                "ReverseDisabled",
+                "ReverseFocused",
+                "ReverseHovered",
+                "ReversePressed"
             };
 
             var textureAtlas = ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
