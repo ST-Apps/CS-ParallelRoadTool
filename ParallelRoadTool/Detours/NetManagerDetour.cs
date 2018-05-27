@@ -23,7 +23,7 @@ namespace ParallelRoadTool.Detours
 
         // We store nodes from previous iteration so that we know which node to connect to
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
-        private static bool _previousInvert;
+        private static bool _isPreviousInvert;
 
         public static bool IsDeployed() => _deployed;
 
@@ -82,6 +82,28 @@ namespace ParallelRoadTool.Detours
         }
 
         /// <summary>
+        /// TODO: this should return a destination NetInfo with the same road type (elevated, tunnel etc.) as source one. Not working atm.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
+        private NetInfo GetNetInfoWithElevation(NetInfo source, NetInfo destination)
+        {
+            var sourceWrapper = new RoadAIWrapper(source.m_netAI);
+            var isElevated = sourceWrapper.elevated.m_netAI?.name == source.m_netAI?.name;
+            var isTunnel = sourceWrapper.tunnel.m_netAI?.name == source.m_netAI?.name;
+            var isBridge = sourceWrapper.bridge.m_netAI?.name == source.m_netAI?.name;
+
+            DebugUtils.Log($"Getting AI from {source.m_netAI?.name}: {isElevated} | {isTunnel} | {isBridge}");
+
+            var destinationWrapper = new RoadAIWrapper(destination.m_netAI);
+            return isElevated ? destinationWrapper.elevated :
+                isTunnel ? destinationWrapper.tunnel :
+                isBridge ? destinationWrapper.bridge :
+                destination;
+        }
+
+        /// <summary>
         ///     This methods skips our detour by calling the original method from the game, allowing the creation of the needed
         ///     segment.
         /// </summary>
@@ -137,13 +159,13 @@ namespace ParallelRoadTool.Detours
 
             // Let's create the segment that the user requested
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
-                endDirection, buildIndex, modifiedIndex, invert);           
+                endDirection, buildIndex, modifiedIndex, invert);
 
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
-            {
+            {                
                 var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
 
                 var horizontalOffset = currentRoadInfos.HorizontalOffset;
@@ -151,7 +173,8 @@ namespace ParallelRoadTool.Detours
                 DebugUtils.Log($"Using offsets: h {horizontalOffset} | v {verticalOffset}");
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road
-                var selectedNetInfo = currentRoadInfos.NetInfo ?? info;
+                // TODO: if user starts with an elevated segment, we get a ground segment with the same height as the elevated one. We need to get an elevated segment too if available.
+                var selectedNetInfo = GetNetInfoWithElevation(info, currentRoadInfos.NetInfo ?? info);
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
                 if (verticalOffset > 0)
                 {
@@ -179,7 +202,7 @@ namespace ParallelRoadTool.Detours
                     DebugUtils.Log(
                         $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                 }
-                else if (!invert && _previousInvert && _startNodeId[i].HasValue &&
+                else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
                          _startNodeId[i].Value == startNode)
                 {
                     DebugUtils.Log(
@@ -219,40 +242,42 @@ namespace ParallelRoadTool.Detours
                 _clonedEndNodeId[i] = newEndNodeId;
                 _startNodeId[i] = startNode;
                 _clonedStartNodeId[i] = newStartNodeId;
-
+                
                 if (isReversed)
-                {
+                {                    
+                    Vector3 tempStartDirection;
+                    Vector3 tempEndDirection;
                     if (startDirection == -endDirection)
                     {
                         // Straight segment, we invert both directions
-                        startDirection = -startDirection;
-                        endDirection = -endDirection;
+                        tempStartDirection = -startDirection;
+                        tempEndDirection = -endDirection;
                     }
                     else
                     {
-                        // Curve, we need to swap start and end direction
-                        var tmpDirection = startDirection;
-                        startDirection = endDirection;
-                        endDirection = tmpDirection;
+                        // Curve, we need to swap start and end direction                        
+                        tempStartDirection = endDirection;
+                        tempEndDirection = startDirection;
                     }
 
                     // Create the segment between the two cloned nodes, inverting start and end node
                     result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newEndNodeId, newStartNodeId,
-                        startDirection, endDirection,
+                        tempStartDirection, tempEndDirection,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                 }
                 else
                 {
+
                     // Create the segment between the two cloned nodes
                     result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newStartNodeId,
                         newEndNodeId, startDirection, endDirection,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
-                }                                
+                }
             }
 
-            _previousInvert = invert;
+            _isPreviousInvert = invert;
             return result;
         }
     }

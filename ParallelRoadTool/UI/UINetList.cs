@@ -62,8 +62,16 @@ namespace ParallelRoadTool.UI
 
         public void UpdateCurrentTool(NetInfo tool)
         {
+            DebugUtils.Log($"Selected a new network: {tool.name}");
             _currentTool.NetInfo = tool;
-            _currentTool.RenderItem();            
+            _currentTool.RenderItem();
+                        
+            // This one's required to update all the items that are set to "same as selected road" when the selected road changes
+            foreach (var netTypeItem in _items)
+            {
+                DebugUtils.Log($"Updating dropdown NetInfo from {netTypeItem.NetInfo.name} to {tool.name}");
+                netTypeItem.OnChangedCallback();
+            }
         }
 
         private void Changed()
@@ -71,6 +79,7 @@ namespace ParallelRoadTool.UI
             OnChangedCallback?.Invoke();
         }
 
+        // TODO: on every change we redraw the entire list, resetting all the selected roads.
         internal void RenderList()
         {
             // Remove items

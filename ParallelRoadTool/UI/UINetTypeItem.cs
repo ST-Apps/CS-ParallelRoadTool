@@ -30,7 +30,7 @@ namespace ParallelRoadTool.UI
 
         private bool Populated { get; set; }
 
-        public Action OnChangedCallback { private get; set; }
+        public Action OnChangedCallback { get; set; }
         public Action OnDeleteCallback { private get; set; }
         public Action OnAddCallback { private get; set; }
 
