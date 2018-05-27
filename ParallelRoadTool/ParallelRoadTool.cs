@@ -15,8 +15,7 @@ namespace ParallelRoadTool
     ///
     /// TODO: Drag & drop is not as smooth as before.
     /// TODO: Window should be also visible when a network is selected, we can't rely on shortcuts only.
-    /// TODO: Removing a network while continuing a segment leads to wrong connections.
-    /// TODO: Move UI to an event-based system again.
+    /// TODO: Removing a network while continuing a segment leads to wrong connections.    
     /// </summary>
     public class ParallelRoadTool : MonoBehaviour
     {
@@ -35,17 +34,12 @@ namespace ParallelRoadTool
 
         public bool IsToolActive
         {
-            get => _isToolActive && _netTool.enabled;
-            private set => _isToolActive = value;
-        }
+            // TODO: checkbox outside main panel is not working, so we need to show the panel even if the tool has been disabled
+            get => /*_isToolActive &&*/ _netTool.enabled;
 
-        private static bool IsParallelEnabled
-        {
-            get => NetManagerDetour.IsDeployed();
-
-            set
+            private set
             {
-                if (IsParallelEnabled == value) return;
+                if (IsToolActive == value) return;
                 if (value)
                 {
                     DebugUtils.Log("Enabling parallel road support");
@@ -56,6 +50,7 @@ namespace ParallelRoadTool
                     DebugUtils.Log("Disabling parallel road support");
                     NetManagerDetour.Revert();
                 }
+                _isToolActive = value;
             }
         }
 
@@ -80,7 +75,7 @@ namespace ParallelRoadTool
 
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
-            IsParallelEnabled = value;
+            IsToolActive = value;
         }
 
         #endregion
@@ -162,7 +157,7 @@ namespace ParallelRoadTool
         {
             UnsubscribeToUIEvents();
             NetManagerDetour.Revert();
-            IsParallelEnabled = false;
+            IsToolActive = false;
         }
 
         public void OnGUI()

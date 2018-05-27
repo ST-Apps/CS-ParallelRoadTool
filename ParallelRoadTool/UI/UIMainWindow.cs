@@ -13,7 +13,8 @@ namespace ParallelRoadTool.UI
 
         private static readonly SavedInt SavedWindowY =
             new SavedInt("windowY", ParallelRoadTool.SettingsFileName, -1000, true);
-        
+
+        private UIOptionsPanel _mainPanel;
         private UINetList _netList;
         private UICheckBox _toolToggleButton;
 
@@ -22,14 +23,16 @@ namespace ParallelRoadTool.UI
         public event PropertyChangedEventHandler<bool> OnParallelToolToggled;
         public event EventHandler OnNetworksListCountChanged;
 
-        private void SubscribeToUIEvents()
-        {
-            _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;            
-        }
-
         private void UnsubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
+            _mainPanel.OnToolToggled -= ToolToggleButtonOnEventCheckChanged;
+        }
+
+        private void SubscribeToUIEvents()
+        {
+            _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
+            _mainPanel.OnToolToggled += ToolToggleButtonOnEventCheckChanged;
         }
 
         private void ToolToggleButtonOnEventCheckChanged(UIComponent component, bool value)
@@ -61,9 +64,12 @@ namespace ParallelRoadTool.UI
         public void ToggleToolCheckbox()
         {
             _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
+            OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
         }
 
         #endregion
+
+        #region Unity
 
         public override void Start()
         {
@@ -94,6 +100,7 @@ namespace ParallelRoadTool.UI
 
             absolutePosition = new Vector3(SavedWindowX.value, SavedWindowY.value);
 
+            _mainPanel = AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
             _netList = AddUIComponent(typeof(UINetList)) as UINetList;
             if (_netList != null)
             {
@@ -114,7 +121,13 @@ namespace ParallelRoadTool.UI
                 Destroy(button);
             _toolToggleButton = UIUtil.CreateCheckBox(roadsOptionPanel, "Parallel", "Parallel Road Tool", false);
             _toolToggleButton.relativePosition = new Vector3(166, 38);
-            
+            _toolToggleButton.BringToFront();
+
+#if !DEBUG
+            // TODO: button is not working, hide it when not in debug
+            _toolToggleButton.isVisible = false;
+#endif
+
             SubscribeToUIEvents();
 
             OnPositionChanged();
@@ -128,7 +141,13 @@ namespace ParallelRoadTool.UI
        
             base.Update();
         }
- 
+
+        public override void OnDestroy()
+        {
+            UnsubscribeToUIEvents();
+            base.OnDestroy();
+        }
+
         protected override void OnPositionChanged()
         {            
             var resolution = GetUIView().GetScreenResolution();            
@@ -145,6 +164,7 @@ namespace ParallelRoadTool.UI
             SavedWindowX.value = (int) absolutePosition.x;
             SavedWindowY.value = (int) absolutePosition.y;
         }
- 
+
+        #endregion
     }
 }

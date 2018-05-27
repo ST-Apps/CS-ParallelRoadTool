@@ -8,8 +8,10 @@ namespace ParallelRoadTool
     {
         public const string modPrefix = "[Parallel Road Tool " + ModInfo.Version + "] ";
 
+#if DEBUG
         private static string m_lastLog;
         private static int m_duplicates;
+#endif
 
         public static void Message(string message)
         {
