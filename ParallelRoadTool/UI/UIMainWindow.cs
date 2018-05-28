@@ -153,7 +153,7 @@ namespace ParallelRoadTool.UI
                 (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
                 (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
-            DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
+            //DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
 
             SavedWindowX.value = (int) absolutePosition.x;
             SavedWindowY.value = (int) absolutePosition.y;
