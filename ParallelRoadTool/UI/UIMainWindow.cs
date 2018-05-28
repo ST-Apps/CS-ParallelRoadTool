@@ -110,19 +110,13 @@ namespace ParallelRoadTool.UI
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
 
-            var roadsOptionPanel = UIUtil.FindComponent<UIComponent>("RoadsOptionPanel", null, UIUtil.FindOptions.NameContains);
-            if (roadsOptionPanel == null || !roadsOptionPanel.gameObject.activeInHierarchy) return;
+            var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
+            if (tsBar == null || !tsBar.gameObject.activeInHierarchy) return;
             var button = UIUtil.FindComponent<UICheckBox>("PRT_Parallel");
             if (button != null)
                 Destroy(button);
-            _toolToggleButton = UIUtil.CreateCheckBox(roadsOptionPanel, "Parallel", "Parallel Road Tool", false);
-            _toolToggleButton.relativePosition = new Vector3(166, 38);
-            _toolToggleButton.BringToFront();
-
-#if !DEBUG
-            // TODO: button is not working, hide it when not in debug
-            _toolToggleButton.isVisible = false;
-#endif
+            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", "Parallel Road Tool", false);
+            _toolToggleButton.relativePosition = new Vector3(424, -6);
 
             SubscribeToUIEvents();
 
@@ -134,7 +128,11 @@ namespace ParallelRoadTool.UI
         {
             if (ParallelRoadTool.Instance != null)
                 isVisible = ParallelRoadTool.Instance.IsToolActive;
-       
+
+            if (ParallelRoadTool.NetTool != null)
+                _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
+
+
             base.Update();
         }
 

@@ -7,7 +7,6 @@ namespace ParallelRoadTool.UI
 {
     public class UIOptionsPanel : UIPanel
     {
-        private UICheckBox _toolToggleButton;
 
         #region Events
 
@@ -29,11 +28,6 @@ namespace ParallelRoadTool.UI
             autoLayout = true;
             autoSize = false;
             
-            _toolToggleButton = UIUtil.CreateCheckBox(this, "Parallel", "Toggle parallel road tool", false);
-            _toolToggleButton.eventCheckChanged += (component, value) =>
-            {
-                OnToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
-            };
 
             DebugUtils.Log($"UIOptionsPanel created {size} | {position}");
         }
