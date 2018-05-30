@@ -21,7 +21,7 @@ namespace ParallelRoadTool.UI
         {
             name = "PRT_NetList";
             padding = new RectOffset(4, 4, 4, 0);
-            size = new Vector2(450 - 8*2, 200);
+            size = new Vector2(500 - 8*2, 200);
             autoLayoutPadding = new RectOffset(0, 0, 0, 4);
             autoFitChildrenVertically = true;
             autoLayout = true;
