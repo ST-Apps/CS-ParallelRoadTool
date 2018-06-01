@@ -429,7 +429,8 @@ namespace ParallelRoadTool.Detours
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                 }
 
-                // TODO: FixTunnels(segment); Tunnels are still glitching - short segments get start and end node inverted, long segment don't get the slope
+                // TODO: ISSUE #3
+                // FixTunnels(segment);
             }
 
             _isPreviousInvert = invert;

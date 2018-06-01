@@ -13,8 +13,7 @@ namespace ParallelRoadTool
     ///     Mod's "launcher" class.
     ///     It also acts as a "controller" to connect the mod with its UI.
     ///
-    /// TODO: Drag & drop is not as smooth as before.
-    /// TODO: If the tool is enabled after adding a network, it will stop working. 
+    /// TODO: Drag & drop is not as smooth as before. 
     /// </summary>
     public class ParallelRoadTool : MonoBehaviour
     {

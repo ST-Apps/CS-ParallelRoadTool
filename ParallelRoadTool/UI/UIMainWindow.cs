@@ -135,8 +135,6 @@ namespace ParallelRoadTool.UI
                 _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
 
             base.Update();
-
-
         }
 
         public override void OnDestroy()

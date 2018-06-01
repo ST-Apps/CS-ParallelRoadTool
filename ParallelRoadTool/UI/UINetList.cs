@@ -78,8 +78,7 @@ namespace ParallelRoadTool.UI
         {
             OnChangedCallback?.Invoke();
         }
-
-        // TODO: on every change we redraw the entire list, resetting all the selected roads.
+       
         internal void RenderList()
         {
             // Remove items
