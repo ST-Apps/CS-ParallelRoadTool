@@ -16,8 +16,8 @@ namespace ParallelRoadTool.UI
 
         private UIOptionsPanel _mainPanel;
         private UINetList _netList;
-        private UICheckBox _toolToggleButton;
         private NetInfo _netToolSelection;
+        private UICheckBox _toolToggleButton;
 
         #region Events/Callbacks
 
@@ -45,7 +45,7 @@ namespace ParallelRoadTool.UI
         private void NetListOnChangedCallback()
         {
             DebugUtils.Log($"_netList.OnChangedCallback (selected {ParallelRoadTool.SelectedRoadTypes.Count} nets)");
-            OnNetworksListCountChanged?.Invoke(_netList, null);            
+            OnNetworksListCountChanged?.Invoke(_netList, null);
         }
 
         #endregion
@@ -97,7 +97,7 @@ namespace ParallelRoadTool.UI
             dragHandle.target = this;
             dragHandle.relativePosition = Vector3.zero;
             dragHandle.size = label.size;
- 
+
             _mainPanel = bg.AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
             _netList = bg.AddUIComponent(typeof(UINetList)) as UINetList;
             if (_netList != null)
@@ -124,7 +124,7 @@ namespace ParallelRoadTool.UI
 
             OnPositionChanged();
             DebugUtils.Log($"UIMainWindow created {size} | {position}");
-        }        
+        }
 
         public override void Update()
         {
@@ -144,8 +144,8 @@ namespace ParallelRoadTool.UI
         }
 
         protected override void OnPositionChanged()
-        {            
-            var resolution = GetUIView().GetScreenResolution();            
+        {
+            var resolution = GetUIView().GetScreenResolution();
 
             if (absolutePosition.x == -1000)
                 absolutePosition = new Vector2((resolution.x - width) / 2, (resolution.y - height) / 2);

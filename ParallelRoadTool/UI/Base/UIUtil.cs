@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Text;
 using System.Text.RegularExpressions;
 using ColossalFramework.UI;
-using ICities;
-using JetBrains.Annotations;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ParallelRoadTool.UI.Base
 {
     public static class UIUtil
     {
-        public static readonly UITextureAtlas TextureAtlas = LoadResources();
-
-        private const float COLUMN_PADDING = 5f;
-        private const float TEXT_FIELD_WIDTH = 35f;
-
         [Flags]
         public enum FindOptions
         {
@@ -22,49 +15,49 @@ namespace ParallelRoadTool.UI.Base
             NameContains = 1 << 0
         }
 
-        public static UIView uiRoot = null;
+        private const float COLUMN_PADDING = 5f;
+        private const float TEXT_FIELD_WIDTH = 35f;
+        public static readonly UITextureAtlas TextureAtlas = LoadResources();
+
+        public static UIView uiRoot;
 
         // some helper functions from https://github.com/bernardd/Crossings/blob/master/Crossings/UIUtils.cs
         private static void FindUIRoot()
         {
             uiRoot = null;
 
-            foreach (UIView view in UIView.FindObjectsOfType<UIView>())
-            {
+            foreach (var view in Object.FindObjectsOfType<UIView>())
                 if (view.transform.parent == null && view.name == "UIView")
                 {
                     uiRoot = view;
                     break;
                 }
-            }
         }
 
         public static string GetTransformPath(Transform transform)
         {
-            string path = transform.name;
-            Transform t = transform.parent;
+            var path = transform.name;
+            var t = transform.parent;
             while (t != null)
             {
                 path = t.name + "/" + path;
                 t = t.parent;
             }
+
             return path;
         }
 
-        public static T FindComponent<T>(string name, UIComponent parent = null, FindOptions options = FindOptions.None) where T : UIComponent
+        public static T FindComponent<T>(string name, UIComponent parent = null, FindOptions options = FindOptions.None)
+            where T : UIComponent
         {
             if (uiRoot == null)
             {
                 FindUIRoot();
-                if (uiRoot == null)
-                {
-                    return null;
-                }
+                if (uiRoot == null) return null;
             }
 
-            foreach (T component in UIComponent.FindObjectsOfType<T>())
+            foreach (var component in Object.FindObjectsOfType<T>())
             {
-
                 bool nameMatches;
                 if ((options & FindOptions.NameContains) != 0) nameMatches = component.name.Contains(name);
                 else nameMatches = component.name == name;
@@ -75,11 +68,8 @@ namespace ParallelRoadTool.UI.Base
                 if (parent != null) parentTransform = parent.transform;
                 else parentTransform = uiRoot.transform;
 
-                Transform t = component.transform.parent;
-                while (t != null && t != parentTransform)
-                {
-                    t = t.parent;
-                }
+                var t = component.transform.parent;
+                while (t != null && t != parentTransform) t = t.parent;
 
                 if (t == null) continue;
 
@@ -93,7 +83,6 @@ namespace ParallelRoadTool.UI.Base
         public static UIDropDown CreateDropDownTextFieldWithLabel(out UIButton deleteButton, out UITextField textField,
             UIComponent parent, string labelText, float width)
         {
-            
             var dropDownWidth = width - TEXT_FIELD_WIDTH - 5 * COLUMN_PADDING;
 
             textField = CreateTextField(parent);
@@ -200,7 +189,7 @@ namespace ParallelRoadTool.UI.Base
             dropDown.eventSizeChanged += (c, t) =>
             {
                 button.size = t;
-                dropDown.listWidth = (int)t.x;
+                dropDown.listWidth = (int) t.x;
             };
 
             return dropDown;
@@ -230,7 +219,8 @@ namespace ParallelRoadTool.UI.Base
             return itemName;
         }
 
-        public static UIButton CreateUiButton(UIComponent parent, string text, string tooltip, Vector2 size, string sprite)
+        public static UIButton CreateUiButton(UIComponent parent, string text, string tooltip, Vector2 size,
+            string sprite)
         {
             var uiButton = parent.AddUIComponent<UIButton>();
             uiButton.atlas = TextureAtlas;
@@ -254,7 +244,7 @@ namespace ParallelRoadTool.UI.Base
         //public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
         //{
         //    return CreateCheckBox(parent, spriteName, toolTip, value, new Vector2(36, 36));
-       // }
+        // }
 
         public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
         {
@@ -295,7 +285,7 @@ namespace ParallelRoadTool.UI.Base
                 {
                     button.normalBgSprite = "OptionBase";
                     button.normalFgSprite = spriteName;
-                }                
+                }
             };
 
             return checkBox;
@@ -337,7 +327,8 @@ namespace ParallelRoadTool.UI.Base
                 "ReversePressed"
             };
 
-            var textureAtlas = ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
+            var textureAtlas =
+                ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
 
             var defaultAtlas = ResourceLoader.GetAtlas("Ingame");
             Texture2D[] textures =

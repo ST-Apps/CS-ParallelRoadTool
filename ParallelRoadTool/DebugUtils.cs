@@ -8,11 +8,6 @@ namespace ParallelRoadTool
     {
         public const string modPrefix = "[Parallel Road Tool " + ModInfo.Version + "] ";
 
-#if DEBUG
-        private static string m_lastLog;
-        private static int m_duplicates;
-#endif
-
         public static void Message(string message)
         {
             Log(message);
@@ -52,5 +47,10 @@ namespace ParallelRoadTool
             Log("Intercepted exception (not game breaking):");
             Debug.LogException(e);
         }
+
+#if DEBUG
+        private static string m_lastLog;
+        private static int m_duplicates;
+#endif
     }
 }

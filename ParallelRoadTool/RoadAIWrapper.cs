@@ -4,13 +4,13 @@ namespace FineRoadTool
 {
     public class RoadAIWrapper
     {
-        private NetAI m_ai;
+        private readonly NetAI m_ai;
+        private readonly FieldInfo m_bridge;
 
-        private FieldInfo m_elevated;
-        private FieldInfo m_bridge;
-        private FieldInfo m_slope;
-        private FieldInfo m_tunnel;
-        private FieldInfo m_invisible;
+        private readonly FieldInfo m_elevated;
+        private readonly FieldInfo m_invisible;
+        private readonly FieldInfo m_slope;
+        private readonly FieldInfo m_tunnel;
 
         public RoadAIWrapper(NetAI ai)
         {
@@ -34,20 +34,17 @@ namespace FineRoadTool
             }
         }
 
-        public bool hasElevation
-        {
-            get { return m_elevated != null && m_bridge != null && m_slope != null && m_tunnel != null; }
-        }
+        public bool hasElevation => m_elevated != null && m_bridge != null && m_slope != null && m_tunnel != null;
 
         public NetInfo info
         {
-            get { return m_ai.m_info; }
-            set { m_ai.m_info = value; }
+            get => m_ai.m_info;
+            set => m_ai.m_info = value;
         }
 
         public NetInfo elevated
         {
-            get { return hasElevation ? m_elevated.GetValue(m_ai) as NetInfo : null; }
+            get => hasElevation ? m_elevated.GetValue(m_ai) as NetInfo : null;
             set
             {
                 if (!hasElevation) return;
@@ -57,7 +54,7 @@ namespace FineRoadTool
 
         public NetInfo bridge
         {
-            get { return hasElevation ? m_bridge.GetValue(m_ai) as NetInfo : null; }
+            get => hasElevation ? m_bridge.GetValue(m_ai) as NetInfo : null;
             set
             {
                 if (!hasElevation) return;
@@ -67,7 +64,7 @@ namespace FineRoadTool
 
         public NetInfo slope
         {
-            get { return hasElevation ? m_slope.GetValue(m_ai) as NetInfo : null; }
+            get => hasElevation ? m_slope.GetValue(m_ai) as NetInfo : null;
             set
             {
                 if (!hasElevation) return;
@@ -77,7 +74,7 @@ namespace FineRoadTool
 
         public NetInfo tunnel
         {
-            get { return hasElevation ? m_tunnel.GetValue(m_ai) as NetInfo : null; }
+            get => hasElevation ? m_tunnel.GetValue(m_ai) as NetInfo : null;
             set
             {
                 if (!hasElevation) return;
@@ -87,7 +84,7 @@ namespace FineRoadTool
 
         public bool IsInvisible()
         {
-            if (m_invisible != null) return (bool)m_invisible.GetValue(m_ai);
+            if (m_invisible != null) return (bool) m_invisible.GetValue(m_ai);
 
             return false;
         }

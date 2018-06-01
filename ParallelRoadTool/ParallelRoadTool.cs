@@ -4,7 +4,6 @@ using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.UI;
-using ParallelRoadTool.UI.Base;
 using UnityEngine;
 
 namespace ParallelRoadTool
@@ -12,8 +11,7 @@ namespace ParallelRoadTool
     /// <summary>
     ///     Mod's "launcher" class.
     ///     It also acts as a "controller" to connect the mod with its UI.
-    ///
-    /// TODO: Drag & drop is not as smooth as before. 
+    ///     TODO: Drag & drop is not as smooth as before.
     /// </summary>
     public class ParallelRoadTool : MonoBehaviour
     {
@@ -23,11 +21,11 @@ namespace ParallelRoadTool
 
         public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
-
-        private UIMainWindow _mainWindow;                
-        public static NetTool NetTool;        
+        public static NetTool NetTool;
 
         private bool _isToolActive;
+
+        private UIMainWindow _mainWindow;
 
         public bool IsToolActive
         {
@@ -46,9 +44,27 @@ namespace ParallelRoadTool
                     DebugUtils.Log("Disabling parallel road support");
                     NetManagerDetour.Revert();
                 }
+
                 _isToolActive = value;
             }
         }
+
+        #region Utils
+
+        private void AdjustNetOffset(float step)
+        {
+            // Adjust all offsets on keypress
+            var index = 0;
+            foreach (var item in SelectedRoadTypes)
+            {
+                item.HorizontalOffset += (1 + index) * step;
+                index++;
+            }
+
+            _mainWindow.RenderNetList();
+        }
+
+        #endregion
 
         #region Handlers
 
@@ -67,28 +83,11 @@ namespace ParallelRoadTool
         private void MainWindowOnOnNetworksListCountChanged(object sender, System.EventArgs e)
         {
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
-        }        
+        }
 
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
             IsToolActive = value;
-        }
-
-        #endregion
-
-        #region Utils
-
-        private void AdjustNetOffset(float step)
-        {
-            // Adjust all offsets on keypress
-            var index = 0;
-            foreach (var item in SelectedRoadTypes)
-            {
-                item.HorizontalOffset += (1 + index) * step;
-                index++;
-            }
-
-            _mainWindow.RenderNetList();            
         }
 
         #endregion
@@ -146,7 +145,7 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Start failed");
                 DebugUtils.LogException(e);
                 enabled = false;
-            }            
+            }
         }
 
         public void OnDestroy()
@@ -164,14 +163,11 @@ namespace ParallelRoadTool
                 var e = Event.current;
 
                 // Checking key presses
-                if (OptionsKeymapping.toggleParallelRoads.IsPressed(e))
-                {
-                    _mainWindow.ToggleToolCheckbox();
-                }
+                if (OptionsKeymapping.toggleParallelRoads.IsPressed(e)) _mainWindow.ToggleToolCheckbox();
 
                 if (OptionsKeymapping.decreaseOffset.IsPressed(e)) AdjustNetOffset(-1f);
 
-                if (OptionsKeymapping.increaseOffset.IsPressed(e)) AdjustNetOffset(1f);                
+                if (OptionsKeymapping.increaseOffset.IsPressed(e)) AdjustNetOffset(1f);
             }
             catch (Exception e)
             {

@@ -9,19 +9,18 @@ namespace ParallelRoadTool.UI
 {
     public class UINetList : UIPanel
     {
-        public List<NetTypeItem> List;
-        private List<UINetTypeItem> _items;
-
         private UINetTypeItem _currentTool;
+        private List<UINetTypeItem> _items;
         private UIPanel _space;
+        public List<NetTypeItem> List;
 
-        public Action OnChangedCallback { private get; set; }        
+        public Action OnChangedCallback { private get; set; }
 
         public override void Start()
         {
             name = "PRT_NetList";
             padding = new RectOffset(4, 4, 4, 0);
-            size = new Vector2(500 - 8*2, 200);
+            size = new Vector2(500 - 8 * 2, 200);
             autoLayoutPadding = new RectOffset(0, 0, 0, 4);
             autoFitChildrenVertically = true;
             autoLayout = true;
@@ -42,9 +41,9 @@ namespace ParallelRoadTool.UI
                 if (List.Any())
                     prevOffset = List.Last().HorizontalOffset;
 
-                var netInfo = _currentTool.DropDown.selectedIndex == 0 ? 
-                    PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name) : 
-                    ParallelRoadTool.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
+                var netInfo = _currentTool.DropDown.selectedIndex == 0
+                    ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
+                    : ParallelRoadTool.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
 
                 DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
 
@@ -65,7 +64,7 @@ namespace ParallelRoadTool.UI
             DebugUtils.Log($"Selected a new network: {tool.name}");
             _currentTool.NetInfo = tool;
             _currentTool.RenderItem();
-                        
+
             // This one's required to update all the items that are set to "same as selected road" when the selected road changes
             foreach (var netTypeItem in _items)
             {
@@ -78,14 +77,11 @@ namespace ParallelRoadTool.UI
         {
             OnChangedCallback?.Invoke();
         }
-       
+
         internal void RenderList()
         {
             // Remove items
-            foreach (var child in _items)
-            {
-                Destroy(child);
-            }
+            foreach (var child in _items) Destroy(child);
 
             _items.Clear();
 
@@ -114,12 +110,13 @@ namespace ParallelRoadTool.UI
                     var i = List[comp.Index];
                     i.HorizontalOffset = comp.HorizontalOffset;
                     i.VerticalOffset = comp.VerticalOffset;
-                    i.NetInfo = comp.DropDown.selectedIndex == 0 ? 
-                        PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name) : 
-                        ParallelRoadTool.AvailableRoadTypes[comp.DropDown.selectedIndex];
+                    i.NetInfo = comp.DropDown.selectedIndex == 0
+                        ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
+                        : ParallelRoadTool.AvailableRoadTypes[comp.DropDown.selectedIndex];
                     i.IsReversed = comp.ReverseCheckbox.isChecked;
 
-                    DebugUtils.Message($"OnChangedCallback item #{comp.Index}, net={i.NetInfo.GenerateBeautifiedNetName()}, HorizontalOffset={i.HorizontalOffset}, VerticalOffset={i.VerticalOffset}, IsReversed={i.IsReversed}");
+                    DebugUtils.Message(
+                        $"OnChangedCallback item #{comp.Index}, net={i.NetInfo.GenerateBeautifiedNetName()}, HorizontalOffset={i.HorizontalOffset}, VerticalOffset={i.VerticalOffset}, IsReversed={i.IsReversed}");
 
                     Changed();
                 };

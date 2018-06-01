@@ -15,6 +15,7 @@ namespace ParallelRoadTool
 
         public static readonly SavedInputKey increaseOffset = new SavedInputKey("increaseOffset",
             ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, true, false), true);
+
         public static readonly SavedInputKey decreaseOffset = new SavedInputKey("decreaseOffset",
             ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, false, false), true);
 

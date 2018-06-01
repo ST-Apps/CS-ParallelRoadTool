@@ -12,8 +12,9 @@ namespace ParallelRoadTool.UI.Base
         protected string Description { get; set; } = string.Empty;
 
         protected override void Initialize()
-        {            
-            DropDown = UIUtil.CreateDropDownTextFieldWithLabel(out var deleteButton, out var textField, this, Description, ParentWidth);
+        {
+            DropDown = UIUtil.CreateDropDownTextFieldWithLabel(out var deleteButton, out var textField, this,
+                Description, ParentWidth);
             DropDown.eventSelectedIndexChanged += DropDown_eventSelectedIndexChanged;
 
             TextField = textField;

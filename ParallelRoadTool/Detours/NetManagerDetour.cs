@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
 using FineRoadTool;
@@ -9,7 +8,7 @@ using UnityEngine;
 namespace ParallelRoadTool.Detours
 {
     /// <summary>
-    /// Mod's core class, it executes the detour to intercept segment's creation.
+    ///     Mod's core class, it executes the detour to intercept segment's creation.
     /// </summary>
     public struct NetManagerDetour
     {
@@ -62,20 +61,21 @@ namespace ParallelRoadTool.Detours
         #region Utility
 
         /// <summary>
-        /// <see cref="https://github.com/SamsamTS/CS-FineRoadTool/blob/4fd61d883372bc70f0b2e78845c1da2d8021b510/FineRoadTool/FineRoadTool.cs#L671"/>
+        ///     <see
+        ///         cref="https://github.com/SamsamTS/CS-FineRoadTool/blob/4fd61d883372bc70f0b2e78845c1da2d8021b510/FineRoadTool/FineRoadTool.cs#L671" />
         /// </summary>
         /// <param name="segmentId"></param>
         private void FixTunnels(ushort segmentId)
         {
-            NetNode[] nodes = NetManager.instance.m_nodes.m_buffer;
-            NetSegment segment = NetManager.instance.m_segments.m_buffer[segmentId];
+            var nodes = NetManager.instance.m_nodes.m_buffer;
+            var segment = NetManager.instance.m_segments.m_buffer[segmentId];
 
-            NetInfo info = segment.Info;
+            var info = segment.Info;
 
-            ushort startNode = segment.m_startNode;
-            ushort endNode = segment.m_endNode;
+            var startNode = segment.m_startNode;
+            var endNode = segment.m_endNode;
 
-            RoadAIWrapper aiWrapper = new RoadAIWrapper(info.m_netAI);
+            var aiWrapper = new RoadAIWrapper(info.m_netAI);
 
             // Is it a tunnel?
             if (info == aiWrapper.tunnel)
@@ -96,7 +96,7 @@ namespace ParallelRoadTool.Detours
                     segment.m_startNode = endNode;
                     segment.m_endNode = startNode;
 
-                    Vector3 dir = segment.m_startDirection;
+                    var dir = segment.m_startDirection;
 
                     segment.m_startDirection = segment.m_endDirection;
                     segment.m_endDirection = dir;
@@ -140,7 +140,8 @@ namespace ParallelRoadTool.Detours
                     segment.UpdateBounds(segmentId);
 
                     // Updating terrain
-                    TerrainModify.UpdateArea(segment.m_bounds.min.x, segment.m_bounds.min.z, segment.m_bounds.max.x, segment.m_bounds.max.z, true, true, false);
+                    TerrainModify.UpdateArea(segment.m_bounds.min.x, segment.m_bounds.min.z, segment.m_bounds.max.x,
+                        segment.m_bounds.max.z, true, true, false);
 
                     NetManager.instance.UpdateSegment(segmentId);
                 }
@@ -152,7 +153,7 @@ namespace ParallelRoadTool.Detours
                     segment.m_startNode = endNode;
                     segment.m_endNode = startNode;
 
-                    Vector3 dir = segment.m_startDirection;
+                    var dir = segment.m_startDirection;
 
                     segment.m_startDirection = segment.m_endDirection;
                     segment.m_endDirection = dir;
@@ -165,25 +166,29 @@ namespace ParallelRoadTool.Detours
         }
 
         /// <summary>
-        /// <see cref="https://github.com/SamsamTS/CS-FineRoadTool/blob/4fd61d883372bc70f0b2e78845c1da2d8021b510/FineRoadTool/FineRoadTool.cs#L826"/>
+        ///     <see
+        ///         cref="https://github.com/SamsamTS/CS-FineRoadTool/blob/4fd61d883372bc70f0b2e78845c1da2d8021b510/FineRoadTool/FineRoadTool.cs#L826" />
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
         private static bool IsEndTunnel(ref NetNode node)
         {
-            if ((node.m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.Untouchable && (node.m_flags & NetNode.Flags.Underground) == NetNode.Flags.Underground)
+            if ((node.m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.Untouchable &&
+                (node.m_flags & NetNode.Flags.Underground) == NetNode.Flags.Underground)
                 return false;
 
-            int count = 0;
+            var count = 0;
 
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
                 int segment = node.GetSegment(i);
-                if (segment == 0 || (NetManager.instance.m_segments.m_buffer[segment].m_flags & NetSegment.Flags.Created) != NetSegment.Flags.Created) continue;
+                if (segment == 0 ||
+                    (NetManager.instance.m_segments.m_buffer[segment].m_flags & NetSegment.Flags.Created) !=
+                    NetSegment.Flags.Created) continue;
 
-                NetInfo info = NetManager.instance.m_segments.m_buffer[segment].Info;
+                var info = NetManager.instance.m_segments.m_buffer[segment].Info;
 
-                RoadAIWrapper aiWrapper = new RoadAIWrapper(info.m_netAI);
+                var aiWrapper = new RoadAIWrapper(info.m_netAI);
 
                 if (info != aiWrapper.tunnel && info != aiWrapper.slope) return true;
 
@@ -206,9 +211,11 @@ namespace ParallelRoadTool.Detours
         /// <param name="verticalDistance"></param>
         /// <param name="isClockwise"></param>
         /// <returns>A <see cref="Vector3" /> with the coordinates generated by offsetting the given point.</returns>
-        private static Vector3 Offset(Vector3 point, Vector3 direction, float horizontalDistance, float verticalDistance, bool isClockwise = true)
+        private static Vector3 Offset(Vector3 point, Vector3 direction, float horizontalDistance,
+            float verticalDistance, bool isClockwise = true)
         {
-            var offsetPoint = point + horizontalDistance * new Vector3((isClockwise ? 1 : -1) * direction.z, direction.y,
+            var offsetPoint = point + horizontalDistance * new Vector3((isClockwise ? 1 : -1) * direction.z,
+                                  direction.y,
                                   (isClockwise ? -1 : 1) * direction.x);
             offsetPoint.y = point.y + verticalDistance;
 
@@ -216,7 +223,7 @@ namespace ParallelRoadTool.Detours
         }
 
         /// <summary>
-        /// Returns a destination NetInfo with the same road type (elevated, tunnel etc.) as source one.
+        ///     Returns a destination NetInfo with the same road type (elevated, tunnel etc.) as source one.
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
@@ -230,7 +237,7 @@ namespace ParallelRoadTool.Detours
             {
                 case ItemClass.CollisionType.Undefined:
                 case ItemClass.CollisionType.Zoned:
-                case ItemClass.CollisionType.Terrain:                
+                case ItemClass.CollisionType.Terrain:
                     result = destinationWrapper.info;
                     break;
                 case ItemClass.CollisionType.Underground:
@@ -240,17 +247,17 @@ namespace ParallelRoadTool.Detours
                     result = destinationWrapper.elevated;
                     break;
                 default:
-                    result = destination;
+                    result = null;
                     break;
             }
 
-            DebugUtils.Log($"Checking source.m_netAI.IsUnderground() && destination.m_netAI.SupportUnderground() == {source.m_netAI.IsUnderground()} && {destination.m_netAI.SupportUnderground()}");            
+            result = result ?? destination;
+
+            DebugUtils.Log(
+                $"Checking source.m_netAI.IsUnderground() && destination.m_netAI.SupportUnderground() == {source.m_netAI.IsUnderground()} && {destination.m_netAI.SupportUnderground()}");
 
             if (source.m_netAI.IsUnderground() && destination.m_netAI.SupportUnderground())
-            {
-                // Collision type may be terrain but source is underground so we need to consider our destination as underground too.
                 result = destinationWrapper.tunnel;
-            }
 
             DebugUtils.Log($"Got a {source.m_netAI.GetCollisionType()}, new road is {result.name}");
 
@@ -319,7 +326,7 @@ namespace ParallelRoadTool.Detours
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
-            {                
+            {
                 var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
 
                 var horizontalOffset = currentRoadInfos.HorizontalOffset;
@@ -329,10 +336,9 @@ namespace ParallelRoadTool.Detours
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                 var selectedNetInfo = GetNetInfoWithElevation(info, currentRoadInfos.NetInfo ?? info);
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
-                {
+                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != 
+                    ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
-                }
 
                 var isReversed = currentRoadInfos.IsReversed;
 
@@ -366,7 +372,8 @@ namespace ParallelRoadTool.Detours
                 }
                 else
                 {
-                    var newStartPosition = Offset(startNetNode.m_position, startDirection, horizontalOffset, verticalOffset, invert);
+                    var newStartPosition = Offset(startNetNode.m_position, startDirection, horizontalOffset,
+                        verticalOffset, invert);
                     DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert}");
                     NetManager.instance.CreateNode(out newStartNodeId, ref randomizer, info, newStartPosition,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
@@ -395,9 +402,9 @@ namespace ParallelRoadTool.Detours
                 _clonedEndNodeId[i] = newEndNodeId;
                 _startNodeId[i] = startNode;
                 _clonedStartNodeId[i] = newStartNodeId;
-                
+
                 if (isReversed)
-                {                    
+                {
                     Vector3 tempStartDirection;
                     Vector3 tempEndDirection;
                     if (startDirection == -endDirection)
@@ -414,14 +421,14 @@ namespace ParallelRoadTool.Detours
                     }
 
                     // Create the segment between the two cloned nodes, inverting start and end node
-                    result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newEndNodeId, newStartNodeId,
+                    result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newEndNodeId,
+                        newStartNodeId,
                         tempStartDirection, tempEndDirection,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                 }
                 else
                 {
-
                     // Create the segment between the two cloned nodes
                     result = CreateSegmentOriginal(out segment, ref randomizer, selectedNetInfo, newStartNodeId,
                         newEndNodeId, startDirection, endDirection,

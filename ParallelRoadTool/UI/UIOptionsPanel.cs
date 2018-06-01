@@ -1,13 +1,10 @@
-﻿using System;
-using ColossalFramework.UI;
-using ParallelRoadTool.UI.Base;
+﻿using ColossalFramework.UI;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
     public class UIOptionsPanel : UIPanel
     {
-
         #region Events
 
         public event PropertyChangedEventHandler<bool> OnToolToggled;
@@ -27,7 +24,7 @@ namespace ParallelRoadTool.UI
             autoLayoutDirection = LayoutDirection.Horizontal;
             autoLayout = true;
             autoSize = false;
-            
+
 
             DebugUtils.Log($"UIOptionsPanel created {size} | {position}");
         }
