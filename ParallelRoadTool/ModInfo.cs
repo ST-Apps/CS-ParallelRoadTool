@@ -26,7 +26,7 @@ namespace ParallelRoadTool
         public string Name => "Parallel Road Tool " + Version;
 
         public string Description =>
-            "This mod adds the ability to automatically create a parallel network of any kind while drawing a road";
+            "This mod allows players to easily draw parallel roads in Cities: Skylines. ";
 
         public void OnSettingsUI(UIHelperBase helper)
         {
