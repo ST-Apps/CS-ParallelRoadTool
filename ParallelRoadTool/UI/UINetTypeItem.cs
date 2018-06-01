@@ -9,8 +9,8 @@ namespace ParallelRoadTool.UI
 {
     public class UINetTypeItem : UIPanel
     {
-        private const int TextFieldWidth = 50;
-        private const int LabelWidth = 230;
+        private const int TextFieldWidth = 65;
+        private const int LabelWidth = 250;
         private const float ColumnPadding = 8f;
         private const int ReverseButtonWidth = 36;
         public float HorizontalOffset;
@@ -40,12 +40,15 @@ namespace ParallelRoadTool.UI
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             color = new Color32(255, 255, 255, 255);
-            size = new Vector2(450 - 8 * 2 - 4 * 2, 40);
+            size = new Vector2(500 - 8 * 2 - 4 * 2, 40);
 
+            var panel = AddUIComponent<UIPanel>();
+            panel.size = new Vector2(LabelWidth, 40);
+            panel.relativePosition = Vector2.zero;
 
-            DropDown = UIUtil.CreateDropDown(this);
+            DropDown = UIUtil.CreateDropDown(panel);
             DropDown.width = LabelWidth;
-            DropDown.relativePosition = new Vector3(0, 0);
+            DropDown.relativePosition = Vector2.zero;
             DropDown.eventSelectedIndexChanged += DropDown_eventSelectedIndexChanged;
 
             ReverseCheckbox = UIUtil.CreateCheckBox(this, "Reverse", "Toggle reverse road", false);
@@ -63,7 +66,6 @@ namespace ParallelRoadTool.UI
                 new Vector3(LabelWidth + 3 * ColumnPadding + ReverseButtonWidth + TextFieldWidth, 10);
             VerticalOffsetField.width = TextFieldWidth;
             VerticalOffsetField.eventTextSubmitted += VerticalOffsetField_eventTextSubmitted;
-
 
             Label = AddUIComponent<UILabel>();
             Label.textScale = .8f;

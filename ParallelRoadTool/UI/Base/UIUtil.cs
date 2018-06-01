@@ -176,7 +176,7 @@ namespace ParallelRoadTool.UI.Base
             dropDown.selectedIndex = 0;
             dropDown.textFieldPadding = new RectOffset(14, 0, 14, 0);
             dropDown.itemPadding = new RectOffset(14, 0, 8, 0);
-            dropDown.listPosition = UIDropDown.PopupListPosition.Automatic;
+            dropDown.listPosition = UIDropDown.PopupListPosition.Below;
             dropDown.listOffset = new Vector2(0, 0);
 
             var button = dropDown.AddUIComponent<UIButton>();

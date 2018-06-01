@@ -32,8 +32,7 @@ namespace ParallelRoadTool
 
         public bool IsToolActive
         {
-            // TODO: checkbox outside main panel is not working, so we need to show the panel even if the tool has been disabled
-            get => /*_isToolActive &&*/ NetTool.enabled;
+            get => _isToolActive && NetTool.enabled;
 
             private set
             {

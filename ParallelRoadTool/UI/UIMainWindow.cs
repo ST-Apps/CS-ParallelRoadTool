@@ -70,19 +70,27 @@ namespace ParallelRoadTool.UI
         public override void Start()
         {
             name = "PRT_MainWindow";
-            atlas = ResourceLoader.GetAtlas("Ingame");
-            backgroundSprite = "SubcategoriesPanel";
             isVisible = false;
-            size = new Vector2(450, 280);
-            padding = new RectOffset(8, 8, 8, 8);
-            autoLayoutPadding = new RectOffset(0, 0, 0, 4);
+            size = new Vector2(500, 240);
+            autoFitChildrenVertically = true;
+            absolutePosition = new Vector3(SavedWindowX.value, SavedWindowY.value);
 
-            var label = AddUIComponent<UILabel>();
+            var bg = AddUIComponent<UIPanel>();
+            bg.atlas = ResourceLoader.GetAtlas("Ingame");
+            bg.backgroundSprite = "SubcategoriesPanel";
+            bg.size = size;
+            bg.padding = new RectOffset(8, 8, 8, 8);
+            bg.autoLayoutPadding = new RectOffset(0, 0, 0, 4);
+            bg.autoLayout = true;
+            bg.autoLayoutDirection = LayoutDirection.Vertical;
+            bg.autoFitChildrenVertically = true;
+
+            var label = bg.AddUIComponent<UILabel>();
             label.name = "PRT_TitleLabel";
             label.textScale = 0.9f;
             label.text = "Parallel Road Tool";
             label.autoSize = false;
-            label.width = 450;
+            label.width = 500;
             label.SendToBack();
 
             var dragHandle = label.AddUIComponent<UIDragHandle>();
@@ -90,39 +98,27 @@ namespace ParallelRoadTool.UI
             dragHandle.relativePosition = Vector3.zero;
             dragHandle.size = label.size;
  
-            autoFitChildrenVertically = true;
-            autoLayout = true;
-            autoLayoutDirection = LayoutDirection.Vertical;
-
-            absolutePosition = new Vector3(SavedWindowX.value, SavedWindowY.value);
-
-            _mainPanel = AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
-            _netList = AddUIComponent(typeof(UINetList)) as UINetList;
+            _mainPanel = bg.AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
+            _netList = bg.AddUIComponent(typeof(UINetList)) as UINetList;
             if (_netList != null)
             {
                 _netList.List = ParallelRoadTool.SelectedRoadTypes;
                 _netList.OnChangedCallback = NetListOnChangedCallback;
             }
 
-            var space = AddUIComponent<UIPanel>();
+            var space = bg.AddUIComponent<UIPanel>();
             space.size = new Vector2(1, 1);
 
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
 
-            var roadsOptionPanel = UIUtil.FindComponent<UIComponent>("RoadsOptionPanel", null, UIUtil.FindOptions.NameContains);
-            if (roadsOptionPanel == null || !roadsOptionPanel.gameObject.activeInHierarchy) return;
+            var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
+            if (tsBar == null || !tsBar.gameObject.activeInHierarchy) return;
             var button = UIUtil.FindComponent<UICheckBox>("PRT_Parallel");
             if (button != null)
                 Destroy(button);
-            _toolToggleButton = UIUtil.CreateCheckBox(roadsOptionPanel, "Parallel", "Parallel Road Tool", false);
-            _toolToggleButton.relativePosition = new Vector3(166, 38);
-            _toolToggleButton.BringToFront();
-
-#if !DEBUG
-            // TODO: button is not working, hide it when not in debug
-            _toolToggleButton.isVisible = false;
-#endif
+            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", "Parallel Road Tool", false);
+            _toolToggleButton.relativePosition = new Vector3(424, -6);
 
             SubscribeToUIEvents();
 
@@ -134,8 +130,13 @@ namespace ParallelRoadTool.UI
         {
             if (ParallelRoadTool.Instance != null)
                 isVisible = ParallelRoadTool.Instance.IsToolActive;
-       
+
+            if (ParallelRoadTool.NetTool != null)
+                _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
+
             base.Update();
+
+
         }
 
         public override void OnDestroy()
@@ -155,11 +156,12 @@ namespace ParallelRoadTool.UI
                 (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
                 (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
-            DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
+            //DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
 
             SavedWindowX.value = (int) absolutePosition.x;
             SavedWindowY.value = (int) absolutePosition.y;
         }
+
 
         public void OnGUI()
         {
