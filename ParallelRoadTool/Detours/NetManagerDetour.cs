@@ -61,6 +61,147 @@ namespace ParallelRoadTool.Detours
         #region Utility
 
         /// <summary>
+        ///     <see
+        ///         cref="https://github.com/SamsamTS/CS-FineRoadTool/blob/4fd61d883372bc70f0b2e78845c1da2d8021b510/FineRoadTool/FineRoadTool.cs#L671" />
+        /// </summary>
+        /// <param name="segmentId"></param>
+        private void FixTunnels(ushort segmentId)
+        {
+            var nodes = NetManager.instance.m_nodes.m_buffer;
+            var segment = NetManager.instance.m_segments.m_buffer[segmentId];
+
+            var info = segment.Info;
+
+            var startNode = segment.m_startNode;
+            var endNode = segment.m_endNode;
+
+            var aiWrapper = new RoadAIWrapper(info.m_netAI);
+
+            // Is it a tunnel?
+            if (info == aiWrapper.tunnel)
+            {
+                // Make sure tunnels have underground flag
+                if ((nodes[startNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
+                    nodes[startNode].m_flags = nodes[startNode].m_flags | NetNode.Flags.Underground;
+
+                if ((nodes[endNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
+                    nodes[endNode].m_flags = nodes[endNode].m_flags | NetNode.Flags.Underground;
+
+                if (aiWrapper.slope == null) return;
+
+                // Convert tunnel entrance?
+                if (IsEndTunnel(ref nodes[startNode]))
+                {
+                    // Oops wrong way! Invert the segment
+                    segment.m_startNode = endNode;
+                    segment.m_endNode = startNode;
+
+                    var dir = segment.m_startDirection;
+
+                    segment.m_startDirection = segment.m_endDirection;
+                    segment.m_endDirection = dir;
+
+                    segment.m_flags = segment.m_flags ^ NetSegment.Flags.Invert;
+
+                    segment.CalculateSegment(segmentId);
+
+                    // Make it a slope
+                    segment.Info = aiWrapper.slope;
+                    NetManager.instance.UpdateSegment(segmentId);
+
+                    if ((nodes[startNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
+                        nodes[startNode].m_flags = nodes[startNode].m_flags & ~NetNode.Flags.Underground;
+                }
+                else if (IsEndTunnel(ref nodes[endNode]))
+                {
+                    // Make it a slope
+                    segment.Info = aiWrapper.slope;
+                    NetManager.instance.UpdateSegment(segmentId);
+
+                    if ((nodes[endNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
+                        nodes[endNode].m_flags = nodes[endNode].m_flags & ~NetNode.Flags.Underground;
+                }
+            }
+            // Is it a slope?
+            else if (info == aiWrapper.slope)
+            {
+                if (aiWrapper.tunnel == null) return;
+
+                // Convert to tunnel?
+                if (!IsEndTunnel(ref nodes[startNode]) && !IsEndTunnel(ref nodes[endNode]))
+                {
+                    if ((nodes[startNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
+                        nodes[startNode].m_flags = nodes[startNode].m_flags | NetNode.Flags.Underground;
+                    if ((nodes[endNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
+                        nodes[endNode].m_flags = nodes[endNode].m_flags | NetNode.Flags.Underground;
+
+                    // Make it a tunnel
+                    segment.Info = aiWrapper.tunnel;
+                    segment.UpdateBounds(segmentId);
+
+                    // Updating terrain
+                    TerrainModify.UpdateArea(segment.m_bounds.min.x, segment.m_bounds.min.z, segment.m_bounds.max.x,
+                        segment.m_bounds.max.z, true, true, false);
+
+                    NetManager.instance.UpdateSegment(segmentId);
+                }
+
+                // Is tunnel wrong way?
+                if (IsEndTunnel(ref nodes[startNode]))
+                {
+                    // Oops wrong way! Invert the segment
+                    segment.m_startNode = endNode;
+                    segment.m_endNode = startNode;
+
+                    var dir = segment.m_startDirection;
+
+                    segment.m_startDirection = segment.m_endDirection;
+                    segment.m_endDirection = dir;
+
+                    segment.m_flags = segment.m_flags ^ NetSegment.Flags.Invert;
+
+                    segment.CalculateSegment(segmentId);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     <see
+        ///         cref="https://github.com/SamsamTS/CS-FineRoadTool/blob/4fd61d883372bc70f0b2e78845c1da2d8021b510/FineRoadTool/FineRoadTool.cs#L826" />
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static bool IsEndTunnel(ref NetNode node)
+        {
+            if ((node.m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.Untouchable &&
+                (node.m_flags & NetNode.Flags.Underground) == NetNode.Flags.Underground)
+                return false;
+
+            var count = 0;
+
+            for (var i = 0; i < 8; i++)
+            {
+                int segment = node.GetSegment(i);
+                if (segment == 0 ||
+                    (NetManager.instance.m_segments.m_buffer[segment].m_flags & NetSegment.Flags.Created) !=
+                    NetSegment.Flags.Created) continue;
+
+                var info = NetManager.instance.m_segments.m_buffer[segment].Info;
+
+                var aiWrapper = new RoadAIWrapper(info.m_netAI);
+
+                if (info != aiWrapper.tunnel && info != aiWrapper.slope) return true;
+
+                count++;
+            }
+
+            if (TerrainManager.instance.SampleRawHeightSmooth(node.m_position) > node.m_position.y + 8f)
+                return false;
+
+            return count == 1;
+        }
+
+        /// <summary>
         ///     Given a point, a direction and a distance, we can get the coordinates for a point which is parallel to the given
         ///     one for the given direction.
         /// </summary>
@@ -294,6 +435,8 @@ namespace ParallelRoadTool.Detours
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                 }
+
+                FixTunnels(segment);
             }
 
             _isPreviousInvert = invert;
