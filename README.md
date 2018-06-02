@@ -1,6 +1,8 @@
 # CS-ParallelRoadTool
 A mod that allows players to easily draw parallel roads in Cities: Skylines.
 
+**Tested on version 1.10.0-f3**
+
 ## Known limitations/issues
 
 - **[Fine Road Anarchy](https://steamcommunity.com/workshop/filedetails/?id=802066100) is highly recommended!** (*mod works without it but you won't be able to connect some segments without an anarchy mod*)
