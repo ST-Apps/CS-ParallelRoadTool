@@ -23,7 +23,11 @@ namespace ParallelRoadTool
             }
         }
 
+#if DEBUG
+        public string Name => "[BETA] Parallel Road Tool " + Version;
+#else
         public string Name => "Parallel Road Tool " + Version;
+#endif
 
         public string Description =>
             "This mod allows players to easily draw parallel roads in Cities: Skylines. ";
