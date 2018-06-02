@@ -1,4 +1,4 @@
-[h1][BETA] CS-ParallelRoadTool[/h1]
+[h1][BETA] ParallelRoadTool[/h1]
 
 A mod that allows players to easily draw parallel roads in Cities: Skylines. 
 
