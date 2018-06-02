@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
 using FineRoadTool;
@@ -49,6 +50,9 @@ namespace ParallelRoadTool.Detours
             if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
                 _clonedStartNodeId == null)
                 NetworksCount = 1;
+
+            // Initialize RayCast delegate                        
+            //_rayCast = (RayCast)Delegate.CreateDelegate(typeof(RayCast), typeof(ToolBase), typeof(ToolBase).GetMethod("RayCast", BindingFlags.NonPublic | BindingFlags.Static));
         }
 
         public static void Revert()
@@ -154,6 +158,9 @@ namespace ParallelRoadTool.Detours
 
         #endregion
 
+        delegate bool RayCast(ToolBase.RaycastInput input, out ToolBase.RaycastOutput output);
+        private static RayCast _rayCast;
+
         /// <summary>
         ///     Mod's core.
         ///     First, we create the segment using game's original code.
@@ -195,7 +202,7 @@ namespace ParallelRoadTool.Detours
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                 var selectedNetInfo = GetNetInfoWithElevation(info, currentRoadInfos.NetInfo ?? info);
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != 
+                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
@@ -255,6 +262,32 @@ namespace ParallelRoadTool.Detours
                     NetManager.instance.CreateNode(out newEndNodeId, ref randomizer, info, newEndPosition,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
                 }
+
+                var newStartNode = NetManager.instance.m_nodes.m_buffer[newStartNodeId];
+                var newEndNode = NetManager.instance.m_nodes.m_buffer[newEndNodeId];
+
+                // TODO: test snapping
+                //if (Singleton<NetManager>.instance.RayCast(selectedNetInfo,
+                //    new Segment3(newStartNode.m_position, newEndNode.m_position), newEndNode.Info.m_netAI.GetSnapElevation(),
+                //    false, newEndNode.Info.GetService(), newEndNode.Info.GetService(),
+                //    newEndNode.Info.GetSubService(), newEndNode.Info.GetSubService(), ItemClass.Layer.None,
+                //    ItemClass.Layer.None, NetNode.Flags.All, NetSegment.Flags.All, out var hit,
+                //    out var hitNodeIndex, out var hitSegmentIndex))
+                //_rayCast(
+                //    new ToolBase.RaycastInput(Camera.main.ScreenPointToRay(newEndNode.m_position),
+                //        Camera.main.farClipPlane), out var output);
+                var dynMethod = typeof(ToolBase).GetMethod("RayCast", BindingFlags.NonPublic | BindingFlags.Static);
+                var args = new object[]
+                {
+                    new ToolBase.RaycastInput(new Ray(newEndNode.m_position, endDirection /*Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(newEndNode.m_position)*/),
+                        Camera.main.farClipPlane),
+                    new ToolBase.RaycastOutput()
+                };
+                var dynResult = (bool)dynMethod.Invoke(this, args);
+                var output = (ToolBase.RaycastOutput)args[1];
+                // ToolBase.RayCast(new ToolBase.RaycastInput(/*new Ray(newEndNode.m_position, endDirection)*/Camera.main.ScreenPointToRay(newEndNode.m_position), Camera.main.farClipPlane), out ToolBase.RaycastOutput output);
+                DebugUtils.Log($"End Node position = {newEndNode.m_position} | Ray Node position = {NetManager.instance.m_nodes.m_buffer[output.m_netNode].m_position} [{dynResult}]");
+                // NetManager.instance.RayCast(selectedNetInfo, new Segment3(newStartNode.m_position, newEndNode.m_position), (float)newEndNode.m_elevation)
 
                 // Store current end nodes in case we may need to connect the following segment to them
                 _endNodeId[i] = endNode;
