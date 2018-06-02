@@ -1,6 +1,8 @@
 [h1][BETA] ParallelRoadTool[/h1]
 
-A mod that allows players to easily draw parallel roads in Cities: Skylines. 
+A mod that allows players to easily draw parallel roads in Cities: Skylines.
+
+[h1] The beta version is meant for testing only and it can be unstable. (non-beta version is coming soon)[/h1]
 
 [b]Tested on version 1.10.0-f3[/b] 
 
@@ -29,3 +31,9 @@ Donate using PayPal: [url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&ho
 [h1]Source code[/h1]
 
 [url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url]
+
+[h1]Thanks to[/h1]
+
+[list]
+[*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
+[*]SamsamTS for his FineRoadAnarchy mod, which provided me the basics for this one
