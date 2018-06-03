@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool.Detours;
@@ -23,10 +24,9 @@ namespace ParallelRoadTool
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
         public static NetTool NetTool;
 
-        private bool _isToolActive;
-
         private UIMainWindow _mainWindow;
 
+        private bool _isToolActive;
         public bool IsToolActive
         {
             get => _isToolActive && NetTool.enabled;
@@ -48,6 +48,8 @@ namespace ParallelRoadTool
                 _isToolActive = value;
             }
         }
+
+        public bool IsLeftHandTraffic;
 
         #region Utils
 
@@ -125,6 +127,11 @@ namespace ParallelRoadTool
 
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
 
+                IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
+                                    SimulationMetaData.MetaBool.True;
+
+                DebugUtils.Log($"IsLeftHandTraffic = {IsLeftHandTraffic}");
+
                 NetManagerDetour.Deploy();
 
                 // Main UI init
@@ -195,7 +202,7 @@ namespace ParallelRoadTool
             if (ParallelRoadTool.Instance == null)
                 ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
             else
-                ParallelRoadTool.Instance.Start();
+                ParallelRoadTool.Instance.Start();            
         }
     }
 }
