@@ -1,0 +1,47 @@
+[h1][BETA] ParallelRoadTool[/h1]
+
+A mod that allows players to easily draw parallel roads in Cities: Skylines.
+
+[h1] The beta version is meant for testing only and it can be unstable. (non-beta version is coming soon)[/h1]
+
+[b]Tested on version 1.10.0-f3[/b] 
+
+[h1]Known limitations/issues[/h1] 
+
+[list] 
+[*][url=https://steamcommunity.com/workshop/filedetails/?id=802066100][b]Fine Road Anarchy[/b][/url] [b]is highly recommended![/b] ([i]mod works without it but you won't be able to connect some segments without an anarchy mod[/i]) 
+[*]Sharp angles produce weird results, curves work better [*]Roads will always follow terrain elevation 
+[*]Tunnel entrances/exists are not working but underground roads should 
+[*]Snapping only works with the last node drawn by the mode 
+[/list] 
+
+[h1]Features that may come somewhere in the future[/h1] 
+
+[list] 
+[*]Ability to save/load presets 
+[*]Ability to toggle on/off terrain conforming 
+[*]Visual guidelines overlay 
+[*]Ability to center cursor on the middle point between all the selected roads 
+[/list] 
+
+[h1]Support my work[/h1] 
+
+Donate using PayPal: [url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CZB2MWEN2JZAN][img]https://i.imgur.com/dSkdACn.png[/img][/url]
+
+[h1]Source code[/h1]
+
+[url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url]
+
+[h1]How to contribute[/h1]
+
+If you find an issue, please search [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues]here[/url] to see if someone already reported it and, eventually, comment on the already reported one.
+If you can't find any issue similar to yours, please click [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/new]here[/url] and provide all the informations that you can (screenshots and logs are welcome).
+
+If you're interested in helping with development, choose an issue and ask to be assigned. I'll create a branch for that issue and you'll be able to work there.
+If there's no issue for the thing you'd like to work on, feel free to open a new one.
+
+[h1]Thanks to[/h1]
+
+[list]
+[*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
+[*]SamsamTS for his FineRoadAnarchy mod, which provided me the basics for this one

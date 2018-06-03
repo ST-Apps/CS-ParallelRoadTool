@@ -8,6 +8,7 @@ namespace ParallelRoadTool
     public class ModInfo : IUserMod
     {
         public const string Version = "0.0.1";
+        public const string Branch = "dev";
 
         public ModInfo()
         {
@@ -23,7 +24,11 @@ namespace ParallelRoadTool
             }
         }
 
-        public string Name => "Parallel Road Tool " + Version;
+#if DEBUG
+        public string Name => $"[BETA] Parallel Road Tool {Version} b-{Branch}";
+#else
+        public string Name => $"Parallel Road Tool {Version} b-{Branch}";
+#endif
 
         public string Description =>
             "This mod allows players to easily draw parallel roads in Cities: Skylines. ";
