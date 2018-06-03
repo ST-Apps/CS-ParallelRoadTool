@@ -4,12 +4,13 @@ A mod that allows players to easily draw parallel roads in Cities: Skylines.
 
 [h1] The beta version is meant for testing only and it can be unstable. (non-beta version is coming soon)[/h1]
 
-[b]Tested on version 1.10.0-f3[/b] 
+[b]Tested on version 1.10.0-f3 - Current branch is [i]ISSUE-8[/i][/b] 
 
 [h1]Known limitations/issues[/h1] 
 
 [list] 
 [*][url=https://steamcommunity.com/workshop/filedetails/?id=802066100][b]Fine Road Anarchy[/b][/url] [b]is highly recommended![/b] ([i]mod works without it but you won't be able to connect some segments without an anarchy mod[/i]) 
+[*]Mod is [b]not compatible[/b] with Network Skins
 [*]Sharp angles produce weird results, curves work better [*]Roads will always follow terrain elevation 
 [*]Tunnel entrances/exists are not working but underground roads should 
 [*]Snapping only works with the last node drawn by the mode 
