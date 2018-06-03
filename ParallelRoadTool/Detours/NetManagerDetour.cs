@@ -174,7 +174,7 @@ namespace ParallelRoadTool.Detours
         private bool CreateSegment(out ushort segment, ref Randomizer randomizer, NetInfo info, ushort startNode,
             ushort endNode, Vector3 startDirection, Vector3 endDirection, uint buildIndex, uint modifiedIndex,
             bool invert)
-        {
+        {            
             DebugUtils.Log($"Creating a segment and {ParallelRoadTool.SelectedRoadTypes.Count} parallel segments");
 
             // Let's create the segment that the user requested
@@ -201,7 +201,14 @@ namespace ParallelRoadTool.Detours
 
                 var isReversed = currentRoadInfos.IsReversed;
 
-                DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed}");
+                // Left-hand drive means that any condition must be reversed
+                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                {
+                    invert = !invert;
+                    isReversed = !isReversed;
+                }
+
+                DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
 
                 // Get original nodes to clone them
                 var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
@@ -233,7 +240,7 @@ namespace ParallelRoadTool.Detours
                 {
                     var newStartPosition = Offset(startNetNode.m_position, startDirection, horizontalOffset,
                         verticalOffset, invert);
-                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert}");
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert} | {ParallelRoadTool.Instance.IsLeftHandTraffic}");
                     NetManager.instance.CreateNode(out newStartNodeId, ref randomizer, info, newStartPosition,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
                 }
