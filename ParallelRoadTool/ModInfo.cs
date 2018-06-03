@@ -8,6 +8,7 @@ namespace ParallelRoadTool
     public class ModInfo : IUserMod
     {
         public const string Version = "0.0.1";
+        public const string Branch = "master";
 
         public ModInfo()
         {
@@ -24,9 +25,9 @@ namespace ParallelRoadTool
         }
 
 #if DEBUG
-        public string Name => "[BETA] Parallel Road Tool " + Version;
+        public string Name => $"[BETA] Parallel Road Tool {Version} b-{Branch}";
 #else
-        public string Name => "Parallel Road Tool " + Version;
+        public string Name => $"Parallel Road Tool {Version} b-{Branch}";
 #endif
 
         public string Description =>
