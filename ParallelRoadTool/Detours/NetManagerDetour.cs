@@ -87,20 +87,19 @@ namespace ParallelRoadTool.Detours
         /// <param name="newNodeId"></param>
         /// <param name="randomizer"></param>
         /// <param name="info"></param>
-        /// <param name="newNodePosition"></param>
-        /// <param name="maxDistance"></param>
+        /// <param name="newNodePosition"></param>        
         /// <returns></returns>
         private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
         {
             var netManager = Singleton<NetManager>.instance;
-
-            // TODO: add a toggle to enable/disable snapping
+            
             // This should be the best possible value for snapping
             var maxDistance = info.m_halfWidth;
 
             DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} with maxDistance = {maxDistance}");            
 
-            if (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB))
+            if (ParallelRoadTool.Instance.IsSnappingEnabled && 
+                PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB))
             {
 
                 DebugUtils.Log($"FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");

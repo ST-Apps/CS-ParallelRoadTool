@@ -49,6 +49,8 @@ namespace ParallelRoadTool
             }
         }
 
+        public bool IsSnappingEnabled { get; set; }
+
         #region Utils
 
         private void AdjustNetOffset(float step)
@@ -78,6 +80,12 @@ namespace ParallelRoadTool
         {
             _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
             _mainWindow.OnNetworksListCountChanged += MainWindowOnOnNetworksListCountChanged;
+            _mainWindow.OnSnappingToggled += MainWindowOnOnSnappingToggled;
+        }
+
+        private void MainWindowOnOnSnappingToggled(UIComponent component, bool value)
+        {
+            IsSnappingEnabled = value;
         }
 
         private void MainWindowOnOnNetworksListCountChanged(object sender, System.EventArgs e)

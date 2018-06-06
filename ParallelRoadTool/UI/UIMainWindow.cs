@@ -18,22 +18,32 @@ namespace ParallelRoadTool.UI
         private UINetList _netList;
         private NetInfo _netToolSelection;
         private UICheckBox _toolToggleButton;
+        private UICheckBox _snappingToggleButton;
 
         #region Events/Callbacks
 
         public event PropertyChangedEventHandler<bool> OnParallelToolToggled;
         public event EventHandler OnNetworksListCountChanged;
+        public event PropertyChangedEventHandler<bool> OnSnappingToggled;
 
         private void UnsubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
             _mainPanel.OnToolToggled -= ToolToggleButtonOnEventCheckChanged;
+            _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
         }
 
         private void SubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
             _mainPanel.OnToolToggled += ToolToggleButtonOnEventCheckChanged;
+            _snappingToggleButton.eventCheckChanged += SnappingToggleButtonOnEventCheckChanged;
+        }
+
+        private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
+        {
+            DebugUtils.Log("Snapping toggle pressed.");
+            OnSnappingToggled?.Invoke(component, value);
         }
 
         private void ToolToggleButtonOnEventCheckChanged(UIComponent component, bool value)
@@ -108,6 +118,11 @@ namespace ParallelRoadTool.UI
 
             var space = bg.AddUIComponent<UIPanel>();
             space.size = new Vector2(1, 1);
+
+            // Add options
+            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", "Toggles napping to all nodes", false);
+            _snappingToggleButton.relativePosition = new Vector3(166, 38);
+            _snappingToggleButton.BringToFront();
 
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
