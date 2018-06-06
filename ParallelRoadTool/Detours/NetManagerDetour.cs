@@ -187,11 +187,6 @@ namespace ParallelRoadTool.Detours
             // HACK - [ISSUE-10] Check if we've been called by NetTool's CreateNode, if not we can stop here
             var caller = new System.Diagnostics.StackFrame(1).GetMethod().Name;
             if (caller != "CreateNode") return result;
-            //Debug.Log("CreateSegment (" + info.name + ") called by " + caller);
-            //var caller2 = new System.Diagnostics.StackFrame(2).GetMethod().Name;
-            //Debug.Log("... called by " + caller2);
-            //var caller3Type = new System.Diagnostics.StackFrame(3).GetMethod().DeclaringType?.Name;
-            //Debug.Log("... called by " + caller3Type);
 
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
             {
