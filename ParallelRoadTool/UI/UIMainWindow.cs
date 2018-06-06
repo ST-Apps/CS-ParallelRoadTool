@@ -134,6 +134,9 @@ namespace ParallelRoadTool.UI
             if (ParallelRoadTool.NetTool != null)
                 _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
 
+            // HACK - [ISSUE-9] Window's visual position is different from the actual panel, as if there's an offset. Setting height to 0 makes it collapse into the actual panel, preventing mouse capture.
+            size = new Vector2(size.x, 0);
+
             base.Update();
         }
 
