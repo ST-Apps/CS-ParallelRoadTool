@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
@@ -63,6 +64,82 @@ namespace ParallelRoadTool.Detours
         }
 
         #region Utility
+
+        /// <summary>
+        /// Creates a new node and returns it.
+        /// </summary>
+        /// <param name="newNodeId"></param>
+        /// <param name="randomizer"></param>
+        /// <param name="info"></param>
+        /// <param name="newNodePosition"></param>
+        /// <returns></returns>
+        private static NetNode CreateNode(out ushort newNodeId, ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
+        {
+            NetManager.instance.CreateNode(out newNodeId, ref randomizer, info, newNodePosition,
+                Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+
+            return NetManager.instance.m_nodes.m_buffer[newNodeId];
+        }
+
+        /// <summary>
+        /// Tries to find an already existing node at the given position, if there aren't we create a new one.
+        /// </summary>
+        /// <param name="newNodeId"></param>
+        /// <param name="randomizer"></param>
+        /// <param name="info"></param>
+        /// <param name="newNodePosition"></param>
+        /// <param name="maxDistance"></param>
+        /// <returns></returns>
+        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition, float maxDistance = 10)
+        {
+            var netManager = Singleton<NetManager>.instance;
+
+            DebugUtils.Log($"Trying to find an existing node at position {newNodePosition}");            
+
+            if (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB))
+            {
+
+                DebugUtils.Log($"FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
+
+                if (posA.m_segment != 0)
+                {
+                    var startNodeId = netManager.m_segments.m_buffer[posA.m_segment].m_startNode;
+                    var endNodeId = netManager.m_segments.m_buffer[posA.m_segment].m_endNode;
+
+                    var startNode = netManager.m_nodes.m_buffer[startNodeId];
+                    var endNode = netManager.m_nodes.m_buffer[endNodeId];
+
+                    DebugUtils.Log($"posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
+
+                    // Get node closer to current position
+                    if (startNodeId != 0 && endNodeId != 0)
+                    {
+                        return (newNodePosition - startNode.m_position).sqrMagnitude < 
+                               (newNodePosition - endNode.m_position).sqrMagnitude ? 
+                            startNodeId : 
+                            endNodeId;
+                    }
+
+                    // endNode was not found, return startNode
+                    if (startNodeId != 0)
+                    {
+                        return startNodeId;
+                    }
+
+                    // startNode was not found, return endNode
+                    if (endNodeId != 0)
+                    {
+                        return endNodeId;
+                    }                    
+                }
+            }
+
+            DebugUtils.Log($"No nodes has been found for position {newNodePosition}, creating a new one.");
+
+            // Both startNode and endNode were not found, we need to create a new one
+            CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
+            return newNodeId;
+        }
 
         /// <summary>
         ///     Given a point, a direction and a distance, we can get the coordinates for a point which is parallel to the given
@@ -158,9 +235,6 @@ namespace ParallelRoadTool.Detours
 
         #endregion
 
-        delegate bool RayCast(ToolBase.RaycastInput input, out ToolBase.RaycastOutput output);
-        private static RayCast _rayCast;
-
         /// <summary>
         ///     Mod's core.
         ///     First, we create the segment using game's original code.
@@ -241,8 +315,7 @@ namespace ParallelRoadTool.Detours
                     var newStartPosition = Offset(startNetNode.m_position, startDirection, horizontalOffset,
                         verticalOffset, invert);
                     DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert}");
-                    NetManager.instance.CreateNode(out newStartNodeId, ref randomizer, info, newStartPosition,
-                        Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+                    newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition);
                 }
 
                 // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
@@ -259,35 +332,8 @@ namespace ParallelRoadTool.Detours
                 {
                     var newEndPosition = Offset(endNetNode.m_position, endDirection, horizontalOffset, verticalOffset);
                     DebugUtils.Log($"[END] {endNetNode.m_position} --> {newEndPosition} | {invert}");
-                    NetManager.instance.CreateNode(out newEndNodeId, ref randomizer, info, newEndPosition,
-                        Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+                    newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition);
                 }
-
-                var newStartNode = NetManager.instance.m_nodes.m_buffer[newStartNodeId];
-                var newEndNode = NetManager.instance.m_nodes.m_buffer[newEndNodeId];
-
-                // TODO: test snapping
-                //if (Singleton<NetManager>.instance.RayCast(selectedNetInfo,
-                //    new Segment3(newStartNode.m_position, newEndNode.m_position), newEndNode.Info.m_netAI.GetSnapElevation(),
-                //    false, newEndNode.Info.GetService(), newEndNode.Info.GetService(),
-                //    newEndNode.Info.GetSubService(), newEndNode.Info.GetSubService(), ItemClass.Layer.None,
-                //    ItemClass.Layer.None, NetNode.Flags.All, NetSegment.Flags.All, out var hit,
-                //    out var hitNodeIndex, out var hitSegmentIndex))
-                //_rayCast(
-                //    new ToolBase.RaycastInput(Camera.main.ScreenPointToRay(newEndNode.m_position),
-                //        Camera.main.farClipPlane), out var output);
-                var dynMethod = typeof(ToolBase).GetMethod("RayCast", BindingFlags.NonPublic | BindingFlags.Static);
-                var args = new object[]
-                {
-                    new ToolBase.RaycastInput(new Ray(newEndNode.m_position, endDirection /*Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(newEndNode.m_position)*/),
-                        Camera.main.farClipPlane),
-                    new ToolBase.RaycastOutput()
-                };
-                var dynResult = (bool)dynMethod.Invoke(this, args);
-                var output = (ToolBase.RaycastOutput)args[1];
-                // ToolBase.RayCast(new ToolBase.RaycastInput(/*new Ray(newEndNode.m_position, endDirection)*/Camera.main.ScreenPointToRay(newEndNode.m_position), Camera.main.farClipPlane), out ToolBase.RaycastOutput output);
-                DebugUtils.Log($"End Node position = {newEndNode.m_position} | Ray Node position = {NetManager.instance.m_nodes.m_buffer[output.m_netNode].m_position} [{dynResult}]");
-                // NetManager.instance.RayCast(selectedNetInfo, new Segment3(newStartNode.m_position, newEndNode.m_position), (float)newEndNode.m_elevation)
 
                 // Store current end nodes in case we may need to connect the following segment to them
                 _endNodeId[i] = endNode;
