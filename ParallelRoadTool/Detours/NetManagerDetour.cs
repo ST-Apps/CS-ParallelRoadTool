@@ -184,6 +184,10 @@ namespace ParallelRoadTool.Detours
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
+            // HACK - [ISSUE-10] Check if we've been called by NetTool's CreateNode, if not we can stop here
+            var caller = new System.Diagnostics.StackFrame(1).GetMethod().Name;
+            if (caller != "CreateNode") return result;
+
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
             {
                 var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
