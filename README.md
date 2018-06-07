@@ -9,7 +9,6 @@ A mod that allows players to easily draw parallel roads in Cities: Skylines.
 - Sharp angles produce weird results, curves work better
 - Roads will always follow terrain elevation
 - Tunnel entrances/exists are not working but underground roads should (see [#3](/../../issues/3))
-- Snapping only works with the last node drawn by the mode (see [#4](/../../issues/4))
 
 ## Features that may come somewhere in the future
 
