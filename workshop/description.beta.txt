@@ -4,7 +4,7 @@ A mod that allows players to easily draw parallel roads in Cities: Skylines.
 
 [h1] The beta version is meant for testing only and it can be unstable. (non-beta version is coming soon)[/h1]
 
-[b]Tested on version 1.10.0-f3 - Current branch is [i]ISSUE-8[/i][/b] 
+[b]Tested on version 1.10.0-f3 - Current branch is [i]dev[/i][/b] 
 
 [h1]Known limitations/issues[/h1] 
 
@@ -12,8 +12,7 @@ A mod that allows players to easily draw parallel roads in Cities: Skylines.
 [*][url=https://steamcommunity.com/workshop/filedetails/?id=802066100][b]Fine Road Anarchy[/b][/url] [b]is highly recommended![/b] ([i]mod works without it but you won't be able to connect some segments without an anarchy mod[/i]) 
 [*]Mod is [b]not compatible[/b] with Network Skins - [b]WORKAROUND[/b]: Take a similar road of the same width to lay with this mod. Disable the mod and then simply upgrade it with a road from Network Skins
 [*]Sharp angles produce weird results, curves work better [*]Roads will always follow terrain elevation 
-[*]Tunnel entrances/exists are not working but underground roads should 
-[*]Snapping only works with the last node drawn by the mode 
+[*]Tunnel entrances/exists are not working but underground roads should
 [/list] 
 
 [h1]Features that may come somewhere in the future[/h1] 
@@ -45,4 +44,5 @@ If there's no issue for the thing you'd like to work on, feel free to open a new
 
 [list]
 [*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
-[*]SamsamTS for his FineRoadAnarchy mod, which provided me the basics for this one
+[*][url=https://steamcommunity.com/id/samsamts]SamsamTS[/url] for his FineRoadAnarchy mod, which provided me the basics for this one
+[*][url=https://steamcommunity.com/id/victorphilipp]LinuxFan[/url] for his pointers on how to fix snapping
