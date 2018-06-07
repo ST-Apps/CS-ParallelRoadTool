@@ -120,7 +120,7 @@ namespace ParallelRoadTool.UI
             space.size = new Vector2(1, 1);
 
             // Add options
-            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", "Toggles napping to all nodes", false);
+            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", "Toggle snapping for all nodes", false);
             _snappingToggleButton.relativePosition = new Vector3(166, 38);
             _snappingToggleButton.BringToFront();
 
