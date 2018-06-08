@@ -149,9 +149,6 @@ namespace ParallelRoadTool.UI
             if (ParallelRoadTool.NetTool != null)
                 _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
 
-            // HACK - [ISSUE-9] Window's visual position is different from the actual panel, as if there's an offset. Setting height to 0 makes it collapse into the actual panel, preventing mouse capture.
-            size = new Vector2(size.x, 0);
-
             base.Update();
         }
 
@@ -173,6 +170,13 @@ namespace ParallelRoadTool.UI
                 (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
             //DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
+
+            // HACK - [ISSUE-9] Setting window'd position seems not enough, we also need to set position for the first children of the window.
+            var firstChildren = m_ChildComponents.FirstOrDefault();
+            if (firstChildren != null)
+            {
+                firstChildren.absolutePosition = absolutePosition;
+            }
 
             SavedWindowX.value = (int) absolutePosition.x;
             SavedWindowY.value = (int) absolutePosition.y;
