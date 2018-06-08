@@ -337,7 +337,12 @@ namespace ParallelRoadTool.UI.Base
                 defaultAtlas["OptionBaseFocused"].texture,
                 defaultAtlas["OptionBaseHovered"].texture,
                 defaultAtlas["OptionBasePressed"].texture,
-                defaultAtlas["OptionBaseDisabled"].texture
+                defaultAtlas["OptionBaseDisabled"].texture,
+                defaultAtlas["Snapping"].texture,
+                defaultAtlas["SnappingFocused"].texture,
+                defaultAtlas["SnappingHovered"].texture,
+                defaultAtlas["SnappingPressed"].texture,
+                defaultAtlas["SnappingDisabled"].texture
             };
 
             ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
