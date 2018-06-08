@@ -167,13 +167,14 @@ namespace ParallelRoadTool
         {
             DebugUtils.Log("Destroying ...");
 
-            UnsubscribeToUIEvents();                       
-            _mainWindow.OnDestroy();
+            UnsubscribeToUIEvents();                                   
             AvailableRoadTypes.Clear();
             SelectedRoadTypes.Clear();            
             IsToolActive = false;
             IsSnappingEnabled = false;
             IsLeftHandTraffic = false;
+            _mainWindow.OnDestroy();
+            _mainWindow = null;
 
             NetManagerDetour.Revert();
         }
