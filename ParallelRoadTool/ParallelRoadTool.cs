@@ -66,7 +66,7 @@ namespace ParallelRoadTool
             }
 
             _mainWindow.RenderNetList();
-        }
+        }     
 
         #endregion
 
@@ -165,9 +165,18 @@ namespace ParallelRoadTool
 
         public void OnDestroy()
         {
-            UnsubscribeToUIEvents();
-            NetManagerDetour.Revert();
+            DebugUtils.Log("Destroying ...");
+
+            UnsubscribeToUIEvents();                                   
+            AvailableRoadTypes.Clear();
+            SelectedRoadTypes.Clear();            
             IsToolActive = false;
+            IsSnappingEnabled = false;
+            IsLeftHandTraffic = false;
+            _mainWindow.OnDestroy();
+            _mainWindow = null;
+
+            NetManagerDetour.Revert();
         }
 
         public void OnGUI()
