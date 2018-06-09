@@ -27,6 +27,12 @@ namespace ParallelRoadTool.Detours
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
         private static bool _isPreviousInvert;
 
+        // Our detour should execute only if caller is one of the following
+        private static string[] _allowedCallers =
+        {
+            "NetTool.CreateNode.CreateNode"
+        };
+
         /// <summary>
         ///     Sets the number of enabled parallel networks
         /// </summary>
@@ -50,7 +56,7 @@ namespace ParallelRoadTool.Detours
             // Initialize helper structures
             if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
                 _clonedStartNodeId == null)
-                NetworksCount = 1;            
+                NetworksCount = 1;
         }
 
         public static void Revert()
@@ -89,13 +95,13 @@ namespace ParallelRoadTool.Detours
         private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
         {
             var netManager = Singleton<NetManager>.instance;
-            
+
             // This should be the best possible value for snapping
             var maxDistance = info.m_halfWidth;
 
-            DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} with maxDistance = {maxDistance}");            
+            DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} with maxDistance = {maxDistance}");
 
-            if (ParallelRoadTool.Instance.IsSnappingEnabled && 
+            if (ParallelRoadTool.Instance.IsSnappingEnabled &&
                 PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB))
             {
 
@@ -114,9 +120,9 @@ namespace ParallelRoadTool.Detours
                     // Get node closer to current position
                     if (startNodeId != 0 && endNodeId != 0)
                     {
-                        return (newNodePosition - startNode.m_position).sqrMagnitude < 
-                               (newNodePosition - endNode.m_position).sqrMagnitude ? 
-                            startNodeId : 
+                        return (newNodePosition - startNode.m_position).sqrMagnitude <
+                               (newNodePosition - endNode.m_position).sqrMagnitude ?
+                            startNodeId :
                             endNodeId;
                     }
 
@@ -130,7 +136,7 @@ namespace ParallelRoadTool.Detours
                     if (endNodeId != 0)
                     {
                         return endNodeId;
-                    }                    
+                    }
                 }
             }
 
@@ -255,7 +261,7 @@ namespace ParallelRoadTool.Detours
         private bool CreateSegment(out ushort segment, ref Randomizer randomizer, NetInfo info, ushort startNode,
             ushort endNode, Vector3 startDirection, Vector3 endDirection, uint buildIndex, uint modifiedIndex,
             bool invert)
-        {            
+        {
             DebugUtils.Log($"Creating a segment and {ParallelRoadTool.SelectedRoadTypes.Count} parallel segments");
 
             // Let's create the segment that the user requested
@@ -265,9 +271,16 @@ namespace ParallelRoadTool.Detours
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
-            // HACK - [ISSUE-10] Check if we've been called by NetTool's CreateNode, if not we can stop here
-            var caller = new System.Diagnostics.StackFrame(1).GetMethod().Name;
-            if (caller != "CreateNode") return result;
+            // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
+            var caller = string.Join(".", new []
+            {                        
+                new System.Diagnostics.StackFrame(3).GetMethod().DeclaringType?.Name,
+                new System.Diagnostics.StackFrame(2).GetMethod().Name,
+                new System.Diagnostics.StackFrame(1).GetMethod().Name
+            });
+            DebugUtils.Log($"Caller trace is {caller}");
+            
+            if (!_allowedCallers.Contains(caller)) return result;
 
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
             {
