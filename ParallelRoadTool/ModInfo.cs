@@ -8,7 +8,7 @@ namespace ParallelRoadTool
     public class ModInfo : IUserMod
     {
         public const string Version = "0.0.1";
-        public const string Branch = "dev";
+        public const string Branch = "ISSUE-18";
 
         public ModInfo()
         {
