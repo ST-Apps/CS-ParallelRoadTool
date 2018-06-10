@@ -318,6 +318,7 @@ namespace ParallelRoadTool.Detours
         private NetInfo GetNetInfoWithElevation(NetInfo source, NetInfo destination)
         {
             if (destination.m_netAI == null || source.m_netAI == null) return destination;
+            var sourceWrapper = new RoadAIWrapper(source.m_netAI);
             var destinationWrapper = new RoadAIWrapper(destination.m_netAI);
             NetInfo result;
             switch (source.m_netAI.GetCollisionType())
@@ -336,15 +337,22 @@ namespace ParallelRoadTool.Detours
                 default:
                     result = null;
                     break;
-            }
-
-            result = result ?? destination;
+            }            
 
             DebugUtils.Log(
                 $"Checking source.m_netAI.IsUnderground() && destination.m_netAI.SupportUnderground() == {source.m_netAI.IsUnderground()} && {destination.m_netAI.SupportUnderground()}");
 
             if (source.m_netAI.IsUnderground() && destination.m_netAI.SupportUnderground())
                 result = destinationWrapper.tunnel;
+
+            DebugUtils.Log($"Checking source.m_netAI.m_info == sourceWrapper.slope | {source.m_netAI.m_info.name} == {sourceWrapper.slope?.name} | Is slope null? {sourceWrapper.slope == null}, {destinationWrapper.slope == null}");
+
+            // HACK - [ISSUE-3] sourceWrapper.slope is always null so this check fails, but if source's NetInfo contains the "slope" word we should be 100% sure that we need a slope in destionation too.
+            // if (source.m_netAI.m_info == sourceWrapper.slope)
+            if (source.m_netAI.m_info.name.ToLowerInvariant().Contains("slope"))
+                result = destinationWrapper.slope;
+
+            result = result ?? destination;
 
             DebugUtils.Log($"Got a {source.m_netAI.GetCollisionType()}, new road is {result.name}");
 
@@ -540,7 +548,11 @@ namespace ParallelRoadTool.Detours
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                 }
 
-                FixTunnels(segment);
+                //var previousAIName = NetManager.instance.m_segments.m_buffer[segment].Info.m_netAI.name;
+
+                //FixTunnels(segment);
+
+                //DebugUtils.Log($"FixTunnels changed {previousAIName} into {NetManager.instance.m_segments.m_buffer[segment].Info.m_netAI.name} [original info = {info.m_netAI.name}]");
             }
 
             _isPreviousInvert = invert;
