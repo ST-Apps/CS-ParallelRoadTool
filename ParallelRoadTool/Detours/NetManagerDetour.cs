@@ -87,7 +87,6 @@ namespace ParallelRoadTool.Detours
         /// <summary>
         /// Tries to find an already existing node at the given position, if there aren't we create a new one.
         /// </summary>
-        /// <param name="newNodeId"></param>
         /// <param name="randomizer"></param>
         /// <param name="info"></param>
         /// <param name="newNodePosition"></param>        
@@ -173,39 +172,36 @@ namespace ParallelRoadTool.Detours
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
+        /// <param name="isSlope"></param>
         /// <returns></returns>
-        private NetInfo GetNetInfoWithElevation(NetInfo source, NetInfo destination)
+        private NetInfo GetNetInfoWithElevation(NetInfo source, NetInfo destination, out bool isSlope)
         {
+            isSlope = false;
             if (destination.m_netAI == null || source.m_netAI == null) return destination;
-            var destinationWrapper = new RoadAIWrapper(destination.m_netAI);
-            NetInfo result;
-            switch (source.m_netAI.GetCollisionType())
-            {
-                case ItemClass.CollisionType.Undefined:
-                case ItemClass.CollisionType.Zoned:
-                case ItemClass.CollisionType.Terrain:
-                    result = destinationWrapper.info;
-                    break;
-                case ItemClass.CollisionType.Underground:
-                    result = destinationWrapper.tunnel;
-                    break;
-                case ItemClass.CollisionType.Elevated:
-                    result = destinationWrapper.elevated;
-                    break;
-                default:
-                    result = null;
-                    break;
-            }
 
+            var sourceWrapper = new RoadAIWrapper(source.m_netAI);
+            var destinationWrapper = new RoadAIWrapper(destination.m_netAI);
+
+            NetInfo result;
+
+            if (source == sourceWrapper.bridge || source.name.ToLowerInvariant().Contains("bridge"))
+                result = destinationWrapper.bridge;
+            else if (source == sourceWrapper.elevated || source.name.ToLowerInvariant().Contains("elevated"))
+                result = destinationWrapper.elevated;
+            else if (source == sourceWrapper.slope || source.name.ToLowerInvariant().Contains("slope"))
+            {
+                result = destinationWrapper.slope;
+                isSlope = true;
+            }
+            else if (source == sourceWrapper.tunnel || source.name.ToLowerInvariant().Contains("tunnel"))
+                result = destinationWrapper.tunnel;
+            else
+                result = destination;
+
+            // Sanity check, of them may be null
             result = result ?? destination;
 
-            DebugUtils.Log(
-                $"Checking source.m_netAI.IsUnderground() && destination.m_netAI.SupportUnderground() == {source.m_netAI.IsUnderground()} && {destination.m_netAI.SupportUnderground()}");
-
-            if (source.m_netAI.IsUnderground() && destination.m_netAI.SupportUnderground())
-                result = destinationWrapper.tunnel;
-
-            DebugUtils.Log($"Got a {source.m_netAI.GetCollisionType()}, new road is {result.name}");
+            DebugUtils.Log($"Got a {destination.name}, new road is {result.name} [source = {source.name}]");
 
             return result;
         }
@@ -271,6 +267,10 @@ namespace ParallelRoadTool.Detours
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
+            // True if we have a slope that is going down from start to end node
+            var isEnteringSlope = NetManager.instance.m_nodes.m_buffer[invert ? startNode : endNode].m_elevation >
+                                  NetManager.instance.m_nodes.m_buffer[invert ? endNode : startNode].m_elevation;
+
             // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
             var caller = string.Join(".", new []
             {                        
@@ -291,7 +291,7 @@ namespace ParallelRoadTool.Detours
                 DebugUtils.Log($"Using offsets: h {horizontalOffset} | v {verticalOffset}");
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                
-                var selectedNetInfo = GetNetInfoWithElevation(info, currentRoadInfos.NetInfo ?? info);
+                var selectedNetInfo = GetNetInfoWithElevation(info, currentRoadInfos.NetInfo ?? info, out var isSlope);
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
@@ -339,9 +339,9 @@ namespace ParallelRoadTool.Detours
                     var newStartPosition = Offset(startNetNode.m_position, startDirection, horizontalOffset,
                         verticalOffset, invert);
 
-                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert} | {ParallelRoadTool.Instance.IsLeftHandTraffic}");
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
                     newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition);
-                }
+                }                
 
                 // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
                 ushort newEndNodeId;
@@ -355,8 +355,9 @@ namespace ParallelRoadTool.Detours
                 }
                 else
                 {
-                    var newEndPosition = Offset(endNetNode.m_position, endDirection, horizontalOffset, verticalOffset);
-                    DebugUtils.Log($"[END] {endNetNode.m_position} --> {newEndPosition} | {invert}");
+                    var newEndPosition = Offset(endNetNode.m_position, endDirection, horizontalOffset, verticalOffset, !(invert && isSlope && isEnteringSlope));
+
+                    DebugUtils.Log($"[END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
                     newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition);
                 }
 
@@ -397,7 +398,7 @@ namespace ParallelRoadTool.Detours
                         newEndNodeId, startDirection, endDirection,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
-                }
+                }                
             }
 
             _isPreviousInvert = invert;
