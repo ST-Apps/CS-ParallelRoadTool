@@ -18,22 +18,32 @@ namespace ParallelRoadTool.UI
         private UINetList _netList;
         private NetInfo _netToolSelection;
         private UICheckBox _toolToggleButton;
+        private UICheckBox _snappingToggleButton;
 
         #region Events/Callbacks
 
         public event PropertyChangedEventHandler<bool> OnParallelToolToggled;
         public event EventHandler OnNetworksListCountChanged;
+        public event PropertyChangedEventHandler<bool> OnSnappingToggled;
 
         private void UnsubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
             _mainPanel.OnToolToggled -= ToolToggleButtonOnEventCheckChanged;
+            _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
         }
 
         private void SubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
             _mainPanel.OnToolToggled += ToolToggleButtonOnEventCheckChanged;
+            _snappingToggleButton.eventCheckChanged += SnappingToggleButtonOnEventCheckChanged;
+        }
+
+        private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
+        {
+            DebugUtils.Log("Snapping toggle pressed.");
+            OnSnappingToggled?.Invoke(component, value);
         }
 
         private void ToolToggleButtonOnEventCheckChanged(UIComponent component, bool value)
@@ -109,6 +119,11 @@ namespace ParallelRoadTool.UI
             var space = bg.AddUIComponent<UIPanel>();
             space.size = new Vector2(1, 1);
 
+            // Add options
+            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", "Toggle snapping for all nodes", false);
+            _snappingToggleButton.relativePosition = new Vector3(166, 38);
+            _snappingToggleButton.BringToFront();
+
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
 
@@ -155,6 +170,13 @@ namespace ParallelRoadTool.UI
                 (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
             //DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
+
+            // HACK - [ISSUE-9] Setting window'd position seems not enough, we also need to set position for the first children of the window.
+            var firstChildren = m_ChildComponents.FirstOrDefault();
+            if (firstChildren != null)
+            {
+                firstChildren.absolutePosition = absolutePosition;
+            }
 
             SavedWindowX.value = (int) absolutePosition.x;
             SavedWindowY.value = (int) absolutePosition.y;

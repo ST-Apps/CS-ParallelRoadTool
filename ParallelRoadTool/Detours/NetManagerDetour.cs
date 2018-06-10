@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
 using FineRoadTool;
@@ -24,6 +26,12 @@ namespace ParallelRoadTool.Detours
         // We store nodes from previous iteration so that we know which node to connect to
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
         private static bool _isPreviousInvert;
+
+        // Our detour should execute only if caller is one of the following
+        private static string[] _allowedCallers =
+        {
+            "NetTool.CreateNode.CreateNode"
+        };
 
         /// <summary>
         ///     Sets the number of enabled parallel networks
@@ -202,6 +210,85 @@ namespace ParallelRoadTool.Detours
         }
 
         /// <summary>
+        /// Creates a new node and returns it.
+        /// </summary>
+        /// <param name="newNodeId"></param>
+        /// <param name="randomizer"></param>
+        /// <param name="info"></param>
+        /// <param name="newNodePosition"></param>
+        /// <returns></returns>
+        private static NetNode CreateNode(out ushort newNodeId, ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
+        {
+            NetManager.instance.CreateNode(out newNodeId, ref randomizer, info, newNodePosition,
+                Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+
+            return NetManager.instance.m_nodes.m_buffer[newNodeId];
+        }
+
+        /// <summary>
+        /// Tries to find an already existing node at the given position, if there aren't we create a new one.
+        /// </summary>
+        /// <param name="newNodeId"></param>
+        /// <param name="randomizer"></param>
+        /// <param name="info"></param>
+        /// <param name="newNodePosition"></param>        
+        /// <returns></returns>
+        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
+        {
+            var netManager = Singleton<NetManager>.instance;
+
+            // This should be the best possible value for snapping
+            var maxDistance = info.m_halfWidth;
+
+            DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} with maxDistance = {maxDistance}");
+
+            if (ParallelRoadTool.Instance.IsSnappingEnabled &&
+                PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB))
+            {
+
+                DebugUtils.Log($"FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
+
+                if (posA.m_segment != 0)
+                {
+                    var startNodeId = netManager.m_segments.m_buffer[posA.m_segment].m_startNode;
+                    var endNodeId = netManager.m_segments.m_buffer[posA.m_segment].m_endNode;
+
+                    var startNode = netManager.m_nodes.m_buffer[startNodeId];
+                    var endNode = netManager.m_nodes.m_buffer[endNodeId];
+
+                    DebugUtils.Log($"posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
+
+                    // Get node closer to current position
+                    if (startNodeId != 0 && endNodeId != 0)
+                    {
+                        return (newNodePosition - startNode.m_position).sqrMagnitude <
+                               (newNodePosition - endNode.m_position).sqrMagnitude ?
+                            startNodeId :
+                            endNodeId;
+                    }
+
+                    // endNode was not found, return startNode
+                    if (startNodeId != 0)
+                    {
+                        return startNodeId;
+                    }
+
+                    // startNode was not found, return endNode
+                    if (endNodeId != 0)
+                    {
+                        return endNodeId;
+                    }
+                }
+            }
+
+            DebugUtils.Log($"No nodes has been found for position {newNodePosition}, creating a new one.");
+
+            // Both startNode and endNode were not found, we need to create a new one
+            CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
+            return newNodeId;
+        }
+
+        /// <summary>
         ///     Given a point, a direction and a distance, we can get the coordinates for a point which is parallel to the given
         ///     one for the given direction.
         /// </summary>
@@ -325,6 +412,17 @@ namespace ParallelRoadTool.Detours
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
+            // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
+            var caller = string.Join(".", new []
+            {                        
+                new System.Diagnostics.StackFrame(3).GetMethod().DeclaringType?.Name,
+                new System.Diagnostics.StackFrame(2).GetMethod().Name,
+                new System.Diagnostics.StackFrame(1).GetMethod().Name
+            });
+            DebugUtils.Log($"Caller trace is {caller}");
+            
+            if (!_allowedCallers.Contains(caller)) return result;
+
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
             {
                 var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
@@ -336,13 +434,20 @@ namespace ParallelRoadTool.Detours
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                 var selectedNetInfo = GetNetInfoWithElevation(info, currentRoadInfos.NetInfo ?? info);
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != 
+                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 var isReversed = currentRoadInfos.IsReversed;
 
-                DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed}");
+                // Left-hand drive means that any condition must be reversed
+                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                {
+                    invert = !invert;
+                    isReversed = !isReversed;
+                }
+
+                DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
 
                 // Get original nodes to clone them
                 var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
@@ -374,9 +479,9 @@ namespace ParallelRoadTool.Detours
                 {
                     var newStartPosition = Offset(startNetNode.m_position, startDirection, horizontalOffset,
                         verticalOffset, invert);
-                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert}");
-                    NetManager.instance.CreateNode(out newStartNodeId, ref randomizer, info, newStartPosition,
-                        Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | {invert} | {ParallelRoadTool.Instance.IsLeftHandTraffic}");
+                    newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition);
                 }
 
                 // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
@@ -393,8 +498,7 @@ namespace ParallelRoadTool.Detours
                 {
                     var newEndPosition = Offset(endNetNode.m_position, endDirection, horizontalOffset, verticalOffset);
                     DebugUtils.Log($"[END] {endNetNode.m_position} --> {newEndPosition} | {invert}");
-                    NetManager.instance.CreateNode(out newEndNodeId, ref randomizer, info, newEndPosition,
-                        Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+                    newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition);
                 }
 
                 // Store current end nodes in case we may need to connect the following segment to them
