@@ -14,11 +14,21 @@ namespace ParallelRoadTool.UI
         private static readonly SavedInt SavedWindowY =
             new SavedInt("windowY", ParallelRoadTool.SettingsFileName, -1000, true);
 
+        private static readonly SavedInt SavedToggleX =
+            new SavedInt("toggleX", ParallelRoadTool.SettingsFileName, -1000, true);
+
+        private static readonly SavedInt SavedToggleY =
+            new SavedInt("toggleY", ParallelRoadTool.SettingsFileName, -1000, true);
+
         private UIOptionsPanel _mainPanel;
         private UINetList _netList;
         private NetInfo _netToolSelection;
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
+        private UIRightDragHandle _buttonDragHandle;
+
+        // We use this to prevent clicks while user is dragging the button
+        private bool _isDragging;
 
         #region Events/Callbacks
 
@@ -31,6 +41,8 @@ namespace ParallelRoadTool.UI
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
             _mainPanel.OnToolToggled -= ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
+            _buttonDragHandle.eventDragStart -= ButtonDragHandleOnEventDragStart;
+            _buttonDragHandle.eventDragEnd -= ButtonDragHandleOnEventDragEnd;
         }
 
         private void SubscribeToUIEvents()
@@ -38,6 +50,22 @@ namespace ParallelRoadTool.UI
             _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
             _mainPanel.OnToolToggled += ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged += SnappingToggleButtonOnEventCheckChanged;
+            _buttonDragHandle.eventDragStart += ButtonDragHandleOnEventDragStart;
+            _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;            
+        }
+
+        private void ButtonDragHandleOnEventDragEnd(UIComponent component, UIDragEventParameter eventparam)
+        {
+            _isDragging = false;
+
+            // Also save position
+            SavedToggleX.value = (int)_toolToggleButton.absolutePosition.x;
+            SavedToggleY.value = (int) _toolToggleButton.absolutePosition.y;
+        }
+
+        private void ButtonDragHandleOnEventDragStart(UIComponent component, UIDragEventParameter eventparam)
+        {
+            _isDragging = true;
         }
 
         private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
@@ -47,7 +75,10 @@ namespace ParallelRoadTool.UI
         }
 
         private void ToolToggleButtonOnEventCheckChanged(UIComponent component, bool value)
-        {
+        {            
+            // Prevent click during dragging
+            if (_isDragging) return;
+
             DebugUtils.Log("Tool toggle pressed.");
             OnParallelToolToggled?.Invoke(component, value);
         }
@@ -132,8 +163,22 @@ namespace ParallelRoadTool.UI
             var button = UIUtil.FindComponent<UICheckBox>("PRT_Parallel");
             if (button != null)
                 Destroy(button);
-            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", "Parallel Road Tool", false);
-            _toolToggleButton.relativePosition = new Vector3(424, -6);
+
+            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", "Parallel Road Tool", false);            
+            if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
+            {
+                _toolToggleButton.absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);
+            }
+            else
+            {
+                _toolToggleButton.relativePosition = new Vector3(424, -6);
+            }
+
+            // HACK - [ISSUE-26] Tool's main button must be draggable to prevent overlapping other mods buttons.
+            _buttonDragHandle = _toolToggleButton.AddUIComponent<UIRightDragHandle>();
+            _buttonDragHandle.size = _toolToggleButton.size;
+            _buttonDragHandle.relativePosition = Vector3.zero;
+            _buttonDragHandle.target = _toolToggleButton;            
 
             SubscribeToUIEvents();
 
@@ -171,7 +216,7 @@ namespace ParallelRoadTool.UI
 
             //DebugUtils.Log($"UIMainWindow OnPositionChanged | {resolution} | {absolutePosition}");
 
-            // HACK - [ISSUE-9] Setting window'd position seems not enough, we also need to set position for the first children of the window.
+            // HACK - [ISSUE-9] Setting window's position seems not enough, we also need to set position for the first children of the window.
             var firstChildren = m_ChildComponents.FirstOrDefault();
             if (firstChildren != null)
             {
