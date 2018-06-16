@@ -71,8 +71,10 @@ namespace ParallelRoadTool.Detours
 
             if (!ParallelRoadTool.Instance.IsToolActive) return;
 
-            foreach (var currentRoadInfos in ParallelRoadTool.SelectedRoadTypes)
+            for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
             {
+                var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
+
                 var horizontalOffset = -currentRoadInfos.HorizontalOffset;
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
@@ -83,13 +85,15 @@ namespace ParallelRoadTool.Detours
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
-                RenderOverlayOriginal(cameraInfo, selectedNetInfo, Color.red, new NetTool.ControlPoint
+                var newColor = new Color(Mathf.Clamp(color.r * 255 + i, 0, 255) / 255, Mathf.Clamp(color.g * 255 + i, 0, 255) / 255, Mathf.Clamp(color.b * 255 + i, 0, 255) / 255, color.a);
+
+                RenderOverlayOriginal(cameraInfo, selectedNetInfo, newColor, new NetTool.ControlPoint
                 {
                     m_direction = startPoint.m_direction,
                     m_elevation = startPoint.m_elevation,
                     m_node = startPoint.m_node,
                     m_outside = startPoint.m_outside,
-                    m_position = startPoint.m_position.Offset(startPoint.m_direction, horizontalOffset, verticalOffset),
+                    m_position = startPoint.m_position.Offset(startPoint.m_direction == Vector3.zero ? middlePoint.m_direction : startPoint.m_direction, horizontalOffset, verticalOffset),
                     m_segment = startPoint.m_segment
                 }, new NetTool.ControlPoint
                 {
@@ -110,5 +114,5 @@ namespace ParallelRoadTool.Detours
                 });
             }
         }
-    }    
+    }
 }
