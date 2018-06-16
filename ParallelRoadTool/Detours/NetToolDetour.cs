@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using ColossalFramework;
 using ColossalFramework.Math;
+using FineRoadTool;
 using ICities;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Redirection;
@@ -70,31 +71,44 @@ namespace ParallelRoadTool.Detours
 
             if (!ParallelRoadTool.Instance.IsToolActive) return;
 
-            RenderOverlayOriginal(cameraInfo, info, Color.red, new NetTool.ControlPoint
+            foreach (var currentRoadInfos in ParallelRoadTool.SelectedRoadTypes)
             {
-                m_direction = startPoint.m_direction,
-                m_elevation = startPoint.m_elevation,
-                m_node = startPoint.m_node,
-                m_outside = startPoint.m_outside,
-                m_position = startPoint.m_position.Offset(startPoint.m_direction, 30, 0),
-                m_segment = startPoint.m_segment
-            }, new NetTool.ControlPoint
-            {
-                m_direction = middlePoint.m_direction,
-                m_elevation = middlePoint.m_elevation,
-                m_node = middlePoint.m_node,
-                m_outside = middlePoint.m_outside,
-                m_position = middlePoint.m_position.Offset(middlePoint.m_direction, 30, 0),
-                m_segment = middlePoint.m_segment
-            }, new NetTool.ControlPoint
-            {
-                m_direction = endPoint.m_direction,
-                m_elevation = endPoint.m_elevation,
-                m_node = endPoint.m_node,
-                m_outside = endPoint.m_outside,
-                m_position = endPoint.m_position.Offset(endPoint.m_direction, 30, 0),
-                m_segment = endPoint.m_segment
-            });
+                var horizontalOffset = currentRoadInfos.HorizontalOffset;
+                var verticalOffset = currentRoadInfos.VerticalOffset;
+
+                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
+                var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out var isSlope);
+                // If the user is using a vertical offset we try getting the relative elevated net info and use it
+                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
+                    ItemClass.CollisionType.Elevated)
+                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+
+                RenderOverlayOriginal(cameraInfo, selectedNetInfo, Color.red, new NetTool.ControlPoint
+                {
+                    m_direction = startPoint.m_direction,
+                    m_elevation = startPoint.m_elevation,
+                    m_node = startPoint.m_node,
+                    m_outside = startPoint.m_outside,
+                    m_position = startPoint.m_position.Offset(startPoint.m_direction, horizontalOffset, verticalOffset),
+                    m_segment = startPoint.m_segment
+                }, new NetTool.ControlPoint
+                {
+                    m_direction = middlePoint.m_direction,
+                    m_elevation = middlePoint.m_elevation,
+                    m_node = middlePoint.m_node,
+                    m_outside = middlePoint.m_outside,
+                    m_position = middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
+                    m_segment = middlePoint.m_segment
+                }, new NetTool.ControlPoint
+                {
+                    m_direction = endPoint.m_direction,
+                    m_elevation = endPoint.m_elevation,
+                    m_node = endPoint.m_node,
+                    m_outside = endPoint.m_outside,
+                    m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
+                    m_segment = endPoint.m_segment
+                });
+            }
         }
     }    
 }

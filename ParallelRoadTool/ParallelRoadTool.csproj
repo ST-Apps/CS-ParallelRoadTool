@@ -54,6 +54,7 @@
     <Compile Include="Detours\NetToolDetour.cs" />
     <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
     <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
+    <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="NetTypeItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
