@@ -13,6 +13,7 @@ A mod that allows players to easily draw parallel roads in Cities: Skylines.
 [*]Mod is [b]not compatible[/b] with Network Skins - [b]WORKAROUND[/b]: Take a similar road of the same width to lay with this mod. Disable the mod and then simply upgrade it with a road from Network Skins
 [*]Sharp angles produce weird results, curves work better
 [*]Roads will always follow terrain elevation 
+[*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
 [/list] 
 
 [h1]Features that may come somewhere in the future[/h1] 
@@ -20,7 +21,7 @@ A mod that allows players to easily draw parallel roads in Cities: Skylines.
 [list] 
 [*]Ability to save/load presets 
 [*]Ability to toggle on/off terrain conforming 
-[*]Visual guidelines overlay 
+[*][b]DONE![/b]Visual guidelines overlay 
 [*]Ability to center cursor on the middle point between all the selected roads 
 [/list] 
 
