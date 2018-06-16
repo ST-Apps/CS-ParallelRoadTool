@@ -73,7 +73,7 @@ namespace ParallelRoadTool.Detours
 
             foreach (var currentRoadInfos in ParallelRoadTool.SelectedRoadTypes)
             {
-                var horizontalOffset = currentRoadInfos.HorizontalOffset;
+                var horizontalOffset = -currentRoadInfos.HorizontalOffset;
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                
