@@ -141,6 +141,7 @@ namespace ParallelRoadTool
                 DebugUtils.Log($"IsLeftHandTraffic = {IsLeftHandTraffic}");
 
                 NetManagerDetour.Deploy();
+                NetToolDetour.Deploy();
 
                 // Main UI init
                 var view = UIView.GetAView();
