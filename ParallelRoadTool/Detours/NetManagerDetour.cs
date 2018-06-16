@@ -15,6 +15,7 @@ namespace ParallelRoadTool.Detours
     /// </summary>
     public struct NetManagerDetour
     {
+        #region Detour
         private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
@@ -22,7 +23,27 @@ namespace ParallelRoadTool.Detours
             typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static RedirectCallsState _state;
-        private static bool _deployed;
+        private static bool _deployed;        
+
+        public static void Deploy()
+        {
+            if (_deployed) return;
+            _state = RedirectionHelper.RedirectCalls(From, To);
+            _deployed = true;
+
+            // Initialize helper structures
+            if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
+                _clonedStartNodeId == null)
+                NetworksCount = 1;
+        }
+
+        public static void Revert()
+        {
+            if (!_deployed) return;
+            RedirectionHelper.RevertRedirect(From, _state);
+            _deployed = false;
+        }
+        #endregion
 
         // We store nodes from previous iteration so that we know which node to connect to
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
@@ -46,25 +67,6 @@ namespace ParallelRoadTool.Detours
                 _startNodeId = new ushort?[value];
                 _clonedStartNodeId = new ushort?[value];
             }
-        }
-
-        public static void Deploy()
-        {
-            if (_deployed) return;
-            _state = RedirectionHelper.RedirectCalls(From, To);
-            _deployed = true;
-
-            // Initialize helper structures
-            if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
-                _clonedStartNodeId == null)
-                NetworksCount = 1;
-        }
-
-        public static void Revert()
-        {
-            if (!_deployed) return;
-            RedirectionHelper.RevertRedirect(From, _state);
-            _deployed = false;
         }
 
         #region Utility
