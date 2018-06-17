@@ -38,11 +38,13 @@ namespace ParallelRoadTool
                 {
                     DebugUtils.Log("Enabling parallel road support");
                     NetManagerDetour.Deploy();
+                    NetToolDetour.Deploy();
                 }
                 else
                 {
                     DebugUtils.Log("Disabling parallel road support");
                     NetManagerDetour.Revert();
+                    NetToolDetour.Revert();
                 }
 
                 _isToolActive = value;
@@ -141,6 +143,7 @@ namespace ParallelRoadTool
                 DebugUtils.Log($"IsLeftHandTraffic = {IsLeftHandTraffic}");
 
                 NetManagerDetour.Deploy();
+                NetToolDetour.Deploy();
 
                 // Main UI init
                 var view = UIView.GetAView();
