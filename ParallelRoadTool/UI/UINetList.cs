@@ -95,6 +95,7 @@ namespace ParallelRoadTool.UI
                 comp.NetInfo = item.NetInfo;
                 comp.HorizontalOffset = item.HorizontalOffset;
                 comp.VerticalOffset = item.VerticalOffset;
+                comp.IsReversed = item.IsReversed;
                 comp.Index = index++;
 
                 comp.OnDeleteCallback = () =>
