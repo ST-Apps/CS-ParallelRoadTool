@@ -29,7 +29,7 @@ namespace ParallelRoadTool
         private bool _isToolActive;
         public bool IsToolActive
         {
-            get => _isToolActive && NetTool.enabled;
+            get => _isToolActive && NetTool != null && NetTool.enabled;
 
             private set
             {
@@ -168,18 +168,22 @@ namespace ParallelRoadTool
 
         public void OnDestroy()
         {
-            DebugUtils.Log("Destroying ...");
+            try
+            {
+                DebugUtils.Log("Destroying ...");
 
-            UnsubscribeToUIEvents();                                   
-            AvailableRoadTypes.Clear();
-            SelectedRoadTypes.Clear();            
-            IsToolActive = false;
-            IsSnappingEnabled = false;
-            IsLeftHandTraffic = false;
-            _mainWindow.OnDestroy();
-            _mainWindow = null;
+                NetManagerDetour.Revert();
 
-            NetManagerDetour.Revert();
+                UnsubscribeToUIEvents();
+                AvailableRoadTypes.Clear();
+                SelectedRoadTypes.Clear();
+                IsToolActive = false;
+                IsSnappingEnabled = false;
+                IsLeftHandTraffic = false;
+                _mainWindow.OnDestroy();
+                _mainWindow = null;
+            }
+            catch { }
         }
 
         public void OnGUI()
