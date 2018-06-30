@@ -18,6 +18,7 @@ namespace ParallelRoadTool.UI
 
         public NetInfo NetInfo;
         public float VerticalOffset;
+        public bool IsReversed;
 
         private UILabel Label { get; set; }
         private UITextField HorizontalOffsetField { get; set; }
@@ -115,6 +116,7 @@ namespace ParallelRoadTool.UI
 
             HorizontalOffsetField.text = HorizontalOffset.ToString(CultureInfo.InvariantCulture);
             VerticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
+            ReverseCheckbox.isChecked = IsReversed;
             if (!IsCurrentItem)
             {
                 var index = ParallelRoadTool.AvailableRoadTypes.FindIndex(ni => ni != null && ni.name == NetInfo.name);
