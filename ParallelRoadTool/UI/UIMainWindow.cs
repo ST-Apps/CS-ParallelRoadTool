@@ -199,8 +199,14 @@ namespace ParallelRoadTool.UI
 
         public override void OnDestroy()
         {
-            UnsubscribeToUIEvents();
-            base.OnDestroy();
+            try
+            {
+                UnsubscribeToUIEvents();
+                base.OnDestroy();
+            }
+            catch {
+                // HACK - [ISSUE-31]
+            }
         }
 
         protected override void OnPositionChanged()
