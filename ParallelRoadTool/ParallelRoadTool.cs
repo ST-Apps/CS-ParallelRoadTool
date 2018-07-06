@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool.Detours;
@@ -23,13 +24,12 @@ namespace ParallelRoadTool
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
         public static NetTool NetTool;
 
-        private bool _isToolActive;
-
         private UIMainWindow _mainWindow;
 
+        private bool _isToolActive;
         public bool IsToolActive
         {
-            get => _isToolActive && NetTool.enabled;
+            get => _isToolActive && NetTool != null && NetTool.enabled;
 
             private set
             {
@@ -38,16 +38,22 @@ namespace ParallelRoadTool
                 {
                     DebugUtils.Log("Enabling parallel road support");
                     NetManagerDetour.Deploy();
+                    NetToolDetour.Deploy();
                 }
                 else
                 {
                     DebugUtils.Log("Disabling parallel road support");
                     NetManagerDetour.Revert();
+                    NetToolDetour.Revert();
                 }
 
                 _isToolActive = value;
             }
         }
+
+        public bool IsSnappingEnabled { get; set; }
+
+        public bool IsLeftHandTraffic;
 
         #region Utils
 
@@ -62,7 +68,7 @@ namespace ParallelRoadTool
             }
 
             _mainWindow.RenderNetList();
-        }
+        }     
 
         #endregion
 
@@ -78,6 +84,12 @@ namespace ParallelRoadTool
         {
             _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
             _mainWindow.OnNetworksListCountChanged += MainWindowOnOnNetworksListCountChanged;
+            _mainWindow.OnSnappingToggled += MainWindowOnOnSnappingToggled;
+        }
+
+        private void MainWindowOnOnSnappingToggled(UIComponent component, bool value)
+        {
+            IsSnappingEnabled = value;
         }
 
         private void MainWindowOnOnNetworksListCountChanged(object sender, System.EventArgs e)
@@ -125,7 +137,13 @@ namespace ParallelRoadTool
 
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
 
+                IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
+                                    SimulationMetaData.MetaBool.True;
+
+                DebugUtils.Log($"IsLeftHandTraffic = {IsLeftHandTraffic}");
+
                 NetManagerDetour.Deploy();
+                NetToolDetour.Deploy();
 
                 // Main UI init
                 var view = UIView.GetAView();
@@ -150,9 +168,24 @@ namespace ParallelRoadTool
 
         public void OnDestroy()
         {
-            UnsubscribeToUIEvents();
-            NetManagerDetour.Revert();
-            IsToolActive = false;
+            try
+            {
+                DebugUtils.Log("Destroying ...");
+
+                NetManagerDetour.Revert();
+
+                UnsubscribeToUIEvents();
+                AvailableRoadTypes.Clear();
+                SelectedRoadTypes.Clear();
+                IsToolActive = false;
+                IsSnappingEnabled = false;
+                IsLeftHandTraffic = false;
+                _mainWindow.OnDestroy();
+                _mainWindow = null;
+            }
+            catch {
+                // HACK - [ISSUE 31]
+            }
         }
 
         public void OnGUI()
@@ -195,7 +228,7 @@ namespace ParallelRoadTool
             if (ParallelRoadTool.Instance == null)
                 ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
             else
-                ParallelRoadTool.Instance.Start();
+                ParallelRoadTool.Instance.Start();            
         }
     }
 }

@@ -51,8 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Detours\NetManagerDetour.cs" />
+    <Compile Include="Detours\NetToolDetour.cs" />
     <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
     <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
+    <Compile Include="Extensions\NetInfoExtensions.cs" />
+    <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="NetTypeItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
@@ -66,8 +69,9 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
-    <Compile Include="ResourceLoader.cs" />
-    <Compile Include="RoadAIWrapper.cs" />
+    <Compile Include="ResourceLoader.cs" />    
+    <Compile Include="Wrappers\RoadAIWrapper.cs" />
+    <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
     <Compile Include="UI\UINetList.cs" />
     <Compile Include="UI\UINetTypeItem.cs" />
