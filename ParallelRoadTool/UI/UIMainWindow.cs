@@ -160,6 +160,10 @@ namespace ParallelRoadTool.UI
 
             var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
             if (tsBar == null || !tsBar.gameObject.activeInHierarchy) return;
+
+            var toolModeBar = UIUtil.FindComponent<UITabstrip>("ToolMode", tsBar, UIUtil.FindOptions.NameContains);
+            if (toolModeBar == null) return;
+
             var button = UIUtil.FindComponent<UICheckBox>("PRT_Parallel");
             if (button != null)
                 Destroy(button);
@@ -171,7 +175,7 @@ namespace ParallelRoadTool.UI
             }
             else
             {
-                _toolToggleButton.relativePosition = new Vector3(424, -6);
+                _toolToggleButton.absolutePosition = new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1, toolModeBar.absolutePosition.y);
             }
 
             // HACK - [ISSUE-26] Tool's main button must be draggable to prevent overlapping other mods buttons.
