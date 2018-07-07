@@ -27,9 +27,9 @@ namespace ParallelRoadTool
 
         private void Awake()
         {
-            AddKeymapping("Toggle Parallel Roads", toggleParallelRoads);
-            AddKeymapping("Decrease HorizontalOffset of Parallel Roads", decreaseOffset);
-            AddKeymapping("Increase HorizontalOffset of Parallel Roads", increaseOffset);
+            AddKeymapping(Locale.Get("PRT_TOOLTIPS", "ToolToggleButton"), toggleParallelRoads);
+            AddKeymapping(Locale.Get("PRT_TEXTS", "DecreaseHorizontalOffsetOption"), decreaseOffset);
+            AddKeymapping(Locale.Get("PRT_TEXTS", "IncreaseHorizontalOffsetOption"), increaseOffset);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)

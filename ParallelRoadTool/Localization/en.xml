@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NameList
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="PRT_en">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Toggle snapping for existing nodes</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Toggle Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Toggle reverse direction for this road</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Remove network</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Add network</LocalizedString>
+    
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Same as selected</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Decrease horizontal offset of parallel networks</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Increase horizontal offset of parallel networks</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Decrease vertical offset of parallel networks</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Increase vertical offset of parallel networks</LocalizedString>
+  </strings>
+</NameList>

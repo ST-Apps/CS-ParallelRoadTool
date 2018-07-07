@@ -54,6 +54,10 @@
     <Compile Include="Detours\NetToolDetour.cs" />
     <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
     <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
+    <Compile Include="Extensions\LocaleManagerExtensions.cs" />
+    <Compile Include="Extensions\LocaleModels\LocalizedString.cs" />
+    <Compile Include="Extensions\LocaleModels\LocalizedStringKey.cs" />
+    <Compile Include="Extensions\LocaleModels\NameList.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="NetTypeItem.cs" />
@@ -69,7 +73,8 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
-    <Compile Include="ResourceLoader.cs" />    
+    <Compile Include="ResourceLoader.cs" />
+    <Compile Include="UI\UITipsWindow.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
@@ -93,6 +98,7 @@
     <EmbeddedResource Include="Icons\BendingPressed.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Localization\en.xml" />
     <EmbeddedResource Include="Icons\Reverse.png" />
     <EmbeddedResource Include="Icons\ReverseDisabled.png" />
     <EmbeddedResource Include="Icons\ReverseFocused.png" />
@@ -115,6 +121,7 @@
     <EmbeddedResource Include="Icons\AddPressed.png" />
     <Content Include="Icons\DragCursor.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"

@@ -5,12 +5,6 @@ namespace ParallelRoadTool.UI
 {
     public class UIOptionsPanel : UIPanel
     {
-        #region Events
-
-        public event PropertyChangedEventHandler<bool> OnToolToggled;
-
-        #endregion
-
         public override void Start()
         {
             name = "PRT_OptionsPanel";
@@ -24,7 +18,6 @@ namespace ParallelRoadTool.UI
             autoLayoutDirection = LayoutDirection.Horizontal;
             autoLayout = true;
             autoSize = false;
-
 
             DebugUtils.Log($"UIOptionsPanel created {size} | {position}");
         }

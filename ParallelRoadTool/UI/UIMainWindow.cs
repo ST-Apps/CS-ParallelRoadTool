@@ -1,5 +1,6 @@
 ﻿using System;
 using ColossalFramework;
+using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ParallelRoadTool.UI.Base;
 using UnityEngine;
@@ -22,10 +23,11 @@ namespace ParallelRoadTool.UI
 
         private UIOptionsPanel _mainPanel;
         private UINetList _netList;
-        private NetInfo _netToolSelection;
+        private NetInfo _netToolSelection;        
+        private UIRightDragHandle _buttonDragHandle;
+
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
-        private UIRightDragHandle _buttonDragHandle;
 
         // We use this to prevent clicks while user is dragging the button
         private bool _isDragging;
@@ -39,7 +41,6 @@ namespace ParallelRoadTool.UI
         private void UnsubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
-            _mainPanel.OnToolToggled -= ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
             _buttonDragHandle.eventDragStart -= ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd -= ButtonDragHandleOnEventDragEnd;
@@ -48,7 +49,6 @@ namespace ParallelRoadTool.UI
         private void SubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
-            _mainPanel.OnToolToggled += ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged += SnappingToggleButtonOnEventCheckChanged;
             _buttonDragHandle.eventDragStart += ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;            
@@ -151,7 +151,7 @@ namespace ParallelRoadTool.UI
             space.size = new Vector2(1, 1);
 
             // Add options
-            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", "Toggle snapping for all nodes", false);
+            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", Locale.Get("PRT_TOOLTIPS", "SnappingToggleButton"), false);
             _snappingToggleButton.relativePosition = new Vector3(166, 38);
             _snappingToggleButton.BringToFront();
 
@@ -168,7 +168,7 @@ namespace ParallelRoadTool.UI
             if (button != null)
                 Destroy(button);
 
-            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", "Parallel Road Tool", false);            
+            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", Locale.Get("PRT_TOOLTIPS", "ToolToggleButton"), false);            
             if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
             {
                 _toolToggleButton.absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);

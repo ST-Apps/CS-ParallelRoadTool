@@ -1,9 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Serialization;
 using ColossalFramework;
+using ColossalFramework.Globalization;
+using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool.Detours;
+using ParallelRoadTool.Extensions.LocaleModels;
 using ParallelRoadTool.UI;
 using UnityEngine;
 
@@ -221,6 +229,54 @@ namespace ParallelRoadTool
             {
                 ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
             }*/
+
+            // Add post locale change event handlers
+            LocaleManager.eventLocaleChanged += OnLocaleChanged;
+
+            DebugUtils.Log("Added locale change event handlers.");
+
+            // Reload the current locale once to effect changes
+            LocaleManager.ForceReload();
+        }
+
+        public override void OnReleased()
+        {
+            // Remove post locale change event handlers
+            LocaleManager.eventLocaleChanged -= OnLocaleChanged;
+
+            DebugUtils.Log("Removed locale change event handlers.");
+
+            // Reload the current locale once to effect changes
+            LocaleManager.ForceReload();
+        }
+
+        private void OnLocaleChanged()
+        {
+            DebugUtils.Log("Locale changed callback started.");
+
+            XmlSerializer serializer = new XmlSerializer(typeof(NameList));
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
+
+            DebugUtils.Log($"Trying to read {resourceName} localization file...");
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                using (XmlReader xmlStream = XmlReader.Create(reader))
+                {
+                    if (serializer.CanDeserialize(xmlStream))
+                    {
+                        NameList nameList = (NameList)serializer.Deserialize(xmlStream);
+                        nameList.Apply();
+                    }
+                }
+            }
+
+            DebugUtils.Log($"Namelists {resourceName} applied.");
+
+            DebugUtils.Log("Locale changed callback finished.");
         }
 
         public override void OnLevelLoaded(LoadMode mode)
