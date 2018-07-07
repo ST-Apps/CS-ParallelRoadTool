@@ -13,6 +13,7 @@ using ICities;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.Extensions.LocaleModels;
 using ParallelRoadTool.UI;
+using ParallelRoadTool.UI.Base;
 using UnityEngine;
 
 namespace ParallelRoadTool
@@ -108,6 +109,9 @@ namespace ParallelRoadTool
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
             IsToolActive = value;
+
+            if (value && ToolsModifierControl.advisorPanel)
+                _mainWindow.ShowTutorial();
         }
 
         #endregion
@@ -172,7 +176,7 @@ namespace ParallelRoadTool
                 DebugUtils.LogException(e);
                 enabled = false;
             }
-        }
+        }        
 
         public void OnDestroy()
         {

@@ -28,9 +28,16 @@ namespace ParallelRoadTool.UI
 
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
+        private UICheckBox _tutorialToggleButton;
+
+        private UISprite _tutorialIcon = ToolsModifierControl.advisorPanel.Find<UISprite>("Icon");
+        private UISprite _tutorialImage = ToolsModifierControl.advisorPanel.Find<UISprite>("Sprite");
 
         // We use this to prevent clicks while user is dragging the button
         private bool _isDragging;
+
+        // We use this to prevent handling events while the advisor is being updated
+        private bool _isUpdatingTutorialAdvisor;
 
         #region Events/Callbacks
 
@@ -42,6 +49,7 @@ namespace ParallelRoadTool.UI
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
+            _tutorialToggleButton.eventCheckChanged -= _tutorialToggleButton_eventCheckChanged;
             _buttonDragHandle.eventDragStart -= ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd -= ButtonDragHandleOnEventDragEnd;
         }
@@ -50,8 +58,19 @@ namespace ParallelRoadTool.UI
         {
             _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged += SnappingToggleButtonOnEventCheckChanged;
+            _tutorialToggleButton.eventCheckChanged += _tutorialToggleButton_eventCheckChanged;
             _buttonDragHandle.eventDragStart += ButtonDragHandleOnEventDragStart;
-            _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;            
+            _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;                        
+        }
+
+        private void _tutorialToggleButton_eventCheckChanged(UIComponent component, bool value)
+        {
+            if (_isUpdatingTutorialAdvisor) return;
+            DebugUtils.Log($"_tutorialToggleButton_eventCheckChanged: {value}");
+            if (value)
+                ToolsModifierControl.advisorPanel.Show("ParallelRoadTool", "Parallel", "Tutorial", 0.0f);
+            else
+                ToolsModifierControl.advisorPanel.Hide();
         }
 
         private void ButtonDragHandleOnEventDragEnd(UIComponent component, UIDragEventParameter eventparam)
@@ -102,6 +121,11 @@ namespace ParallelRoadTool.UI
         {
             _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
             OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
+        }
+
+        public void ShowTutorial()
+        {
+            _tutorialToggleButton_eventCheckChanged(null, true);
         }
 
         #endregion
@@ -155,6 +179,10 @@ namespace ParallelRoadTool.UI
             _snappingToggleButton.relativePosition = new Vector3(166, 38);
             _snappingToggleButton.BringToFront();
 
+            _tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp", Locale.Get("PRT_TOOLTIPS", "TutorialToggleButton"), false, true);
+            _tutorialToggleButton.relativePosition = new Vector3(166, 38);
+            _tutorialToggleButton.BringToFront();
+
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
 
@@ -188,7 +216,7 @@ namespace ParallelRoadTool.UI
 
             OnPositionChanged();
             DebugUtils.Log($"UIMainWindow created {size} | {position}");
-        }
+        }        
 
         public override void Update()
         {
@@ -197,6 +225,21 @@ namespace ParallelRoadTool.UI
 
             if (ParallelRoadTool.NetTool != null)
                 _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
+
+            // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
+            _isUpdatingTutorialAdvisor = true;
+            if (_tutorialIcon.spriteName == "Parallel")
+            {
+                _tutorialToggleButton.isChecked = ToolsModifierControl.advisorPanel.isVisible;
+                _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
+            }
+            else
+            {
+                _tutorialToggleButton.isChecked = !ToolsModifierControl.advisorPanel.isVisible;
+                _tutorialIcon.atlas = UIUtil.DefaultAtlas;
+                _tutorialImage.atlas = ResourceLoader.GetAtlas("AdvisorSprites");
+            }
+            _isUpdatingTutorialAdvisor = false;
 
             base.Update();
         }

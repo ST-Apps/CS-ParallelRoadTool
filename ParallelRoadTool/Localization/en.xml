@@ -6,6 +6,7 @@
   <strings>
     <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Toggle snapping for existing nodes</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Toggle Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Toggle tutorial screen</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Toggle reverse direction for this road</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Remove network</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Add network</LocalizedString>
@@ -15,5 +16,19 @@
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Increase horizontal offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Decrease vertical offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Increase vertical offset of parallel networks</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (if you don't see the image above, please close and reopen the tutorial)
+      1) Adds the currently selected network to your list
+      2) Allows you to change the selected network to another one
+      3) Reverses the direction for the network
+      4) Horizontal distance between the network and the first one
+      5) Vertical distance between the network and the first one
+      6) Removes the network from the list
+      7) Toggles snapping to all existing nodes.
+         Off: snaps only to the last segments drawn when the mod was on.
+         On : will try to snap to the closer segment available.
+    </LocalizedString>
   </strings>
 </NameList>

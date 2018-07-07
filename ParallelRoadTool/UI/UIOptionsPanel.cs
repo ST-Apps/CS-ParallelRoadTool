@@ -16,6 +16,7 @@ namespace ParallelRoadTool.UI
             padding = new RectOffset(8, 8, 8, 8);
             autoLayoutPadding = new RectOffset(0, 4, 0, 0);
             autoLayoutDirection = LayoutDirection.Horizontal;
+            autoLayoutStart = LayoutStart.TopRight;
             autoLayout = true;
             autoSize = false;
 

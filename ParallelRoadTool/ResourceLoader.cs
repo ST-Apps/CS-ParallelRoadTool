@@ -14,7 +14,7 @@ namespace ParallelRoadTool
             var regions = new Rect[spriteNames.Length];
 
             for (var i = 0; i < spriteNames.Length; i++)
-                textures[i] = loadTextureFromAssembly(assemblyPath + spriteNames[i] + ".png");
+                textures[i] = LoadTextureFromAssembly(assemblyPath + spriteNames[i] + ".png");
 
             regions = texture2D.PackTextures(textures, 2, maxSize);
 
@@ -40,7 +40,7 @@ namespace ParallelRoadTool
         }
 
         public static void AddTexturesInAtlas(UITextureAtlas atlas, Texture2D[] newTextures, bool locked = false)
-        {
+        {            
             var textures = new Texture2D[atlas.count + newTextures.Length];
 
             for (var i = 0; i < atlas.count; i++)
@@ -99,7 +99,7 @@ namespace ParallelRoadTool
             return UIView.GetAView().defaultAtlas;
         }
 
-        private static Texture2D loadTextureFromAssembly(string path)
+        private static Texture2D LoadTextureFromAssembly(string path)
         {
             var manifestResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(path);
 
