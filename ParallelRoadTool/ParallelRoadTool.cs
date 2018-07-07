@@ -259,8 +259,13 @@ namespace ParallelRoadTool
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
 
-            DebugUtils.Log($"Trying to read {resourceName} localization file...");
+            if (!assembly.GetManifestResourceNames().Contains(resourceName))
+            {
+                // Fallback to english
+                resourceName = "ParallelRoadTool.Localization.en.xml";
+            }
 
+            DebugUtils.Log($"Trying to read {resourceName} localization file...");            
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
