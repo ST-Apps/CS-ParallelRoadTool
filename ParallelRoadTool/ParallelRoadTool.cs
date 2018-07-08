@@ -32,6 +32,7 @@ namespace ParallelRoadTool
         public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
         public static NetTool NetTool;
+        public static bool IsInGameMode;
 
         private UIMainWindow _mainWindow;
 
@@ -62,7 +63,7 @@ namespace ParallelRoadTool
 
         public bool IsSnappingEnabled { get; set; }
 
-        public bool IsLeftHandTraffic;
+        public bool IsLeftHandTraffic;        
 
         #region Utils
 
@@ -234,13 +235,16 @@ namespace ParallelRoadTool
                 ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
             }*/
 
+            // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
+            ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;
+
             // Add post locale change event handlers
             LocaleManager.eventLocaleChanged += OnLocaleChanged;
 
             DebugUtils.Log("Added locale change event handlers.");
 
             // Reload the current locale once to effect changes
-            LocaleManager.ForceReload();
+            LocaleManager.ForceReload();            
         }
 
         public override void OnReleased()
