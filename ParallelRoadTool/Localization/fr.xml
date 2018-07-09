@@ -2,7 +2,7 @@
 <NameList
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    name="PRT_en">
+    name="PRT_fr">
   <strings>
     <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Activer l'accrochage pour les nœuds existants</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Basculer l'outil de route parallèle</LocalizedString>
