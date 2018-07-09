@@ -12,10 +12,10 @@
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Добавить</LocalizedString>
     
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">То же, что выбрано</LocalizedString>
-    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Уменьшение расстояния по горизонтали между дорогами(объектами)</LocalizedString>
-    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Увеличение расстояния по горизонтали между дорогами(объектами)</LocalizedString>
-    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Уменьшение расстояния по вертикали между дорогами(объектами)</LocalizedString>
-    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Увеличение расстояния по вертикали между дорогами(объектами)</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Уменьшение расстояния по горизонтали между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Увеличение расстояния по горизонтали между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Уменьшение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Увеличение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
 
     <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
     <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
