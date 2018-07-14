@@ -62,6 +62,9 @@ namespace ParallelRoadTool.Detours
         {
             set
             {
+                // TODO: allow users to enable/disable this kind of snapping?
+                // We don't reset nodes arrays if size didn't change, this allows us to snap to previous nodes even after changing offsets.
+                if (_endNodeId != null && _endNodeId.Length == value) return;
                 _endNodeId = new ushort?[value];
                 _clonedEndNodeId = new ushort?[value];
                 _startNodeId = new ushort?[value];
@@ -94,17 +97,21 @@ namespace ParallelRoadTool.Detours
         /// <param name="info"></param>
         /// <param name="newNodePosition"></param>        
         /// <returns></returns>
-        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
+        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition, float verticalOffset)
         {
             var netManager = Singleton<NetManager>.instance;
 
             // This should be the best possible value for snapping
             var maxDistance = info.m_halfWidth;
 
-            DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} with maxDistance = {maxDistance}");
+            DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
             if (ParallelRoadTool.Instance.IsSnappingEnabled &&
-                PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB))
+                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB) || 
+                    PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB) ||
+                    PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB)
+                )
+            )
             {
 
                 DebugUtils.Log($"FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
@@ -254,7 +261,7 @@ namespace ParallelRoadTool.Detours
                 // Get original nodes to clone them
                 var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
                 var endNetNode = NetManager.instance.m_nodes.m_buffer[endNode];
-
+                                
                 // Create two clone nodes by offsetting the original ones.
                 // If we're not in "invert" mode (aka final part of a curve) and we already have an ending node with the same id of our starting node, we need to use that so that the segments can be connected.
                 // If the previous segment was in "invert" mode and the current startNode is the same as the previous one, we need to connect them.
@@ -266,7 +273,7 @@ namespace ParallelRoadTool.Detours
                         $"[START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
                     newStartNodeId = _clonedEndNodeId[i].Value;
                     DebugUtils.Log(
-                        $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                        $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                 }
                 else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
                          _startNodeId[i].Value == startNode)
@@ -283,7 +290,7 @@ namespace ParallelRoadTool.Detours
                         verticalOffset, invert);
 
                     DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
-                    newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition);
+                    newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                 }                
 
                 // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
@@ -301,7 +308,7 @@ namespace ParallelRoadTool.Detours
                     var newEndPosition = endNetNode.m_position.Offset(endDirection, horizontalOffset, verticalOffset, !(invert && isSlope && isEnteringSlope));
 
                     DebugUtils.Log($"[END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
-                    newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition);
+                    newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition, verticalOffset);
                 }
 
                 // Store current end nodes in case we may need to connect the following segment to them

@@ -1,10 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Serialization;
 using ColossalFramework;
+using ColossalFramework.Globalization;
+using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool.Detours;
+using ParallelRoadTool.Extensions.LocaleModels;
 using ParallelRoadTool.UI;
+using ParallelRoadTool.UI.Base;
 using UnityEngine;
 
 namespace ParallelRoadTool
@@ -12,7 +21,6 @@ namespace ParallelRoadTool
     /// <summary>
     ///     Mod's "launcher" class.
     ///     It also acts as a "controller" to connect the mod with its UI.
-    ///     TODO: Drag & drop is not as smooth as before.
     /// </summary>
     public class ParallelRoadTool : MonoBehaviour
     {
@@ -23,6 +31,7 @@ namespace ParallelRoadTool
         public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
         public static NetTool NetTool;
+        public static bool IsInGameMode;
 
         private UIMainWindow _mainWindow;
 
@@ -53,17 +62,20 @@ namespace ParallelRoadTool
 
         public bool IsSnappingEnabled { get; set; }
 
-        public bool IsLeftHandTraffic;
+        public bool IsLeftHandTraffic;        
 
         #region Utils
 
-        private void AdjustNetOffset(float step)
+        private void AdjustNetOffset(float step, bool isHorizontal = true)
         {
             // Adjust all offsets on keypress
             var index = 0;
             foreach (var item in SelectedRoadTypes)
             {
-                item.HorizontalOffset += (1 + index) * step;
+                if (isHorizontal)
+                    item.HorizontalOffset += (1 + index) * step;
+                else
+                    item.VerticalOffset += (1 + index) * step;
                 index++;
             }
 
@@ -100,6 +112,9 @@ namespace ParallelRoadTool
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
             IsToolActive = value;
+
+            if (value && ToolsModifierControl.advisorPanel)
+                _mainWindow.ShowTutorial();
         }
 
         #endregion
@@ -164,7 +179,7 @@ namespace ParallelRoadTool
                 DebugUtils.LogException(e);
                 enabled = false;
             }
-        }
+        }        
 
         public void OnDestroy()
         {
@@ -198,9 +213,13 @@ namespace ParallelRoadTool
                 // Checking key presses
                 if (OptionsKeymapping.toggleParallelRoads.IsPressed(e)) _mainWindow.ToggleToolCheckbox();
 
-                if (OptionsKeymapping.decreaseOffset.IsPressed(e)) AdjustNetOffset(-1f);
+                if (OptionsKeymapping.decreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
 
-                if (OptionsKeymapping.increaseOffset.IsPressed(e)) AdjustNetOffset(1f);
+                if (OptionsKeymapping.increaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
+
+                if (OptionsKeymapping.decreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
+
+                if (OptionsKeymapping.increaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
             }
             catch (Exception e)
             {
@@ -221,6 +240,62 @@ namespace ParallelRoadTool
             {
                 ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
             }*/
+
+            // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
+            ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;
+
+            // Add post locale change event handlers
+            LocaleManager.eventLocaleChanged += OnLocaleChanged;
+
+            DebugUtils.Log("Added locale change event handlers.");
+
+            // Reload the current locale once to effect changes
+            LocaleManager.ForceReload();            
+        }
+
+        public override void OnReleased()
+        {
+            // Remove post locale change event handlers
+            LocaleManager.eventLocaleChanged -= OnLocaleChanged;
+
+            DebugUtils.Log("Removed locale change event handlers.");
+
+            // Reload the current locale once to effect changes
+            LocaleManager.ForceReload();
+        }
+
+        private void OnLocaleChanged()
+        {
+            DebugUtils.Log("Locale changed callback started.");
+
+            XmlSerializer serializer = new XmlSerializer(typeof(NameList));
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
+
+            if (!assembly.GetManifestResourceNames().Contains(resourceName))
+            {
+                // Fallback to english
+                resourceName = "ParallelRoadTool.Localization.en.xml";
+            }
+
+            DebugUtils.Log($"Trying to read {resourceName} localization file...");            
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                using (XmlReader xmlStream = XmlReader.Create(reader))
+                {
+                    if (serializer.CanDeserialize(xmlStream))
+                    {
+                        NameList nameList = (NameList)serializer.Deserialize(xmlStream);
+                        nameList.Apply();
+                    }
+                }
+            }
+
+            DebugUtils.Log($"Namelists {resourceName} applied.");
+
+            DebugUtils.Log("Locale changed callback finished.");
         }
 
         public override void OnLevelLoaded(LoadMode mode)

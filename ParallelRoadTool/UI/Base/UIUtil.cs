@@ -18,6 +18,7 @@ namespace ParallelRoadTool.UI.Base
         private const float COLUMN_PADDING = 5f;
         private const float TEXT_FIELD_WIDTH = 35f;
         public static readonly UITextureAtlas TextureAtlas = LoadResources();
+        public static UITextureAtlas DefaultAtlas = ResourceLoader.GetAtlas("Ingame");
 
         public static UIView uiRoot;
 
@@ -246,14 +247,14 @@ namespace ParallelRoadTool.UI.Base
         //    return CreateCheckBox(parent, spriteName, toolTip, value, new Vector2(36, 36));
         // }
 
-        public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value)
+        public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value, bool isStatic = false)
         {
             var checkBox = parent.AddUIComponent<UICheckBox>();
             checkBox.size = new Vector2(36, 36);
 
             var button = checkBox.AddUIComponent<UIButton>();
             button.name = "PRT_" + spriteName;
-            button.atlas = TextureAtlas;
+            button.atlas = !isStatic ? TextureAtlas : DefaultAtlas;
             button.tooltip = toolTip;
             button.relativePosition = new Vector2(0, 0);
 
@@ -263,15 +264,19 @@ namespace ParallelRoadTool.UI.Base
             button.disabledBgSprite = "OptionBaseDisabled";
 
             button.normalFgSprite = spriteName;
-            button.hoveredFgSprite = spriteName + "Hovered";
-            button.pressedFgSprite = spriteName + "Pressed";
-            button.disabledFgSprite = spriteName + "Disabled";
+            if (!isStatic)
+            {
+                button.hoveredFgSprite = spriteName + "Hovered";
+                button.pressedFgSprite = spriteName + "Pressed";
+                button.disabledFgSprite = spriteName + "Disabled";
+            }
 
             checkBox.isChecked = value;
             if (value)
             {
                 button.normalBgSprite = "OptionBaseFocused";
-                button.normalFgSprite = spriteName + "Focused";
+                if (!isStatic)
+                    button.normalFgSprite = spriteName + "Focused";
             }
 
             checkBox.eventCheckChanged += (c, s) =>
@@ -279,12 +284,14 @@ namespace ParallelRoadTool.UI.Base
                 if (s)
                 {
                     button.normalBgSprite = "OptionBaseFocused";
-                    button.normalFgSprite = spriteName + "Focused";
+                    if (!isStatic)
+                        button.normalFgSprite = spriteName + "Focused";
                 }
                 else
                 {
                     button.normalBgSprite = "OptionBase";
-                    button.normalFgSprite = spriteName;
+                    if (!isStatic)
+                        button.normalFgSprite = spriteName;
                 }
             };
 
@@ -295,11 +302,11 @@ namespace ParallelRoadTool.UI.Base
         {
             string[] spriteNames =
             {
-                "Anarchy",
-                "AnarchyDisabled",
-                "AnarchyFocused",
-                "AnarchyHovered",
-                "AnarchyPressed",
+                //"Anarchy",
+                //"AnarchyDisabled",
+                //"AnarchyFocused",
+                //"AnarchyHovered",
+                //"AnarchyPressed",
                 "Add",
                 "AddDisabled",
                 "AddFocused",
@@ -310,11 +317,11 @@ namespace ParallelRoadTool.UI.Base
                 "RemoveFocused",
                 "RemoveHovered",
                 "RemovePressed",
-                "Bending",
-                "BendingDisabled",
-                "BendingFocused",
-                "BendingHovered",
-                "BendingPressed",
+                //"Bending",
+                //"BendingDisabled",
+                //"BendingFocused",
+                //"BendingHovered",
+                //"BendingPressed",
                 "Parallel",
                 "ParallelDisabled",
                 "ParallelFocused",
@@ -324,7 +331,8 @@ namespace ParallelRoadTool.UI.Base
                 "ReverseDisabled",
                 "ReverseFocused",
                 "ReverseHovered",
-                "ReversePressed"
+                "ReversePressed",
+                "Tutorial"
             };
 
             var textureAtlas =

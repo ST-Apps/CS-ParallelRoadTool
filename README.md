@@ -1,20 +1,24 @@
 # CS-ParallelRoadTool
-A mod that allows players to easily draw parallel roads in Cities: Skylines.
+A mod that allows players to easily draw parallel/stacked roads in Cities: Skylines.
 
-**Tested on version 1.10.0-f3**
+**Tested on version 1.10.1-f3**
+
+## Features
+- Limitless parallel/stacked configurations: you can choose any network (not only roads!) and distances (both horizontal and vertical) to easily create every layout that you want
+- Visual overlay guidelines to help you visualizing what you're going to build before actually building
+- One-way networks support: you can reverse the direction of any one-way network, so that you can easily build highways without needing to manually upgrade direction later
+- Left-hand drive support
 
 ## Known limitations/issues
 
 - **[Fine Road Anarchy](https://steamcommunity.com/workshop/filedetails/?id=802066100) is highly recommended!** (*mod works without it but you won't be able to connect some segments without an anarchy mod*)
 - Sharp angles produce weird results, curves work better
 - Roads will always follow terrain elevation
-- Tunnel entrances/exists are not working but underground roads should (see [#3](/../../issues/3))
 
 ## Features that may come somewhere in the future
 
 - Ability to save/load presets
 - Ability to toggle on/off terrain conforming
-- Visual guidelines overlay
 - Ability to center cursor on the middle point between all the selected roads
 
 ## Support my work
