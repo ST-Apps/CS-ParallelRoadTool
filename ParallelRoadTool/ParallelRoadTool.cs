@@ -67,13 +67,16 @@ namespace ParallelRoadTool
 
         #region Utils
 
-        private void AdjustNetOffset(float step)
+        private void AdjustNetOffset(float step, bool isHorizontal = true)
         {
             // Adjust all offsets on keypress
             var index = 0;
             foreach (var item in SelectedRoadTypes)
             {
-                item.HorizontalOffset += (1 + index) * step;
+                if (isHorizontal)
+                    item.HorizontalOffset += (1 + index) * step;
+                else
+                    item.VerticalOffset += (1 + index) * step;
                 index++;
             }
 
@@ -211,9 +214,13 @@ namespace ParallelRoadTool
                 // Checking key presses
                 if (OptionsKeymapping.toggleParallelRoads.IsPressed(e)) _mainWindow.ToggleToolCheckbox();
 
-                if (OptionsKeymapping.decreaseOffset.IsPressed(e)) AdjustNetOffset(-1f);
+                if (OptionsKeymapping.decreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
 
-                if (OptionsKeymapping.increaseOffset.IsPressed(e)) AdjustNetOffset(1f);
+                if (OptionsKeymapping.increaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
+
+                if (OptionsKeymapping.decreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
+
+                if (OptionsKeymapping.increaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
             }
             catch (Exception e)
             {
