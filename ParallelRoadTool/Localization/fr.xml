@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NameList
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="PRT_fr">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Activer l'accrochage pour les nœuds existants</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Basculer l'outil de route parallèle</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Basculer l'écran du didacticiel</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Inverser la direction inverse pour cette route</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Supprimer le réseau</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Ajouter un réseau</LocalizedString>
+    
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Identique à celui sélectionné</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Diminuer le décalage horiz. des réseaux</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Augmenter le décalage horiz. des réseaux</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Diminuer le décalage vertical des réseaux</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Augmenter le décalage vertical des réseaux</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Outil de route</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (Si vous ne voyez pas l'image ci-dessus, veuillez fermer et rouvrir le tutoriel)
+      1) Ajoute le réseau actuellement sélectionné à votre liste
+      2) Vous permet de changer le réseau sélectionné en un autre
+      3) Inverse la direction du réseau
+      4) Distance horizontale entre le réseau et le premier
+      5) Distance verticale entre le réseau et le premier
+      6) Supprime le réseau de la liste
+      7) Bascule l'accrochage sur tous les nœuds existants.
+         Désactivé : accrochage uniquement aux derniers segments dessinés lorsque le mod était activé.
+         Activé : va essayer de se rapprocher du segment disponible le plus proche.
+    </LocalizedString>
+  </strings>
+</NameList>
