@@ -7,15 +7,17 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        public const string Version = "0.24.0";
+        public const string Version = "1.0.0";
+#if DEBUG
         public const string Branch = "dev";
+#endif
 
         public ModInfo()
         {
             try
             {
                 // Creating setting file
-                GameSettings.AddSettingsFile(new SettingsFile {fileName = ParallelRoadTool.SettingsFileName});
+                GameSettings.AddSettingsFile(new SettingsFile { fileName = ParallelRoadTool.SettingsFileName });
             }
             catch (Exception e)
             {
