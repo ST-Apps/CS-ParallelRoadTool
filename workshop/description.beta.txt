@@ -18,6 +18,12 @@ Main features are:
 [*] Added keybinds for vertical offset.
 [*] Added Russian translation
 [/list]
+[/quote]
+
+[quote]
+[h1]Support my work[/h1] 
+Donate using PayPal:
+[url=paypal.me/STApps][img]https://i.imgur.com/HKFbi4p.jpg[/img][/url]
 [/quote] 
 
 [quote]
@@ -51,12 +57,6 @@ Please [b]open an issue on [url=https://github.com/ST-Apps/CS-ParallelRoadTool/i
 [/quote]
 
 [quote]
-[h1]Support my work[/h1] 
-Donate using PayPal:
-[url=paypal.me/STApps][img]https://i.imgur.com/dSkdACn.png[/img][/url]
-[/quote]
-
-[quote]
 [h1]Source code[/h1]
 [url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url]
 [/quote]
@@ -64,9 +64,11 @@ Donate using PayPal:
 [quote]
 [h1]How to contribute[/h1]
 If you find an issue, please search [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues]here[/url] to see if someone already reported it and, eventually, comment on the already reported one.
+
 If you can't find any issue similar to yours, please click [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/new]here[/url] and provide all the informations that you can (screenshots and logs are welcome).
 
 If you're interested in helping with development, choose an issue and ask to be assigned. I'll create a branch for that issue and you'll be able to work there.
+
 If there's no issue for the thing you'd like to work on, feel free to open a new one.
 [/quote]
 
