@@ -1,4 +1,4 @@
-[h1][b][BETA] ParallelRoadTool[/b][/h1]
+[h1][b]Parallel Road Tool[/b][/h1]
 helps you easily drawing parallel and stacked networks.
 Main features are:
 [list]
@@ -8,11 +8,11 @@ Main features are:
 [*] Left-hand drive support
 [/list]
 
-[h1][b]The beta version is meant for testing only and it can be unstable.[/b] (non-beta version is coming soon)[/h1]
-[b]Tested on version 1.10.1-f3 - Current branch is [i]dev[/i][/b]
+[h1]For new features and/or debugging, you can subscribe to the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1400711138]beta version[/url][/h1]
+[b]Tested on C:S version 1.10.1-f3[/b]
 
 [quote]
-[h1]Current version: [b]0.24.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.0.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Fixed node snapping when changing offsets.
 [*] Added keybinds for vertical offset.

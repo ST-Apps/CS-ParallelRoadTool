@@ -25,7 +25,7 @@ namespace ParallelRoadTool
         }
 
 #if DEBUG
-        public string Name => $"[BETA] Parallel Road Tool {Version} b-{Branch}";
+        public string Name => $"[BETA] Parallel Road Tool {Version}-{Branch}";
 #else
         public string Name => $"Parallel Road Tool {Version}";
 #endif

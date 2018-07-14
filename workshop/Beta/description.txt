@@ -1,0 +1,82 @@
+[h1][b][BETA] Parallel Road Tool[/b][/h1]
+helps you easily drawing parallel and stacked networks.
+Main features are:
+[list]
+[*] [b]Limitless parallel/stacked configurations[/b]: you can choose [b]any network (not only roads!) and distances (both horizontal and vertical)[/b] to easily create every layout that you want
+[*] [b]Visual overlay guidelines[/b] to help you visualizing what you're going to build before actually building
+[*] [b]One-way networks support[/b]: you can reverse the direction of any one-way network, so that [b]you can easily build highways without needing to manually upgrade direction later[/b]
+[*] Left-hand drive support
+[/list]
+
+[h1][b]The beta version is meant for testing only and it can be unstable.[/b] (non-beta version is coming soon)[/h1]
+[b]Tested on C:S version 1.10.1-f3[/b]
+
+[quote]
+[h1]Current version: [b]0.24.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[list]
+[*] Fixed node snapping when changing offsets.
+[*] Added keybinds for vertical offset.
+[*] Added Russian translation
+[/list]
+[/quote]
+
+[quote]
+[h1]Support my work[/h1] 
+Donate using PayPal:
+[url=paypal.me/STApps][img]https://i.imgur.com/HKFbi4p.jpg[/img][/url]
+[/quote] 
+
+[quote]
+[h1]Known limitations/issues[/h1] 
+[list] 
+[*][url=https://steamcommunity.com/workshop/filedetails/?id=802066100][b]Fine Road Anarchy[/b][/url] [b]is highly recommended![/b] ([i]mod works without it but you won't be able to connect some segments without an anarchy mod[/i])
+[*]Sharp angles produce weird results, curves work better
+[*]Roads will always follow terrain elevation 
+[*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
+[/list]
+[/quote]
+
+[quote]
+[h1][b]Supported languages (% translated)[/b][/h1]
+[list]
+[*] English (100 %)
+[*] Russian (90 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
+[/list]
+
+The language is automatically determined based on your settings in "Options" -> "Gameplay".
+Please [b]open an issue on [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues]GitHub[/url][/b] if you want to help translate this mod, add missing translations or correct translation mistakes.
+[/quote] 
+
+[quote]
+[h1]Features that may come somewhere in the future[/h1] 
+[list] 
+[*]Ability to save/load presets 
+[*]Ability to toggle on/off terrain conforming
+[*]Ability to center cursor on the middle point between all the selected roads 
+[/list]
+[/quote]
+
+[quote]
+[h1]Source code[/h1]
+[url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url]
+[/quote]
+
+[quote]
+[h1]How to contribute[/h1]
+If you find an issue, please search [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues]here[/url] to see if someone already reported it and, eventually, comment on the already reported one.
+
+If you can't find any issue similar to yours, please click [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/new]here[/url] and provide all the informations that you can (screenshots and logs are welcome).
+
+If you're interested in helping with development, choose an issue and ask to be assigned. I'll create a branch for that issue and you'll be able to work there.
+
+If there's no issue for the thing you'd like to work on, feel free to open a new one.
+[/quote]
+
+[quote]
+[h1]Thanks to[/h1]
+[list]
+[*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
+[*][url=https://steamcommunity.com/id/samsamts]SamsamTS[/url] for his FineRoadAnarchy mod, which provided me the basics for this one
+[*][url=https://steamcommunity.com/id/victorphilipp]LinuxFan[/url] for his pointers on how to fix snapping
+[/list]
+[/quote]
