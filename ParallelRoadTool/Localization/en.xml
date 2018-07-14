@@ -29,6 +29,10 @@
       7) Toggles snapping to all existing nodes.
          Off: snaps only to the last segments drawn when the mod was on.
          On : will try to snap to the closer segment available.
+         
+      Negative values are allowed for both vertical and horizontal distances.
+      A negative horizontal distance will place the road on the opposite side.
+      A negative vertical distance will place the road below terrain level.
     </LocalizedString>
   </strings>
 </NameList>
