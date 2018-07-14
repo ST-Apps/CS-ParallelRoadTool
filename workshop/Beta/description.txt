@@ -12,7 +12,7 @@ Main features are:
 [b]Tested on C:S version 1.10.1-f3[/b]
 
 [quote]
-[h1]Current version: [b]0.24.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.0.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Fixed node snapping when changing offsets.
 [*] Added keybinds for vertical offset.
