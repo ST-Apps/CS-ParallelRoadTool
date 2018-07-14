@@ -10,7 +10,7 @@ Main features are:
 
 [quote]
 [h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b][/h1]
-[h1][b]The beta version is meant for testing only and it can be unstable.[/b] (non-beta version is coming soon)[/h1]
+[h1][b]The beta version is meant for testing only and it can be unstable.[/b][/h1]
 [b]Tested on C:S version 1.10.1-f3[/b]
 [/quote]
 
