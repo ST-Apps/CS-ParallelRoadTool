@@ -245,16 +245,22 @@ namespace ParallelRoadTool.UI
             if (_tutorialIcon == null) return;
             _isUpdatingTutorialAdvisor = true;
             DebugUtils.Log($"ATLAS NAME: {_tutorialIcon.atlas.name} | PRT: {UIUtil.TextureAtlas.name} | ADV: {UIUtil.AdvisorAtlas.name}");
-            if (_tutorialIcon.spriteName == "Parallel" && _tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
+            if (_tutorialIcon.spriteName == "Parallel")
             {
-                _tutorialToggleButton.isChecked = ToolsModifierControl.advisorPanel.isVisible;
-                _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
+                if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
+                {
+                    _tutorialToggleButton.isChecked = ToolsModifierControl.advisorPanel.isVisible;
+                    _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
+                }
             }
-            else if (_tutorialImage.atlas.name != UIUtil.AdvisorAtlas.name)
+            else
             {
-                _tutorialToggleButton.isChecked = !ToolsModifierControl.advisorPanel.isVisible;
-                _tutorialIcon.atlas = UIUtil.DefaultAtlas;
-                _tutorialImage.atlas = UIUtil.AdvisorAtlas;
+                if (_tutorialImage.atlas.name != UIUtil.AdvisorAtlas.name)
+                {
+                    _tutorialToggleButton.isChecked = !ToolsModifierControl.advisorPanel.isVisible;
+                    _tutorialIcon.atlas = UIUtil.DefaultAtlas;
+                    _tutorialImage.atlas = UIUtil.AdvisorAtlas;
+                }
             }
             _isUpdatingTutorialAdvisor = false;
 
