@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
@@ -44,7 +43,7 @@ namespace ParallelRoadTool.Detours
         public static void Deploy()
         {
             if (_deployed) return;
-            _state = RedirectionHelper.RedirectCalls(From, To);
+                _state = RedirectionHelper.RedirectCalls(From, To);
             _deployed = true;
 
             // Initialize helper structures
@@ -56,7 +55,7 @@ namespace ParallelRoadTool.Detours
         public static void Revert()
         {
             if (!_deployed) return;
-            RedirectionHelper.RevertRedirect(From, _state);
+                RedirectionHelper.RevertRedirect(From, _state);
             _deployed = false;
         }
 
@@ -255,19 +254,38 @@ namespace ParallelRoadTool.Detours
         private bool CreateSegment(out ushort segment, ref Randomizer randomizer, NetInfo info, ushort startNode,
             ushort endNode, Vector3 startDirection, Vector3 endDirection, uint buildIndex, uint modifiedIndex,
             bool invert)
-        {            
+        {
             DebugUtils.Log($"Creating a segment and {ParallelRoadTool.SelectedRoadTypes.Count} parallel segments");
 
             // Let's create the segment that the user requested
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
                 endDirection, buildIndex, modifiedIndex, invert);
-
             // If we're in upgrade mode we must stop here
-            if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
+            //            if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
+           //If PRT windows is not active stop creating additional roads;
+            DebugUtils.Log($"IsToolActive: {ParallelRoadTool.Instance.IsToolActive} ");
+            if (!ParallelRoadTool.Instance.IsToolActive)
+                return result;
 
             // HACK - [ISSUE-10] Check if we've been called by NetTool's CreateNode, if not we can stop here
             var caller = new System.Diagnostics.StackFrame(1).GetMethod().Name;
-            if (caller != "CreateNode") return result;
+            if (caller != "CreateNode")
+                return result;
+                
+            var isUpgradeActive = false;
+            var upgradeInvert = false;
+            DebugUtils.Log($"buildIndex: {buildIndex} ");
+            DebugUtils.Log($"modifiedIndex: {modifiedIndex} ");
+//            var upgradeModifiedIndex = modifiedIndex;
+            if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade)
+            {
+                isUpgradeActive = true;
+                upgradeInvert = invert;
+                if (startDirection.x == endDirection.x && startDirection.y == endDirection.y)
+                    ParallelRoadTool.NetTool.m_mode = NetTool.Mode.Straight;
+                else
+                    ParallelRoadTool.NetTool.m_mode = NetTool.Mode.Curved;
+            }
 
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
             {
@@ -388,6 +406,11 @@ namespace ParallelRoadTool.Detours
             }
 
             _isPreviousInvert = invert;
+            if (isUpgradeActive)
+            {
+                ParallelRoadTool.NetTool.m_mode = NetTool.Mode.Upgrade;
+                _isPreviousInvert = upgradeInvert;
+            }
             return result;
         }
     }
