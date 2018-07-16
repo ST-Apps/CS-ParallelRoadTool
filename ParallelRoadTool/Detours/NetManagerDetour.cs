@@ -224,8 +224,7 @@ namespace ParallelRoadTool.Detours
             DebugUtils.Log($"Caller trace is {caller}");
 
             if (!_allowedCallers.Contains(caller)) return result;
-
-            // If we're in upgrade mode we must stop here
+           // If we're in upgrade mode we must stop here
             //if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
             var isUpgradeActive = false;
             var upgradeInvert = false;
@@ -259,6 +258,8 @@ namespace ParallelRoadTool.Detours
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+                //disable collision on current network
+                selectedNetInfo.m_canCollide = false;
 
                 var isReversed = currentRoadInfos.IsReversed;
 
