@@ -112,8 +112,6 @@ namespace ParallelRoadTool.UI
         public void RenderItem()
         {
             DebugUtils.Log($"RenderItem {NetInfo} at {HorizontalOffset}/{VerticalOffset}");
-            if (NetInfo != null)
-                Label.text = NetInfo.GenerateBeautifiedNetName();
 
             if (!Populated) PopulateDropDown();
 
@@ -128,13 +126,12 @@ namespace ParallelRoadTool.UI
                 return;
             }
 
-            DeleteButton.isVisible = false;
-            HorizontalOffsetField.isVisible = false;
-            VerticalOffsetField.isVisible = false;
-            ReverseCheckbox.isVisible = false;
-            DropDown.isVisible = false;
-            Label.isVisible = true;
-            AddButton.isVisible = true;
+            DeleteButton.isVisible = 
+                HorizontalOffsetField.isVisible = 
+                VerticalOffsetField.isVisible = 
+                ReverseCheckbox.isVisible = 
+                DropDown.isVisible = false;            
+            Label.isVisible = AddButton.isVisible = true;
             Label.text = Locale.Get("PRT_TEXTS", "SameAsSelectedLabel");
         }
 
