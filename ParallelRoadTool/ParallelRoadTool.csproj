@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="Detours\NetManagerDetour.cs" />
     <Compile Include="Detours\NetToolDetour.cs" />
+    <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
+    <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
     <Compile Include="Extensions\LocaleModels\LocalizedString.cs" />
     <Compile Include="Extensions\LocaleModels\LocalizedStringKey.cs" />
