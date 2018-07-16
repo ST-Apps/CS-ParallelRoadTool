@@ -260,9 +260,8 @@ namespace ParallelRoadTool.Detours
             // Let's create the segment that the user requested
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
                 endDirection, buildIndex, modifiedIndex, invert);
-            // If we're in upgrade mode we must stop here
-            //            if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
-           //If PRT windows is not active stop creating additional roads;
+
+            //If PRT windows is not active stop creating additional roads;
             DebugUtils.Log($"IsToolActive: {ParallelRoadTool.Instance.IsToolActive} ");
             if (!ParallelRoadTool.Instance.IsToolActive)
                 return result;
@@ -274,9 +273,6 @@ namespace ParallelRoadTool.Detours
                 
             var isUpgradeActive = false;
             var upgradeInvert = false;
-            DebugUtils.Log($"buildIndex: {buildIndex} ");
-            DebugUtils.Log($"modifiedIndex: {modifiedIndex} ");
-//            var upgradeModifiedIndex = modifiedIndex;
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade)
             {
                 isUpgradeActive = true;
