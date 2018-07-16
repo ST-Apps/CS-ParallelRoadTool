@@ -207,7 +207,7 @@ namespace ParallelRoadTool
         {
             try
             {
-                if (UIView.HasModalInput() || UIView.HasInputFocus()) return;
+                if (UIView.HasModalInput() || UIView.HasInputFocus() || !IsToolActive) return;
                 var e = Event.current;
 
                 // Checking key presses
