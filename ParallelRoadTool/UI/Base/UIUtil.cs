@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
+using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -202,7 +204,7 @@ namespace ParallelRoadTool.UI.Base
 
             if (prefab == null)
             {
-                itemName = "Same as selected road";
+                itemName = Locale.Get("PRT_TEXTS", "SameAsSelectedRoad");
             }
             else
             {
