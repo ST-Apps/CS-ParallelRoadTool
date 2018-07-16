@@ -101,8 +101,9 @@ namespace ParallelRoadTool.UI
         {
             // TODO: generate names list on mod launch, there's no need to redo it everytime something happens.
             // TODO: check for similar issues to try optimize stuff and reduce performance issues.
-            DropDown.items = ParallelRoadTool.AvailableRoadTypes
-                .Select(ni => ni.GenerateBeautifiedNetName()).ToArray();
+            DropDown.items = (IsCurrentItem ? ParallelRoadTool.AvailableRoadTypes.Take(1) : ParallelRoadTool.AvailableRoadTypes)
+                .Select(ni => ni.GenerateBeautifiedNetName())
+                .ToArray();
             DropDown.selectedIndex = 0;
             Populated = true;
 
@@ -115,17 +116,18 @@ namespace ParallelRoadTool.UI
 
             if (!Populated) PopulateDropDown();
 
-            HorizontalOffsetField.text = HorizontalOffset.ToString(CultureInfo.InvariantCulture);
-            VerticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
-            ReverseCheckbox.isChecked = IsReversed;
             if (!IsCurrentItem)
-            {
+            {                
+                HorizontalOffsetField.text = HorizontalOffset.ToString(CultureInfo.InvariantCulture);
+                VerticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
+                ReverseCheckbox.isChecked = IsReversed;
                 var index = ParallelRoadTool.AvailableRoadTypes.FindIndex(ni => ni != null && ni.name == NetInfo.name);
                 DebugUtils.Log($"selecting index {index}");
                 DropDown.selectedIndex = index;
                 return;
             }
 
+            DropDown.selectedIndex = 0;
             DeleteButton.isVisible = 
                 HorizontalOffsetField.isVisible = 
                 VerticalOffsetField.isVisible = 
