@@ -13,11 +13,17 @@ namespace ParallelRoadTool
         public static readonly SavedInputKey toggleParallelRoads = new SavedInputKey("toggleParallelRoads",
             ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.P, true, false, false), true);
 
-        public static readonly SavedInputKey increaseOffset = new SavedInputKey("increaseOffset",
+        public static readonly SavedInputKey increaseHorizontalOffset = new SavedInputKey("increaseHorizontalOffset",
+            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, false, false), true);
+
+        public static readonly SavedInputKey decreaseHorizontalOffset = new SavedInputKey("decreaseHorizontalOffset",
+            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, false, false), true);
+
+        public static readonly SavedInputKey increaseVerticalOffset = new SavedInputKey("increaseVerticalOffset",
             ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, true, false), true);
 
-        public static readonly SavedInputKey decreaseOffset = new SavedInputKey("decreaseOffset",
-            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, false, false), true);
+        public static readonly SavedInputKey decreaseVerticalOffset = new SavedInputKey("decreaseVerticalOffset",
+            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, true, false), true);
 
         private int count;
 
@@ -27,9 +33,11 @@ namespace ParallelRoadTool
 
         private void Awake()
         {
-            AddKeymapping("Toggle Parallel Roads", toggleParallelRoads);
-            AddKeymapping("Decrease HorizontalOffset of Parallel Roads", decreaseOffset);
-            AddKeymapping("Increase HorizontalOffset of Parallel Roads", increaseOffset);
+            AddKeymapping(Locale.Get("PRT_TOOLTIPS", "ToolToggleButton"), toggleParallelRoads);
+            AddKeymapping(Locale.Get("PRT_TEXTS", "DecreaseHorizontalOffsetOption"), decreaseHorizontalOffset);
+            AddKeymapping(Locale.Get("PRT_TEXTS", "IncreaseHorizontalOffsetOption"), increaseHorizontalOffset);
+            AddKeymapping(Locale.Get("PRT_TEXTS", "DecreaseVerticalOffsetOption"), decreaseVerticalOffset);
+            AddKeymapping(Locale.Get("PRT_TEXTS", "IncreaseVerticalOffsetOption"), increaseVerticalOffset);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)
@@ -125,7 +133,7 @@ namespace ParallelRoadTool
             if (m_EditingBinding == null)
             {
                 p.Use();
-                m_EditingBinding = (SavedInputKey) p.source.objectUserData;
+                m_EditingBinding = (SavedInputKey)p.source.objectUserData;
                 m_EditingBindingCategory = p.source.stringUserData;
                 var uIButton = p.source as UIButton;
                 uIButton.buttonsMask = UIMouseButton.Left | UIMouseButton.Right | UIMouseButton.Middle |
@@ -172,7 +180,7 @@ namespace ParallelRoadTool
             var field = typeof(DefaultSettings).GetField(entryName, BindingFlags.Static | BindingFlags.Public);
             if (field == null) return 0;
             var value = field.GetValue(null);
-            if (value is InputKey) return (InputKey) value;
+            if (value is InputKey) return (InputKey)value;
             return 0;
         }
 
@@ -181,7 +189,7 @@ namespace ParallelRoadTool
             foreach (var current in component.GetComponentsInChildren<UIComponent>())
             {
                 var uITextComponent = current.Find<UITextComponent>("Binding");
-                var savedInputKey = (SavedInputKey) uITextComponent.objectUserData;
+                var savedInputKey = (SavedInputKey)uITextComponent.objectUserData;
                 if (m_EditingBinding != savedInputKey)
                     uITextComponent.text = savedInputKey.ToLocalizedString("KEYNAME");
             }

@@ -54,8 +54,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Detours\NetManagerDetour.cs" />
+    <Compile Include="Detours\NetToolDetour.cs" />
     <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
     <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
+    <Compile Include="Extensions\LocaleManagerExtensions.cs" />
+    <Compile Include="Extensions\LocaleModels\LocalizedString.cs" />
+    <Compile Include="Extensions\LocaleModels\LocalizedStringKey.cs" />
+    <Compile Include="Extensions\LocaleModels\NameList.cs" />
+    <Compile Include="Extensions\NetInfoExtensions.cs" />
+    <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="NetTypeItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
@@ -70,7 +77,8 @@
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourceLoader.cs" />
-    <Compile Include="RoadAIWrapper.cs" />
+    <Compile Include="Wrappers\RoadAIWrapper.cs" />
+    <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
     <Compile Include="UI\UINetList.cs" />
     <Compile Include="UI\UINetTypeItem.cs" />
@@ -80,18 +88,8 @@
     <Compile Include="UI\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\Anarchy.png" />
-    <EmbeddedResource Include="Icons\AnarchyDisabled.png" />
-    <EmbeddedResource Include="Icons\AnarchyFocused.png" />
-    <EmbeddedResource Include="Icons\AnarchyHovered.png" />
-    <EmbeddedResource Include="Icons\AnarchyPressed.png" />
-    <EmbeddedResource Include="Icons\Bending.png" />
-    <EmbeddedResource Include="Icons\BendingDisabled.png" />
-    <EmbeddedResource Include="Icons\BendingFocused.png" />
-    <EmbeddedResource Include="Icons\BendingHovered.png" />
-    <EmbeddedResource Include="Icons\BendingPressed.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="Icons\Tutorial.png" />
+    <EmbeddedResource Include="Localization\en.xml" />
     <EmbeddedResource Include="Icons\Reverse.png" />
     <EmbeddedResource Include="Icons\ReverseDisabled.png" />
     <EmbeddedResource Include="Icons\ReverseFocused.png" />
@@ -114,6 +112,7 @@
     <EmbeddedResource Include="Icons\AddPressed.png" />
     <Content Include="Icons\DragCursor.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"

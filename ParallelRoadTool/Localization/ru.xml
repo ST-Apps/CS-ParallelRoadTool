@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NameList
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="PRT_ru">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Изменить привязку узлов</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Переключение Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Руководство</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Реверс направления</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Удалить</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Добавить</LocalizedString>
+    
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">То же, что выбрано</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Уменьшение расстояния по горизонтали между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Увеличение расстояния по горизонтали между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Уменьшение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Увеличение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (если вы не видите изображение выше, пожалуйста, закройте и снова откройте руководство)
+      1) Добавляет выбранное в ваш список
+      2) Открывает список для выбора
+      3) Меняет направление(для односторонних дорог)
+      4) Расстояние по горизонтали между выбранным и первым в списке
+      5) Расстояние по вертикали между выбранным и первым в списке
+      6) Удаляет из списка
+      7) Переключает привязку ко всем существующим узлам.
+         Off: привязывается только к последним сегментам, нарисованным при включённом моде.
+         On : попытается привязаться к более близкому сегменту.
+    </LocalizedString>
+  </strings>
+</NameList>
