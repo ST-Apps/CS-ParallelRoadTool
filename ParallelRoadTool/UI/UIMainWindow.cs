@@ -239,22 +239,19 @@ namespace ParallelRoadTool.UI
             if (ParallelRoadTool.NetTool != null)
                 _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
 
-            if (!ParallelRoadTool.Instance.IsToolActive) return;
-
             // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
             if (_tutorialIcon == null) return;
             _isUpdatingTutorialAdvisor = true;
-            DebugUtils.Log($"ATLAS NAME: {_tutorialIcon.atlas.name} | PRT: {UIUtil.TextureAtlas.name} | ADV: {UIUtil.AdvisorAtlas.name}");
-            if (_tutorialIcon.spriteName == "Parallel" && _tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
+            if (_tutorialIcon.spriteName == "Parallel")
             {
                 _tutorialToggleButton.isChecked = ToolsModifierControl.advisorPanel.isVisible;
                 _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
             }
-            else if (_tutorialImage.atlas.name != UIUtil.AdvisorAtlas.name)
+            else
             {
                 _tutorialToggleButton.isChecked = !ToolsModifierControl.advisorPanel.isVisible;
                 _tutorialIcon.atlas = UIUtil.DefaultAtlas;
-                _tutorialImage.atlas = UIUtil.AdvisorAtlas;
+                _tutorialImage.atlas = ResourceLoader.GetAtlas("AdvisorSprites");
             }
             _isUpdatingTutorialAdvisor = false;
 
@@ -298,10 +295,9 @@ namespace ParallelRoadTool.UI
             SavedWindowY.value = (int)absolutePosition.y;
         }
 
+
         public void OnGUI()
         {
-            if (!ParallelRoadTool.Instance.IsToolActive) return;
-
             var currentSelectedNetwork = ParallelRoadTool.NetTool.m_prefab;
 
             DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
