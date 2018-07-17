@@ -4,10 +4,10 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     name="PRT_ja">
   <strings>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">既存のノードにぴったりあわせるかどうか切り替える</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Parallel Road Tool のオン／オフを切り替える</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">チュートリアル画面の表示／非表示を切り替える</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">この道路の向きを切り替える</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">既存のノードをスナップするかどうか切り替え</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Parallel Road Tool のオン／オフ</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">チュートリアル画面の表示／非表示</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">この道路の向きを反転</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">道路ネットワークを削除</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">道路ネットワークを追加</LocalizedString>
     

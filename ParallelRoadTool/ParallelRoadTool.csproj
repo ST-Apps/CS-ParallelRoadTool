@@ -36,17 +36,21 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\Desktop\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\Library\Application Support\Steam\steamapps\common\Cities_Skylines\Cities.app\Contents\Resources\Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ColossalManaged">
       <HintPath>..\..\..\..\Desktop\Managed\ColossalManaged.dll</HintPath>
+      <HintPath>..\..\..\..\Library\Application Support\Steam\steamapps\common\Cities_Skylines\Cities.app\Contents\Resources\Data\Managed\ColossalManaged.dll</HintPath>
     </Reference>
     <Reference Include="ICities">
       <HintPath>..\..\..\..\Desktop\Managed\ICities.dll</HintPath>
+      <HintPath>..\..\..\..\Library\Application Support\Steam\steamapps\common\Cities_Skylines\Cities.app\Contents\Resources\Data\Managed\ICities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\Desktop\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\Library\Application Support\Steam\steamapps\common\Cities_Skylines\Cities.app\Contents\Resources\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -110,11 +114,17 @@
     <Content Include="Icons\DragCursor.png" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <None Include="Localization\ja.xml" />
+    <None Include="Localization\ru.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
+  <!--
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
 del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\$(TargetFileName)"
 xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"</PostBuildEvent>
+-->
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

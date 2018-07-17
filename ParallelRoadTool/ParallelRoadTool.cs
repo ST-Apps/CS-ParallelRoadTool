@@ -62,7 +62,7 @@ namespace ParallelRoadTool
 
         public bool IsSnappingEnabled { get; set; }
 
-        public bool IsLeftHandTraffic;        
+        public bool IsLeftHandTraffic;
 
         #region Utils
 
@@ -80,7 +80,7 @@ namespace ParallelRoadTool
             }
 
             _mainWindow.RenderNetList();
-        }     
+        }
 
         #endregion
 
@@ -179,7 +179,7 @@ namespace ParallelRoadTool
                 DebugUtils.LogException(e);
                 enabled = false;
             }
-        }        
+        }
 
         public void OnDestroy()
         {
@@ -198,7 +198,8 @@ namespace ParallelRoadTool
                 _mainWindow.OnDestroy();
                 _mainWindow = null;
             }
-            catch {
+            catch
+            {
                 // HACK - [ISSUE 31]
             }
         }
@@ -250,7 +251,7 @@ namespace ParallelRoadTool
             DebugUtils.Log("Added locale change event handlers.");
 
             // Reload the current locale once to effect changes
-            LocaleManager.ForceReload();            
+            LocaleManager.ForceReload();
         }
 
         public override void OnReleased()
