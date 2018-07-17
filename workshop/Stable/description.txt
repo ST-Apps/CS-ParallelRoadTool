@@ -33,6 +33,7 @@ Donate using PayPal:
 [*]Sharp angles produce weird results, curves work better
 [*]Roads will always follow terrain elevation 
 [*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
+[*]Tutorial image doesn't always show up (and tutorial window too), sometimes you may need to press the tutorial button multiple times
 [/list]
 [/quote]
 
