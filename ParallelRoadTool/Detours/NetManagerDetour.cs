@@ -268,18 +268,18 @@ namespace ParallelRoadTool.Detours
                 // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment.
                 ushort newStartNodeId;
                 if (!invert && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
-                {
+                {                    
                     DebugUtils.Log(
                         $"[START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
                     newStartNodeId = _clonedEndNodeId[i].Value;
                     DebugUtils.Log(
-                        $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                        $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
                 }
                 else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
                          _startNodeId[i].Value == startNode)
                 {
                     DebugUtils.Log(
-                        $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
+                        $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
                     newStartNodeId = _clonedStartNodeId[i].Value;
                     DebugUtils.Log(
                         $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
@@ -287,9 +287,9 @@ namespace ParallelRoadTool.Detours
                 else
                 {
                     var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
-                        verticalOffset, invert);
+                        verticalOffset, invert && !ParallelRoadTool.Instance.IsLeftHandTraffic);
 
-                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
                     newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                 }                
 
