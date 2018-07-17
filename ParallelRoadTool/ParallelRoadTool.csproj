@@ -83,6 +83,8 @@
     <Compile Include="UI\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Localization\ru.xml" />
+    <Content Include="Localization\zh.xml" />
     <EmbeddedResource Include="Icons\Tutorial.png" />
     <EmbeddedResource Include="Localization\en.xml" />
     <EmbeddedResource Include="Icons\Reverse.png" />
