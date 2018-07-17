@@ -101,8 +101,7 @@ namespace ParallelRoadTool.UI
         {
             // TODO: generate names list on mod launch, there's no need to redo it everytime something happens.
             // TODO: check for similar issues to try optimize stuff and reduce performance issues.
-            DropDown.items = (IsCurrentItem ? ParallelRoadTool.AvailableRoadTypes.Take(1) : ParallelRoadTool.AvailableRoadTypes)
-                .Select(ni => ni.GenerateBeautifiedNetName())
+            DropDown.items = (IsCurrentItem ? ParallelRoadTool.AvailableRoadNames.Take(1) : ParallelRoadTool.AvailableRoadNames)                
                 .ToArray();
             DropDown.selectedIndex = 0;
             Populated = true;

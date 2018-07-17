@@ -29,7 +29,9 @@ namespace ParallelRoadTool
         public static ParallelRoadTool Instance;
 
         public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
+        public static string[] AvailableRoadNames;
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
+
         public static NetTool NetTool;
         public static bool IsInGameMode;
 
@@ -61,7 +63,6 @@ namespace ParallelRoadTool
         }
 
         public bool IsSnappingEnabled { get; set; }
-
         public bool IsLeftHandTraffic;        
 
         #region Utils
@@ -80,7 +81,13 @@ namespace ParallelRoadTool
             }
 
             _mainWindow.RenderNetList();
-        }     
+        }
+        
+        private void AddNetworkType(NetInfo net, int index = 0)
+        {
+            AvailableRoadTypes.Add(net);
+            AvailableRoadNames[index] = net.GenerateBeautifiedNetName();
+        }
 
         #endregion
 
@@ -137,20 +144,26 @@ namespace ParallelRoadTool
                 // Available networks loading
                 DebugUtils.Log("Loading all available networks.");
 
-                AvailableRoadTypes.Clear();
-
                 var count = PrefabCollection<NetInfo>.PrefabCount();
+                AvailableRoadTypes.Clear();
+                AvailableRoadNames = new string[count+1];
 
                 // Default item, creates a net with the same type as source
-                AvailableRoadTypes.Add(null);
+                AddNetworkType(null);
+                var addedNetworksCount = 1;
 
                 for (uint i = 0; i < count; i++)
                 {
                     var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
-                    if (prefab != null) AvailableRoadTypes.Add(prefab);
+                    if (prefab != null) AddNetworkType(prefab, addedNetworksCount++);
                 }
 
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
+
+                for(var i=0; i < AvailableRoadTypes.Count; i++)
+                {
+                    DebugUtils.Log($"ROAD: {AvailableRoadTypes[i].GenerateBeautifiedNetName()} | NAME: {AvailableRoadNames[i]}");
+                }
 
                 IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
                                     SimulationMetaData.MetaBool.True;
