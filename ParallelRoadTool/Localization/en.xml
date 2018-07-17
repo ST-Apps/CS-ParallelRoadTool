@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <NameList
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -12,6 +12,7 @@
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Add network</LocalizedString>
     
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Same as selected</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedRoad">Same as selected road</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Decrease horizontal offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Increase horizontal offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Decrease vertical offset of parallel networks</LocalizedString>
