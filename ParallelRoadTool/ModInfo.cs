@@ -55,7 +55,6 @@ namespace ParallelRoadTool
                 XmlSerializer serializer = new XmlSerializer(typeof(NameList));
 
                 var assembly = Assembly.GetExecutingAssembly();
-                var localeinfo = LocaleInfo.currentLanguage;
                 var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
 #if DEBUG
                 DebugOutputPanel.AddMessage(PluginManager.MessageType.Message, "Language File: " + resourceName);
@@ -64,7 +63,7 @@ namespace ParallelRoadTool
                 if (!assembly.GetManifestResourceNames().Contains(resourceName))
                 {
                     // Fallback to english
-                    resourceName = "ParallelRoadTool.Localization.ja.xml";
+                    resourceName = "ParallelRoadTool.Localization.en.xml";
                 }
 
                 DebugUtils.Log($"Trying to read {resourceName} localization file...");

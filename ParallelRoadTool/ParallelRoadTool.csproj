@@ -91,6 +91,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Icons\Tutorial.png" />
     <EmbeddedResource Include="Localization\en.xml" />
+    <EmbeddedResource Include="Localization\ja.xml" />
+    <EmbeddedResource Include="Localization\ru.xml" />
     <EmbeddedResource Include="Icons\Reverse.png" />
     <EmbeddedResource Include="Icons\ReverseDisabled.png" />
     <EmbeddedResource Include="Icons\ReverseFocused.png" />
@@ -114,10 +116,6 @@
     <Content Include="Icons\DragCursor.png" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="Localization\ja.xml" />
-    <None Include="Localization\ru.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
   <!--
