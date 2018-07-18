@@ -277,14 +277,16 @@ namespace ParallelRoadTool
             LocaleManager.ForceReload();
         }
 
-        private void OnLocaleChanged()
+        public void OnLocaleChanged()
         {
             DebugUtils.Log("Locale changed callback started.");
 
             XmlSerializer serializer = new XmlSerializer(typeof(NameList));
 
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
+            // BUG: on Mac and Linux LocalManager.cultureInfo always returns 'en' regardless of game language
+            //var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
+            var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.instance.language}.xml";
 
             if (!assembly.GetManifestResourceNames().Contains(resourceName))
             {
