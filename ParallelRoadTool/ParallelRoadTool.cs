@@ -264,7 +264,7 @@ namespace ParallelRoadTool
             LocaleManager.ForceReload();
         }
 
-        private void OnLocaleChanged()
+        public void OnLocaleChanged()
         {
             DebugUtils.Log("Locale changed callback started.");
 
