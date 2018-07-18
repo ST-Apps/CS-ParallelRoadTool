@@ -86,5 +86,6 @@ If there's no issue for the thing you'd like to work on, feel free to open a new
 [*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
 [*][url=https://steamcommunity.com/id/samsamts]SamsamTS[/url] for his FineRoadAnarchy mod, which provided me the basics for this one
 [*][url=https://steamcommunity.com/id/victorphilipp]LinuxFan[/url] for his pointers on how to fix snapping
+[*][url=https://github.com/BadiBasso]BadiBasso[/url] for his Network Skins patch and general help
 [/list]
 [/quote]
