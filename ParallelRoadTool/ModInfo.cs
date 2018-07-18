@@ -47,8 +47,9 @@ namespace ParallelRoadTool
         {
             try
             {
+                // BUG: No translated strings in Option screen on Main Menu.
                 XmlSerializer serializer = new XmlSerializer(typeof(NameList));
-
+                
                 var assembly = Assembly.GetExecutingAssembly();
                 // BUG: on Mac and Linux LocalManager.cultureInfo always returns 'en' regardless of game language
                 //var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
