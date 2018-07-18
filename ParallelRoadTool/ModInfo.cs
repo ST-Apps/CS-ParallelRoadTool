@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
+using ParallelRoadTool;
 
 namespace ParallelRoadTool
 {
@@ -39,9 +40,13 @@ namespace ParallelRoadTool
         {
             try
             {
+                // BUG: No translated strings in Option screen on Main Menu.
+                var ld = new ParallelRoadToolLoader();
+                ld.OnLocaleChanged();
+
                 var group = helper.AddGroup(Name) as UIHelper;
                 var panel = group.self as UIPanel;
-
+                
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
                 group.AddSpace(10);
