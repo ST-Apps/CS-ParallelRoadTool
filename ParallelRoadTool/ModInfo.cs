@@ -51,8 +51,7 @@ namespace ParallelRoadTool
                 XmlSerializer serializer = new XmlSerializer(typeof(NameList));
 
                 var assembly = Assembly.GetExecutingAssembly();
-                var lang = LocaleManager.instance.language;
-                var resourceName = $"ParallelRoadTool.Localization.{lang}.xml";
+                var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.instance.language}.xml";
 
                 if (!assembly.GetManifestResourceNames().Contains(resourceName))
                 {
