@@ -8,8 +8,11 @@ Main features are:
 [*] Left-hand drive support
 [/list]
 
-[h1][b]The beta version is meant for testing only and it can be unstable.[/b] (non-beta version is coming soon)[/h1]
+[quote]
+[h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b][/h1]
+[h1][b]The beta version is meant for testing only and it can be unstable.[/b][/h1]
 [b]Tested on C:S version 1.10.1-f3[/b]
+[/quote]
 
 [quote]
 [h1]Current version: [b]1.0.2-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
