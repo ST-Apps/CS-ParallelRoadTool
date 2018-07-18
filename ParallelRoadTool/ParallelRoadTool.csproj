@@ -84,8 +84,8 @@
     <Compile Include="UI\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Localization\ru.xml" />
-    <Content Include="Localization\zh.xml" />
+    <EmbeddedResource Include="Localization\ru.xml" />
+    <EmbeddedResource Include="Localization\zh.xml" />
     <EmbeddedResource Include="Icons\Tutorial.png" />
     <EmbeddedResource Include="Localization\en.xml" />
     <EmbeddedResource Include="Icons\Reverse.png" />
@@ -108,9 +108,14 @@
     <EmbeddedResource Include="Icons\AddFocused.png" />
     <EmbeddedResource Include="Icons\AddHovered.png" />
     <EmbeddedResource Include="Icons\AddPressed.png" />
-    <Content Include="Icons\DragCursor.png" />
+    <EmbeddedResource Include="Icons\DragCursor.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\es.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\ja.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
