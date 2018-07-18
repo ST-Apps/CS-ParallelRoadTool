@@ -273,8 +273,7 @@ namespace ParallelRoadTool
             var assembly = Assembly.GetExecutingAssembly();
             // BUG: on Mac and Linux LocalManager.cultureInfo always returns 'en' regardless of game language
             //var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
-            var lang = LocaleManager.instance.language;
-            var resourceName = $"ParallelRoadTool.Localization.{lang}.xml";
+            var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.instance.language}.xml";
 
             if (!assembly.GetManifestResourceNames().Contains(resourceName))
             {
