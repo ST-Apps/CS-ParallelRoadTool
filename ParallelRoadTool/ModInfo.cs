@@ -8,6 +8,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ICities;
+using ParallelRoadTool;
 using ParallelRoadTool.Extensions.LocaleModels;
 using UnityEngine;
 
@@ -48,36 +49,8 @@ namespace ParallelRoadTool
             try
             {
                 // BUG: No translated strings in Option screen on Main Menu.
-                XmlSerializer serializer = new XmlSerializer(typeof(NameList));
-
-                var assembly = Assembly.GetExecutingAssembly();
-                var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.instance.language}.xml";
-
-                if (!assembly.GetManifestResourceNames().Contains(resourceName))
-                {
-                    // Fallback to english
-                    resourceName = "ParallelRoadTool.Localization.en.xml";
-                }
-
-                DebugUtils.Log($"Trying to read {resourceName} localization file...");
-                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    using (XmlReader xmlStream = XmlReader.Create(reader))
-                    {
-                        if (serializer.CanDeserialize(xmlStream))
-                        {
-                            NameList nameList = (NameList)serializer.Deserialize(xmlStream);
-                            nameList.Apply();
-                        }
-                    }
-                }
-
-                DebugUtils.Log($"Namelists {resourceName} applied.");
-
-                var group = helper.AddGroup(Name) as UIHelper;
-                var panel = group.self as UIPanel;
-
+                ParallelRoadTool.OnLocaleChanged();
+                
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
                 group.AddSpace(10);
