@@ -3,6 +3,7 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool;
+using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool
 {
@@ -10,7 +11,7 @@ namespace ParallelRoadTool
     {
         public const string Version = "1.0.2";
 #if DEBUG
-        public const string Branch = "dev";
+        public const string Branch = "ISSUE-51";
 #endif
 
         public ModInfo()
@@ -40,9 +41,8 @@ namespace ParallelRoadTool
         {
             try
             {
-                // BUG: No translated strings in Option screen on Main Menu.
-                var ld = new ParallelRoadToolLoader();
-                ld.OnLocaleChanged();
+                // HACK - [ISSUE-51] We need to force localization loading or we won't see any localized string in mod's option while being in main menu
+                LocalizationManager.LoadLocalization();
 
                 var group = helper.AddGroup(Name) as UIHelper;
                 var panel = group.self as UIPanel;
