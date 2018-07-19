@@ -9,7 +9,7 @@ namespace ParallelRoadTool
     {
         public const string Version = "1.0.2";
 #if DEBUG
-        public const string Branch = "dev";
+        public const string Branch = "ISSUE-38";
 #endif
 
         public ModInfo()

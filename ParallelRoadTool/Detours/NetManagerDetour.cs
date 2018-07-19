@@ -322,7 +322,7 @@ namespace ParallelRoadTool.Detours
                 _startNodeId[i] = startNode;
                 _clonedStartNodeId[i] = newStartNodeId;
 
-                if (isReversed)
+                if (isReversed || ParallelRoadTool.Instance.IsLeftHandTraffic)
                 {
                     Vector3 tempStartDirection;
                     Vector3 tempEndDirection;
