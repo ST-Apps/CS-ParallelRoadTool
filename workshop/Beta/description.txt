@@ -15,9 +15,11 @@ Main features are:
 [/quote]
 
 [quote]
-[h1]Current version: [b]1.0.4-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.0.5-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Fixed performance issues ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/39]#39[/url])
+[*] Fixed localization on non-Windows devices
+[*] Fixed missing localization in options menu
 [*] Added Chinese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/46]#46[/url])
 [*] Added Spanish translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/40]#40[/url])
 [*] Added Japanese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/50]#50[/url])
