@@ -101,7 +101,12 @@ namespace ParallelRoadTool.Detours
                 var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
 
                 // Horizontal offset must be negated to appear on the correct side of the original segment
-                var horizontalOffset = -currentRoadInfos.HorizontalOffset;
+                float horizontalOffset = 0;
+                if(ParallelRoadTool.Instance.IsLeftHandTraffic)
+                    horizontalOffset = currentRoadInfos.HorizontalOffset;
+                else
+                    horizontalOffset = -currentRoadInfos.HorizontalOffset;
+
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                

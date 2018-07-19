@@ -214,6 +214,8 @@ namespace ParallelRoadTool.Detours
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
                 endDirection, buildIndex, modifiedIndex, invert);
 
+            if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                _isPreviousInvert = invert;
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
@@ -246,6 +248,9 @@ namespace ParallelRoadTool.Detours
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+                
+                //disable collision on current network 
+                selectedNetInfo.m_canCollide = false;
 
                 var isReversed = currentRoadInfos.IsReversed;
 
@@ -254,7 +259,9 @@ namespace ParallelRoadTool.Detours
                 {
                     invert = !invert;
                     isReversed = !isReversed;
-                }
+                    horizontalOffset = -horizontalOffset;
+                    ParallelRoadTool.Instance.IsSnappingEnabled = true;
+                 }
 
                 DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
 
@@ -312,10 +319,10 @@ namespace ParallelRoadTool.Detours
                 }
 
                 // Store current end nodes in case we may need to connect the following segment to them
-                _endNodeId[i] = endNode;
-                _clonedEndNodeId[i] = newEndNodeId;
-                _startNodeId[i] = startNode;
-                _clonedStartNodeId[i] = newStartNodeId;
+                    _endNodeId[i] = endNode;
+                    _clonedEndNodeId[i] = newEndNodeId;
+                    _startNodeId[i] = startNode;
+                    _clonedStartNodeId[i] = newStartNodeId;
 
                 if (isReversed)
                 {
@@ -348,7 +355,14 @@ namespace ParallelRoadTool.Detours
                         newEndNodeId, startDirection, endDirection,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
-                }                
+                }
+                // Left-hand drive revert conditions back
+                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                {
+                    invert = !invert;
+                    isReversed = !isReversed;
+                    _isPreviousInvert = invert;
+                }
             }
 
             _isPreviousInvert = invert;
