@@ -8,15 +8,21 @@ Main features are:
 [*] Left-hand drive support
 [/list]
 
-[h1][b]The beta version is meant for testing only and it can be unstable.[/b] (non-beta version is coming soon)[/h1]
+[quote]
+[h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b][/h1]
+[h1][b]The beta version is meant for testing only and it can be unstable.[/b][/h1]
 [b]Tested on C:S version 1.10.1-f3[/b]
+[/quote]
 
 [quote]
-[h1]Current version: [b]1.0.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.0.5-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Fixed node snapping when changing offsets.
-[*] Added keybinds for vertical offset.
-[*] Added Russian translation
+[*] Fixed performance issues ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/39]#39[/url])
+[*] Fixed localization on non-Windows devices
+[*] Fixed missing localization in options menu
+[*] Added Chinese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/46]#46[/url])
+[*] Added Spanish translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/40]#40[/url])
+[*] Added Japanese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/50]#50[/url])
 [/list]
 [/quote]
 
@@ -33,14 +39,18 @@ Donate using PayPal:
 [*]Sharp angles produce weird results, curves work better
 [*]Roads will always follow terrain elevation 
 [*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
+[*]Tutorial image doesn't always show up (and tutorial window too), sometimes you may need to press the tutorial button multiple times
 [/list]
 [/quote]
 
 [quote]
 [h1][b]Supported languages (% translated)[/b][/h1]
 [list]
+[*] Chinese (100 %) (thanks to [url=https://steamcommunity.com/id/TimiYang]TimiYang[/url])
 [*] English (100 %)
-[*] Russian (90 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
+[*] Japanese (100%) (thanks to [url=https://github.com/mzch]mzch[/url])
+[*] Russian (100 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
+[*] Spanish (100 %) (thanks to ‡ Ðalveen ‡)
 [/list]
 
 The language is automatically determined based on your settings in "Options" -> "Gameplay".
@@ -78,5 +88,6 @@ If there's no issue for the thing you'd like to work on, feel free to open a new
 [*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
 [*][url=https://steamcommunity.com/id/samsamts]SamsamTS[/url] for his FineRoadAnarchy mod, which provided me the basics for this one
 [*][url=https://steamcommunity.com/id/victorphilipp]LinuxFan[/url] for his pointers on how to fix snapping
+[*][url=https://github.com/BadiBasso]BadiBasso[/url] for his Network Skins patch and general help
 [/list]
 [/quote]

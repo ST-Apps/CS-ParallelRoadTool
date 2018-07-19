@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -18,7 +19,8 @@ namespace ParallelRoadTool.UI.Base
         private const float COLUMN_PADDING = 5f;
         private const float TEXT_FIELD_WIDTH = 35f;
         public static readonly UITextureAtlas TextureAtlas = LoadResources();
-        public static UITextureAtlas DefaultAtlas = ResourceLoader.GetAtlas("Ingame");
+        public static readonly UITextureAtlas DefaultAtlas = ResourceLoader.GetAtlas("Ingame");
+        public static readonly UITextureAtlas AdvisorAtlas = ResourceLoader.GetAtlas("AdvisorSprites");
 
         public static UIView uiRoot;
 
@@ -202,7 +204,7 @@ namespace ParallelRoadTool.UI.Base
 
             if (prefab == null)
             {
-                itemName = "Same as selected road";
+                itemName = Locale.Get("PRT_TEXTS", "SameAsSelectedLabel");
             }
             else
             {
@@ -302,11 +304,6 @@ namespace ParallelRoadTool.UI.Base
         {
             string[] spriteNames =
             {
-                //"Anarchy",
-                //"AnarchyDisabled",
-                //"AnarchyFocused",
-                //"AnarchyHovered",
-                //"AnarchyPressed",
                 "Add",
                 "AddDisabled",
                 "AddFocused",
@@ -317,11 +314,6 @@ namespace ParallelRoadTool.UI.Base
                 "RemoveFocused",
                 "RemoveHovered",
                 "RemovePressed",
-                //"Bending",
-                //"BendingDisabled",
-                //"BendingFocused",
-                //"BendingHovered",
-                //"BendingPressed",
                 "Parallel",
                 "ParallelDisabled",
                 "ParallelFocused",
