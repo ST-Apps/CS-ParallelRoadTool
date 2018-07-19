@@ -99,8 +99,8 @@ namespace ParallelRoadTool.UI
 
         private void PopulateDropDown()
         {
-            DropDown.items = ParallelRoadTool.AvailableRoadTypes
-                .Select(ni => ni.GenerateBeautifiedNetName()).ToArray();
+            DropDown.items = (IsCurrentItem ? ParallelRoadTool.AvailableRoadNames.Take(1) : ParallelRoadTool.AvailableRoadNames)                
+                .ToArray();
             DropDown.selectedIndex = 0;
             Populated = true;
 
@@ -110,29 +110,27 @@ namespace ParallelRoadTool.UI
         public void RenderItem()
         {
             DebugUtils.Log($"RenderItem {NetInfo} at {HorizontalOffset}/{VerticalOffset}");
-            if (NetInfo != null)
-                Label.text = NetInfo.GenerateBeautifiedNetName();
 
             if (!Populated) PopulateDropDown();
 
-            HorizontalOffsetField.text = HorizontalOffset.ToString(CultureInfo.InvariantCulture);
-            VerticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
-            ReverseCheckbox.isChecked = IsReversed;
             if (!IsCurrentItem)
-            {
+            {                
+                HorizontalOffsetField.text = HorizontalOffset.ToString(CultureInfo.InvariantCulture);
+                VerticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
+                ReverseCheckbox.isChecked = IsReversed;
                 var index = ParallelRoadTool.AvailableRoadTypes.FindIndex(ni => ni != null && ni.name == NetInfo.name);
                 DebugUtils.Log($"selecting index {index}");
                 DropDown.selectedIndex = index;
                 return;
             }
 
-            DeleteButton.isVisible = false;
-            HorizontalOffsetField.isVisible = false;
-            VerticalOffsetField.isVisible = false;
-            ReverseCheckbox.isVisible = false;
-            DropDown.isVisible = false;
-            Label.isVisible = true;
-            AddButton.isVisible = true;
+            DropDown.selectedIndex = 0;
+            DeleteButton.isVisible = 
+                HorizontalOffsetField.isVisible = 
+                VerticalOffsetField.isVisible = 
+                ReverseCheckbox.isVisible = 
+                DropDown.isVisible = false;            
+            Label.isVisible = AddButton.isVisible = true;
             Label.text = Locale.Get("PRT_TEXTS", "SameAsSelectedLabel");
         }
 
