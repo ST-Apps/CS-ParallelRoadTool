@@ -319,10 +319,10 @@ namespace ParallelRoadTool.Detours
                 }
 
                 // Store current end nodes in case we may need to connect the following segment to them
-                    _endNodeId[i] = endNode;
-                    _clonedEndNodeId[i] = newEndNodeId;
-                    _startNodeId[i] = startNode;
-                    _clonedStartNodeId[i] = newStartNodeId;
+                _endNodeId[i] = endNode;
+                _clonedEndNodeId[i] = newEndNodeId;
+                _startNodeId[i] = startNode;
+                _clonedStartNodeId[i] = newStartNodeId;
 
                 if (isReversed)
                 {
