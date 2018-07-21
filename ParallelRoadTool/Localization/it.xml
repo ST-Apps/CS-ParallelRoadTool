@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NameList
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="PRT_it">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Attiva/Disattiva snapping per i nodi esistenti</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">ParallelRoadTool attivato/disattivato</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Mostra schermata tutorial</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Direzione inversa per la strada attuale</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Rimuovi rete</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Aggiungi rete</LocalizedString>
+
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Uguale alla strada selezionata</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Diminuisci la distanza orizzontale dei segmenti paralleli</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Aumenta la distanza orizzontale dei segmenti paralleli</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Diminuisci la distanza verticale dei segmenti paralleli</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Aumenta la distanza verticale dei segmenti paralleli</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (se non vedi l'immagine di sopra, chiudi e riapri la schermata tutorial)
+      1) Aggiunge la rete selezionata al tuo elenco
+      2) Ti permette cambiare la rete selezionata
+      3) Inverte la direzione della rete
+      4) Distanza orizzontale tra il segmento attuale e il primo
+      5) Distanza verticale tra il segmento attuale e il primo
+      6) Rimuove la rete dall'elenco
+      7) Attiva o disattiva lo snapping per tutti i nodi esistenti
+      Spento : esegue lo snap solo agli ultimi segmenti disgnati mentre la mod era attiva.
+      Acceso : proverà ad eseguire lo snap al segmento più vicino.
+
+      Valori negativi sono permessi per entrambe le distanze (verticale ed orizzontale).
+      Un valore di distanza orizzontale negativo metterà la strada sul lato opposto.
+      Un valore di distanza verticale negativo metterà la strada sotto il livello di terreno.
+    </LocalizedString>
+  </strings>
+</NameList>

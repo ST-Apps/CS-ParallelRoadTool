@@ -25,6 +25,7 @@ Main features are:
 [*] Added Japanese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/50]#50[/url])
 [*] Added German translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/41]#41[/url])
 [*] Added French translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/57]#57[/url])
+[*] Added Italian translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/55]#55[/url])
 [/list]
 [/quote]
 
@@ -52,6 +53,7 @@ Donate using PayPal:
 [*] English (100 %)
 [*] French (100 %) (thanks to [url=https://github.com/mjm92150]mjm92150[/url])
 [*] German (100 %) (thanks to [url=https://github.com/TheGoldenMan99]TheGoldenMan99[/url] and [url=https://github.com/Fungopus]Fungopus[Url])
+[*] Italian (100 %) (thanks to [url=https://github.com/tdemeola]tdemeola[/url])
 [*] Japanese (100%) (thanks to [url=https://github.com/mzch]mzch[/url])
 [*] Russian (100 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
 [*] Spanish (100 %) (thanks to ‡ Ðalveen ‡)
