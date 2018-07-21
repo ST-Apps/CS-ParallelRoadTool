@@ -214,6 +214,8 @@ namespace ParallelRoadTool.Detours
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
                 endDirection, buildIndex, modifiedIndex, invert);
 
+            if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                _isPreviousInvert = invert;
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
@@ -246,6 +248,9 @@ namespace ParallelRoadTool.Detours
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+                
+                //disable collision on current network 
+                selectedNetInfo.m_canCollide = false;
 
                 var isReversed = currentRoadInfos.IsReversed;
 
@@ -254,32 +259,39 @@ namespace ParallelRoadTool.Detours
                 {
                     invert = !invert;
                     isReversed = !isReversed;
-                }
+                    horizontalOffset = -horizontalOffset;
+                    ParallelRoadTool.Instance.IsSnappingEnabled = true;
+                 }
 
                 DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
 
                 // Get original nodes to clone them
                 var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
                 var endNetNode = NetManager.instance.m_nodes.m_buffer[endNode];
-                                
+
+                DebugUtils.Log($"STATUS: invert = {invert} | _endNodeId[{i}] = {_endNodeId[i].GetValueOrDefault()} | _startNodeId[{i}] = {_startNodeId[i].GetValueOrDefault()} | startNode = {startNode} | endNode = {endNode}");
+                DebugUtils.Log($"CONDITIONS: {(!invert || ParallelRoadTool.Instance.IsLeftHandTraffic)} && {_endNodeId[i].HasValue && _endNodeId[i].Value == startNode} | {!invert} && {_isPreviousInvert} && { _startNodeId[i].HasValue && _startNodeId[i].Value == startNode}");
+
                 // Create two clone nodes by offsetting the original ones.
                 // If we're not in "invert" mode (aka final part of a curve) and we already have an ending node with the same id of our starting node, we need to use that so that the segments can be connected.
                 // If the previous segment was in "invert" mode and the current startNode is the same as the previous one, we need to connect them.
-                // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment.
+                // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment.                 
                 ushort newStartNodeId;
-                if (!invert && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
-                {
+                // HACK - [ISSUE-38] I don't really understand how thing work for left-hand traffic, but odd tracks don't connect if the OR in !invert is removed
+                if ((!invert || ParallelRoadTool.Instance.IsLeftHandTraffic) 
+                    && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
+                {                    
                     DebugUtils.Log(
                         $"[START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
                     newStartNodeId = _clonedEndNodeId[i].Value;
                     DebugUtils.Log(
-                        $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                        $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
                 }
-                else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
+                else if ((!invert || ParallelRoadTool.Instance.IsLeftHandTraffic) && _isPreviousInvert && _startNodeId[i].HasValue &&
                          _startNodeId[i].Value == startNode)
                 {
                     DebugUtils.Log(
-                        $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
+                        $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
                     newStartNodeId = _clonedStartNodeId[i].Value;
                     DebugUtils.Log(
                         $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
@@ -287,9 +299,9 @@ namespace ParallelRoadTool.Detours
                 else
                 {
                     var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
-                        verticalOffset, invert);
+                        verticalOffset, invert && !ParallelRoadTool.Instance.IsLeftHandTraffic);
 
-                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
                     newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                 }                
 
@@ -312,12 +324,12 @@ namespace ParallelRoadTool.Detours
                 }
 
                 // Store current end nodes in case we may need to connect the following segment to them
-                _endNodeId[i] = endNode;
-                _clonedEndNodeId[i] = newEndNodeId;
-                _startNodeId[i] = startNode;
-                _clonedStartNodeId[i] = newStartNodeId;
+                    _endNodeId[i] = endNode;
+                    _clonedEndNodeId[i] = newEndNodeId;
+                    _startNodeId[i] = startNode;
+                    _clonedStartNodeId[i] = newStartNodeId;
 
-                if (isReversed)
+                if (isReversed || ParallelRoadTool.Instance.IsLeftHandTraffic)
                 {
                     Vector3 tempStartDirection;
                     Vector3 tempEndDirection;
@@ -348,7 +360,14 @@ namespace ParallelRoadTool.Detours
                         newEndNodeId, startDirection, endDirection,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
-                }                
+                }
+                // Left-hand drive revert conditions back
+                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                {
+                    invert = !invert;
+                    isReversed = !isReversed;
+                    _isPreviousInvert = invert;
+                }
             }
 
             _isPreviousInvert = invert;
