@@ -18,6 +18,7 @@ Main features are:
 [h1]Current version: [b]1.0.7-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Fixed performance issues ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/39]#39[/url])
+[*] Fixed swirling when in left-hand drive ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/38]#38[/url] and [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/58]#58[/url])
 [*] Fixed localization on non-Windows devices ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/52]#52[/url])
 [*] Fixed missing localization in options menu ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/52]#52[/url])
 [*] Added Chinese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/46]#46[/url])
