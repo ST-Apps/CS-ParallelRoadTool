@@ -116,6 +116,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Localization\ja.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\de.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\fr.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\it.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
