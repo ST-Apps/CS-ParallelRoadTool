@@ -23,7 +23,7 @@ namespace ParallelRoadTool.Detours
             typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static RedirectCallsState _state;
-        private static bool _deployed;        
+        private static bool _deployed;
 
         public static void Deploy()
         {
@@ -107,7 +107,7 @@ namespace ParallelRoadTool.Detours
             DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
             if (ParallelRoadTool.Instance.IsSnappingEnabled &&
-                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB) || 
+                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB) ||
                     PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB) ||
                     PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB)
                 )
@@ -154,7 +154,7 @@ namespace ParallelRoadTool.Detours
             // Both startNode and endNode were not found, we need to create a new one
             CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
             return newNodeId;
-        }        
+        }
 
         /// <summary>
         ///     This methods skips our detour by calling the original method from the game, allowing the creation of the needed
@@ -224,14 +224,14 @@ namespace ParallelRoadTool.Detours
                                   NetManager.instance.m_nodes.m_buffer[invert ? endNode : startNode].m_elevation;
 
             // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
-            var caller = string.Join(".", new []
-            {                        
+            var caller = string.Join(".", new[]
+            {
                 new System.Diagnostics.StackFrame(3).GetMethod().DeclaringType?.Name,
                 new System.Diagnostics.StackFrame(2).GetMethod().Name,
                 new System.Diagnostics.StackFrame(1).GetMethod().Name
             });
             DebugUtils.Log($"Caller trace is {caller}");
-            
+
             if (!_allowedCallers.Contains(caller)) return result;
 
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
@@ -248,7 +248,7 @@ namespace ParallelRoadTool.Detours
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
-                
+
                 //disable collision on current network 
                 selectedNetInfo.m_canCollide = false;
 
@@ -261,7 +261,7 @@ namespace ParallelRoadTool.Detours
                     isReversed = !isReversed;
                     horizontalOffset = -horizontalOffset;
                     ParallelRoadTool.Instance.IsSnappingEnabled = true;
-                 }
+                }
 
                 DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
 
@@ -269,29 +269,24 @@ namespace ParallelRoadTool.Detours
                 var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
                 var endNetNode = NetManager.instance.m_nodes.m_buffer[endNode];
 
-                DebugUtils.Log($"STATUS: invert = {invert} | _endNodeId[{i}] = {_endNodeId[i].GetValueOrDefault()} | _startNodeId[{i}] = {_startNodeId[i].GetValueOrDefault()} | startNode = {startNode} | endNode = {endNode}");
-                DebugUtils.Log($"CONDITIONS: {(!invert || ParallelRoadTool.Instance.IsLeftHandTraffic)} && {_endNodeId[i].HasValue && _endNodeId[i].Value == startNode} | {!invert} && {_isPreviousInvert} && { _startNodeId[i].HasValue && _startNodeId[i].Value == startNode}");
-
                 // Create two clone nodes by offsetting the original ones.
                 // If we're not in "invert" mode (aka final part of a curve) and we already have an ending node with the same id of our starting node, we need to use that so that the segments can be connected.
                 // If the previous segment was in "invert" mode and the current startNode is the same as the previous one, we need to connect them.
-                // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment.                 
+                // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment.
                 ushort newStartNodeId;
-                // HACK - [ISSUE-38] I don't really understand how thing work for left-hand traffic, but odd tracks don't connect if the OR in !invert is removed
-                if ((!invert || ParallelRoadTool.Instance.IsLeftHandTraffic) 
-                    && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
-                {                    
+                if (!invert && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
+                {
                     DebugUtils.Log(
                         $"[START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
                     newStartNodeId = _clonedEndNodeId[i].Value;
                     DebugUtils.Log(
-                        $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
+                        $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                 }
-                else if ((!invert || ParallelRoadTool.Instance.IsLeftHandTraffic) && _isPreviousInvert && _startNodeId[i].HasValue &&
+                else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
                          _startNodeId[i].Value == startNode)
                 {
                     DebugUtils.Log(
-                        $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
+                        $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
                     newStartNodeId = _clonedStartNodeId[i].Value;
                     DebugUtils.Log(
                         $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
@@ -299,11 +294,11 @@ namespace ParallelRoadTool.Detours
                 else
                 {
                     var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
-                        verticalOffset, invert && !ParallelRoadTool.Instance.IsLeftHandTraffic);
+                        verticalOffset, invert);
 
-                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope} | startNode = {_startNodeId[i].GetValueOrDefault()} | endNode = {_endNodeId[i].GetValueOrDefault()}");
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
                     newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
-                }                
+                }
 
                 // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
                 ushort newEndNodeId;
@@ -324,12 +319,12 @@ namespace ParallelRoadTool.Detours
                 }
 
                 // Store current end nodes in case we may need to connect the following segment to them
-                    _endNodeId[i] = endNode;
-                    _clonedEndNodeId[i] = newEndNodeId;
-                    _startNodeId[i] = startNode;
-                    _clonedStartNodeId[i] = newStartNodeId;
+                _endNodeId[i] = endNode;
+                _clonedEndNodeId[i] = newEndNodeId;
+                _startNodeId[i] = startNode;
+                _clonedStartNodeId[i] = newStartNodeId;
 
-                if (isReversed || ParallelRoadTool.Instance.IsLeftHandTraffic)
+                if (isReversed)
                 {
                     Vector3 tempStartDirection;
                     Vector3 tempEndDirection;

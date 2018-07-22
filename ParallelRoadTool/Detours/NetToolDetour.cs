@@ -102,7 +102,7 @@ namespace ParallelRoadTool.Detours
 
                 // Horizontal offset must be negated to appear on the correct side of the original segment
                 float horizontalOffset = 0;
-                if(ParallelRoadTool.Instance.IsLeftHandTraffic)
+                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
                     horizontalOffset = currentRoadInfos.HorizontalOffset;
                 else
                     horizontalOffset = -currentRoadInfos.HorizontalOffset;
