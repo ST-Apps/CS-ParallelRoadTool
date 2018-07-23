@@ -258,8 +258,6 @@ namespace ParallelRoadTool.Detours
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
-                //disable collision on current network
-                selectedNetInfo.m_canCollide = false;
 
                 var isReversed = currentRoadInfos.IsReversed;
 
