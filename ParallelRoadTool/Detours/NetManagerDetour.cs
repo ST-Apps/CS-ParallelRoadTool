@@ -249,9 +249,6 @@ namespace ParallelRoadTool.Detours
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
-                //disable collision on current network 
-                selectedNetInfo.m_canCollide = false;
-
                 var isReversed = currentRoadInfos.IsReversed;
 
                 // Left-hand drive means that any condition must be reversed
