@@ -12,11 +12,20 @@ Main features are:
 [b]Tested on C:S version 1.10.1-f3[/b]
 
 [quote]
-[h1]Current version: [b]1.0.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.1.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Fixed node snapping when changing offsets.
-[*] Added keybinds for vertical offset.
-[*] Added Russian translation
+[*] Fixed performance issues ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/39]#39[/url])
+[*] Fixed swirling when in left-hand drive ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/38]#38[/url] and [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/58]#58[/url])
+[*] Fixed localization on non-Windows devices ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/52]#52[/url])
+[*] Fixed missing localization in options menu ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/52]#52[/url])
+[*] Added Chinese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/46]#46[/url])
+[*] Added Spanish translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/40]#40[/url])
+[*] Added Japanese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/50]#50[/url])
+[*] Added German translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/41]#41[/url])
+[*] Added French translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/57]#57[/url])
+[*] Added Italian translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/55]#55[/url])
+[*] Added Dutch translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/54]#54[/url])
+[*] Added Portuguese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/59]#59[/url])
 [/list]
 [/quote]
 
@@ -40,8 +49,16 @@ Donate using PayPal:
 [quote]
 [h1][b]Supported languages (% translated)[/b][/h1]
 [list]
+[*] Chinese (100 %) (thanks to [url=https://steamcommunity.com/id/TimiYang]TimiYang[/url])
+[*] Dutch (100 %) (thanks to [url=https://github.com/Zippr1]Zippr1[/url])
 [*] English (100 %)
-[*] Russian (90 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
+[*] French (100 %) (thanks to [url=https://github.com/mjm92150]mjm92150[/url])
+[*] German (100 %) (thanks to [url=https://github.com/TheGoldenMan99]TheGoldenMan99[/url] and [url=https://github.com/Fungopus]Fungopus[/url])
+[*] Italian (100 %) (thanks to [url=https://github.com/tdemeola]tdemeola[/url])
+[*] Japanese (100%) (thanks to [url=https://github.com/mzch]mzch[/url])
+[*] Portuguese (100%) (thanks to [url=https://github.com/BentoGambin]BentoGambin[/url])
+[*] Russian (100 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
+[*] Spanish (100 %) (thanks to ‡ Ðalveen ‡)
 [/list]
 
 The language is automatically determined based on your settings in "Options" -> "Gameplay".
