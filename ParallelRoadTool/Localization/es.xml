@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NameList
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="PRT_es">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Conmutar el adjuntamiento para nodos existentes</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Conmutar 'Parallel Road Tool'</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Conmutar la pantalla tutorial</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Conmutar sentido invertido para esta carretera</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Eliminar carretera</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Añadir carretera</LocalizedString>
+    
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Igual a la seleccionada</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Reducir el desplazamiento horizontal de las carreteras</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Incrementar el desplazamiento horizontal de las carreteras</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Reducir el desplazamiento vertical de las carreteras</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Incrementar el desplazamiento vertical de las carreteras</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (si no ves la imagen de arriba, por favor cierra y abre el tutorial)
+      1) Añade la carretera seleccionada actualmente a tu lista
+      2) Te permite cambiar la carretera seleccionada por otra distinta
+      3) Cambia el sentido de la carretera
+      4) La distancia horizontal entre la carretera paralela y la original
+      5) La distancia vertical entre la carretera paralela y la original
+      6) Elimina carreteras de la lista
+      7) Conmuta el adjuntamiento para todos los nodos existentes
+         Apagado : se adjunta solo al ultimo segmento construido cuando el mod estaba activo.
+         Encendido : tratara de adjuntarse al segmento mas cercano disponible.
+         
+      Los valores negativos estan permitidos para ambas distancias, vertical y horizontal.
+      Una distancia horizontal negativa colocara la carretera en el lado contrario.
+      Una distancia vertical negativa colocara la carretera bajo el nivel del terreno.
+    </LocalizedString>
+  </strings>
+</NameList>

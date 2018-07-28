@@ -23,7 +23,7 @@ namespace ParallelRoadTool.Detours
             typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static RedirectCallsState _state;
-        private static bool _deployed;        
+        private static bool _deployed;
 
         public static void Deploy()
         {
@@ -107,7 +107,7 @@ namespace ParallelRoadTool.Detours
             DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
             if (ParallelRoadTool.Instance.IsSnappingEnabled &&
-                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB) || 
+                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB) ||
                     PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB) ||
                     PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB)
                 )
@@ -154,7 +154,7 @@ namespace ParallelRoadTool.Detours
             // Both startNode and endNode were not found, we need to create a new one
             CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
             return newNodeId;
-        }        
+        }
 
         /// <summary>
         ///     This methods skips our detour by calling the original method from the game, allowing the creation of the needed
@@ -214,6 +214,9 @@ namespace ParallelRoadTool.Detours
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
                 endDirection, buildIndex, modifiedIndex, invert);
 
+            if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                _isPreviousInvert = invert;
+
             // If we're in upgrade mode we must stop here
             if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
 
@@ -222,14 +225,14 @@ namespace ParallelRoadTool.Detours
                                   NetManager.instance.m_nodes.m_buffer[invert ? endNode : startNode].m_elevation;
 
             // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
-            var caller = string.Join(".", new []
-            {                        
+            var caller = string.Join(".", new[]
+            {
                 new System.Diagnostics.StackFrame(3).GetMethod().DeclaringType?.Name,
                 new System.Diagnostics.StackFrame(2).GetMethod().Name,
                 new System.Diagnostics.StackFrame(1).GetMethod().Name
             });
             DebugUtils.Log($"Caller trace is {caller}");
-            
+
             if (!_allowedCallers.Contains(caller)) return result;
 
             for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
@@ -254,6 +257,8 @@ namespace ParallelRoadTool.Detours
                 {
                     invert = !invert;
                     isReversed = !isReversed;
+                    horizontalOffset = -horizontalOffset;
+                    //ParallelRoadTool.Instance.IsSnappingEnabled = true;
                 }
 
                 DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
@@ -261,7 +266,7 @@ namespace ParallelRoadTool.Detours
                 // Get original nodes to clone them
                 var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
                 var endNetNode = NetManager.instance.m_nodes.m_buffer[endNode];
-                                
+
                 // Create two clone nodes by offsetting the original ones.
                 // If we're not in "invert" mode (aka final part of a curve) and we already have an ending node with the same id of our starting node, we need to use that so that the segments can be connected.
                 // If the previous segment was in "invert" mode and the current startNode is the same as the previous one, we need to connect them.
@@ -291,7 +296,7 @@ namespace ParallelRoadTool.Detours
 
                     DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
                     newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
-                }                
+                }
 
                 // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
                 ushort newEndNodeId;
@@ -348,7 +353,14 @@ namespace ParallelRoadTool.Detours
                         newEndNodeId, startDirection, endDirection,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
-                }                
+                }
+                // Left-hand drive revert conditions back
+                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                {
+                    invert = !invert;
+                    isReversed = !isReversed;
+                    _isPreviousInvert = invert;
+                }
             }
 
             _isPreviousInvert = invert;

@@ -14,6 +14,7 @@ using ParallelRoadTool.Detours;
 using ParallelRoadTool.Extensions.LocaleModels;
 using ParallelRoadTool.UI;
 using ParallelRoadTool.UI.Base;
+using ParallelRoadTool.Utils;
 using UnityEngine;
 
 namespace ParallelRoadTool
@@ -29,7 +30,9 @@ namespace ParallelRoadTool
         public static ParallelRoadTool Instance;
 
         public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
+        public static string[] AvailableRoadNames;
         public static readonly List<NetTypeItem> SelectedRoadTypes = new List<NetTypeItem>();
+
         public static NetTool NetTool;
         public static bool IsInGameMode;
 
@@ -61,7 +64,6 @@ namespace ParallelRoadTool
         }
 
         public bool IsSnappingEnabled { get; set; }
-
         public bool IsLeftHandTraffic;        
 
         #region Utils
@@ -80,7 +82,13 @@ namespace ParallelRoadTool
             }
 
             _mainWindow.RenderNetList();
-        }     
+        }
+        
+        private void AddNetworkType(NetInfo net, int index = 0)
+        {
+            AvailableRoadTypes.Add(net);
+            AvailableRoadNames[index] = net.GenerateBeautifiedNetName();
+        }
 
         #endregion
 
@@ -137,20 +145,26 @@ namespace ParallelRoadTool
                 // Available networks loading
                 DebugUtils.Log("Loading all available networks.");
 
-                AvailableRoadTypes.Clear();
-
                 var count = PrefabCollection<NetInfo>.PrefabCount();
+                AvailableRoadTypes.Clear();
+                AvailableRoadNames = new string[count+1];
 
                 // Default item, creates a net with the same type as source
-                AvailableRoadTypes.Add(null);
+                AddNetworkType(null);
+                var addedNetworksCount = 1;
 
                 for (uint i = 0; i < count; i++)
                 {
                     var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
-                    if (prefab != null) AvailableRoadTypes.Add(prefab);
+                    if (prefab != null) AddNetworkType(prefab, addedNetworksCount++);
                 }
 
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
+
+                for(var i=0; i < AvailableRoadTypes.Count; i++)
+                {
+                    DebugUtils.Log($"ROAD: {AvailableRoadTypes[i].GenerateBeautifiedNetName()} | NAME: {AvailableRoadNames[i]}");
+                }
 
                 IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
                                     SimulationMetaData.MetaBool.True;
@@ -207,7 +221,7 @@ namespace ParallelRoadTool
         {
             try
             {
-                if (UIView.HasModalInput() || UIView.HasInputFocus()) return;
+                if (UIView.HasModalInput() || UIView.HasInputFocus() || !IsToolActive) return;
                 var e = Event.current;
 
                 // Checking key presses
@@ -244,59 +258,13 @@ namespace ParallelRoadTool
             // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
             ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;
 
-            // Add post locale change event handlers
-            LocaleManager.eventLocaleChanged += OnLocaleChanged;
-
-            DebugUtils.Log("Added locale change event handlers.");
-
-            // Reload the current locale once to effect changes
-            LocaleManager.ForceReload();            
+            LocalizationManager.LoadLocalization();                
         }
 
         public override void OnReleased()
         {
-            // Remove post locale change event handlers
-            LocaleManager.eventLocaleChanged -= OnLocaleChanged;
-
-            DebugUtils.Log("Removed locale change event handlers.");
-
-            // Reload the current locale once to effect changes
-            LocaleManager.ForceReload();
-        }
-
-        private void OnLocaleChanged()
-        {
-            DebugUtils.Log("Locale changed callback started.");
-
-            XmlSerializer serializer = new XmlSerializer(typeof(NameList));
-
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.cultureInfo.TwoLetterISOLanguageName}.xml";
-
-            if (!assembly.GetManifestResourceNames().Contains(resourceName))
-            {
-                // Fallback to english
-                resourceName = "ParallelRoadTool.Localization.en.xml";
-            }
-
-            DebugUtils.Log($"Trying to read {resourceName} localization file...");            
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                using (XmlReader xmlStream = XmlReader.Create(reader))
-                {
-                    if (serializer.CanDeserialize(xmlStream))
-                    {
-                        NameList nameList = (NameList)serializer.Deserialize(xmlStream);
-                        nameList.Apply();
-                    }
-                }
-            }
-
-            DebugUtils.Log($"Namelists {resourceName} applied.");
-
-            DebugUtils.Log("Locale changed callback finished.");
-        }
+            LocalizationManager.UnloadLocalization();
+        }        
 
         public override void OnLevelLoaded(LoadMode mode)
         {

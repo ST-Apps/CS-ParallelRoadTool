@@ -10,10 +10,10 @@
     <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Реверс направления</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Удалить</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Добавить</LocalizedString>
-    
+
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">То же, что выбрано</LocalizedString>
-    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Уменьшение расстояния по горизонтали между дорогами/конструкциями</LocalizedString>
-    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Увеличение расстояния по горизонтали между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Уменьшение расстояния по горизонт. между дорогами/конструкциями</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Увеличение расстояния по горизонт. между дорогами/конструкциями</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Уменьшение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Увеличение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
 
@@ -27,8 +27,12 @@
       5) Расстояние по вертикали между выбранным и первым в списке
       6) Удаляет из списка
       7) Переключает привязку ко всем существующим узлам.
-         Off: привязывается только к последним сегментам, нарисованным при включённом моде.
-         On : попытается привязаться к более близкому сегменту.
+      Off: привязывается только к последним сегментам, нарисованным при включённом моде.
+      On : попытается привязаться к более близкому сегменту.
+
+      Отрицательные значения допустимы как для вертикальных, так и для горизонтальных расстояний.
+      Отрицательное горизонтальное расстояние будет направлять дорогу в противоположную сторону.
+      Отрицательное вертикальное расстояние будет перемещать дорогу ниже уровня местности.
     </LocalizedString>
   </strings>
 </NameList>

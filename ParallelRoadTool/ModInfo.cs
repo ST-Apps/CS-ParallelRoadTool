@@ -1,15 +1,17 @@
-﻿using System;
+using System;
 using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
+using ParallelRoadTool;
+using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 #if DEBUG
-        public const string Branch = "dev";
+        public const string Branch = "master";
 #endif
 
         public ModInfo()
@@ -39,6 +41,9 @@ namespace ParallelRoadTool
         {
             try
             {
+                // HACK - [ISSUE-51] We need to force localization loading or we won't see any localized string in mod's option while being in main menu
+                LocalizationManager.LoadLocalization();
+
                 var group = helper.AddGroup(Name) as UIHelper;
                 var panel = group.self as UIPanel;
 
