@@ -72,7 +72,7 @@
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourceLoader.cs" />
-    <Compile Include="Utils\LocalizationManager.cs" />
+    <Compile Include="Utils\CallerMemberNameAttribute.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
@@ -82,6 +82,7 @@
     <Compile Include="UI\Base\UIOption.cs" />
     <Compile Include="UI\Base\UIUtil.cs" />
     <Compile Include="UI\UIOptionsPanel.cs" />
+    <Compile Include="Utils\LocalizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\ru.xml" />

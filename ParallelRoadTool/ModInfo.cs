@@ -9,7 +9,7 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        public const string Version = "1.0.5";
+        public const string Version = "1.0.7";
 #if DEBUG
         public const string Branch = "dev";
 #endif
@@ -46,7 +46,7 @@ namespace ParallelRoadTool
 
                 var group = helper.AddGroup(Name) as UIHelper;
                 var panel = group.self as UIPanel;
-                
+
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
                 group.AddSpace(10);
