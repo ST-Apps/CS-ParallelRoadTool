@@ -15,7 +15,7 @@ Main features are:
 [/quote]
 
 [quote]
-[h1]Current version: [b]1.0.8-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.0.9-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Fixed performance issues ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/39]#39[/url])
 [*] Fixed swirling when in left-hand drive ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/38]#38[/url] and [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/58]#58[/url])
@@ -27,6 +27,8 @@ Main features are:
 [*] Added German translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/41]#41[/url])
 [*] Added French translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/57]#57[/url])
 [*] Added Italian translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/55]#55[/url])
+[*] Added Dutch translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/54]#54[/url])
+[*] Added Portuguese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/59]#59[/url])
 [/list]
 [/quote]
 
@@ -51,11 +53,13 @@ Donate using PayPal:
 [h1][b]Supported languages (% translated)[/b][/h1]
 [list]
 [*] Chinese (100 %) (thanks to [url=https://steamcommunity.com/id/TimiYang]TimiYang[/url])
+[*] Dutch (100 %) (thanks to [url=https://github.com/Zippr1]Zippr1[/url])
 [*] English (100 %)
 [*] French (100 %) (thanks to [url=https://github.com/mjm92150]mjm92150[/url])
 [*] German (100 %) (thanks to [url=https://github.com/TheGoldenMan99]TheGoldenMan99[/url] and [url=https://github.com/Fungopus]Fungopus[/url])
 [*] Italian (100 %) (thanks to [url=https://github.com/tdemeola]tdemeola[/url])
 [*] Japanese (100%) (thanks to [url=https://github.com/mzch]mzch[/url])
+[*] Portuguese (100%) (thanks to [url=https://github.com/BentoGambin]BentoGambin[/url])
 [*] Russian (100 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
 [*] Spanish (100 %) (thanks to ‡ Ðalveen ‡)
 [/list]
