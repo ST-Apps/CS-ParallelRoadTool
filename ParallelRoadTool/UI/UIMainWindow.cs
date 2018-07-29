@@ -327,7 +327,7 @@ namespace ParallelRoadTool.UI
         {
             var currentSelectedNetwork = ParallelRoadTool.NetTool.m_prefab;
 
-            //DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
+            DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
 
             if (_netToolSelection == currentSelectedNetwork) return;
             _netToolSelection = currentSelectedNetwork;
