@@ -230,15 +230,23 @@ namespace ParallelRoadTool.Utils
             uiButton.atlas = TextureAtlas;
             uiButton.text = text;
             uiButton.tooltip = tooltip;
-            uiButton.size = new Vector2(36, 36);
+            //BUG: size parameter is never used
+            //uiButton.size = new Vector2(36, 36);
+            uiButton.size = size;
             uiButton.textVerticalAlignment = UIVerticalAlignment.Middle;
             uiButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             uiButton.normalFgSprite = sprite;
-            uiButton.hoveredFgSprite = $"{sprite}Hovered";
-            uiButton.pressedFgSprite = $"{sprite}Pressed";
-            uiButton.focusedFgSprite = $"{sprite}Focussed";
-            uiButton.disabledFgSprite = $"{sprite}Disabled";
-            uiButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+            // Changed sprite handling to remove need for multiple png's
+            //uiButton.hoveredFgSprite = $"{sprite}Hovered";
+            //uiButton.pressedFgSprite = $"{sprite}Pressed";
+            //uiButton.focusedFgSprite = $"{sprite}Focussed";
+            //uiButton.disabledFgSprite = $"{sprite}Disabled";
+            //uiButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+            uiButton.hoveredBgSprite = $"OptionBaseHovered";
+            uiButton.pressedBgSprite = $"OptionBasePressed";
+            uiButton.focusedBgSprite = $"OptionBaseFocussed";
+            uiButton.disabledBgSprite = $"OptionBaseDisabled";
+
             uiButton.horizontalAlignment = UIHorizontalAlignment.Right;
             uiButton.verticalAlignment = UIVerticalAlignment.Middle;
 

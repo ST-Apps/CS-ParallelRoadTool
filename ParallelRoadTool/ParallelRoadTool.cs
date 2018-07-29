@@ -155,11 +155,108 @@ namespace ParallelRoadTool
             }
             else
             {
-                DebugUtils.Log("Disabling parallel road support");
-                NetManagerDetour.Revert();
-                NetToolDetour.Revert();
+                DebugUtils.Log("OnGUI failed");
+                DebugUtils.LogException(e);
             }
         }
+
+        #endregion
+
+        public bool Export(string filename)
+        {
+            string path = Path.Combine(SaveFolder, filename + ".xml");
+            Directory.CreateDirectory(SaveFolder);
+
+            List<PresetNetItem> PresetItems = SelectedRoadTypes.Select(NetTypeItem => new PresetNetItem {HorizontalOffset = NetTypeItem.HorizontalOffset, IsReversed = NetTypeItem.IsReversed, NetName = NetTypeItem.NetInfo.name, VerticalOffset = NetTypeItem.VerticalOffset}).ToList();
+
+            var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
+
+            try
+            {
+                using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(path))
+                {
+                    xmlSerializer.Serialize(streamWriter, PresetItems);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugUtils.Log("Couldn't export networks");
+                DebugUtils.LogException(e);
+
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Export failed", "The networks couldn't be exported to '" + path + "'\n\n" + e.Message, true);
+                return false;
+            }
+            return true;
+        }
+
+        public void Import(string filename)
+        {
+            string path = Path.Combine(SaveFolder, filename + ".xml");
+            var PresetItems = new List<PresetNetItem>();
+
+            var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
+
+            try
+            {
+                using (System.IO.StreamReader streamReader = new System.IO.StreamReader(path))
+                {
+                    PresetItems = (List<PresetNetItem>)xmlSerializer.Deserialize(streamReader);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugUtils.Log("Couldn't import networks");
+                DebugUtils.LogException(e);
+
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Import failed", "The networks couldn't be imported from '" + path + "'\n\n" + e.Message, true);
+            }
+
+            var netTypeItems = new List<NetTypeItem>();
+            SelectedRoadTypes.Clear();
+            foreach (PresetNetItem preset in PresetItems)
+            {
+                NetInfo netInfo;
+
+                netInfo = PrefabCollection<NetInfo>.FindLoaded(preset.NetName);
+                if (netInfo != null)
+                {
+                    DebugUtils.Log("Adding network:" + netInfo.name);
+                    var n = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset, preset.IsReversed);
+                    netTypeItems.Add(n);
+                    SelectedRoadTypes.Add(n);
+                }
+                else
+                {
+                    //TODO action for missing networks needed here
+                }
+            }
+            DebugUtils.Log("Network count: " + netTypeItems.Count);
+            //_mainWindow._netList.List.Clear();
+            _mainWindow._netList.List = netTypeItems;
+            _mainWindow._netList.RenderList();
+            _mainWindow._netList.Changed();
+        }
+
+        public void Delete(string filename)
+        {
+            try
+            {
+                string path = Path.Combine(SaveFolder, filename + ".xml");
+
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugUtils.Log("Couldn't delete file");
+                DebugUtils.LogException(ex);
+
+                return;
+            }
+        }
+    }
 
         private void AddNetworkType(NetInfo net)
         {

@@ -76,6 +76,8 @@ namespace ParallelRoadTool.UI
             _netList.OnItemChanged -= NetListOnOnItemChanged;
             _netList.OnItemAdded -= NetListOnOnItemAdded;
             _netList.OnItemDeleted -= NetListOnOnItemDeleted;
+            _loadButton.eventClicked -= _loadButton_eventClicked;
+            _saveButton.eventClicked -= _saveButton_eventClicked;
         }
 
         private void SubscribeToUIEvents()
@@ -88,6 +90,18 @@ namespace ParallelRoadTool.UI
             _netList.OnItemChanged += NetListOnOnItemChanged;
             _netList.OnItemAdded += NetListOnOnItemAdded;
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
+            _loadButton.eventClicked += _loadButton_eventClicked;
+            _saveButton.eventClicked += _saveButton_eventClicked;
+        }
+
+        private void _loadButton_eventClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            UILoadWindow.Open();
+        }
+
+        private void _saveButton_eventClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            UISaveWindow.Open();
         }
 
         private void NetListOnOnItemAdded(object sender, EventArgs eventArgs)
@@ -240,6 +254,15 @@ namespace ParallelRoadTool.UI
             _tutorialToggleButton.relativePosition = new Vector3(166, 38);
             _tutorialToggleButton.BringToFront();
             _tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
+
+            _loadButton = UIUtil.CreateUiButton(_mainPanel, "", Locale.Get("PRT_TOOLTIPS", "LoadButton"), new Vector2(36, 36), "Load");
+            _loadButton.relativePosition = new Vector3(166, 38);
+            _loadButton.BringToFront();
+
+            _saveButton = UIUtil.CreateUiButton(_mainPanel, "", Locale.Get("PRT_TOOLTIPS", "SaveButton"), new Vector2(36, 36), "Save");
+            _saveButton.relativePosition = new Vector3(166, 38);
+            _saveButton.BringToFront();
+            //TODO Needs button state based on networks count
 
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
