@@ -73,14 +73,12 @@ namespace ParallelRoadTool.UI
             }
         }
 
-        //private void Changed()
-        public void Changed()
+        internal void Changed()
         {
             OnChangedCallback?.Invoke();
         }
 
-        //internal void RenderList()
-        public void RenderList()
+        internal void RenderList()
         {
             // Remove items
             foreach (var child in _items) Destroy(child);

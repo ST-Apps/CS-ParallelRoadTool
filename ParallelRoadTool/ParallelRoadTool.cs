@@ -27,6 +27,7 @@ namespace ParallelRoadTool
     public class ParallelRoadTool : MonoBehaviour
     {
         public const string SettingsFileName = "ParallelRoadTool";
+        public const string AutoSaveFileName = "_PRTAutoSave";
         public static readonly string SaveFolder = Path.Combine(DataLocation.localApplicationData, "ParallelRoadToolExports");
 
         public static ParallelRoadTool Instance;
@@ -187,6 +188,13 @@ namespace ParallelRoadTool
 
                 SubscribeToUIEvents();
 
+                if (File.Exists(Path.Combine(SaveFolder, AutoSaveFileName + ".xml")))
+                {
+                    Import(AutoSaveFileName);
+                    _mainWindow.RenderNetList();
+                    _mainWindow.NetListChanged();
+                }
+
                 DebugUtils.Log("Initialized");
             }
             catch (Exception e)
@@ -204,7 +212,11 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Destroying ...");
 
                 NetManagerDetour.Revert();
-
+                //remove existing autosave
+                if (File.Exists(Path.Combine(SaveFolder, AutoSaveFileName + ".xml")))
+                    File.Delete(Path.Combine(SaveFolder, AutoSaveFileName + ".xml"));
+                //save current networks
+                Export(AutoSaveFileName);
                 UnsubscribeToUIEvents();
                 AvailableRoadTypes.Clear();
                 SelectedRoadTypes.Clear();
@@ -317,8 +329,8 @@ namespace ParallelRoadTool
             DebugUtils.Log("Network count: " + netTypeItems.Count);
             //_mainWindow._netList.List.Clear();
             _mainWindow._netList.List = netTypeItems;
-            _mainWindow._netList.RenderList();
-            _mainWindow._netList.Changed();
+            _mainWindow.RenderNetList();
+            _mainWindow.NetListChanged();
         }
 
         public void Delete(string filename)

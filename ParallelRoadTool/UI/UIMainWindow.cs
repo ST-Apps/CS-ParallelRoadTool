@@ -147,6 +147,10 @@ namespace ParallelRoadTool.UI
             _netList.RenderList();
         }
 
+        public void NetListChanged()
+        {
+            _netList.Changed();
+        }
         public void ToggleToolCheckbox()
         {
             _toolToggleButton.isChecked = !_toolToggleButton.isChecked;

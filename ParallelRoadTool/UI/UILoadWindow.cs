@@ -162,7 +162,8 @@ namespace ParallelRoadTool.UI
 
                 foreach (string file in files)
                 {
-                    fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
+                    if (Path.GetFileNameWithoutExtension(file) != ParallelRoadTool.AutoSaveFileName) //exclude autosaved file from list)
+                        fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
                 }
 
                 fastList.DisplayAt(0);
