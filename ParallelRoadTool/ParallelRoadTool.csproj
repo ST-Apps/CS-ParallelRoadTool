@@ -74,6 +74,11 @@
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="ResourceLoader.cs" />
+    <Compile Include="UI\UISaveWindow.cs" />
+    <Compile Include="UI\UISaveLoadFileRow.cs" />
+    <Compile Include="UI\UIFastList.cs" />
+    <Compile Include="UI\UIUtils.cs" />
+    <Compile Include="UI\UILoadWindow.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
@@ -85,6 +90,8 @@
     <Compile Include="UI\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Icons\Load.png" />
+    <EmbeddedResource Include="Icons\Save.png" />
     <EmbeddedResource Include="Icons\Tutorial.png" />
     <EmbeddedResource Include="Localization\en.xml" />
     <EmbeddedResource Include="Icons\Reverse.png" />

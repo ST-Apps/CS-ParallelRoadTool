@@ -10,6 +10,8 @@
     <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Toggle reverse direction for this road</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Remove network</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Add network</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SaveButton">Save networks</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="LoadButton">Load networks</LocalizedString>
     
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Same as selected</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Decrease horizontal offset of parallel networks</LocalizedString>

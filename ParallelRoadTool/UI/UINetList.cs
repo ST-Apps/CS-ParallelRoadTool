@@ -49,7 +49,7 @@ namespace ParallelRoadTool.UI
 
                 var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
                 List.Add(item);
-
+                ParallelRoadTool.SelectedRoadTypes.Add(item);
                 RenderList();
 
                 Changed();
@@ -73,12 +73,14 @@ namespace ParallelRoadTool.UI
             }
         }
 
-        private void Changed()
+        //private void Changed()
+        public void Changed()
         {
             OnChangedCallback?.Invoke();
         }
 
-        internal void RenderList()
+        //internal void RenderList()
+        public void RenderList()
         {
             // Remove items
             foreach (var child in _items) Destroy(child);
@@ -102,6 +104,7 @@ namespace ParallelRoadTool.UI
                 {
                     // remove item from list
                     List.RemoveAt(comp.Index);
+                    ParallelRoadTool.SelectedRoadTypes.RemoveAt(comp.Index);
                     RenderList();
                     Changed();
                 };

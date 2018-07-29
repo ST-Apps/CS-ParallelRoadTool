@@ -22,13 +22,17 @@ namespace ParallelRoadTool.UI
             new SavedInt("toggleY", ParallelRoadTool.SettingsFileName, -1000, true);
 
         private UIOptionsPanel _mainPanel;
-        private UINetList _netList;
+        //private UINetList _netList;
+        public UINetList _netList;
         private NetInfo _netToolSelection;
         private UIRightDragHandle _buttonDragHandle;
 
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
         private UICheckBox _tutorialToggleButton;
+
+        private UIButton _loadButton;
+        private UIButton _saveButton;
 
         private UISprite _tutorialIcon
         {
@@ -64,6 +68,8 @@ namespace ParallelRoadTool.UI
             _tutorialToggleButton.eventCheckChanged -= _tutorialToggleButton_eventCheckChanged;
             _buttonDragHandle.eventDragStart -= ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd -= ButtonDragHandleOnEventDragEnd;
+            _loadButton.eventClicked -= _loadButton_eventClicked;
+            _saveButton.eventClicked -= _saveButton_eventClicked;
         }
 
         private void SubscribeToUIEvents()
@@ -73,6 +79,18 @@ namespace ParallelRoadTool.UI
             _tutorialToggleButton.eventCheckChanged += _tutorialToggleButton_eventCheckChanged;
             _buttonDragHandle.eventDragStart += ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;
+            _loadButton.eventClicked += _loadButton_eventClicked;
+            _saveButton.eventClicked += _saveButton_eventClicked;
+        }
+
+        private void _loadButton_eventClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            UILoadWindow.Open();
+        }
+
+        private void _saveButton_eventClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            UISaveWindow.Open();
         }
 
         private void _tutorialToggleButton_eventCheckChanged(UIComponent component, bool value)
@@ -196,6 +214,15 @@ namespace ParallelRoadTool.UI
             _tutorialToggleButton.BringToFront();
             _tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
 
+            _loadButton = UIUtil.CreateUiButton(_mainPanel, "", Locale.Get("PRT_TOOLTIPS", "LoadButton"), new Vector2(36, 36), "Load");
+            _loadButton.relativePosition = new Vector3(166, 38);
+            _loadButton.BringToFront();
+
+            _saveButton = UIUtil.CreateUiButton(_mainPanel, "", Locale.Get("PRT_TOOLTIPS", "SaveButton"), new Vector2(36, 36), "Save");
+            _saveButton.relativePosition = new Vector3(166, 38);
+            _saveButton.BringToFront();
+            //TODO Needs button state based on networks count
+
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
 
@@ -300,7 +327,7 @@ namespace ParallelRoadTool.UI
         {
             var currentSelectedNetwork = ParallelRoadTool.NetTool.m_prefab;
 
-            DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
+            //DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
 
             if (_netToolSelection == currentSelectedNetwork) return;
             _netToolSelection = currentSelectedNetwork;
