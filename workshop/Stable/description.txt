@@ -12,11 +12,9 @@ Main features are:
 [b]Tested on C:S version 1.10.1-f3[/b]
 
 [quote]
-[h1]Current version: [b]1.0.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.1.1[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Fixed node snapping when changing offsets.
-[*] Added keybinds for vertical offset.
-[*] Added Russian translation
+[*] Updated Russian translation
 [/list]
 [/quote]
 
@@ -33,14 +31,23 @@ Donate using PayPal:
 [*]Sharp angles produce weird results, curves work better
 [*]Roads will always follow terrain elevation 
 [*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
+[*]Tutorial image doesn't always show up (and tutorial window too), sometimes you may need to press the tutorial button multiple times
 [/list]
 [/quote]
 
 [quote]
 [h1][b]Supported languages (% translated)[/b][/h1]
 [list]
+[*] Chinese (100 %) (thanks to [url=https://steamcommunity.com/id/TimiYang]TimiYang[/url])
+[*] Dutch (100 %) (thanks to [url=https://github.com/Zippr1]Zippr1[/url])
 [*] English (100 %)
-[*] Russian (90 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
+[*] French (100 %) (thanks to [url=https://github.com/mjm92150]mjm92150[/url])
+[*] German (100 %) (thanks to [url=https://github.com/TheGoldenMan99]TheGoldenMan99[/url] and [url=https://github.com/Fungopus]Fungopus[/url])
+[*] Italian (100 %) (thanks to [url=https://github.com/tdemeola]tdemeola[/url])
+[*] Japanese (100%) (thanks to [url=https://github.com/mzch]mzch[/url])
+[*] Portuguese (100%) (thanks to [url=https://github.com/BentoGambin]BentoGambin[/url])
+[*] Russian (100 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
+[*] Spanish (100 %) (thanks to ‡ Ðalveen ‡)
 [/list]
 
 The language is automatically determined based on your settings in "Options" -> "Gameplay".

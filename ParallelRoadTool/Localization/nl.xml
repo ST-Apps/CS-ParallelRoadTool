@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NameList
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    name="PRT_de">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Inschakelen-/uitschakelen springen naar bestaande knooppunten</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">ParallelRoadTool aan-/uit</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Handleiding openen</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Weg richting omkeren</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Verwijder weg</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Weg toevoegen</LocalizedString>
+
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Zelfde als geselecteerd</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Verminder horizontale afwijking</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Vergroot horizontale afwijking</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Verminder verticale afwijking</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Vergroot verticale afwijking</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (Als je de bovenstaande afbeelding niet kunt zien, sluit en her-open het venster)
+      1) Voegt de geselecteerde weg aan uw lijst toe.
+      2) Verandert de geselecteerde weg.
+      3) Verandert de richting van de weg.
+      4) Horizontale afstand tussendeze weg en het originele.
+      5) Vertikale afstand tussen deze weg en het originele.
+      6) Verwijder deze weg uit de lijst.
+      7) Schakelt het vergrendelen voor alle bestaande knooppunten aan/uit.
+      Uit : Springt allen naar het laatste segment wanneer de mod actief was.
+      Aan : Springt naar de dichtstbijzijnde beschikbare knooppunten.
+
+      Negatieve waarden zijn toegestaan voor horizontale en verticale afstanden.
+      Een negatieve waarde voor de horizontale afstand plaatst de weg aan de tegenovergestelde kant.
+      Een negatieve waarde voor de verticale afstand plaatst de weg ondergrond.
+    </LocalizedString>
+  </strings>
+</NameList>

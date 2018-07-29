@@ -52,8 +52,6 @@
   <ItemGroup>
     <Compile Include="Detours\NetManagerDetour.cs" />
     <Compile Include="Detours\NetToolDetour.cs" />
-    <Compile Include="EventArgs\NetworksConfigurationChangedEventArgs.cs" />
-    <Compile Include="EventArgs\ParallelToolToggledEventArgs.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
     <Compile Include="Extensions\LocaleModels\LocalizedString.cs" />
     <Compile Include="Extensions\LocaleModels\LocalizedStringKey.cs" />
@@ -79,6 +77,7 @@
     <Compile Include="UI\UIFastList.cs" />
     <Compile Include="UI\UIUtils.cs" />
     <Compile Include="UI\UILoadWindow.cs" />
+    <Compile Include="Utils\CallerMemberNameAttribute.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
@@ -88,10 +87,13 @@
     <Compile Include="UI\Base\UIOption.cs" />
     <Compile Include="UI\Base\UIUtil.cs" />
     <Compile Include="UI\UIOptionsPanel.cs" />
+    <Compile Include="Utils\LocalizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Load.png" />
     <EmbeddedResource Include="Icons\Save.png" />
+    <EmbeddedResource Include="Localization\ru.xml" />
+    <EmbeddedResource Include="Localization\zh.xml" />
     <EmbeddedResource Include="Icons\Tutorial.png" />
     <EmbeddedResource Include="Localization\en.xml" />
     <EmbeddedResource Include="Icons\Reverse.png" />
@@ -114,9 +116,27 @@
     <EmbeddedResource Include="Icons\AddFocused.png" />
     <EmbeddedResource Include="Icons\AddHovered.png" />
     <EmbeddedResource Include="Icons\AddPressed.png" />
-    <Content Include="Icons\DragCursor.png" />
+    <EmbeddedResource Include="Icons\DragCursor.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\es.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\ja.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\de.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\fr.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\it.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Localization\nl.xml" />
+    <Content Include="Localization\pt.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
