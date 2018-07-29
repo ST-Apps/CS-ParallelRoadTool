@@ -22,8 +22,7 @@ namespace ParallelRoadTool.UI
             new SavedInt("toggleY", ParallelRoadTool.SettingsFileName, -1000, true);
 
         private UIOptionsPanel _mainPanel;
-        //private UINetList _netList;
-        public UINetList _netList;
+        private UINetList _netList;
         private NetInfo _netToolSelection;
         private UIRightDragHandle _buttonDragHandle;
 
