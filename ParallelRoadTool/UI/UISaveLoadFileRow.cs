@@ -42,14 +42,14 @@ namespace ParallelRoadTool.UI
             fileNameLabel.relativePosition = new Vector3(8, 8);
 
             deleteButton = UIUtils.CreateButton(this);
-            deleteButton.name = "ParallelRoadTool_DeleteFileButton";
+            deleteButton.name = "PRT_DeleteFileButton";
             deleteButton.text = "X";
             deleteButton.size = new Vector2(40f, 30f);
             deleteButton.relativePosition = new Vector3(430 - deleteButton.width - 8, 8);
             deleteButton.tooltip = "Delete saved networks";
 
             saveLoadButton = UIUtils.CreateButton(this);
-            saveLoadButton.name = "ParallelRoadTool_SaveLoadFileButton";
+            saveLoadButton.name = "PRT_SaveLoadFileButton";
             saveLoadButton.text = UISaveWindow.instance != null ? "Export" : "Import";
             saveLoadButton.size = new Vector2(80f, 30f);
             saveLoadButton.relativePosition = new Vector3(deleteButton.relativePosition.x - saveLoadButton.width - 8, 8);

@@ -27,7 +27,7 @@ namespace ParallelRoadTool.UI
 
         public override void Start()
         {
-            name = "ParallelRoadTool_SaveWindow";
+            name = "PRT_SaveWindow";
             atlas = UIUtils.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(465, 180);
@@ -92,7 +92,7 @@ namespace ParallelRoadTool.UI
 
             // Save
             saveButton = UIUtils.CreateButton(savePanel);
-            saveButton.name = "MoveIt_SaveButton";
+            saveButton.name = "PRT_SaveButton";
             saveButton.text = "Export";
             saveButton.size = new Vector2(100f, 30f);
             saveButton.relativePosition = new Vector3(savePanel.width - saveButton.width - 8, 8);

@@ -21,9 +21,7 @@ namespace ParallelRoadTool.UI
 
         public override void Start()
         {
-            //name is the same in both save/load windows. Purposely?
-            //name = "ParallelRoadTool_SaveWindow";
-            name = "ParallelRoadTool_LoadWindow";
+            name = "PRT_LoadWindow";
             atlas = UIUtils.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(465, 180);
