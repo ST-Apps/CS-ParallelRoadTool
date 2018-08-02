@@ -121,7 +121,7 @@ namespace ParallelRoadTool
         {
             IsToolActive = value;
 
-            if (value && ToolsModifierControl.advisorPanel)
+            if (value && ToolsModifierControl.advisorPanel.isVisible && ToolsModifierControl.advisorPanel.isOpen)
                 _mainWindow.ShowTutorial();
         }
 

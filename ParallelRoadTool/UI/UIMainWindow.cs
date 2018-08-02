@@ -262,7 +262,8 @@ namespace ParallelRoadTool.UI
             }             
             _tutorialToggleButton.isChecked = _tutorialIcon.spriteName == "Parallel" 
                 && _tutorialImage.atlas.name == UIUtil.TextureAtlas.name
-                && ToolsModifierControl.advisorPanel.isVisible;
+                && ToolsModifierControl.advisorPanel.isVisible 
+                && ToolsModifierControl.advisorPanel.isOpen;            
             _isUpdatingTutorialAdvisor = false;
 
             base.Update();
