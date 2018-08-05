@@ -54,9 +54,11 @@ namespace ParallelRoadTool.UI
 
         #region Events/Callbacks
 
-        public event PropertyChangedEventHandler<bool> OnParallelToolToggled;
-        public event EventHandler OnNetworksListCountChanged;
+        public event PropertyChangedEventHandler<bool> OnParallelToolToggled;        
         public event PropertyChangedEventHandler<bool> OnSnappingToggled;
+        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
+        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
+        public event EventHandler OnNetworksListCountChanged;
 
         private void UnsubscribeToUIEvents()
         {
@@ -139,6 +141,21 @@ namespace ParallelRoadTool.UI
         public void ShowTutorial()
         {
             _tutorialToggleButton_eventCheckChanged(null, true);
+        }
+
+        #endregion
+
+        #region Utility
+
+        private void AdjustNetOffset(float step, bool isHorizontal = true)
+        {
+            // Adjust all offsets on keypress
+            if (isHorizontal)
+                OnHorizontalOffsetKeypress?.Invoke(this, step);
+            else
+                OnVerticalOffsetKeypress?.Invoke(this, step);
+
+            RenderNetList();
         }
 
         #endregion
@@ -234,7 +251,7 @@ namespace ParallelRoadTool.UI
 
         public override void Update()
         {
-            if (Singleton<ParallelRoadTool>.instance != null)
+            if (Singleton<ParallelRoadTool>.exists)
                 isVisible = Singleton<ParallelRoadTool>.instance.IsToolActive;
 
             if (ToolsModifierControl.GetTool<NetTool>() != null)
@@ -309,13 +326,22 @@ namespace ParallelRoadTool.UI
 
         public void OnGUI()
         {
+            if (UIView.HasModalInput() || UIView.HasInputFocus()) return;
+            
+            var e = Event.current;
+
+            // Checking key presses
+            if (OptionsKeymapping.toggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
+            if (OptionsKeymapping.decreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
+            if (OptionsKeymapping.increaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
+            if (OptionsKeymapping.decreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
+            if (OptionsKeymapping.increaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+
             if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
             var currentSelectedNetwork = ToolsModifierControl.GetTool<NetTool>().m_prefab;
-
-            DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
-
             if (_netToolSelection == currentSelectedNetwork) return;
+            DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
             _netToolSelection = currentSelectedNetwork;
             _netList.UpdateCurrentTool(currentSelectedNetwork);
         }

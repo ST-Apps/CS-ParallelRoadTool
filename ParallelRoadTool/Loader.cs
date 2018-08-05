@@ -13,13 +13,12 @@ namespace ParallelRoadTool
         public override void OnCreated(ILoading loading)
         {
             // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
-            ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;            
+            ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;
         }
 
         public override void OnReleased()
         {
-            LocalizationManager.UnloadLocalization();
-            Singleton<ParallelRoadTool>.DestroyImmediate(Singleton<ParallelRoadTool>.instance);
+            Object.DestroyImmediate(Singleton<ParallelRoadTool>.instance);
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -28,9 +27,8 @@ namespace ParallelRoadTool
             LocalizationManager.LoadLocalization();
 
             if (!Singleton<ParallelRoadTool>.exists)
-                Singleton<ParallelRoadTool>.Instantiate(new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>());
-            else
-                Singleton<ParallelRoadTool>.instance.Start();
+                Singleton<ParallelRoadTool>.Ensure();
+            Singleton<ParallelRoadTool>.instance.Start();
         }
     }
 }
