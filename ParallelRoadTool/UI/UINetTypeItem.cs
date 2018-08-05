@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ParallelRoadTool.UI.Base;
@@ -100,7 +101,7 @@ namespace ParallelRoadTool.UI
 
         private void PopulateDropDown()
         {
-            DropDown.items = (IsCurrentItem ? ParallelRoadTool.AvailableRoadNames.Take(1) : ParallelRoadTool.AvailableRoadNames)                
+            DropDown.items = (IsCurrentItem ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1) : Singleton<ParallelRoadTool>.instance.AvailableRoadNames)                
                 .ToArray();
             DropDown.selectedIndex = 0;
             Populated = true;
@@ -119,7 +120,7 @@ namespace ParallelRoadTool.UI
                 HorizontalOffsetField.text = HorizontalOffset.ToString(CultureInfo.InvariantCulture);
                 VerticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
                 ReverseCheckbox.isChecked = IsReversed;
-                var index = ParallelRoadTool.AvailableRoadTypes.FindIndex(ni => ni != null && ni.name == NetInfo.name);
+                var index = Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FindIndex(ni => ni != null && ni.name == NetInfo.name);
                 DebugUtils.Log($"selecting index {index}");
                 DropDown.selectedIndex = index;
                 return;

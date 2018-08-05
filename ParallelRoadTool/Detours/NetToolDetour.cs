@@ -63,7 +63,7 @@ namespace ParallelRoadTool.Detours
         {
             Revert();
 
-            From.Invoke(ParallelRoadTool.NetTool, new object[]
+            From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
             {
                 cameraInfo,
                 info,
@@ -97,9 +97,9 @@ namespace ParallelRoadTool.Detours
             // Let's render the original segment
             RenderOverlayOriginal(cameraInfo, info, color, startPoint, middlePoint, endPoint);
 
-            for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
+            for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
             {
-                var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
+                var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
 
                 // Horizontal offset must be negated to appear on the correct side of the original segment
                 //float horizontalOffset = 0;

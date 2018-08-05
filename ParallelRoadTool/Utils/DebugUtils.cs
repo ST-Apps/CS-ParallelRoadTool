@@ -9,7 +9,7 @@ namespace ParallelRoadTool.Utils
     {
         public const string modPrefix = "[Parallel Road Tool " + ModInfo.Version + "] ";
 
-        private static readonly string[] _allowedMethodsNames = new[] { "CreateSegment" };
+        private static readonly string[] _allowedMethodsNames = new string[] {  };
 
         public static void Message(string message)
         {

@@ -117,7 +117,7 @@ namespace ParallelRoadTool.UI
 
         private void NetListOnChangedCallback()
         {
-            DebugUtils.Log($"_netList.OnChangedCallback (selected {ParallelRoadTool.SelectedRoadTypes.Count} nets)");
+            DebugUtils.Log($"_netList.OnChangedCallback (selected {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} nets)");
             OnNetworksListCountChanged?.Invoke(_netList, null);
         }
 
@@ -180,7 +180,7 @@ namespace ParallelRoadTool.UI
             _netList = bg.AddUIComponent(typeof(UINetList)) as UINetList;
             if (_netList != null)
             {
-                _netList.List = ParallelRoadTool.SelectedRoadTypes;
+                _netList.List = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes;
                 _netList.OnChangedCallback = NetListOnChangedCallback;
             }
 
@@ -237,8 +237,8 @@ namespace ParallelRoadTool.UI
             if (Singleton<ParallelRoadTool>.instance != null)
                 isVisible = Singleton<ParallelRoadTool>.instance.IsToolActive;
 
-            if (ParallelRoadTool.NetTool != null)
-                _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
+            if (ToolsModifierControl.GetTool<NetTool>() != null)
+                _toolToggleButton.isVisible = ToolsModifierControl.GetTool<NetTool>().enabled;
 
             if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
@@ -311,7 +311,7 @@ namespace ParallelRoadTool.UI
         {
             if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
-            var currentSelectedNetwork = ParallelRoadTool.NetTool.m_prefab;
+            var currentSelectedNetwork = ToolsModifierControl.GetTool<NetTool>().m_prefab;
 
             DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
 

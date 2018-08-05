@@ -19,7 +19,7 @@ namespace ParallelRoadTool
         {
             try
             {
-                // Creating setting file
+                // Creating setting file 
                 GameSettings.AddSettingsFile(new SettingsFile { fileName = Configuration.SettingsFileName });
             }
             catch (Exception e)

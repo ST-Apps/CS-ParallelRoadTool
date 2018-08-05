@@ -209,7 +209,7 @@ namespace ParallelRoadTool.Detours
             ushort endNode, Vector3 startDirection, Vector3 endDirection, uint buildIndex, uint modifiedIndex,
             bool invert)
         {
-            DebugUtils.Log($"Creating a segment and {ParallelRoadTool.SelectedRoadTypes.Count} parallel segments");
+            DebugUtils.Log($"Creating a segment and {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
 
             // Let's create the segment that the user requested
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
@@ -219,7 +219,7 @@ namespace ParallelRoadTool.Detours
                 _isPreviousInvert = invert;
 
             // If we're in upgrade mode we must stop here
-            if (ParallelRoadTool.NetTool.m_mode == NetTool.Mode.Upgrade) return result;
+            if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade) return result;
 
             // True if we have a slope that is going down from start to end node
             var isEnteringSlope = NetManager.instance.m_nodes.m_buffer[invert ? startNode : endNode].m_elevation >
@@ -236,9 +236,9 @@ namespace ParallelRoadTool.Detours
 
             if (!_allowedCallers.Contains(caller)) return result;
 
-            for (var i = 0; i < ParallelRoadTool.SelectedRoadTypes.Count; i++)
+            for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
             {
-                var currentRoadInfos = ParallelRoadTool.SelectedRoadTypes[i];
+                var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
 
                 var horizontalOffset = currentRoadInfos.HorizontalOffset;
                 var verticalOffset = currentRoadInfos.VerticalOffset;

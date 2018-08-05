@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Base;
@@ -45,7 +46,7 @@ namespace ParallelRoadTool.UI
 
                 var netInfo = _currentTool.DropDown.selectedIndex == 0
                     ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-                    : ParallelRoadTool.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
+                    : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
 
                 DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
 
@@ -115,7 +116,7 @@ namespace ParallelRoadTool.UI
                     i.VerticalOffset = comp.VerticalOffset;
                     i.NetInfo = comp.DropDown.selectedIndex == 0
                         ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-                        : ParallelRoadTool.AvailableRoadTypes[comp.DropDown.selectedIndex];
+                        : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[comp.DropDown.selectedIndex];
                     i.IsReversed = comp.ReverseCheckbox.isChecked;
 
                     DebugUtils.Message(
