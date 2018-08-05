@@ -3,11 +3,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using ParallelRoadTool.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ParallelRoadTool.UI.Base
+namespace ParallelRoadTool.Utils
 {
     public static class UIUtil
     {

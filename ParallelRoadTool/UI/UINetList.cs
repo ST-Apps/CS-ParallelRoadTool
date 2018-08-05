@@ -15,9 +15,72 @@ namespace ParallelRoadTool.UI
         private UINetTypeItem _currentTool;
         private List<UINetTypeItem> _items;
         private UIPanel _space;
-        public List<NetTypeItem> List;
 
         public Action OnChangedCallback { private get; set; }
+
+        #region Events/Callbacks
+
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnItemChanged;
+        public event EventHandler OnItemAdded;
+        public event PropertyChangedEventHandler<int> OnItemDeleted;
+
+        #endregion
+
+        #region Handlers
+
+        private void UnsubscribeToUiEvents()
+        {
+            foreach (var uiNetTypeItem in _items)
+            {
+                uiNetTypeItem.OnChanged -= UiNetTypeItemOnOnChanged;                
+                uiNetTypeItem.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
+
+                if (uiNetTypeItem.IsCurrentItem)
+                    uiNetTypeItem.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
+            }
+        }
+
+        private void UiNetTypeItemOnOnChanged(UIComponent component, NetTypeItemEventArgs value)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UiNetTypeItemOnOnDeleteClicked(UIComponent component, int index)
+        {
+            OnItemDeleted?.Invoke(this, index);
+            //List.RemoveAt(index);
+            //RenderList();
+            //Changed();
+        }
+
+        private void UiNetTypeItemOnOnAddClicked(object sender, EventArgs eventArgs)
+        {
+            DebugUtils.Log($"{nameof(UiNetTypeItemOnOnAddClicked)}");
+            OnItemAdded?.Invoke(this, null);
+            //DebugUtils.Log("Adding item to list");
+
+            //// get offset of previuous item
+            //var prevOffset = 0f;
+            //if (List.Any())
+            //    prevOffset = List.Last().HorizontalOffset;
+
+            //var netInfo = _currentTool.DropDown.selectedIndex == 0
+            //    ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
+            //    : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
+
+            //DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
+
+            //var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
+            //List.Add(item);
+
+            //RenderList();
+
+            //Changed();
+        }
+
+        #endregion
+
+        #region Unity
 
         public override void Start()
         {
@@ -31,104 +94,88 @@ namespace ParallelRoadTool.UI
             backgroundSprite = "GenericPanel";
             color = Color.black;
 
-            _items = new List<UINetTypeItem>();
-
-            _currentTool = AddUIComponent<UINetTypeItem>();
-            _currentTool.IsCurrentItem = true;
-            _currentTool.OnAddCallback = () =>
-            {
-                DebugUtils.Log("Adding item to list");
-
-                // get offset of previuous item
-                float prevOffset = 0;
-                if (List.Any())
-                    prevOffset = List.Last().HorizontalOffset;
-
-                var netInfo = _currentTool.DropDown.selectedIndex == 0
-                    ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-                    : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
-
-                DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
-
-                var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
-                List.Add(item);
-
-                RenderList();
-
-                Changed();
-            };
-
             _space = AddUIComponent<UIPanel>();
             _space.size = new Vector2(1, 1);
+
+            _items = new List<UINetTypeItem>();
+            AddItem(null, true);
+            _currentTool = _items[0];                    
         }
 
-        public void UpdateCurrentTool(NetInfo tool)
+        public override void OnDestroy()
         {
-            DebugUtils.Log($"Selected a new network: {tool.name}");
-            _currentTool.NetInfo = tool;
-            _currentTool.RenderItem();
+            base.OnDestroy();
 
-            // This one's required to update all the items that are set to "same as selected road" when the selected road changes
-            foreach (var netTypeItem in _items)
+            UnsubscribeToUiEvents();
+        }
+
+        #endregion
+
+        //public void UpdateCurrentTool(NetInfo tool)
+        //{
+        //    DebugUtils.Log($"Selected a new network: {tool.name}");
+        //    _currentTool.NetInfo = tool;
+        //    _currentTool.UpdateItem();
+
+        //    // This one's required to update all the items that are set to "same as selected road" when the selected road changes
+        //    foreach (var netTypeItem in _items)
+        //    {
+        //        DebugUtils.Log($"Updating dropdown NetInfo from {netTypeItem.NetInfo.name} to {tool.name}");
+        //        netTypeItem.OnChangedCallback();
+        //    }
+        //}
+
+        //private void Changed()
+        //{
+        //    OnChangedCallback?.Invoke();
+        //}
+
+        public void AddItem(NetTypeItem item, bool isCurrentItem = false)
+        {
+            var component = AddUIComponent<UINetTypeItem>();            
+            if (!isCurrentItem)
             {
-                DebugUtils.Log($"Updating dropdown NetInfo from {netTypeItem.NetInfo.name} to {tool.name}");
-                netTypeItem.OnChangedCallback();
+                component.NetInfo = item.NetInfo;
+                component.HorizontalOffset = item.HorizontalOffset;
+                component.VerticalOffset = item.VerticalOffset;
+                component.IsReversed = item.IsReversed;
+                component.Index = _items.Count;
+                component.OnChanged += UiNetTypeItemOnOnChanged;
+                component.OnDeleteClicked += UiNetTypeItemOnOnDeleteClicked;
             }
-        }
-
-        private void Changed()
-        {
-            OnChangedCallback?.Invoke();
-        }
-
-        internal void RenderList()
-        {
-            // Remove items
-            foreach (var child in _items) Destroy(child);
-
-            _items.Clear();
-
-            // Add items
-            var index = 0;
-            foreach (var item in List)
+            else
             {
-                DebugUtils.Log($"rendering item {index} {item.NetInfo} at {item.HorizontalOffset}");
+                component.OnAddClicked += UiNetTypeItemOnOnAddClicked;
+                component.IsCurrentItem = true;
+            }                
 
-                var comp = AddUIComponent<UINetTypeItem>();
-                comp.NetInfo = item.NetInfo;
-                comp.HorizontalOffset = item.HorizontalOffset;
-                comp.VerticalOffset = item.VerticalOffset;
-                comp.IsReversed = item.IsReversed;
-                comp.Index = index++;
-
-                comp.OnDeleteCallback = () =>
-                {
-                    // remove item from list
-                    List.RemoveAt(comp.Index);
-                    RenderList();
-                    Changed();
-                };
-
-                comp.OnChangedCallback = () =>
-                {
-                    var i = List[comp.Index];
-                    i.HorizontalOffset = comp.HorizontalOffset;
-                    i.VerticalOffset = comp.VerticalOffset;
-                    i.NetInfo = comp.DropDown.selectedIndex == 0
-                        ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-                        : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[comp.DropDown.selectedIndex];
-                    i.IsReversed = comp.ReverseCheckbox.isChecked;
-
-                    DebugUtils.Message(
-                        $"OnChangedCallback item #{comp.Index}, net={i.NetInfo.GenerateBeautifiedNetName()}, HorizontalOffset={i.HorizontalOffset}, VerticalOffset={i.VerticalOffset}, IsReversed={i.IsReversed}");
-
-                    Changed();
-                };
-
-                _items.Add(comp);
-            }
-
+            _items.Add(component);
             _space.BringToFront();
+        }
+
+        public void DeleteItem(int index)
+        {
+            var component = _items[index];
+
+            component.OnChanged -= UiNetTypeItemOnOnChanged;
+            component.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
+
+            if (component.IsCurrentItem)
+                component.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
+
+            RemoveUIComponent(component);
+            Destroy(component);
+        }
+
+        public void UpdateItem(NetTypeItemEventArgs item, int index)
+        {
+            var component = _items[index];
+            component.HorizontalOffset = item.HorizontalOffset;
+            component.VerticalOffset = item.VerticalOffset;
+            component.NetInfo = item.SelectedNetworkIndex == 0
+                ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
+                : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[item.SelectedNetworkIndex];
+            component.IsReversed = item.IsReversedNetwork;
         }
     }
 }

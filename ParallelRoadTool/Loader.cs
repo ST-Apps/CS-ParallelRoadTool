@@ -28,7 +28,8 @@ namespace ParallelRoadTool
 
             if (!Singleton<ParallelRoadTool>.exists)
                 Singleton<ParallelRoadTool>.Ensure();
-            Singleton<ParallelRoadTool>.instance.Start();
+            else
+                Singleton<ParallelRoadTool>.instance.Start();
         }
     }
 }

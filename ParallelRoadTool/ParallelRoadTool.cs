@@ -101,7 +101,7 @@ namespace ParallelRoadTool
                 // Main UI init
                 DebugUtils.Log("Adding UI components");
                 var view = UIView.GetAView();
-                _mainWindow = view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
+                _mainWindow = _mainWindow ?? view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
                 if (_mainWindow != null)
                     Destroy(_mainWindow);                
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
@@ -174,7 +174,7 @@ namespace ParallelRoadTool
         private void UnsubscribeToUIEvents()
         {
             _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
-            _mainWindow.OnNetworksListCountChanged -= MainWindowOnOnNetworksListCountChanged;
+            _mainWindow.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
             _mainWindow.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
             _mainWindow.OnHorizontalOffsetKeypress -= MainWindowOnOnHorizontalOffsetKeypress;
             _mainWindow.OnVerticalOffsetKeypress -= MainWindowOnOnVerticalOffsetKeypress;
@@ -183,7 +183,7 @@ namespace ParallelRoadTool
         private void SubscribeToUIEvents()
         {
             _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
-            _mainWindow.OnNetworksListCountChanged += MainWindowOnOnNetworksListCountChanged;
+            _mainWindow.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
             _mainWindow.OnSnappingToggled += MainWindowOnOnSnappingToggled;
             _mainWindow.OnHorizontalOffsetKeypress += MainWindowOnOnHorizontalOffsetKeypress;
             _mainWindow.OnVerticalOffsetKeypress += MainWindowOnOnVerticalOffsetKeypress;
@@ -210,8 +210,15 @@ namespace ParallelRoadTool
             IsSnappingEnabled = value;
         }
 
-        private void MainWindowOnOnNetworksListCountChanged(object sender, EventArgs e)
+        private void MainWindowOnNetworkItemAdded(object sender, EventArgs e)
         {
+            // Previous item's offset so that we can try to separate this one from previous one without overlapping
+            var prevOffset = SelectedRoadTypes.Any() ? SelectedRoadTypes.Last().HorizontalOffset : 0;
+            var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
+            var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
+            SelectedRoadTypes.Add(item);
+
+            _mainWindow.AddItem(item);
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
         }
 

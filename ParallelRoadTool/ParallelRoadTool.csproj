@@ -60,6 +60,7 @@
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="Models\NetTypeItem.cs" />
+    <Compile Include="Models\NetTypeItemEventArgs.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="Utils\DebugUtils.cs" />
@@ -82,7 +83,7 @@
     <Compile Include="UI\UINetTypeItem.cs" />
     <Compile Include="UI\Base\UIDropDownTextFieldOption.cs" />
     <Compile Include="UI\Base\UIOption.cs" />
-    <Compile Include="UI\Base\UIUtil.cs" />
+    <Compile Include="Utils\UIUtil.cs" />
     <Compile Include="UI\UIOptionsPanel.cs" />
     <Compile Include="Utils\LocalizationManager.cs" />
   </ItemGroup>
