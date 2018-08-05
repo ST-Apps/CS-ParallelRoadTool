@@ -36,6 +36,7 @@ namespace ParallelRoadTool.UI
         public bool IsCurrentItem;
 
         private bool _populated;
+        private bool _canFireChangedEvent;
 
         #endregion
 
@@ -131,6 +132,7 @@ namespace ParallelRoadTool.UI
 
         public void UpdateItem()
         {
+            _canFireChangedEvent = false;
             if (!_populated) PopulateDropdown();
 
             if (!IsCurrentItem)
@@ -151,6 +153,7 @@ namespace ParallelRoadTool.UI
                             _dropDown.isVisible = false;
             _label.isVisible = _addButton.isVisible = true;
             _label.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
+            _canFireChangedEvent = true;
         }
 
         #endregion        
@@ -215,7 +218,8 @@ namespace ParallelRoadTool.UI
         }
 
         private void FireChangedEvent()
-        {            
+        {
+            if (!_canFireChangedEvent) return;
             if (!float.TryParse(_horizontalOffsetField.text, out HorizontalOffset)) return;
             if (!float.TryParse(_verticalOffsetField.text, out VerticalOffset)) return;
 
