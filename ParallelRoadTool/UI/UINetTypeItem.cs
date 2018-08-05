@@ -130,7 +130,7 @@ namespace ParallelRoadTool.UI
 
         #region Control
 
-        public void UpdateItem()
+        private void UpdateItem()
         {
             _canFireChangedEvent = false;
             if (!_populated) PopulateDropdown();
@@ -142,17 +142,19 @@ namespace ParallelRoadTool.UI
                 _reverseCheckbox.isChecked = IsReversed;
                 _dropDown.selectedIndex = Singleton<ParallelRoadTool>.instance.AvailableRoadTypes
                     .FindIndex(ni => ni != null && ni.name == NetInfo.name);
-                return;
+            }
+            else
+            {
+                _dropDown.selectedIndex = 0;
+                _deleteButton.isVisible =
+                    _horizontalOffsetField.isVisible =
+                        _verticalOffsetField.isVisible =
+                            _reverseCheckbox.isVisible =
+                                _dropDown.isVisible = false;
+                _label.isVisible = _addButton.isVisible = true;
+                _label.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
             }
 
-            _dropDown.selectedIndex = 0;
-            _deleteButton.isVisible =
-                _horizontalOffsetField.isVisible =
-                    _verticalOffsetField.isVisible =
-                        _reverseCheckbox.isVisible =
-                            _dropDown.isVisible = false;
-            _label.isVisible = _addButton.isVisible = true;
-            _label.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
             _canFireChangedEvent = true;
         }
 
@@ -165,11 +167,12 @@ namespace ParallelRoadTool.UI
             if (!IsCurrentItem)
             {
                 _dropDown.eventSelectedIndexChanged -= DropDown_eventSelectedIndexChanged;
-            _reverseCheckbox.eventCheckChanged -= ReverseCheckboxOnEventCheckChanged;
-            _horizontalOffsetField.eventTextSubmitted -= HorizontalOffsetField_eventTextSubmitted;
-            _verticalOffsetField.eventTextSubmitted -= VerticalOffsetField_eventTextSubmitted;
-            _deleteButton.eventClicked -= DeleteButton_eventClicked;
-            } else
+                _reverseCheckbox.eventCheckChanged -= ReverseCheckboxOnEventCheckChanged;
+                _horizontalOffsetField.eventTextSubmitted -= HorizontalOffsetField_eventTextSubmitted;
+                _verticalOffsetField.eventTextSubmitted -= VerticalOffsetField_eventTextSubmitted;
+                _deleteButton.eventClicked -= DeleteButton_eventClicked;
+            }
+            else
                 _addButton.eventClicked -= AddButton_eventClicked;
         }
 
@@ -182,22 +185,27 @@ namespace ParallelRoadTool.UI
                 _horizontalOffsetField.eventTextSubmitted += HorizontalOffsetField_eventTextSubmitted;
                 _verticalOffsetField.eventTextSubmitted += VerticalOffsetField_eventTextSubmitted;
                 _deleteButton.eventClicked += DeleteButton_eventClicked;
-            } else
+            }
+            else
                 _addButton.eventClicked += AddButton_eventClicked;
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)
         {
+            // TODO: quando seleziono con indice 0 devo impostare NetInfo a null e, nel detour, se è null devo usare quello preso da NetTool.
+            DebugUtils.Log($"{nameof(DropDown_eventSelectedIndexChanged)}");
             FireChangedEvent();
         }
 
         private void HorizontalOffsetField_eventTextSubmitted(UIComponent component, string value)
         {
+            DebugUtils.Log($"{nameof(HorizontalOffsetField_eventTextSubmitted)}");
             FireChangedEvent();
         }
 
         private void VerticalOffsetField_eventTextSubmitted(UIComponent component, string value)
         {
+            DebugUtils.Log($"{nameof(VerticalOffsetField_eventTextSubmitted)}");
             FireChangedEvent();
         }
 
@@ -223,7 +231,8 @@ namespace ParallelRoadTool.UI
             if (!float.TryParse(_horizontalOffsetField.text, out HorizontalOffset)) return;
             if (!float.TryParse(_verticalOffsetField.text, out VerticalOffset)) return;
 
-            OnChanged?.Invoke(this, new NetTypeItemEventArgs(HorizontalOffset, VerticalOffset, _dropDown.selectedIndex, IsReversed));
+            var eventArgs = new NetTypeItemEventArgs(Index, HorizontalOffset, VerticalOffset, _dropDown.selectedIndex, IsReversed);
+            OnChanged?.Invoke(this, eventArgs);
         }
 
         #endregion        
@@ -232,8 +241,8 @@ namespace ParallelRoadTool.UI
 
         private void PopulateDropdown()
         {
-            _dropDown.items = IsCurrentItem 
-                    ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1).ToArray() 
+            _dropDown.items = IsCurrentItem
+                    ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1).ToArray()
                     : Singleton<ParallelRoadTool>.instance.AvailableRoadNames;
             _dropDown.selectedIndex = 0;
             _populated = true;

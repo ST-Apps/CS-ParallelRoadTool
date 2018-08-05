@@ -61,6 +61,8 @@ namespace ParallelRoadTool.UI
         public event PropertyChangedEventHandler<bool> OnSnappingToggled;
         public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
         public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
+
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnItemChanged;
         public event EventHandler OnNetworkItemAdded;
 
         private void UnsubscribeToUIEvents()
@@ -100,7 +102,7 @@ namespace ParallelRoadTool.UI
 
         private void NetListOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
         {
-            throw new NotImplementedException();
+            OnItemChanged?.Invoke(this, value);
         }
 
         private void _tutorialToggleButton_eventCheckChanged(UIComponent component, bool value)
@@ -156,6 +158,11 @@ namespace ParallelRoadTool.UI
         {
             _netList.AddItem(item);            
         }
+
+        //public void UpdateItem(NetTypeItemEventArgs item)
+        //{
+        //    _netList.UpdateItem(item);
+        //}
 
         //public void RenderNetList()
         //{

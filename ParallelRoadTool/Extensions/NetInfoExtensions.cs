@@ -44,8 +44,6 @@ namespace ParallelRoadTool.Extensions
             // Sanity check, of them may be null
             result = result ?? destination;
 
-            // DebugUtils.Log($"Got a {destination.name}, new road is {result.name} [source = {source.name}]");
-
             return result;
         }
 

@@ -41,8 +41,8 @@ namespace ParallelRoadTool.UI
         }
 
         private void UiNetTypeItemOnOnChanged(UIComponent component, NetTypeItemEventArgs value)
-        {
-            throw new NotImplementedException();
+        {            
+            OnItemChanged?.Invoke(this, value);
         }
 
         private void UiNetTypeItemOnOnDeleteClicked(UIComponent component, int index)
@@ -57,25 +57,6 @@ namespace ParallelRoadTool.UI
         {
             DebugUtils.Log($"{nameof(UiNetTypeItemOnOnAddClicked)}");
             OnItemAdded?.Invoke(this, null);
-            //DebugUtils.Log("Adding item to list");
-
-            //// get offset of previuous item
-            //var prevOffset = 0f;
-            //if (List.Any())
-            //    prevOffset = List.Last().HorizontalOffset;
-
-            //var netInfo = _currentTool.DropDown.selectedIndex == 0
-            //    ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-            //    : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
-
-            //DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
-
-            //var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
-            //List.Add(item);
-
-            //RenderList();
-
-            //Changed();
         }
 
         #endregion
@@ -142,14 +123,14 @@ namespace ParallelRoadTool.UI
                 component.Index = _items.Count;
                 component.OnChanged += UiNetTypeItemOnOnChanged;
                 component.OnDeleteClicked += UiNetTypeItemOnOnDeleteClicked;
+                _items.Add(component);
             }
             else
             {
                 component.OnAddClicked += UiNetTypeItemOnOnAddClicked;
                 component.IsCurrentItem = true;
             }                
-
-            _items.Add(component);
+            
             _space.BringToFront();
         }
 
@@ -167,15 +148,15 @@ namespace ParallelRoadTool.UI
             Destroy(component);
         }
 
-        public void UpdateItem(NetTypeItemEventArgs item, int index)
-        {
-            var component = _items[index];
-            component.HorizontalOffset = item.HorizontalOffset;
-            component.VerticalOffset = item.VerticalOffset;
-            component.NetInfo = item.SelectedNetworkIndex == 0
-                ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-                : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[item.SelectedNetworkIndex];
-            component.IsReversed = item.IsReversedNetwork;
-        }
+        //public void UpdateItem(NetTypeItemEventArgs item)
+        //{
+        //    var component = _items[item.ItemIndex];
+        //    component.HorizontalOffset = item.HorizontalOffset;
+        //    component.VerticalOffset = item.VerticalOffset;
+        //    component.NetInfo = item.SelectedNetworkIndex == 0
+        //        ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
+        //        : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[item.SelectedNetworkIndex];
+        //    component.IsReversed = item.IsReversedNetwork;
+        //}
     }
 }

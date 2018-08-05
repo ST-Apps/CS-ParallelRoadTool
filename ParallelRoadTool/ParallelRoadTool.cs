@@ -173,21 +173,25 @@ namespace ParallelRoadTool
 
         private void UnsubscribeToUIEvents()
         {
-            _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
-            _mainWindow.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
+            _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;            
             _mainWindow.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
             _mainWindow.OnHorizontalOffsetKeypress -= MainWindowOnOnHorizontalOffsetKeypress;
             _mainWindow.OnVerticalOffsetKeypress -= MainWindowOnOnVerticalOffsetKeypress;
+
+            _mainWindow.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
+            _mainWindow.OnItemChanged -= MainWindowOnOnItemChanged;
         }
 
         private void SubscribeToUIEvents()
         {
-            _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
-            _mainWindow.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
+            _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;            
             _mainWindow.OnSnappingToggled += MainWindowOnOnSnappingToggled;
             _mainWindow.OnHorizontalOffsetKeypress += MainWindowOnOnHorizontalOffsetKeypress;
             _mainWindow.OnVerticalOffsetKeypress += MainWindowOnOnVerticalOffsetKeypress;
-        }
+
+            _mainWindow.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
+            _mainWindow.OnItemChanged += MainWindowOnOnItemChanged;
+        }        
 
         private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
         {
@@ -208,6 +212,14 @@ namespace ParallelRoadTool
         private void MainWindowOnOnSnappingToggled(UIComponent component, bool value)
         {
             IsSnappingEnabled = value;
+        }        
+
+        private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
+        {
+            IsToolActive = value;
+
+            if (value && ToolsModifierControl.advisorPanel.isVisible && ToolsModifierControl.advisorPanel.isOpen)
+                _mainWindow.ShowTutorial();
         }
 
         private void MainWindowOnNetworkItemAdded(object sender, EventArgs e)
@@ -222,12 +234,20 @@ namespace ParallelRoadTool
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
         }
 
-        private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
+        private void MainWindowOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
         {
-            IsToolActive = value;
+            DebugUtils.Log($"{value.ItemIndex} / {SelectedRoadTypes.Count}");
+            var item = SelectedRoadTypes[value.ItemIndex];
+            var netInfo = value.SelectedNetworkIndex == 0
+                ? ToolsModifierControl.GetTool<NetTool>().Prefab
+                : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
 
-            if (value && ToolsModifierControl.advisorPanel.isVisible && ToolsModifierControl.advisorPanel.isOpen)
-                _mainWindow.ShowTutorial();
+            item.NetInfo = netInfo;
+            item.HorizontalOffset = value.HorizontalOffset;
+            item.VerticalOffset = value.VerticalOffset;
+            item.IsReversed = value.IsReversedNetwork;
+            
+            // _mainWindow.UpdateItem(new NetTypeItemEventArgs(value.ItemIndex, ));
         }
 
         #endregion        
