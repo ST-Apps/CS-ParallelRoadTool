@@ -21,8 +21,8 @@ namespace ParallelRoadTool.UI.Base
         private const float COLUMN_PADDING = 5f;
         private const float TEXT_FIELD_WIDTH = 35f;
         public static readonly UITextureAtlas TextureAtlas = LoadResources();
-        public static readonly UITextureAtlas DefaultAtlas = ResourceLoader.GetAtlas(Configuration.CustomAtlasName);
-        public static readonly UITextureAtlas AdvisorAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
+        public static readonly UITextureAtlas DefaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
+        public static readonly UITextureAtlas AdvisorAtlas = ResourceLoader.GetAtlas("AdvisorSprites");
 
         public static UIView uiRoot;
 
