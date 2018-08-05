@@ -171,7 +171,7 @@ namespace ParallelRoadTool.UI
             absolutePosition = new Vector3(SavedWindowX.value, SavedWindowY.value);
 
             var bg = AddUIComponent<UIPanel>();
-            bg.atlas = ResourceLoader.GetAtlas("Ingame");
+            bg.atlas = UIUtil.DefaultAtlas; // ResourceLoader.GetAtlas("Ingame");
             bg.backgroundSprite = "SubcategoriesPanel";
             bg.size = size;
             bg.padding = new RectOffset(8, 8, 8, 8);
@@ -183,7 +183,7 @@ namespace ParallelRoadTool.UI
             var label = bg.AddUIComponent<UILabel>();
             label.name = $"{Configuration.ResourcePrefix}TitleLabel";
             label.textScale = 0.9f;
-            label.text = "Parallel Road Tool";
+            label.text = ModInfo.ModName;
             label.autoSize = false;
             label.width = 500;
             label.SendToBack();
