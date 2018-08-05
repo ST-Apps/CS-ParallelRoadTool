@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using ColossalFramework;
 using ParallelRoadTool.Redirection;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Wrappers;
@@ -102,12 +103,12 @@ namespace ParallelRoadTool.Detours
 
                 // Horizontal offset must be negated to appear on the correct side of the original segment
                 //float horizontalOffset = 0;
-                //if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                //if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                 //    horizontalOffset = currentRoadInfos.HorizontalOffset;
                 //else
                 //    horizontalOffset = -currentRoadInfos.HorizontalOffset;
 
-                var horizontalOffset = currentRoadInfos.HorizontalOffset * ((ParallelRoadTool.Instance.IsLeftHandTraffic) ? 1 : -1);
+                var horizontalOffset = currentRoadInfos.HorizontalOffset * ((Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic) ? 1 : -1);
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                

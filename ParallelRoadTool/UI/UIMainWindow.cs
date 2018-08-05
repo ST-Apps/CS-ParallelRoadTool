@@ -234,13 +234,13 @@ namespace ParallelRoadTool.UI
 
         public override void Update()
         {
-            if (ParallelRoadTool.Instance != null)
-                isVisible = ParallelRoadTool.Instance.IsToolActive;
+            if (Singleton<ParallelRoadTool>.instance != null)
+                isVisible = Singleton<ParallelRoadTool>.instance.IsToolActive;
 
             if (ParallelRoadTool.NetTool != null)
                 _toolToggleButton.isVisible = ParallelRoadTool.NetTool.enabled;
 
-            if (!ParallelRoadTool.Instance.IsToolActive) return;
+            if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
             // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
             if (_tutorialIcon == null) return;
@@ -309,7 +309,7 @@ namespace ParallelRoadTool.UI
 
         public void OnGUI()
         {
-            if (!ParallelRoadTool.Instance.IsToolActive) return;
+            if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
             var currentSelectedNetwork = ParallelRoadTool.NetTool.m_prefab;
 

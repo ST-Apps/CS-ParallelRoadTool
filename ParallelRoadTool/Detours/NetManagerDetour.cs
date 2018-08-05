@@ -107,7 +107,7 @@ namespace ParallelRoadTool.Detours
 
             DebugUtils.Log($"Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
-            if (ParallelRoadTool.Instance.IsSnappingEnabled &&
+            if (Singleton<ParallelRoadTool>.instance.IsSnappingEnabled &&
                 (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB) ||
                     PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB) ||
                     PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z), info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA, out sqrDistB)
@@ -215,7 +215,7 @@ namespace ParallelRoadTool.Detours
             var result = CreateSegmentOriginal(out segment, ref randomizer, info, startNode, endNode, startDirection,
                 endDirection, buildIndex, modifiedIndex, invert);
 
-            if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+            if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                 _isPreviousInvert = invert;
 
             // If we're in upgrade mode we must stop here
@@ -254,12 +254,12 @@ namespace ParallelRoadTool.Detours
                 var isReversed = currentRoadInfos.IsReversed;
 
                 // Left-hand drive means that any condition must be reversed
-                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                 {
                     invert = !invert;
                     isReversed = !isReversed;
                     horizontalOffset = -horizontalOffset;
-                    //ParallelRoadTool.Instance.IsSnappingEnabled = true;
+                    //Singleton<ParallelRoadTool>.instance.IsSnappingEnabled = true;
                 }
 
                 DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
@@ -295,7 +295,7 @@ namespace ParallelRoadTool.Detours
                     var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
                         verticalOffset, invert);
 
-                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {ParallelRoadTool.Instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                    DebugUtils.Log($"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
                     newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                 }
 
@@ -356,7 +356,7 @@ namespace ParallelRoadTool.Detours
                         Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                 }
                 // Left-hand drive revert conditions back
-                if (ParallelRoadTool.Instance.IsLeftHandTraffic)
+                if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                 {
                     invert = !invert;
                     isReversed = !isReversed;

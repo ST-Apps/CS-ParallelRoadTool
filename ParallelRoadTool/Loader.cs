@@ -1,4 +1,5 @@
-﻿using ICities;
+﻿using ColossalFramework;
+using ICities;
 using ParallelRoadTool.Utils;
 using UnityEngine;
 
@@ -25,10 +26,10 @@ namespace ParallelRoadTool
             // First step is always to load localization
             LocalizationManager.LoadLocalization();
 
-            if (ParallelRoadTool.Instance == null)
-                new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
+            if (!Singleton<ParallelRoadTool>.exists)
+                Singleton<ParallelRoadTool>.Instantiate(new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>());
             else
-                ParallelRoadTool.Instance.Start();
+                Singleton<ParallelRoadTool>.instance.Start();
         }
     }
 }

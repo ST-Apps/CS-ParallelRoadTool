@@ -25,16 +25,6 @@ namespace ParallelRoadTool
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadTool : MonoBehaviour
     {
-        /// <summary>
-        /// Instance used for mod's singleton.
-        /// </summary>
-        public static ParallelRoadTool Instance { get; private set; }
-
-        public ParallelRoadTool()
-        {
-            if (Instance == null)
-                Instance = this;
-        }
 
         public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
         public static string[] AvailableRoadNames;
