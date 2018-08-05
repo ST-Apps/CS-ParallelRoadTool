@@ -1,11 +1,12 @@
 ﻿using ColossalFramework.Globalization;
 using ParallelRoadTool;
-using ParallelRoadTool.Extensions.LocaleModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using ParallelRoadTool.Models;
+using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool.Extensions
 {

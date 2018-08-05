@@ -1,5 +1,4 @@
 ﻿using ColossalFramework.Globalization;
-using ParallelRoadTool.Extensions.LocaleModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using ParallelRoadTool.Models;
 
 namespace ParallelRoadTool.Utils
 {
@@ -50,12 +50,12 @@ namespace ParallelRoadTool.Utils
 
             var assembly = Assembly.GetExecutingAssembly();
             // HACK - [ISSUE-51] On Mac and Linux LocalManager.cultureInfo always returns 'en' regardless of game language
-            var resourceName = $"ParallelRoadTool.Localization.{LocaleManager.instance.language}.xml";
+            var resourceName = $"{Configuration.LocalizationNamespace}.{LocaleManager.instance.language}.xml";
 
             if (!assembly.GetManifestResourceNames().Contains(resourceName))
             {
                 // Fallback to english
-                resourceName = "ParallelRoadTool.Localization.en.xml";
+                resourceName = $"{Configuration.LocalizationNamespace}.en.xml";
             }
 
             DebugUtils.Log($"Trying to read {resourceName} localization file...");

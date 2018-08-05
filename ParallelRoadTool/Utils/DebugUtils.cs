@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using ColossalFramework.Plugins;
 using UnityEngine;
 
-namespace ParallelRoadTool
+namespace ParallelRoadTool.Utils
 {
     public class DebugUtils
     {
@@ -26,7 +23,7 @@ namespace ParallelRoadTool
             DebugOutputPanel.AddMessage(PluginManager.MessageType.Warning, modPrefix + message);
         }
 
-        public static void Log(string message, [CallerMemberNameAttribute] string callerName = null)
+        public static void Log(string message, [CallerMemberName] string callerName = null)
         {
 #if DEBUG            
             if (_allowedMethodsNames.Any() && !_allowedMethodsNames.Contains(callerName)) return;

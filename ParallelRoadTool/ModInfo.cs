@@ -2,8 +2,9 @@ using System;
 using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
-using ParallelRoadTool;
 using ParallelRoadTool.Utils;
+using ParallelRoadTool;
+using ParallelRoadTool.UI;
 
 namespace ParallelRoadTool
 {
@@ -11,7 +12,7 @@ namespace ParallelRoadTool
     {
         public const string Version = "1.1.2";
 #if DEBUG
-        public const string Branch = "dev";
+        public const string Branch = "refactoring";
 #endif
 
         public ModInfo()
@@ -19,7 +20,7 @@ namespace ParallelRoadTool
             try
             {
                 // Creating setting file
-                GameSettings.AddSettingsFile(new SettingsFile { fileName = ParallelRoadTool.SettingsFileName });
+                GameSettings.AddSettingsFile(new SettingsFile { fileName = Configuration.SettingsFileName });
             }
             catch (Exception e)
             {

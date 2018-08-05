@@ -3,6 +3,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ParallelRoadTool.UI.Base;
+using ParallelRoadTool.Utils;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -10,16 +11,16 @@ namespace ParallelRoadTool.UI
     public class UIMainWindow : UIPanel
     {
         private static readonly SavedInt SavedWindowX =
-            new SavedInt("windowX", ParallelRoadTool.SettingsFileName, -1000, true);
+            new SavedInt("windowX", Configuration.SettingsFileName, -1000, true);
 
         private static readonly SavedInt SavedWindowY =
-            new SavedInt("windowY", ParallelRoadTool.SettingsFileName, -1000, true);
+            new SavedInt("windowY", Configuration.SettingsFileName, -1000, true);
 
         private static readonly SavedInt SavedToggleX =
-            new SavedInt("toggleX", ParallelRoadTool.SettingsFileName, -1000, true);
+            new SavedInt("toggleX", Configuration.SettingsFileName, -1000, true);
 
         private static readonly SavedInt SavedToggleY =
-            new SavedInt("toggleY", ParallelRoadTool.SettingsFileName, -1000, true);
+            new SavedInt("toggleY", Configuration.SettingsFileName, -1000, true);
 
         private UIOptionsPanel _mainPanel;
         private UINetList _netList;
@@ -244,7 +245,7 @@ namespace ParallelRoadTool.UI
             // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
             if (_tutorialIcon == null) return;
             _isUpdatingTutorialAdvisor = true;
-            DebugUtils.Log($"SpriteName: {_tutorialIcon.spriteName} | AtlasName: {_tutorialImage.atlas.name} | IsChecked: { _tutorialToggleButton.isChecked}");
+            DebugUtils.Log($"SpriteName: {_tutorialIcon.spriteName} | CustomAtlasName: {_tutorialImage.atlas.name} | IsChecked: { _tutorialToggleButton.isChecked}");
             if (_tutorialIcon.spriteName == "Parallel")
             {
                 if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)

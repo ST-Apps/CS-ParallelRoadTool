@@ -11,8 +11,8 @@ using ColossalFramework.Plugins;
 using ColossalFramework.UI;
 using ICities;
 using ParallelRoadTool.Detours;
-using ParallelRoadTool.Extensions.LocaleModels;
 using ParallelRoadTool.UI;
+using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Base;
 using ParallelRoadTool.Utils;
 using UnityEngine;
@@ -20,14 +20,21 @@ using UnityEngine;
 namespace ParallelRoadTool
 {
     /// <summary>
-    ///     Mod's "launcher" class.
-    ///     It also acts as a "controller" to connect the mod with its UI.
+    ///     Mod's main controller and data storage.
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadTool : MonoBehaviour
     {
-        public const string SettingsFileName = "ParallelRoadTool";
+        /// <summary>
+        /// Instance used for mod's singleton.
+        /// </summary>
+        public static ParallelRoadTool Instance { get; private set; }
 
-        public static ParallelRoadTool Instance;
+        public ParallelRoadTool()
+        {
+            if (Instance == null)
+                Instance = this;
+        }
 
         public static readonly List<NetInfo> AvailableRoadTypes = new List<NetInfo>();
         public static string[] AvailableRoadNames;
@@ -243,35 +250,5 @@ namespace ParallelRoadTool
         }
 
         #endregion
-    }
-
-    public class ParallelRoadToolLoader : LoadingExtensionBase
-    {
-        public override void OnCreated(ILoading loading)
-        {
-            // Re-instantiate mod if recompiled after level has been loaded. Useful for UI development, but breaks actual building!
-            /*if (loading.loadingComplete)
-            {
-                ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
-            }*/
-
-            // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
-            ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;
-
-            LocalizationManager.LoadLocalization();                
-        }
-
-        public override void OnReleased()
-        {
-            LocalizationManager.UnloadLocalization();
-        }        
-
-        public override void OnLevelLoaded(LoadMode mode)
-        {
-            if (ParallelRoadTool.Instance == null)
-                ParallelRoadTool.Instance = new GameObject("ParallelRoadTool").AddComponent<ParallelRoadTool>();
-            else
-                ParallelRoadTool.Instance.Start();            
-        }
     }
 }

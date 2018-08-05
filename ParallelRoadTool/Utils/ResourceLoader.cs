@@ -2,9 +2,9 @@
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ParallelRoadTool
+namespace ParallelRoadTool.Utils
 {
-    internal class ResourceLoader
+    internal static class ResourceLoader
     {
         public static UITextureAtlas CreateTextureAtlas(string atlasName, string[] spriteNames, string assemblyPath)
         {
@@ -14,7 +14,7 @@ namespace ParallelRoadTool
             var regions = new Rect[spriteNames.Length];
 
             for (var i = 0; i < spriteNames.Length; i++)
-                textures[i] = LoadTextureFromAssembly(assemblyPath + spriteNames[i] + ".png");
+                textures[i] = LoadTextureFromAssembly(assemblyPath + "." + spriteNames[i] + ".png");
 
             regions = texture2D.PackTextures(textures, 2, maxSize);
 

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using ParallelRoadTool.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -255,7 +257,7 @@ namespace ParallelRoadTool.UI.Base
             checkBox.size = new Vector2(36, 36);
 
             var button = checkBox.AddUIComponent<UIButton>();
-            button.name = "PRT_" + spriteName;
+            button.name = $"{Configuration.ResourcePrefix}{spriteName}";
             button.atlas = !isStatic ? TextureAtlas : DefaultAtlas;
             button.tooltip = toolTip;
             button.relativePosition = new Vector2(0, 0);
@@ -302,49 +304,11 @@ namespace ParallelRoadTool.UI.Base
 
         private static UITextureAtlas LoadResources()
         {
-            string[] spriteNames =
-            {
-                "Add",
-                "AddDisabled",
-                "AddFocused",
-                "AddHovered",
-                "AddPressed",
-                "Remove",
-                "RemoveDisabled",
-                "RemoveFocused",
-                "RemoveHovered",
-                "RemovePressed",
-                "Parallel",
-                "ParallelDisabled",
-                "ParallelFocused",
-                "ParallelHovered",
-                "ParallelPressed",
-                "Reverse",
-                "ReverseDisabled",
-                "ReverseFocused",
-                "ReverseHovered",
-                "ReversePressed",
-                "Tutorial"
-            };
-
             var textureAtlas =
-                ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
+                ResourceLoader.CreateTextureAtlas(Configuration.CustomAtlasName, Configuration.CustomSpritesNames, Configuration.IconsNamespace);
 
-            var defaultAtlas = ResourceLoader.GetAtlas("Ingame");
-            Texture2D[] textures =
-            {
-                defaultAtlas["OptionBase"].texture,
-                defaultAtlas["OptionBaseFocused"].texture,
-                defaultAtlas["OptionBaseHovered"].texture,
-                defaultAtlas["OptionBasePressed"].texture,
-                defaultAtlas["OptionBaseDisabled"].texture,
-                defaultAtlas["Snapping"].texture,
-                defaultAtlas["SnappingFocused"].texture,
-                defaultAtlas["SnappingHovered"].texture,
-                defaultAtlas["SnappingPressed"].texture,
-                defaultAtlas["SnappingDisabled"].texture
-            };
-
+            var defaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
+            Texture2D[] textures = Configuration.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
             ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
 
             return textureAtlas;

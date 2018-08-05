@@ -4,26 +4,26 @@ using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ParallelRoadTool
+namespace ParallelRoadTool.UI
 {
     public class OptionsKeymapping : UICustomControl
     {
         private static readonly string kKeyBindingTemplate = "KeyBindingTemplate";
 
         public static readonly SavedInputKey toggleParallelRoads = new SavedInputKey("toggleParallelRoads",
-            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.P, true, false, false), true);
+            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.P, true, false, false), true);
 
         public static readonly SavedInputKey increaseHorizontalOffset = new SavedInputKey("increaseHorizontalOffset",
-            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, false, false), true);
+            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, false, false), true);
 
         public static readonly SavedInputKey decreaseHorizontalOffset = new SavedInputKey("decreaseHorizontalOffset",
-            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, false, false), true);
+            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, false, false), true);
 
         public static readonly SavedInputKey increaseVerticalOffset = new SavedInputKey("increaseVerticalOffset",
-            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, true, false), true);
+            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, true, false), true);
 
         public static readonly SavedInputKey decreaseVerticalOffset = new SavedInputKey("decreaseVerticalOffset",
-            ParallelRoadTool.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, true, false), true);
+            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, true, false), true);
 
         private int count;
 
