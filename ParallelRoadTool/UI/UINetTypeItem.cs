@@ -40,7 +40,7 @@ namespace ParallelRoadTool.UI
 
         public override void Start()
         {
-            name = "PRT_NetTypeItem";
+            name = $"{Configuration.ResourcePrefix}NetTypeItem";
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             color = new Color32(255, 255, 255, 255);
@@ -55,7 +55,7 @@ namespace ParallelRoadTool.UI
             DropDown.relativePosition = Vector2.zero;
             DropDown.eventSelectedIndexChanged += DropDown_eventSelectedIndexChanged;
 
-            ReverseCheckbox = UIUtil.CreateCheckBox(this, "Reverse", Locale.Get("PRT_TOOLTIPS", "ReverseToggleButton"), false);
+            ReverseCheckbox = UIUtil.CreateCheckBox(this, "Reverse", Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton"), false);
             ReverseCheckbox.relativePosition = new Vector3(LabelWidth + ColumnPadding, 2);
             ReverseCheckbox.eventCheckChanged += ReverseCheckboxOnEventCheckChanged;
 
@@ -79,7 +79,7 @@ namespace ParallelRoadTool.UI
             Label.relativePosition = new Vector3(10, 12);
             Label.isVisible = false;
 
-            DeleteButton = UIUtil.CreateUiButton(this, string.Empty, Locale.Get("PRT_TOOLTIPS", "RemoveNetworkButton"), new Vector2(36, 36), "Remove");
+            DeleteButton = UIUtil.CreateUiButton(this, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"), new Vector2(36, 36), "Remove");
             DeleteButton.zOrder = 0;
             DeleteButton.textScale = 0.8f;
             DeleteButton.relativePosition =
@@ -87,7 +87,7 @@ namespace ParallelRoadTool.UI
 
             DeleteButton.eventClicked += DeleteButton_eventClicked;
 
-            AddButton = UIUtil.CreateUiButton(this, string.Empty, Locale.Get("PRT_TOOLTIPS", "AddNetworkButton"), new Vector2(36, 36), "Add");
+            AddButton = UIUtil.CreateUiButton(this, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"), new Vector2(36, 36), "Add");
             AddButton.zOrder = 1;
             AddButton.isVisible = false;
             AddButton.textScale = 0.8f;
@@ -133,7 +133,7 @@ namespace ParallelRoadTool.UI
                 ReverseCheckbox.isVisible = 
                 DropDown.isVisible = false;            
             Label.isVisible = AddButton.isVisible = true;
-            Label.text = Locale.Get("PRT_TEXTS", "SameAsSelectedLabel");
+            Label.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)

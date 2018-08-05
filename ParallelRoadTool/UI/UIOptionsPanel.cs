@@ -8,7 +8,7 @@ namespace ParallelRoadTool.UI
     {
         public override void Start()
         {
-            name = "PRT_OptionsPanel";
+            name = $"{Configuration.ResourcePrefix}OptionsPanel";
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "GenericPanel";
             color = new Color32(206, 206, 206, 255);

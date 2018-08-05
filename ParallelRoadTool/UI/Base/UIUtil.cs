@@ -206,7 +206,7 @@ namespace ParallelRoadTool.UI.Base
 
             if (prefab == null)
             {
-                itemName = Locale.Get("PRT_TEXTS", "SameAsSelectedLabel");
+                itemName = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
             }
             else
             {

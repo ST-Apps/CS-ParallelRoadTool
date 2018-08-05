@@ -33,11 +33,11 @@ namespace ParallelRoadTool.UI
 
         private void Awake()
         {
-            AddKeymapping(Locale.Get("PRT_TOOLTIPS", "ToolToggleButton"), toggleParallelRoads);
-            AddKeymapping(Locale.Get("PRT_TEXTS", "DecreaseHorizontalOffsetOption"), decreaseHorizontalOffset);
-            AddKeymapping(Locale.Get("PRT_TEXTS", "IncreaseHorizontalOffsetOption"), increaseHorizontalOffset);
-            AddKeymapping(Locale.Get("PRT_TEXTS", "DecreaseVerticalOffsetOption"), decreaseVerticalOffset);
-            AddKeymapping(Locale.Get("PRT_TEXTS", "IncreaseVerticalOffsetOption"), increaseVerticalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), toggleParallelRoads);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseHorizontalOffsetOption"), decreaseHorizontalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseHorizontalOffsetOption"), increaseHorizontalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseVerticalOffsetOption"), decreaseVerticalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseVerticalOffsetOption"), increaseVerticalOffset);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)

@@ -21,7 +21,7 @@ namespace ParallelRoadTool.UI
 
         public override void Start()
         {
-            name = "PRT_NetList";
+            name = $"{Configuration.ResourcePrefix}NetList";
             padding = new RectOffset(4, 4, 4, 0);
             size = new Vector2(500 - 8 * 2, 200);
             autoLayoutPadding = new RectOffset(0, 0, 0, 4);

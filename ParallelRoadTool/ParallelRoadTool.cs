@@ -29,14 +29,14 @@ namespace ParallelRoadTool
 
         #region Data
 
+        public static bool IsInGameMode;
+
         public List<NetInfo> AvailableRoadTypes { get; private set; }
         public List<NetTypeItem> SelectedRoadTypes { get; private set; }
-
         public string[] AvailableRoadNames;
-
-        public static bool IsInGameMode;
-        public bool IsSnappingEnabled;
-        public bool IsLeftHandTraffic;
+        
+        public bool IsSnappingEnabled { get; private set; }
+        public bool IsLeftHandTraffic { get; private set; }
 
         private bool _isToolActive;
         public bool IsToolActive
@@ -101,7 +101,7 @@ namespace ParallelRoadTool
                 // Main UI init
                 DebugUtils.Log("Adding UI components");
                 var view = UIView.GetAView();
-                _mainWindow = view.FindUIComponent<UIMainWindow>("PRT_MainWindow");
+                _mainWindow = view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
                 if (_mainWindow != null)
                     Destroy(_mainWindow);                
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
@@ -210,7 +210,7 @@ namespace ParallelRoadTool
             IsSnappingEnabled = value;
         }
 
-        private void MainWindowOnOnNetworksListCountChanged(object sender, System.EventArgs e)
+        private void MainWindowOnOnNetworksListCountChanged(object sender, EventArgs e)
         {
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
         }

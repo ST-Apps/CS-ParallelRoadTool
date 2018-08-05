@@ -164,7 +164,7 @@ namespace ParallelRoadTool.UI
 
         public override void Start()
         {
-            name = "PRT_MainWindow";
+            name = $"{Configuration.ResourcePrefix}MainWindow";
             isVisible = false;
             size = new Vector2(500, 240);
             autoFitChildrenVertically = true;
@@ -181,7 +181,7 @@ namespace ParallelRoadTool.UI
             bg.autoFitChildrenVertically = true;
 
             var label = bg.AddUIComponent<UILabel>();
-            label.name = "PRT_TitleLabel";
+            label.name = $"{Configuration.ResourcePrefix}TitleLabel";
             label.textScale = 0.9f;
             label.text = "Parallel Road Tool";
             label.autoSize = false;
@@ -205,11 +205,11 @@ namespace ParallelRoadTool.UI
             space.size = new Vector2(1, 1);
 
             // Add options
-            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", Locale.Get("PRT_TOOLTIPS", "SnappingToggleButton"), false);
+            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"), false);
             _snappingToggleButton.relativePosition = new Vector3(166, 38);
             _snappingToggleButton.BringToFront();
 
-            _tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp", Locale.Get("PRT_TOOLTIPS", "TutorialToggleButton"), false, true);
+            _tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp", Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "TutorialToggleButton"), false, true);
             _tutorialToggleButton.relativePosition = new Vector3(166, 38);
             _tutorialToggleButton.BringToFront();
             _tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
@@ -223,11 +223,11 @@ namespace ParallelRoadTool.UI
             var toolModeBar = UIUtil.FindComponent<UITabstrip>("ToolMode", tsBar, UIUtil.FindOptions.NameContains);
             if (toolModeBar == null) return;
 
-            var button = UIUtil.FindComponent<UICheckBox>("PRT_Parallel");
+            var button = UIUtil.FindComponent<UICheckBox>($"{Configuration.ResourcePrefix}Parallel");
             if (button != null)
                 Destroy(button);
 
-            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", Locale.Get("PRT_TOOLTIPS", "ToolToggleButton"), false);
+            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), false);
             if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
             {
                 _toolToggleButton.absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);
