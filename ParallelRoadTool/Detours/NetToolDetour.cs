@@ -82,8 +82,7 @@ namespace ParallelRoadTool.Detours
         ///     Overlay's core method.
         ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
         ///     correct offsets.
-        ///     TODO: Probably RenderHelperLines is what we need to fix the look with curves, but detouring it makes Unity crash so
-        ///     we have to live with this little issue.
+        ///     TODO: Probably RenderHelperLines is what we need to fix the look with curves, but detouring it makes Unity crash so we have to live with this little issue.
         /// </summary>
         /// <param name="cameraInfo"></param>
         /// <param name="info"></param>
@@ -102,12 +101,6 @@ namespace ParallelRoadTool.Detours
                 var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
 
                 // Horizontal offset must be negated to appear on the correct side of the original segment
-                //float horizontalOffset = 0;
-                //if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
-                //    horizontalOffset = currentRoadInfos.HorizontalOffset;
-                //else
-                //    horizontalOffset = -currentRoadInfos.HorizontalOffset;
-
                 var horizontalOffset = currentRoadInfos.HorizontalOffset *
                                        (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic ? 1 : -1);
                 var verticalOffset = currentRoadInfos.VerticalOffset;
@@ -129,31 +122,31 @@ namespace ParallelRoadTool.Detours
                 {
                     m_direction = startPoint.m_direction,
                     m_elevation = startPoint.m_elevation,
-                    m_node = startPoint.m_node,
+                    m_node = 0, //startPoint.m_node,
                     m_outside = startPoint.m_outside,
                     // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
                     m_position =
                         startPoint.m_position.Offset(
                             startPoint.m_direction == Vector3.zero ? middlePoint.m_direction : startPoint.m_direction,
                             horizontalOffset, verticalOffset),
-                    m_segment = startPoint.m_segment
+                    m_segment = 0, //startPoint.m_segment
                 }, new NetTool.ControlPoint
                 {
                     m_direction = middlePoint.m_direction,
                     m_elevation = middlePoint.m_elevation,
-                    m_node = middlePoint.m_node,
+                    m_node = 0, //middlePoint.m_node,
                     m_outside = middlePoint.m_outside,
                     m_position =
                         middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
-                    m_segment = middlePoint.m_segment
+                    m_segment = 0, //middlePoint.m_segment
                 }, new NetTool.ControlPoint
                 {
                     m_direction = endPoint.m_direction,
                     m_elevation = endPoint.m_elevation,
-                    m_node = endPoint.m_node,
+                    m_node = 0, //endPoint.m_node,
                     m_outside = endPoint.m_outside,
                     m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
-                    m_segment = endPoint.m_segment
+                    m_segment = 0, //endPoint.m_segment
                 });
             }
         }

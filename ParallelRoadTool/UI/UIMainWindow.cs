@@ -126,8 +126,8 @@ namespace ParallelRoadTool.UI
             _isDragging = false;
 
             // Also save position
-            SavedToggleX.value = (int) _toolToggleButton.absolutePosition.x;
-            SavedToggleY.value = (int) _toolToggleButton.absolutePosition.y;
+            SavedToggleX.value = (int)_toolToggleButton.absolutePosition.x;
+            SavedToggleY.value = (int)_toolToggleButton.absolutePosition.y;
         }
 
         private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
@@ -277,19 +277,15 @@ namespace ParallelRoadTool.UI
 
         public override void Update()
         {
-            if (Singleton<ParallelRoadTool>.exists)
-                isVisible = Singleton<ParallelRoadTool>.instance.IsToolActive;
-
-            if (ToolsModifierControl.GetTool<NetTool>() != null)
-                _toolToggleButton.isVisible = ToolsModifierControl.GetTool<NetTool>().enabled;
+            isVisible = Singleton<ParallelRoadTool>.exists && Singleton<ParallelRoadTool>.instance.IsToolActive;
+            _toolToggleButton.isVisible = ToolsModifierControl.GetTool<NetTool>() != null && ToolsModifierControl.GetTool<NetTool>().enabled;
 
             // TODO: let's see if disabling tutorial helps with performances as I'm getting mixed reports and can't reproduce the issue
             if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
             // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
-            if (_tutorialIcon == null) return;
+            if (_tutorialIcon == null || !ToolsModifierControl.advisorPanel.isVisible || !ToolsModifierControl.advisorPanel.isOpen) return;
             _isUpdatingTutorialAdvisor = true;
-            // DebugUtils.Log($"SpriteName: {_tutorialIcon.spriteName} | CustomAtlasName: {_tutorialImage.atlas.name} | IsChecked: { _tutorialToggleButton.isChecked}");
             if (_tutorialIcon.spriteName == "Parallel")
             {
                 if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
@@ -341,15 +337,15 @@ namespace ParallelRoadTool.UI
                 absolutePosition = new Vector2((resolution.x - width) / 2, (resolution.y - height) / 2);
 
             absolutePosition = new Vector2(
-                (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
-                (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
+                (int)Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
+                (int)Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
             // HACK - [ISSUE-9] Setting window's position seems not enough, we also need to set position for the first children of the window.
             var firstChildren = m_ChildComponents.FirstOrDefault();
             if (firstChildren != null) firstChildren.absolutePosition = absolutePosition;
 
-            SavedWindowX.value = (int) absolutePosition.x;
-            SavedWindowY.value = (int) absolutePosition.y;
+            SavedWindowX.value = (int)absolutePosition.x;
+            SavedWindowY.value = (int)absolutePosition.y;
         }
 
         public void OnGUI()
@@ -357,7 +353,6 @@ namespace ParallelRoadTool.UI
             if (UIView.HasModalInput() || UIView.HasInputFocus()) return;
 
             var e = Event.current;
-
             // Checking key presses
             if (OptionsKeymapping.toggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
             if (OptionsKeymapping.decreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
