@@ -191,8 +191,7 @@ namespace ParallelRoadTool.UI
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)
-        {
-            // TODO: quando seleziono con indice 0 devo impostare NetInfo a null e, nel detour, se è null devo usare quello preso da NetTool.
+        {            
             DebugUtils.Log($"{nameof(DropDown_eventSelectedIndexChanged)}");
             FireChangedEvent();
         }

@@ -12,11 +12,12 @@ namespace ParallelRoadTool.UI
 {
     public class UINetList : UIPanel
     {
-        private UINetTypeItem _currentTool;
+        #region Properties
+
         private List<UINetTypeItem> _items;
         private UIPanel _space;
 
-        public Action OnChangedCallback { private get; set; }
+        #endregion
 
         #region Events/Callbacks
 
@@ -48,9 +49,6 @@ namespace ParallelRoadTool.UI
         private void UiNetTypeItemOnOnDeleteClicked(UIComponent component, int index)
         {
             OnItemDeleted?.Invoke(this, index);
-            //List.RemoveAt(index);
-            //RenderList();
-            //Changed();
         }
 
         private void UiNetTypeItemOnOnAddClicked(object sender, EventArgs eventArgs)
@@ -79,8 +77,7 @@ namespace ParallelRoadTool.UI
             _space.size = new Vector2(1, 1);
 
             _items = new List<UINetTypeItem>();
-            AddItem(null, true);
-            _currentTool = _items[0];                    
+            AddItem(null, true);                   
         }
 
         public override void OnDestroy()
@@ -92,24 +89,7 @@ namespace ParallelRoadTool.UI
 
         #endregion
 
-        //public void UpdateCurrentTool(NetInfo tool)
-        //{
-        //    DebugUtils.Log($"Selected a new network: {tool.name}");
-        //    _currentTool.NetInfo = tool;
-        //    _currentTool.UpdateItem();
-
-        //    // This one's required to update all the items that are set to "same as selected road" when the selected road changes
-        //    foreach (var netTypeItem in _items)
-        //    {
-        //        DebugUtils.Log($"Updating dropdown NetInfo from {netTypeItem.NetInfo.name} to {tool.name}");
-        //        netTypeItem.OnChangedCallback();
-        //    }
-        //}
-
-        //private void Changed()
-        //{
-        //    OnChangedCallback?.Invoke();
-        //}
+        #region Control
 
         public void AddItem(NetTypeItem item, bool isCurrentItem = false)
         {
@@ -136,27 +116,24 @@ namespace ParallelRoadTool.UI
 
         public void DeleteItem(int index)
         {
+            // Destroy UI
             var component = _items[index];
-
             component.OnChanged -= UiNetTypeItemOnOnChanged;
             component.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
-
             if (component.IsCurrentItem)
                 component.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
-
             RemoveUIComponent(component);
-            Destroy(component);
+            Destroy(component);            
+
+            // Remove stored component
+            _items.RemoveAt(index);
+            // We need to shift index value for any element after current index or we'll lose update events
+            for (var i = index; i < _items.Count; i++)
+            {                
+                _items[i].Index -= 1;                
+            }
         }
 
-        //public void UpdateItem(NetTypeItemEventArgs item)
-        //{
-        //    var component = _items[item.ItemIndex];
-        //    component.HorizontalOffset = item.HorizontalOffset;
-        //    component.VerticalOffset = item.VerticalOffset;
-        //    component.NetInfo = item.SelectedNetworkIndex == 0
-        //        ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-        //        : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[item.SelectedNetworkIndex];
-        //    component.IsReversed = item.IsReversedNetwork;
-        //}
+        #endregion
     }
 }

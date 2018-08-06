@@ -64,6 +64,7 @@ namespace ParallelRoadTool.UI
 
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnItemChanged;
         public event EventHandler OnNetworkItemAdded;
+        public event PropertyChangedEventHandler<int> OnNetworkItemDeleted;
 
         private void UnsubscribeToUIEvents()
         {
@@ -89,9 +90,9 @@ namespace ParallelRoadTool.UI
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
         }
 
-        private void NetListOnOnItemDeleted(UIComponent component, int value)
+        private void NetListOnOnItemDeleted(UIComponent component, int index)
         {
-            throw new NotImplementedException();
+            OnNetworkItemDeleted?.Invoke(this, index);
         }
 
         private void NetListOnOnItemAdded(object sender, EventArgs eventArgs)
@@ -159,15 +160,10 @@ namespace ParallelRoadTool.UI
             _netList.AddItem(item);            
         }
 
-        //public void UpdateItem(NetTypeItemEventArgs item)
-        //{
-        //    _netList.UpdateItem(item);
-        //}
-
-        //public void RenderNetList()
-        //{
-        //    _netList.RenderList();
-        //}
+        public void DeleteItem(int index)
+        {
+            _netList.DeleteItem(index);
+        }
 
         public void ToggleToolCheckbox()
         {

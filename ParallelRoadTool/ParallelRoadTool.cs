@@ -34,7 +34,7 @@ namespace ParallelRoadTool
         public List<NetInfo> AvailableRoadTypes { get; private set; }
         public List<NetTypeItem> SelectedRoadTypes { get; private set; }
         public string[] AvailableRoadNames;
-        
+
         public bool IsSnappingEnabled { get; private set; }
         public bool IsLeftHandTraffic { get; private set; }
 
@@ -45,11 +45,11 @@ namespace ParallelRoadTool
 
             private set
             {
-                if (IsToolActive == value) return;                
+                if (IsToolActive == value) return;
                 ToggleDetours(value);
-                _isToolActive = value;                
+                _isToolActive = value;
             }
-        }        
+        }
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace ParallelRoadTool
         #region Unity
 
         public void Start()
-        {            
+        {
             try
             {
                 // Find NetTool and deploy
@@ -85,7 +85,7 @@ namespace ParallelRoadTool
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
                                     SimulationMetaData.MetaBool.True;
-                IsToolActive = false;                
+                IsToolActive = false;
 
                 // Available networks loading
                 DebugUtils.Log("Loading all available networks...");
@@ -93,7 +93,7 @@ namespace ParallelRoadTool
                 AddNetworkType(null);
                 for (uint i = 0; i < count; i++)
                 {
-                    var prefab = PrefabCollection<NetInfo>.GetPrefab(i);                    
+                    var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
                     if (prefab != null) AddNetworkType(prefab);
                 }
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
@@ -103,7 +103,7 @@ namespace ParallelRoadTool
                 var view = UIView.GetAView();
                 _mainWindow = _mainWindow ?? view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
                 if (_mainWindow != null)
-                    Destroy(_mainWindow);                
+                    Destroy(_mainWindow);
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                 SubscribeToUIEvents();
@@ -164,7 +164,7 @@ namespace ParallelRoadTool
         private void AddNetworkType(NetInfo net)
         {
             AvailableRoadNames[AvailableRoadTypes.Count] = net.GenerateBeautifiedNetName();
-            AvailableRoadTypes.Add(net);          
+            AvailableRoadTypes.Add(net);
         }
 
         #endregion
@@ -173,7 +173,7 @@ namespace ParallelRoadTool
 
         private void UnsubscribeToUIEvents()
         {
-            _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;            
+            _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
             _mainWindow.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
             _mainWindow.OnHorizontalOffsetKeypress -= MainWindowOnOnHorizontalOffsetKeypress;
             _mainWindow.OnVerticalOffsetKeypress -= MainWindowOnOnVerticalOffsetKeypress;
@@ -184,14 +184,15 @@ namespace ParallelRoadTool
 
         private void SubscribeToUIEvents()
         {
-            _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;            
+            _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
             _mainWindow.OnSnappingToggled += MainWindowOnOnSnappingToggled;
             _mainWindow.OnHorizontalOffsetKeypress += MainWindowOnOnHorizontalOffsetKeypress;
             _mainWindow.OnVerticalOffsetKeypress += MainWindowOnOnVerticalOffsetKeypress;
 
             _mainWindow.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
             _mainWindow.OnItemChanged += MainWindowOnOnItemChanged;
-        }        
+            _mainWindow.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
+        }
 
         private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
         {
@@ -212,7 +213,7 @@ namespace ParallelRoadTool
         private void MainWindowOnOnSnappingToggled(UIComponent component, bool value)
         {
             IsSnappingEnabled = value;
-        }        
+        }
 
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
@@ -239,15 +240,21 @@ namespace ParallelRoadTool
             DebugUtils.Log($"{value.ItemIndex} / {SelectedRoadTypes.Count}");
             var item = SelectedRoadTypes[value.ItemIndex];
             var netInfo = value.SelectedNetworkIndex == 0
-                ? ToolsModifierControl.GetTool<NetTool>().Prefab
+                ? null
                 : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
 
             item.NetInfo = netInfo;
             item.HorizontalOffset = value.HorizontalOffset;
             item.VerticalOffset = value.VerticalOffset;
             item.IsReversed = value.IsReversedNetwork;
-            
-            // _mainWindow.UpdateItem(new NetTypeItemEventArgs(value.ItemIndex, ));
+        }
+
+        private void MainWindowOnOnNetworkItemDeleted(UIComponent component, int index)
+        {
+            SelectedRoadTypes.RemoveAt(index);
+            _mainWindow.DeleteItem(index);
+
+            NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
         }
 
         #endregion        
