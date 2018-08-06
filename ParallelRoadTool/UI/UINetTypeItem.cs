@@ -130,7 +130,7 @@ namespace ParallelRoadTool.UI
 
         #region Control
 
-        private void UpdateItem()
+        public void UpdateItem()
         {
             _canFireChangedEvent = false;
             if (!_populated) PopulateDropdown();
@@ -210,6 +210,7 @@ namespace ParallelRoadTool.UI
 
         private void ReverseCheckboxOnEventCheckChanged(UIComponent component, bool value)
         {
+            DebugUtils.Log($"{nameof(ReverseCheckboxOnEventCheckChanged)}");
             FireChangedEvent();
         }
 
@@ -229,6 +230,7 @@ namespace ParallelRoadTool.UI
             if (!_canFireChangedEvent) return;
             if (!float.TryParse(_horizontalOffsetField.text, out HorizontalOffset)) return;
             if (!float.TryParse(_verticalOffsetField.text, out VerticalOffset)) return;
+            IsReversed = _reverseCheckbox.isChecked;
 
             var eventArgs = new NetTypeItemEventArgs(Index, HorizontalOffset, VerticalOffset, _dropDown.selectedIndex, IsReversed);
             OnChanged?.Invoke(this, eventArgs);

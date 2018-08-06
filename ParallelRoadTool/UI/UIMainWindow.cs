@@ -30,8 +30,7 @@ namespace ParallelRoadTool.UI
         #region Properties
 
         #region Data
-
-        private NetInfo _netToolSelection;
+        
         // We use this to prevent clicks while user is dragging the button
         private bool _isDragging;
         // We use this to prevent handling events while the advisor is being updated
@@ -87,7 +86,7 @@ namespace ParallelRoadTool.UI
             _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;
             _netList.OnItemChanged += NetListOnOnItemChanged;
             _netList.OnItemAdded += NetListOnOnItemAdded;
-            _netList.OnItemDeleted += NetListOnOnItemDeleted;
+            _netList.OnItemDeleted += NetListOnOnItemDeleted;            
         }
 
         private void NetListOnOnItemDeleted(UIComponent component, int index)
@@ -155,6 +154,11 @@ namespace ParallelRoadTool.UI
 
         #region Control
 
+        public void UpdateItem(NetTypeItem item, int index)
+        {            
+            _netList.UpdateItem(item, index);
+        }
+
         public void AddItem(NetTypeItem item)
         {
             _netList.AddItem(item);            
@@ -163,13 +167,7 @@ namespace ParallelRoadTool.UI
         public void DeleteItem(int index)
         {
             _netList.DeleteItem(index);
-        }
-
-        public void ToggleToolCheckbox()
-        {
-            _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
-            OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
-        }
+        }        
 
         public void ShowTutorial()
         {
@@ -180,6 +178,12 @@ namespace ParallelRoadTool.UI
 
         #region Utility
 
+        private void ToggleToolCheckbox()
+        {
+            _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
+            OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
+        }
+
         private void AdjustNetOffset(float step, bool isHorizontal = true)
         {
             // Adjust all offsets on keypress
@@ -187,8 +191,6 @@ namespace ParallelRoadTool.UI
                 OnHorizontalOffsetKeypress?.Invoke(this, step);
             else
                 OnVerticalOffsetKeypress?.Invoke(this, step);
-
-            //RenderNetList();
         }
 
         #endregion
@@ -285,6 +287,7 @@ namespace ParallelRoadTool.UI
             if (ToolsModifierControl.GetTool<NetTool>() != null)
                 _toolToggleButton.isVisible = ToolsModifierControl.GetTool<NetTool>().enabled;
 
+            // TODO: let's see if disabling tutorial helps with performances as I'm getting mixed reports and can't reproduce the issue
             if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
             // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.

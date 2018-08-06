@@ -198,7 +198,9 @@ namespace ParallelRoadTool
         {
             for (var i = 0; i < SelectedRoadTypes.Count; i++)
             {
-                SelectedRoadTypes[i].VerticalOffset += (1 + i) * step;
+                var item = SelectedRoadTypes[i];
+                item.VerticalOffset += (1 + i) * step;
+                _mainWindow.UpdateItem(item, i);
             }
         }
 
@@ -206,7 +208,9 @@ namespace ParallelRoadTool
         {
             for (var i = 0; i < SelectedRoadTypes.Count; i++)
             {
-                SelectedRoadTypes[i].HorizontalOffset += (1 + i) * step;
+                var item = SelectedRoadTypes[i];
+                item.HorizontalOffset += (1 + i) * step;
+                _mainWindow.UpdateItem(item, i);
             }
         }
 

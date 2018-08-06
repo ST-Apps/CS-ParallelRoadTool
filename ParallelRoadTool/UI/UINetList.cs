@@ -134,6 +134,16 @@ namespace ParallelRoadTool.UI
             }
         }
 
+        public void UpdateItem(NetTypeItem item, int index)
+        {
+            var currentItem = _items[index];
+            currentItem.HorizontalOffset = item.HorizontalOffset;
+            currentItem.VerticalOffset = item.VerticalOffset;
+            currentItem.IsReversed = item.IsReversed;
+
+            currentItem.UpdateItem();
+        }
+
         #endregion
     }
 }
