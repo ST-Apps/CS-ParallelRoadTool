@@ -281,7 +281,7 @@ namespace ParallelRoadTool.UI
             _toolToggleButton.isVisible = ToolsModifierControl.GetTool<NetTool>() != null && ToolsModifierControl.GetTool<NetTool>().enabled;
 
             // TODO: let's see if disabling tutorial helps with performances as I'm getting mixed reports and can't reproduce the issue
-            if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
+            if (!isVisible) return;
 
             // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
             if (_tutorialIcon == null || !ToolsModifierControl.advisorPanel.isVisible || !ToolsModifierControl.advisorPanel.isOpen) return;
@@ -350,7 +350,10 @@ namespace ParallelRoadTool.UI
 
         public void OnGUI()
         {
-            if (UIView.HasModalInput() || UIView.HasInputFocus()) return;
+            if (UIView.HasModalInput() 
+                || UIView.HasInputFocus()
+                || !Singleton<ParallelRoadTool>.exists
+                || !Singleton<ParallelRoadTool>.instance.IsToolActive) return;
 
             var e = Event.current;
             // Checking key presses
