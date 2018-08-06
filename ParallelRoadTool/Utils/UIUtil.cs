@@ -250,7 +250,8 @@ namespace ParallelRoadTool.Utils
         //    return CreateCheckBox(parent, spriteName, toolTip, value, new Vector2(36, 36));
         // }
 
-        public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value, bool isStatic = false)
+        public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value,
+            bool isStatic = false)
         {
             var checkBox = parent.AddUIComponent<UICheckBox>();
             checkBox.size = new Vector2(36, 36);
@@ -304,10 +305,11 @@ namespace ParallelRoadTool.Utils
         private static UITextureAtlas LoadResources()
         {
             var textureAtlas =
-                ResourceLoader.CreateTextureAtlas(Configuration.CustomAtlasName, Configuration.CustomSpritesNames, Configuration.IconsNamespace);
+                ResourceLoader.CreateTextureAtlas(Configuration.CustomAtlasName, Configuration.CustomSpritesNames,
+                    Configuration.IconsNamespace);
 
             var defaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
-            Texture2D[] textures = Configuration.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
+            var textures = Configuration.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
             ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
 
             return textureAtlas;

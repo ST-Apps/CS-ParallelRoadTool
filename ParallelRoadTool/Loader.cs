@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ParallelRoadTool
 {
     /// <summary>
-    /// Mod's launcher.
+    ///     Mod's launcher.
     /// </summary>
     public class Loader : LoadingExtensionBase
     {

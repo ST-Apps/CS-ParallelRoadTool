@@ -2,5 +2,7 @@
 
 namespace ParallelRoadTool.Utils
 {
-    public sealed class CallerMemberNameAttribute : Attribute { }
+    public sealed class CallerMemberNameAttribute : Attribute
+    {
+    }
 }

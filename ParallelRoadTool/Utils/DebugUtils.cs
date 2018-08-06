@@ -7,9 +7,8 @@ namespace ParallelRoadTool.Utils
 {
     public class DebugUtils
     {
+        private static readonly string[] AllowedMethodsNames = { };
         private static string ModPrefix => ModInfo.ModName;
-
-        private static readonly string[] AllowedMethodsNames = new string[] {  };
 
         public static void Message(string message)
         {
@@ -25,7 +24,7 @@ namespace ParallelRoadTool.Utils
 
         public static void Log(string message, [CallerMemberName] string callerName = null)
         {
-#if DEBUG            
+#if DEBUG
             if (AllowedMethodsNames.Any() && !AllowedMethodsNames.Contains(callerName)) return;
             if (message == m_lastLog)
             {

@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Xml;
-using System.Xml.Serialization;
 using ColossalFramework;
-using ColossalFramework.Globalization;
-using ColossalFramework.Plugins;
 using ColossalFramework.UI;
-using ICities;
 using ParallelRoadTool.Detours;
-using ParallelRoadTool.UI;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.UI.Base;
+using ParallelRoadTool.UI;
 using ParallelRoadTool.Utils;
 using UnityEngine;
 
@@ -39,10 +31,11 @@ namespace ParallelRoadTool
         public bool IsLeftHandTraffic { get; private set; }
 
         private bool _isToolActive;
+
         public bool IsToolActive
         {
-            get => _isToolActive 
-                   && ToolsModifierControl.GetTool<NetTool>() != null 
+            get => _isToolActive
+                   && ToolsModifierControl.GetTool<NetTool>() != null
                    && ToolsModifierControl.GetTool<NetTool>().enabled;
 
             private set
@@ -61,7 +54,7 @@ namespace ParallelRoadTool
 
         #endregion
 
-        #endregion        
+        #endregion
 
         #region Unity
 
@@ -98,12 +91,14 @@ namespace ParallelRoadTool
                     var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
                     if (prefab != null) AddNetworkType(prefab);
                 }
+
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
 
                 // Main UI init
                 DebugUtils.Log("Adding UI components");
                 var view = UIView.GetAView();
-                _mainWindow = _mainWindow ?? view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
+                _mainWindow = _mainWindow ??
+                              view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
                 if (_mainWindow != null)
                     Destroy(_mainWindow);
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
@@ -130,7 +125,7 @@ namespace ParallelRoadTool
 
                 // Reset data structures
                 AvailableRoadTypes.Clear();
-                SelectedRoadTypes.Clear();                
+                SelectedRoadTypes.Clear();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
 
@@ -266,6 +261,6 @@ namespace ParallelRoadTool
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
         }
 
-        #endregion        
+        #endregion
     }
 }

@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <NameList
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    name="PRT_it">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  name="PRT_it">
   <strings>
     <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Attiva/Disattiva snapping per i nodi esistenti</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">ParallelRoadTool attivato/disattivato</LocalizedString>

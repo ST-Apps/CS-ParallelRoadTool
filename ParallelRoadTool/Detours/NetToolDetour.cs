@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using ColossalFramework;
-using ParallelRoadTool.Redirection;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Redirection;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
@@ -108,7 +108,8 @@ namespace ParallelRoadTool.Detours
                 //else
                 //    horizontalOffset = -currentRoadInfos.HorizontalOffset;
 
-                var horizontalOffset = currentRoadInfos.HorizontalOffset * ((Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic) ? 1 : -1);
+                var horizontalOffset = currentRoadInfos.HorizontalOffset *
+                                       (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic ? 1 : -1);
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                

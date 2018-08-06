@@ -40,7 +40,7 @@ namespace ParallelRoadTool.Utils
         }
 
         public static void AddTexturesInAtlas(UITextureAtlas atlas, Texture2D[] newTextures, bool locked = false)
-        {            
+        {
             var textures = new Texture2D[atlas.count + newTextures.Length];
 
             for (var i = 0; i < atlas.count; i++)

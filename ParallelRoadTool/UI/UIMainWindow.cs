@@ -33,6 +33,7 @@ namespace ParallelRoadTool.UI
 
         // We use this to prevent clicks while user is dragging the button
         private bool _isDragging;
+
         // We use this to prevent handling events while the advisor is being updated
         private bool _isUpdatingTutorialAdvisor;
 
@@ -125,8 +126,8 @@ namespace ParallelRoadTool.UI
             _isDragging = false;
 
             // Also save position
-            SavedToggleX.value = (int)_toolToggleButton.absolutePosition.x;
-            SavedToggleY.value = (int)_toolToggleButton.absolutePosition.y;
+            SavedToggleX.value = (int) _toolToggleButton.absolutePosition.x;
+            SavedToggleY.value = (int) _toolToggleButton.absolutePosition.y;
         }
 
         private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
@@ -229,11 +230,13 @@ namespace ParallelRoadTool.UI
             space.size = new Vector2(1, 1);
 
             // Add options
-            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping", Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"), false);
+            _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping",
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"), false);
             _snappingToggleButton.relativePosition = new Vector3(166, 38);
             _snappingToggleButton.BringToFront();
 
-            _tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp", Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "TutorialToggleButton"), false, true);
+            _tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp",
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "TutorialToggleButton"), false, true);
             _tutorialToggleButton.relativePosition = new Vector3(166, 38);
             _tutorialToggleButton.BringToFront();
             _tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
@@ -251,15 +254,14 @@ namespace ParallelRoadTool.UI
             if (button != null)
                 Destroy(button);
 
-            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel", Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), false);
+            _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel",
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), false);
             if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
-            {
                 _toolToggleButton.absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);
-            }
             else
-            {
-                _toolToggleButton.absolutePosition = new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1, toolModeBar.absolutePosition.y);
-            }
+                _toolToggleButton.absolutePosition =
+                    new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1,
+                        toolModeBar.absolutePosition.y);
 
             // HACK - [ISSUE-26] Tool's main button must be draggable to prevent overlapping other mods buttons.
             _buttonDragHandle = _toolToggleButton.AddUIComponent<UIRightDragHandle>();
@@ -291,9 +293,7 @@ namespace ParallelRoadTool.UI
             if (_tutorialIcon.spriteName == "Parallel")
             {
                 if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
-                {
                     _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
-                }
             }
             else
             {
@@ -303,10 +303,11 @@ namespace ParallelRoadTool.UI
                     _tutorialImage.atlas = UIUtil.AdvisorAtlas;
                 }
             }
+
             _tutorialToggleButton.isChecked = _tutorialIcon.spriteName == "Parallel"
-                && _tutorialImage.atlas.name == UIUtil.TextureAtlas.name
-                && ToolsModifierControl.advisorPanel.isVisible
-                && ToolsModifierControl.advisorPanel.isOpen;
+                                              && _tutorialImage.atlas.name == UIUtil.TextureAtlas.name
+                                              && ToolsModifierControl.advisorPanel.isVisible
+                                              && ToolsModifierControl.advisorPanel.isOpen;
             _isUpdatingTutorialAdvisor = false;
 
             base.Update();
@@ -340,18 +341,15 @@ namespace ParallelRoadTool.UI
                 absolutePosition = new Vector2((resolution.x - width) / 2, (resolution.y - height) / 2);
 
             absolutePosition = new Vector2(
-                (int)Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
-                (int)Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
+                (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
+                (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
             // HACK - [ISSUE-9] Setting window's position seems not enough, we also need to set position for the first children of the window.
             var firstChildren = m_ChildComponents.FirstOrDefault();
-            if (firstChildren != null)
-            {
-                firstChildren.absolutePosition = absolutePosition;
-            }
+            if (firstChildren != null) firstChildren.absolutePosition = absolutePosition;
 
-            SavedWindowX.value = (int)absolutePosition.x;
-            SavedWindowY.value = (int)absolutePosition.y;
+            SavedWindowX.value = (int) absolutePosition.x;
+            SavedWindowY.value = (int) absolutePosition.y;
         }
 
         public void OnGUI()

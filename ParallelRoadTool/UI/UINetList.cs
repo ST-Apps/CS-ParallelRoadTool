@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.UI.Base;
 using ParallelRoadTool.Utils;
 using UnityEngine;
 
@@ -33,7 +30,7 @@ namespace ParallelRoadTool.UI
         {
             foreach (var uiNetTypeItem in _items)
             {
-                uiNetTypeItem.OnChanged -= UiNetTypeItemOnOnChanged;                
+                uiNetTypeItem.OnChanged -= UiNetTypeItemOnOnChanged;
                 uiNetTypeItem.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
 
                 if (uiNetTypeItem.IsCurrentItem)
@@ -42,7 +39,7 @@ namespace ParallelRoadTool.UI
         }
 
         private void UiNetTypeItemOnOnChanged(UIComponent component, NetTypeItemEventArgs value)
-        {            
+        {
             OnItemChanged?.Invoke(this, value);
         }
 
@@ -77,7 +74,7 @@ namespace ParallelRoadTool.UI
             _space.size = new Vector2(1, 1);
 
             _items = new List<UINetTypeItem>();
-            AddItem(null, true);                   
+            AddItem(null, true);
         }
 
         public override void OnDestroy()
@@ -85,11 +82,8 @@ namespace ParallelRoadTool.UI
             UnsubscribeToUiEvents();
 
             Destroy(_space);
-            foreach (var uiNetTypeItem in _items)
-            {
-                Destroy(uiNetTypeItem);
-            }
-            base.OnDestroy();            
+            foreach (var uiNetTypeItem in _items) Destroy(uiNetTypeItem);
+            base.OnDestroy();
         }
 
         #endregion
@@ -98,7 +92,7 @@ namespace ParallelRoadTool.UI
 
         public void AddItem(NetTypeItem item, bool isCurrentItem = false)
         {
-            var component = AddUIComponent<UINetTypeItem>();            
+            var component = AddUIComponent<UINetTypeItem>();
             if (!isCurrentItem)
             {
                 component.NetInfo = item.NetInfo;
@@ -114,8 +108,8 @@ namespace ParallelRoadTool.UI
             {
                 component.OnAddClicked += UiNetTypeItemOnOnAddClicked;
                 component.IsCurrentItem = true;
-            }                
-            
+            }
+
             _space.BringToFront();
         }
 
@@ -138,16 +132,13 @@ namespace ParallelRoadTool.UI
             if (component.IsCurrentItem)
                 component.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
             RemoveUIComponent(component);
-            Destroy(component);            
+            Destroy(component);
 
             // Remove stored component
             _items.RemoveAt(index);
             // We need to shift index value for any element after current index or we'll lose update events
-            for (var i = index; i < _items.Count; i++)
-            {                
-                _items[i].Index -= 1;                
-            }
-        }        
+            for (var i = index; i < _items.Count; i++) _items[i].Index -= 1;
+        }
 
         #endregion
     }

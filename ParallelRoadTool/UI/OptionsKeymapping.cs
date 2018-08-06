@@ -33,11 +33,16 @@ namespace ParallelRoadTool.UI
 
         private void Awake()
         {
-            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), toggleParallelRoads);
-            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseHorizontalOffsetOption"), decreaseHorizontalOffset);
-            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseHorizontalOffsetOption"), increaseHorizontalOffset);
-            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseVerticalOffsetOption"), decreaseVerticalOffset);
-            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseVerticalOffsetOption"), increaseVerticalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"),
+                toggleParallelRoads);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseHorizontalOffsetOption"),
+                decreaseHorizontalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseHorizontalOffsetOption"),
+                increaseHorizontalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseVerticalOffsetOption"),
+                decreaseVerticalOffset);
+            AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseVerticalOffsetOption"),
+                increaseVerticalOffset);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)
@@ -133,7 +138,7 @@ namespace ParallelRoadTool.UI
             if (m_EditingBinding == null)
             {
                 p.Use();
-                m_EditingBinding = (SavedInputKey)p.source.objectUserData;
+                m_EditingBinding = (SavedInputKey) p.source.objectUserData;
                 m_EditingBindingCategory = p.source.stringUserData;
                 var uIButton = p.source as UIButton;
                 uIButton.buttonsMask = UIMouseButton.Left | UIMouseButton.Right | UIMouseButton.Middle |
@@ -180,7 +185,7 @@ namespace ParallelRoadTool.UI
             var field = typeof(DefaultSettings).GetField(entryName, BindingFlags.Static | BindingFlags.Public);
             if (field == null) return 0;
             var value = field.GetValue(null);
-            if (value is InputKey) return (InputKey)value;
+            if (value is InputKey key) return key;
             return 0;
         }
 
@@ -189,7 +194,7 @@ namespace ParallelRoadTool.UI
             foreach (var current in component.GetComponentsInChildren<UIComponent>())
             {
                 var uITextComponent = current.Find<UITextComponent>("Binding");
-                var savedInputKey = (SavedInputKey)uITextComponent.objectUserData;
+                var savedInputKey = (SavedInputKey) uITextComponent.objectUserData;
                 if (m_EditingBinding != savedInputKey)
                     uITextComponent.text = savedInputKey.ToLocalizedString("KEYNAME");
             }

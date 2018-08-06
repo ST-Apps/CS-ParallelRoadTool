@@ -2,9 +2,8 @@ using System;
 using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
-using ParallelRoadTool.Utils;
-using ParallelRoadTool;
 using ParallelRoadTool.UI;
+using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool
 {
@@ -20,7 +19,7 @@ namespace ParallelRoadTool
             try
             {
                 // Creating setting file 
-                GameSettings.AddSettingsFile(new SettingsFile { fileName = Configuration.SettingsFileName });
+                GameSettings.AddSettingsFile(new SettingsFile {fileName = Configuration.SettingsFileName});
             }
             catch (Exception e)
             {

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ParallelRoadTool
+﻿namespace ParallelRoadTool
 {
     /// <summary>
-    /// Constants and data needed for the mod to work
+    ///     Constants and data needed for the mod to work
     /// </summary>
     public static class Configuration
     {
+        public const string SettingsFileName = "ParallelRoadTool";
 
         #region UI
 
@@ -23,7 +19,7 @@ namespace ParallelRoadTool
         public static readonly string LocalizationNamespace = $"{AssemblyName}.{AssetsFolder}.{LocalizationFolder}";
 
         public static readonly string CustomAtlasName = $"{ResourcePrefix}Atlas";
-        public const string DefaultAtlasName = "Ingame";        
+        public const string DefaultAtlasName = "Ingame";
 
         public static readonly string[] CustomSpritesNames =
         {
@@ -65,7 +61,5 @@ namespace ParallelRoadTool
         };
 
         #endregion
-
-        public const string SettingsFileName = "ParallelRoadTool";
     }
 }
