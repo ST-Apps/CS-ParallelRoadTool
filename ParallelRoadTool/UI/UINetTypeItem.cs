@@ -121,9 +121,16 @@ namespace ParallelRoadTool.UI
 
         public override void OnDestroy()
         {
-            base.OnDestroy();
-
             UnsubscribeToUiEvents();
+
+            Destroy(_label);
+            Destroy(_dropDown);
+            Destroy(_reverseCheckbox);
+            Destroy(_horizontalOffsetField);
+            Destroy(_verticalOffsetField);
+            Destroy(_deleteButton);
+            Destroy(_addButton);
+            base.OnDestroy();
         }
 
         #endregion
@@ -191,7 +198,7 @@ namespace ParallelRoadTool.UI
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)
-        {            
+        {
             DebugUtils.Log($"{nameof(DropDown_eventSelectedIndexChanged)}");
             FireChangedEvent();
         }

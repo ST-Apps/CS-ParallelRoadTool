@@ -41,7 +41,9 @@ namespace ParallelRoadTool
         private bool _isToolActive;
         public bool IsToolActive
         {
-            get => _isToolActive && ToolsModifierControl.GetTool<NetTool>().enabled;
+            get => _isToolActive 
+                   && ToolsModifierControl.GetTool<NetTool>() != null 
+                   && ToolsModifierControl.GetTool<NetTool>().enabled;
 
             private set
             {
@@ -128,16 +130,19 @@ namespace ParallelRoadTool
 
                 // Reset data structures
                 AvailableRoadTypes.Clear();
-                SelectedRoadTypes.Clear();
-                IsToolActive = false;
+                SelectedRoadTypes.Clear();                
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
+
+                // Destroy UI
                 Destroy(_mainWindow);
                 _mainWindow = null;
+                DebugUtils.Log("Destroyed! ...");
             }
-            catch
+            catch (Exception e)
             {
                 // HACK - [ISSUE 31]
+                DebugUtils.LogException(e);
             }
         }
 

@@ -82,9 +82,14 @@ namespace ParallelRoadTool.UI
 
         public override void OnDestroy()
         {
-            base.OnDestroy();
-
             UnsubscribeToUiEvents();
+
+            Destroy(_space);
+            foreach (var uiNetTypeItem in _items)
+            {
+                Destroy(uiNetTypeItem);
+            }
+            base.OnDestroy();            
         }
 
         #endregion
@@ -114,6 +119,16 @@ namespace ParallelRoadTool.UI
             _space.BringToFront();
         }
 
+        public void UpdateItem(NetTypeItem item, int index)
+        {
+            var currentItem = _items[index];
+            currentItem.HorizontalOffset = item.HorizontalOffset;
+            currentItem.VerticalOffset = item.VerticalOffset;
+            currentItem.IsReversed = item.IsReversed;
+
+            currentItem.UpdateItem();
+        }
+
         public void DeleteItem(int index)
         {
             // Destroy UI
@@ -132,17 +147,7 @@ namespace ParallelRoadTool.UI
             {                
                 _items[i].Index -= 1;                
             }
-        }
-
-        public void UpdateItem(NetTypeItem item, int index)
-        {
-            var currentItem = _items[index];
-            currentItem.HorizontalOffset = item.HorizontalOffset;
-            currentItem.VerticalOffset = item.VerticalOffset;
-            currentItem.IsReversed = item.IsReversed;
-
-            currentItem.UpdateItem();
-        }
+        }        
 
         #endregion
     }

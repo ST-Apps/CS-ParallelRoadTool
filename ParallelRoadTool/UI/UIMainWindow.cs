@@ -30,7 +30,7 @@ namespace ParallelRoadTool.UI
         #region Properties
 
         #region Data
-        
+
         // We use this to prevent clicks while user is dragging the button
         private bool _isDragging;
         // We use this to prevent handling events while the advisor is being updated
@@ -42,7 +42,7 @@ namespace ParallelRoadTool.UI
 
         private UIRightDragHandle _buttonDragHandle;
         private UIOptionsPanel _mainPanel;
-        private UINetList _netList;        
+        private UINetList _netList;
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
         private UICheckBox _tutorialToggleButton;
@@ -56,7 +56,7 @@ namespace ParallelRoadTool.UI
 
         #region Events/Callbacks
 
-        public event PropertyChangedEventHandler<bool> OnParallelToolToggled;        
+        public event PropertyChangedEventHandler<bool> OnParallelToolToggled;
         public event PropertyChangedEventHandler<bool> OnSnappingToggled;
         public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
         public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
@@ -86,12 +86,7 @@ namespace ParallelRoadTool.UI
             _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;
             _netList.OnItemChanged += NetListOnOnItemChanged;
             _netList.OnItemAdded += NetListOnOnItemAdded;
-            _netList.OnItemDeleted += NetListOnOnItemDeleted;            
-        }
-
-        private void NetListOnOnItemDeleted(UIComponent component, int index)
-        {
-            OnNetworkItemDeleted?.Invoke(this, index);
+            _netList.OnItemDeleted += NetListOnOnItemDeleted;
         }
 
         private void NetListOnOnItemAdded(object sender, EventArgs eventArgs)
@@ -105,6 +100,11 @@ namespace ParallelRoadTool.UI
             OnItemChanged?.Invoke(this, value);
         }
 
+        private void NetListOnOnItemDeleted(UIComponent component, int index)
+        {
+            OnNetworkItemDeleted?.Invoke(this, index);
+        }
+
         private void _tutorialToggleButton_eventCheckChanged(UIComponent component, bool value)
         {
             if (_isUpdatingTutorialAdvisor) return;
@@ -115,6 +115,11 @@ namespace ParallelRoadTool.UI
                 ToolsModifierControl.advisorPanel.Hide();
         }
 
+        private void ButtonDragHandleOnEventDragStart(UIComponent component, UIDragEventParameter eventparam)
+        {
+            _isDragging = true;
+        }
+
         private void ButtonDragHandleOnEventDragEnd(UIComponent component, UIDragEventParameter eventparam)
         {
             _isDragging = false;
@@ -122,11 +127,6 @@ namespace ParallelRoadTool.UI
             // Also save position
             SavedToggleX.value = (int)_toolToggleButton.absolutePosition.x;
             SavedToggleY.value = (int)_toolToggleButton.absolutePosition.y;
-        }
-
-        private void ButtonDragHandleOnEventDragStart(UIComponent component, UIDragEventParameter eventparam)
-        {
-            _isDragging = true;
         }
 
         private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
@@ -144,30 +144,24 @@ namespace ParallelRoadTool.UI
             OnParallelToolToggled?.Invoke(component, value);
         }
 
-        private void NetListOnChangedCallback()
-        {
-            DebugUtils.Log($"_netList.OnChangedCallback (selected {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} nets)");
-            OnNetworkItemAdded?.Invoke(_netList, null);
-        }
-
         #endregion
 
         #region Control
 
-        public void UpdateItem(NetTypeItem item, int index)
-        {            
-            _netList.UpdateItem(item, index);
-        }
-
         public void AddItem(NetTypeItem item)
         {
-            _netList.AddItem(item);            
+            _netList.AddItem(item);
+        }
+
+        public void UpdateItem(NetTypeItem item, int index)
+        {
+            _netList.UpdateItem(item, index);
         }
 
         public void DeleteItem(int index)
         {
             _netList.DeleteItem(index);
-        }        
+        }
 
         public void ShowTutorial()
         {
@@ -297,7 +291,7 @@ namespace ParallelRoadTool.UI
             if (_tutorialIcon.spriteName == "Parallel")
             {
                 if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
-                {                   
+                {
                     _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
                 }
             }
@@ -308,11 +302,11 @@ namespace ParallelRoadTool.UI
                     _tutorialIcon.atlas = UIUtil.DefaultAtlas;
                     _tutorialImage.atlas = UIUtil.AdvisorAtlas;
                 }
-            }             
-            _tutorialToggleButton.isChecked = _tutorialIcon.spriteName == "Parallel" 
+            }
+            _tutorialToggleButton.isChecked = _tutorialIcon.spriteName == "Parallel"
                 && _tutorialImage.atlas.name == UIUtil.TextureAtlas.name
-                && ToolsModifierControl.advisorPanel.isVisible 
-                && ToolsModifierControl.advisorPanel.isOpen;            
+                && ToolsModifierControl.advisorPanel.isVisible
+                && ToolsModifierControl.advisorPanel.isOpen;
             _isUpdatingTutorialAdvisor = false;
 
             base.Update();
@@ -323,6 +317,13 @@ namespace ParallelRoadTool.UI
             try
             {
                 UnsubscribeToUIEvents();
+
+                Destroy(_buttonDragHandle);
+                Destroy(_mainPanel);
+                Destroy(_netList);
+                Destroy(_toolToggleButton);
+                Destroy(_snappingToggleButton);
+                Destroy(_tutorialToggleButton);
                 base.OnDestroy();
             }
             catch
@@ -340,7 +341,7 @@ namespace ParallelRoadTool.UI
 
             absolutePosition = new Vector2(
                 (int)Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
-                (int)Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));            
+                (int)Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
             // HACK - [ISSUE-9] Setting window's position seems not enough, we also need to set position for the first children of the window.
             var firstChildren = m_ChildComponents.FirstOrDefault();
@@ -356,7 +357,7 @@ namespace ParallelRoadTool.UI
         public void OnGUI()
         {
             if (UIView.HasModalInput() || UIView.HasInputFocus()) return;
-            
+
             var e = Event.current;
 
             // Checking key presses
@@ -365,14 +366,6 @@ namespace ParallelRoadTool.UI
             if (OptionsKeymapping.increaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
             if (OptionsKeymapping.decreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
             if (OptionsKeymapping.increaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
-
-            //if (!Singleton<ParallelRoadTool>.instance.IsToolActive) return;
-
-            //var currentSelectedNetwork = ToolsModifierControl.GetTool<NetTool>().m_prefab;
-            //if (_netToolSelection == currentSelectedNetwork) return;
-            //DebugUtils.Log($"Updating currentItem from {_netToolSelection?.name} to {currentSelectedNetwork?.name}");
-            //_netToolSelection = currentSelectedNetwork;
-            //_netList.UpdateCurrentTool(currentSelectedNetwork);
         }
 
         #endregion
