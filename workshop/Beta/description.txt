@@ -15,8 +15,9 @@ Main features are:
 [/quote]
 
 [quote]
-[h1]Current version: [b]1.1.1-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.1.2-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
+[*] Fixed tutorial window showing even when not requested ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/61]#61[/url])
 [*] Updated Russian translation
 [/list]
 [/quote]

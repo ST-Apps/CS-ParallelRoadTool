@@ -1,24 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ColossalFramework.UI;
-using ParallelRoadTool.UI.Base;
+using ParallelRoadTool.Models;
+using ParallelRoadTool.Utils;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
     public class UINetList : UIPanel
     {
-        private UINetTypeItem _currentTool;
+        #region Properties
+
         private List<UINetTypeItem> _items;
         private UIPanel _space;
-        public List<NetTypeItem> List;
 
-        public Action OnChangedCallback { private get; set; }
+        #endregion
+
+        #region Events/Callbacks
+
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnItemChanged;
+        public event EventHandler OnItemAdded;
+        public event PropertyChangedEventHandler<int> OnItemDeleted;
+
+        #endregion
+
+        #region Handlers
+
+        private void UnsubscribeToUiEvents()
+        {
+            foreach (var uiNetTypeItem in _items)
+            {
+                uiNetTypeItem.OnChanged -= UiNetTypeItemOnOnChanged;
+                uiNetTypeItem.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
+
+                if (uiNetTypeItem.IsCurrentItem)
+                    uiNetTypeItem.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
+            }
+        }
+
+        private void UiNetTypeItemOnOnChanged(UIComponent component, NetTypeItemEventArgs value)
+        {
+            OnItemChanged?.Invoke(this, value);
+        }
+
+        private void UiNetTypeItemOnOnDeleteClicked(UIComponent component, int index)
+        {
+            OnItemDeleted?.Invoke(this, index);
+        }
+
+        private void UiNetTypeItemOnOnAddClicked(object sender, EventArgs eventArgs)
+        {
+            DebugUtils.Log($"{nameof(UiNetTypeItemOnOnAddClicked)}");
+            OnItemAdded?.Invoke(this, null);
+        }
+
+        #endregion
+
+        #region Unity
 
         public override void Start()
         {
-            name = "PRT_NetList";
+            name = $"{Configuration.ResourcePrefix}NetList";
             padding = new RectOffset(4, 4, 4, 0);
             size = new Vector2(500 - 8 * 2, 200);
             autoLayoutPadding = new RectOffset(0, 0, 0, 4);
@@ -28,104 +70,76 @@ namespace ParallelRoadTool.UI
             backgroundSprite = "GenericPanel";
             color = Color.black;
 
-            _items = new List<UINetTypeItem>();
-
-            _currentTool = AddUIComponent<UINetTypeItem>();
-            _currentTool.IsCurrentItem = true;
-            _currentTool.OnAddCallback = () =>
-            {
-                DebugUtils.Log("Adding item to list");
-
-                // get offset of previuous item
-                float prevOffset = 0;
-                if (List.Any())
-                    prevOffset = List.Last().HorizontalOffset;
-
-                var netInfo = _currentTool.DropDown.selectedIndex == 0
-                    ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-                    : ParallelRoadTool.AvailableRoadTypes[_currentTool.DropDown.selectedIndex];
-
-                DebugUtils.Log($"{_currentTool.NetInfo} halfWidth: {_currentTool.NetInfo.m_halfWidth}");
-
-                var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
-                List.Add(item);
-
-                RenderList();
-
-                Changed();
-            };
-
             _space = AddUIComponent<UIPanel>();
             _space.size = new Vector2(1, 1);
+
+            _items = new List<UINetTypeItem>();
+            AddItem(null, true);
         }
 
-        public void UpdateCurrentTool(NetInfo tool)
+        public override void OnDestroy()
         {
-            DebugUtils.Log($"Selected a new network: {tool.name}");
-            _currentTool.NetInfo = tool;
-            _currentTool.RenderItem();
+            UnsubscribeToUiEvents();
 
-            // This one's required to update all the items that are set to "same as selected road" when the selected road changes
-            foreach (var netTypeItem in _items)
+            Destroy(_space);
+            foreach (var uiNetTypeItem in _items) Destroy(uiNetTypeItem);
+            base.OnDestroy();
+        }
+
+        #endregion
+
+        #region Control
+
+        public void AddItem(NetTypeItem item, bool isCurrentItem = false)
+        {
+            var component = AddUIComponent<UINetTypeItem>();
+            if (!isCurrentItem)
             {
-                DebugUtils.Log($"Updating dropdown NetInfo from {netTypeItem.NetInfo.name} to {tool.name}");
-                netTypeItem.OnChangedCallback();
+                component.NetInfo = item.NetInfo;
+                component.HorizontalOffset = item.HorizontalOffset;
+                component.VerticalOffset = item.VerticalOffset;
+                component.IsReversed = item.IsReversed;
+                component.Index = _items.Count;
+                component.OnChanged += UiNetTypeItemOnOnChanged;
+                component.OnDeleteClicked += UiNetTypeItemOnOnDeleteClicked;
+                _items.Add(component);
             }
-        }
-
-        private void Changed()
-        {
-            OnChangedCallback?.Invoke();
-        }
-
-        internal void RenderList()
-        {
-            // Remove items
-            foreach (var child in _items) Destroy(child);
-
-            _items.Clear();
-
-            // Add items
-            var index = 0;
-            foreach (var item in List)
+            else
             {
-                DebugUtils.Log($"rendering item {index} {item.NetInfo} at {item.HorizontalOffset}");
-
-                var comp = AddUIComponent<UINetTypeItem>();
-                comp.NetInfo = item.NetInfo;
-                comp.HorizontalOffset = item.HorizontalOffset;
-                comp.VerticalOffset = item.VerticalOffset;
-                comp.IsReversed = item.IsReversed;
-                comp.Index = index++;
-
-                comp.OnDeleteCallback = () =>
-                {
-                    // remove item from list
-                    List.RemoveAt(comp.Index);
-                    RenderList();
-                    Changed();
-                };
-
-                comp.OnChangedCallback = () =>
-                {
-                    var i = List[comp.Index];
-                    i.HorizontalOffset = comp.HorizontalOffset;
-                    i.VerticalOffset = comp.VerticalOffset;
-                    i.NetInfo = comp.DropDown.selectedIndex == 0
-                        ? PrefabCollection<NetInfo>.FindLoaded(_currentTool.NetInfo.name)
-                        : ParallelRoadTool.AvailableRoadTypes[comp.DropDown.selectedIndex];
-                    i.IsReversed = comp.ReverseCheckbox.isChecked;
-
-                    DebugUtils.Message(
-                        $"OnChangedCallback item #{comp.Index}, net={i.NetInfo.GenerateBeautifiedNetName()}, HorizontalOffset={i.HorizontalOffset}, VerticalOffset={i.VerticalOffset}, IsReversed={i.IsReversed}");
-
-                    Changed();
-                };
-
-                _items.Add(comp);
+                component.OnAddClicked += UiNetTypeItemOnOnAddClicked;
+                component.IsCurrentItem = true;
             }
 
             _space.BringToFront();
         }
+
+        public void UpdateItem(NetTypeItem item, int index)
+        {
+            var currentItem = _items[index];
+            currentItem.HorizontalOffset = item.HorizontalOffset;
+            currentItem.VerticalOffset = item.VerticalOffset;
+            currentItem.IsReversed = item.IsReversed;
+
+            currentItem.UpdateItem();
+        }
+
+        public void DeleteItem(int index)
+        {
+            // Destroy UI
+            var component = _items[index];
+            component.OnChanged -= UiNetTypeItemOnOnChanged;
+            component.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
+            if (component.IsCurrentItem)
+                component.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
+            RemoveUIComponent(component);
+            Destroy(component);
+
+            // Remove stored component
+            _items.RemoveAt(index);
+            // We need to shift index value for any element after current index or we'll lose update events
+            for (var i = index; i < _items.Count; i++) _items[i].Index -= 1;
+        }
+
+        #endregion
     }
 }
