@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using ColossalFramework.UI;
+using ColossalFramework;
+using ParallelRoadTool.Utils;
+using ColossalFramework.Globalization;
 
 namespace ParallelRoadTool.UI
 {
@@ -41,16 +44,17 @@ namespace ParallelRoadTool.UI
             fileNameLabel.verticalAlignment = UIVerticalAlignment.Middle;
             fileNameLabel.relativePosition = new Vector3(8, 8);
 
-            deleteButton = UIUtils.CreateButton(this);
-            deleteButton.name = "ParallelRoadTool_DeleteFileButton";
+            deleteButton = UIUtil.CreateUiButton(this, "", "", new Vector2(80, 30), "");
+            deleteButton.name = $"{Configuration.ResourcePrefix}DeleteFileButton";
             deleteButton.text = "X";
             deleteButton.size = new Vector2(40f, 30f);
             deleteButton.relativePosition = new Vector3(430 - deleteButton.width - 8, 8);
-            deleteButton.tooltip = "Delete saved networks";
+            deleteButton.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "DeleteButton");
 
-            saveLoadButton = UIUtils.CreateButton(this);
-            saveLoadButton.name = "ParallelRoadTool_SaveLoadFileButton";
-            saveLoadButton.text = UISaveWindow.instance != null ? "Export" : "Import";
+            saveLoadButton = UIUtil.CreateUiButton(this, "", "", new Vector2(80, 30), "");
+            saveLoadButton.name = $"{Configuration.ResourcePrefix}SaveLoadFileButton";
+            saveLoadButton.text = UISaveWindow.instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
+            saveLoadButton.tooltip = UISaveWindow.instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");
             saveLoadButton.size = new Vector2(80f, 30f);
             saveLoadButton.relativePosition = new Vector3(deleteButton.relativePosition.x - saveLoadButton.width - 8, 8);
 
@@ -63,7 +67,8 @@ namespace ParallelRoadTool.UI
                 else
                 {
                     UILoadWindow.Close();
-                    ParallelRoadTool.Instance.Import(fileNameLabel.text);
+                    Singleton<ParallelRoadTool>.instance.Import(fileNameLabel.text);
+                    
                 }
             };
 
@@ -73,7 +78,7 @@ namespace ParallelRoadTool.UI
                 {
                     if (ret == 1)
                     {
-                        ParallelRoadTool.Instance.Delete(fileNameLabel.text);
+                        Singleton<ParallelRoadTool>.instance.Delete(fileNameLabel.text);
 
                         if (UISaveWindow.instance != null)
                         {

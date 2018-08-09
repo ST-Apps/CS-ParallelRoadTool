@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using ColossalFramework;
+using ColossalFramework.IO;
 using ColossalFramework.UI;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.Models;
@@ -22,6 +25,8 @@ namespace ParallelRoadTool
         #region Data
 
         public static bool IsInGameMode;
+//        public const string AutoSaveFileName = "_PRTAutoSave";
+//        public static readonly string SaveFolder = Path.Combine(DataLocation.localApplicationData, "ParallelRoadToolExports");
 
         public List<NetInfo> AvailableRoadTypes { get; private set; }
         public List<NetTypeItem> SelectedRoadTypes { get; private set; }
@@ -155,17 +160,16 @@ namespace ParallelRoadTool
             }
             else
             {
-                DebugUtils.Log("OnGUI failed");
-                DebugUtils.LogException(e);
+                DebugUtils.Log("Disabling parallel road support");
+                NetManagerDetour.Revert();
+                NetToolDetour.Revert();
             }
         }
 
-        #endregion
-
         public bool Export(string filename)
         {
-            string path = Path.Combine(SaveFolder, filename + ".xml");
-            Directory.CreateDirectory(SaveFolder);
+            string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
+            Directory.CreateDirectory(Configuration.SaveFolder);
 
             List<PresetNetItem> PresetItems = SelectedRoadTypes.Select(NetTypeItem => new PresetNetItem {HorizontalOffset = NetTypeItem.HorizontalOffset, IsReversed = NetTypeItem.IsReversed, NetName = NetTypeItem.NetInfo.name, VerticalOffset = NetTypeItem.VerticalOffset}).ToList();
 
@@ -191,7 +195,7 @@ namespace ParallelRoadTool
 
         public void Import(string filename)
         {
-            string path = Path.Combine(SaveFolder, filename + ".xml");
+            string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
             var PresetItems = new List<PresetNetItem>();
 
             var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
@@ -211,8 +215,8 @@ namespace ParallelRoadTool
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Import failed", "The networks couldn't be imported from '" + path + "'\n\n" + e.Message, true);
             }
 
-            var netTypeItems = new List<NetTypeItem>();
-            SelectedRoadTypes.Clear();
+            //var netTypeItems = new List<NetTypeItem>();
+            //SelectedRoadTypes.Clear();
             foreach (PresetNetItem preset in PresetItems)
             {
                 NetInfo netInfo;
@@ -222,26 +226,27 @@ namespace ParallelRoadTool
                 {
                     DebugUtils.Log("Adding network:" + netInfo.name);
                     var n = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset, preset.IsReversed);
-                    netTypeItems.Add(n);
-                    SelectedRoadTypes.Add(n);
+                    //netTypeItems.Add(n);
+                    //SelectedRoadTypes.Add(n);
+                    _mainWindow.AddItem(n);
                 }
                 else
                 {
                     //TODO action for missing networks needed here
                 }
             }
-            DebugUtils.Log("Network count: " + netTypeItems.Count);
+            //DebugUtils.Log("Network count: " + netTypeItems.Count);
             //_mainWindow._netList.List.Clear();
-            _mainWindow._netList.List = netTypeItems;
-            _mainWindow._netList.RenderList();
-            _mainWindow._netList.Changed();
+            //_mainWindow._netList.List = netTypeItems;
+            //_mainWindow._netList.RenderList();
+            //_mainWindow._netList.Changed();
         }
 
         public void Delete(string filename)
         {
             try
             {
-                string path = Path.Combine(SaveFolder, filename + ".xml");
+                string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
 
                 if (File.Exists(path))
                 {
@@ -256,7 +261,6 @@ namespace ParallelRoadTool
                 return;
             }
         }
-    }
 
         private void AddNetworkType(NetInfo net)
         {

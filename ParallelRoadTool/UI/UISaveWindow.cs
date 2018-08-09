@@ -5,13 +5,15 @@ using UnityEngine;
 
 using ColossalFramework;
 using ColossalFramework.UI;
+using ParallelRoadTool.Utils;
+using ColossalFramework.Globalization;
 
 namespace ParallelRoadTool.UI
 {
     public class UISaveWindow : UIPanel
     {
-        public static readonly SavedInt saveWindowX = new SavedInt("saveWindowX", ParallelRoadTool.SettingsFileName, -1000, true);
-        public static readonly SavedInt saveWindowY = new SavedInt("saveWindowY", ParallelRoadTool.SettingsFileName, -1000, true);
+        public static readonly SavedInt saveWindowX = new SavedInt("saveWindowX", Configuration.SettingsFileName, -1000, true);
+        public static readonly SavedInt saveWindowY = new SavedInt("saveWindowY", Configuration.SettingsFileName, -1000, true);
 
         public class UIFastList : UIFastList<string, UISaveLoadFileRow> { }
         public UIFastList fastList;
@@ -27,8 +29,8 @@ namespace ParallelRoadTool.UI
 
         public override void Start()
         {
-            name = "ParallelRoadTool_SaveWindow";
-            atlas = UIUtils.GetAtlas("Ingame");
+            name = $"{Configuration.ResourcePrefix}SaveWindow";
+            atlas = UIUtil.DefaultAtlas;
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(465, 180);
             canFocus = true;
@@ -70,7 +72,7 @@ namespace ParallelRoadTool.UI
             savePanel.relativePosition = new Vector2(8, 28);
 
             // Input
-            fileNameInput = UIUtils.CreateTextField(savePanel);
+            fileNameInput = UIUtil.CreateTextField(savePanel);
             fileNameInput.padding.top = 7;
             fileNameInput.horizontalAlignment = UIHorizontalAlignment.Left;
             fileNameInput.relativePosition = new Vector3(8, 8);
@@ -91,10 +93,10 @@ namespace ParallelRoadTool.UI
             };
 
             // Save
-            saveButton = UIUtils.CreateButton(savePanel);
-            saveButton.name = "MoveIt_SaveButton";
-            saveButton.text = "Export";
-            saveButton.size = new Vector2(100f, 30f);
+            saveButton = UIUtil.CreateUiButton(savePanel, "", "", new Vector2(100, 30), "");
+            saveButton.name = $"{Configuration.ResourcePrefix}SaveButton";
+            saveButton.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton");
+            saveButton.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton");
             saveButton.relativePosition = new Vector3(savePanel.width - saveButton.width - 8, 8);
 
             fileNameInput.size = new Vector2(saveButton.relativePosition.x - 16f, 30f);
@@ -146,7 +148,7 @@ namespace ParallelRoadTool.UI
 
         public static void Export(string filename)
         {
-            string file = Path.Combine(ParallelRoadTool.SaveFolder, filename + ".xml");
+            string file = Path.Combine(Configuration.SaveFolder, filename + ".xml");
 
             if (File.Exists(file))
             {
@@ -154,16 +156,16 @@ namespace ParallelRoadTool.UI
                 {
                     if (ret == 1)
                     {
-                        DebugUtils.Log("Deleting " + file);
+                        //DebugUtils.Log("Deleting " + file);
                         File.Delete(file);
-                        ParallelRoadTool.Instance.Export(filename);
+                        Singleton<ParallelRoadTool>.instance.Export(filename);
                         instance.RefreshFileList();
                     }
                 });
             }
             else
             {
-                ParallelRoadTool.Instance.Export(filename);
+                Singleton<ParallelRoadTool>.instance.Export(filename);
                 instance.RefreshFileList();
             }
         }
@@ -236,9 +238,9 @@ namespace ParallelRoadTool.UI
         {
             fastList.rowsData.Clear();
 
-            if (Directory.Exists(ParallelRoadTool.SaveFolder))
+            if (Directory.Exists(Configuration.SaveFolder))
             {
-                string[] files = Directory.GetFiles(ParallelRoadTool.SaveFolder, "*.xml");
+                string[] files = Directory.GetFiles(Configuration.SaveFolder, "*.xml");
 
                 foreach (string file in files)
                 {

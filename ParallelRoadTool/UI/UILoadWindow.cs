@@ -4,13 +4,14 @@ using UnityEngine;
 
 using ColossalFramework;
 using ColossalFramework.UI;
+using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool.UI
 {
     public class UILoadWindow : UIPanel
     {
-        public static readonly SavedInt loadWindowX = new SavedInt("loadWindowX", ParallelRoadTool.SettingsFileName, -1000, true);
-        public static readonly SavedInt loadWindowY = new SavedInt("loadWindowY", ParallelRoadTool.SettingsFileName, -1000, true);
+        private static readonly SavedInt loadWindowX = new SavedInt("loadWindowX", Configuration.SettingsFileName, -1000, true);
+        private static readonly SavedInt loadWindowY = new SavedInt("loadWindowY", Configuration.SettingsFileName, -1000, true);
 
         public class UIFastList : UIFastList<string, UISaveLoadFileRow> { }
         public UIFastList fastList;
@@ -23,8 +24,8 @@ namespace ParallelRoadTool.UI
         {
             //name is the same in both save/load windows. Purposely?
             //name = "ParallelRoadTool_SaveWindow";
-            name = "ParallelRoadTool_LoadWindow";
-            atlas = UIUtils.GetAtlas("Ingame");
+            name = $"{Configuration.ResourcePrefix}LoadWindow";
+            atlas = UIUtil.DefaultAtlas;
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(465, 180);
             canFocus = true;
@@ -158,9 +159,9 @@ namespace ParallelRoadTool.UI
         {
             fastList.rowsData.Clear();
 
-            if (Directory.Exists(ParallelRoadTool.SaveFolder))
+            if (Directory.Exists(Configuration.SaveFolder))
             {
-                string[] files = Directory.GetFiles(ParallelRoadTool.SaveFolder, "*.xml");
+                string[] files = Directory.GetFiles(Configuration.SaveFolder, "*.xml");
 
                 foreach (string file in files)
                 {

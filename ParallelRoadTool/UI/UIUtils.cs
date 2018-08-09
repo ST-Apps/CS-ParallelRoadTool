@@ -16,8 +16,8 @@ namespace ParallelRoadTool.UI
         {
             UIButton button = (UIButton)parent.AddUIComponent<UIButton>();
 
-            //button.atlas = GetAtlas("Ingame");
-            button.atlas = UIUtil.DefaultAtlas;
+            button.atlas = GetAtlas("Ingame");
+            //button.atlas = UIUtil.DefaultAtlas;
             button.size = new Vector2(90f, 30f);
             button.textScale = 0.9f;
             button.normalBgSprite = "ButtonMenu";
