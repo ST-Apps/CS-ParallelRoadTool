@@ -20,8 +20,6 @@ namespace ParallelRoadTool.UI
 
         public override void Start()
         {
-            //name is the same in both save/load windows. Purposely?
-            //name = "ParallelRoadTool_SaveWindow";
             name = $"{Configuration.ResourcePrefix}LoadWindow";
             atlas = UIUtil.DefaultAtlas;
             backgroundSprite = "SubcategoriesPanel";

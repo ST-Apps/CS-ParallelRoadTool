@@ -24,8 +24,6 @@ namespace ParallelRoadTool
         #region Data
 
         public static bool IsInGameMode;
-//        public const string AutoSaveFileName = "_PRTAutoSave";
-//        public static readonly string SaveFolder = Path.Combine(DataLocation.localApplicationData, "ParallelRoadToolExports");
 
         public List<NetInfo> AvailableRoadTypes { get; private set; }
         public List<NetTypeItem> SelectedRoadTypes { get; private set; }
@@ -108,7 +106,6 @@ namespace ParallelRoadTool
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                 SubscribeToUIEvents();
-
                 DebugUtils.Log("Initialized");
             }
             catch (Exception e)
@@ -234,11 +231,7 @@ namespace ParallelRoadTool
                 {
                     DebugUtils.Log("Adding network:" + netInfo.name);
                     var item = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset, preset.IsReversed);
-                    //netTypeItems.Add(n);
-                    //SelectedRoadTypes.Add(n);
-                    //_mainWindow.AddItem(n);
                     SelectedRoadTypes.Add(item);
-
                     _mainWindow.AddItem(item);
                     NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
 
@@ -248,30 +241,26 @@ namespace ParallelRoadTool
                     //TODO action for missing networks needed here
                 }
             }
-            //DebugUtils.Log("Network count: " + netTypeItems.Count);
-            //_mainWindow._netList.List.Clear();
-            //_mainWindow._netList.List = netTypeItems;
-            //_mainWindow._netList.RenderList();
-            //_mainWindow._netList.Changed();
         }
 
         public void Delete(string filename)
         {
+            string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
+
             try
             {
-                string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
 
                 if (File.Exists(path))
                 {
                     File.Delete(path);
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 DebugUtils.Log("Couldn't delete file");
-                DebugUtils.LogException(ex);
+                DebugUtils.LogException(e);
 
-                return;
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Delete failed", "Couldn't delete file '" + path + "'\n\n" + e.Message, true);
             }
         }
 
