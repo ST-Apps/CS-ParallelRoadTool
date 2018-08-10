@@ -134,8 +134,8 @@
     <EmbeddedResource Include="Assets\Localizations\it.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Icons\Load.png" />
-    <Content Include="Assets\Icons\Save.png" />
+    <EmbeddedResource Include="Assets\Icons\Load.png" />
+    <EmbeddedResource Include="Assets\Icons\Save.png" />
     <Content Include="Assets\Localizations\nl.xml" />
     <Content Include="Assets\Localizations\pt.xml" />
   </ItemGroup>

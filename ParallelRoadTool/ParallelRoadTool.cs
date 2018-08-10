@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using ColossalFramework;
-using ColossalFramework.IO;
 using ColossalFramework.UI;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.Models;
@@ -109,6 +108,7 @@ namespace ParallelRoadTool
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                 SubscribeToUIEvents();
+
                 DebugUtils.Log("Initialized");
             }
             catch (Exception e)
@@ -124,6 +124,13 @@ namespace ParallelRoadTool
             try
             {
                 DebugUtils.Log("Destroying ...");
+
+                //remove existing autosave
+                if (File.Exists(Path.Combine(Configuration.SaveFolder, Configuration.AutoSaveFileName + ".xml")))
+                    File.Delete(Path.Combine(Configuration.SaveFolder, Configuration.AutoSaveFileName + ".xml"));
+                //save current networks
+                DebugUtils.Log("Saving networks");
+                Export(Configuration.AutoSaveFileName);
 
                 ToggleDetours(false);
                 UnsubscribeToUIEvents();
@@ -216,7 +223,8 @@ namespace ParallelRoadTool
             }
 
             //var netTypeItems = new List<NetTypeItem>();
-            //SelectedRoadTypes.Clear();
+            _mainWindow.ClearItems();
+            SelectedRoadTypes.Clear();
             foreach (PresetNetItem preset in PresetItems)
             {
                 NetInfo netInfo;
@@ -225,10 +233,15 @@ namespace ParallelRoadTool
                 if (netInfo != null)
                 {
                     DebugUtils.Log("Adding network:" + netInfo.name);
-                    var n = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset, preset.IsReversed);
+                    var item = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset, preset.IsReversed);
                     //netTypeItems.Add(n);
                     //SelectedRoadTypes.Add(n);
-                    _mainWindow.AddItem(n);
+                    //_mainWindow.AddItem(n);
+                    SelectedRoadTypes.Add(item);
+
+                    _mainWindow.AddItem(item);
+                    NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+
                 }
                 else
                 {

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Utils;
@@ -75,6 +77,16 @@ namespace ParallelRoadTool.UI
 
             _items = new List<UINetTypeItem>();
             AddItem(null, true);
+
+            //load autosaved networks
+            if (File.Exists(Path.Combine(Configuration.SaveFolder, Configuration.AutoSaveFileName + ".xml")))
+            {
+                DebugUtils.Log("Loading autosaved networks");
+                Singleton<ParallelRoadTool>.instance.Import(Configuration.AutoSaveFileName);
+            }
+
+
+
         }
 
         public override void OnDestroy()
@@ -138,6 +150,17 @@ namespace ParallelRoadTool.UI
             _items.RemoveAt(index);
             // We need to shift index value for any element after current index or we'll lose update events
             for (var i = index; i < _items.Count; i++) _items[i].Index -= 1;
+        }
+
+        public void ClearItems()
+        {
+            DebugUtils.Log($"Deleting {_items.Count} networks");
+            // deleting items from last to first to avoid index shifting for remaining items
+            for (var i = _items.Count - 1; i >= 0; i--)
+            {
+                DebugUtils.Log($"Deleting item at index: {i}: {_items[i].NetInfo.name}");
+                DeleteItem(i);
+            }
         }
 
         #endregion

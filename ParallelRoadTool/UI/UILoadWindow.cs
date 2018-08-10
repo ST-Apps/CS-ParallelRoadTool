@@ -1,7 +1,5 @@
 ﻿using System.IO;
-
 using UnityEngine;
-
 using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Utils;
@@ -165,7 +163,8 @@ namespace ParallelRoadTool.UI
 
                 foreach (string file in files)
                 {
-                    fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
+                    if (Path.GetFileNameWithoutExtension(file) != Configuration.AutoSaveFileName) //exclude autosaved file from list) 
+                        fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
                 }
 
                 fastList.DisplayAt(0);

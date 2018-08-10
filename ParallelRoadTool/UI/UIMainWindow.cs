@@ -181,6 +181,10 @@ namespace ParallelRoadTool.UI
             _netList.DeleteItem(index);
         }
 
+        public void ClearItems()
+        {
+            _netList.ClearItems();
+        }
         public void ShowTutorial()
         {
             _tutorialToggleButton_eventCheckChanged(null, true);
@@ -299,6 +303,7 @@ namespace ParallelRoadTool.UI
 
             OnPositionChanged();
             DebugUtils.Log($"UIMainWindow created {size} | {position}");
+
         }
 
         public override void Update()
@@ -347,6 +352,8 @@ namespace ParallelRoadTool.UI
                 Destroy(_toolToggleButton);
                 Destroy(_snappingToggleButton);
                 Destroy(_tutorialToggleButton);
+                Destroy(_loadButton);
+                Destroy(_saveButton);
                 base.OnDestroy();
             }
             catch

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-
 using UnityEngine;
-
 using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Utils;

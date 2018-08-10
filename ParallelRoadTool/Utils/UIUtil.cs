@@ -239,14 +239,16 @@ namespace ParallelRoadTool.Utils
             // Changed sprite handling to remove need for multiple png's
             //uiButton.hoveredFgSprite = $"{sprite}Hovered";
             //uiButton.pressedFgSprite = $"{sprite}Pressed";
-            //uiButton.focusedFgSprite = $"{sprite}Focussed";
+            //uiButton.focusedFgSprite = $"{sprite}Focused"; //fixed typo
             //uiButton.disabledFgSprite = $"{sprite}Disabled";
             //uiButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+            
+            uiButton.normalBgSprite = $"OptionBase";
             uiButton.hoveredBgSprite = $"OptionBaseHovered";
             uiButton.pressedBgSprite = $"OptionBasePressed";
-            uiButton.focusedBgSprite = $"OptionBaseFocussed";
+            uiButton.focusedBgSprite = $"OptionBaseFocused";
             uiButton.disabledBgSprite = $"OptionBaseDisabled";
-
+            
             uiButton.horizontalAlignment = UIHorizontalAlignment.Right;
             uiButton.verticalAlignment = UIVerticalAlignment.Middle;
 
