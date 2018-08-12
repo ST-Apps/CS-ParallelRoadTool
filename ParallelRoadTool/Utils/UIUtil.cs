@@ -224,7 +224,7 @@ namespace ParallelRoadTool.Utils
         }
 
         public static UIButton CreateUiButton(UIComponent parent, string text, string tooltip, Vector2 size,
-            string sprite)
+            string sprite, bool isTextButton = false)
         {
             var uiButton = parent.AddUIComponent<UIButton>();
             uiButton.atlas = TextureAtlas;
@@ -233,22 +233,39 @@ namespace ParallelRoadTool.Utils
             //BUG: size parameter is never used
             //uiButton.size = new Vector2(36, 36);
             uiButton.size = size;
-            uiButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            uiButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
-            uiButton.normalFgSprite = sprite;
             // Changed sprite handling to remove need for multiple png's
             //uiButton.hoveredFgSprite = $"{sprite}Hovered";
             //uiButton.pressedFgSprite = $"{sprite}Pressed";
             //uiButton.focusedFgSprite = $"{sprite}Focused"; //fixed typo
             //uiButton.disabledFgSprite = $"{sprite}Disabled";
             //uiButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
-            
-            uiButton.normalBgSprite = $"OptionBase";
-            uiButton.hoveredBgSprite = $"OptionBaseHovered";
-            uiButton.pressedBgSprite = $"OptionBasePressed";
-            uiButton.focusedBgSprite = $"OptionBaseFocused";
-            uiButton.disabledBgSprite = $"OptionBaseDisabled";
-            
+            if (!isTextButton)
+            {
+                uiButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
+                uiButton.normalFgSprite = sprite;
+                uiButton.normalBgSprite = $"OptionBase";
+                uiButton.hoveredBgSprite = $"OptionBaseHovered";
+                uiButton.pressedBgSprite = $"OptionBasePressed";
+                uiButton.focusedBgSprite = $"OptionBaseFocused";
+                uiButton.disabledBgSprite = $"OptionBaseDisabled";
+
+            }
+            else
+            {
+                uiButton.atlas = DefaultAtlas;
+                uiButton.textHorizontalAlignment = UIHorizontalAlignment.Center;
+                if (sprite == string.Empty)
+                    uiButton.normalFgSprite = $"Buttonmenu";
+                else
+                    uiButton.normalFgSprite = sprite;
+                uiButton.hoveredBgSprite = $"ButtonMenuHovered";
+                uiButton.pressedBgSprite = $"ButtonMenuPressed";
+                uiButton.focusedBgSprite = $"ButtonMenuFocused";
+                uiButton.disabledBgSprite = $"ButtonMenuDisabled";
+
+            }
+
+            uiButton.textVerticalAlignment = UIVerticalAlignment.Middle;
             uiButton.horizontalAlignment = UIHorizontalAlignment.Right;
             uiButton.verticalAlignment = UIVerticalAlignment.Middle;
 

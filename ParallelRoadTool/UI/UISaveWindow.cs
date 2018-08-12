@@ -92,7 +92,7 @@ namespace ParallelRoadTool.UI
             };
 
             // Save
-            _saveButton = UIUtil.CreateUiButton(_savePanel, "", "", new Vector2(100, 30), "");
+            _saveButton = UIUtil.CreateUiButton(_savePanel, string.Empty, string.Empty, new Vector2(100, 30), string.Empty, true);
             _saveButton.name = $"{Configuration.ResourcePrefix}SaveButton";
             _saveButton.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton");
             _saveButton.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton");
@@ -143,25 +143,6 @@ namespace ParallelRoadTool.UI
 
             BringToFront();
             _fileNameInput.Focus();
-        }
-
-        public override void OnDestroy()
-        {
-            try
-            {
-                Destroy(_fastList);
-                Destroy(_fileNameInput);
-                Destroy(_saveButton);
-                Destroy(_dragHandle);
-                Destroy(_closeButton);
-                Destroy(_exportLabel);
-                Destroy(_modalEffect);
-                Destroy(_savePanel);
-                base.OnDestroy();
-            }
-            catch
-            {
-            }
         }
 
         public static void Export(string filename)
@@ -262,7 +243,8 @@ namespace ParallelRoadTool.UI
 
                 foreach (string file in files)
                 {
-                    _fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
+                    if (Path.GetFileNameWithoutExtension(file) != Configuration.AutoSaveFileName) //exclude autosaved file from list) 
+                        _fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
                 }
 
                 _fastList.DisplayAt(0);

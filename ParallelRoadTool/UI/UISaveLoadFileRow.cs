@@ -44,14 +44,13 @@ namespace ParallelRoadTool.UI
             _fileNameLabel.verticalAlignment = UIVerticalAlignment.Middle;
             _fileNameLabel.relativePosition = new Vector3(8, 8);
 
-            _deleteButton = UIUtil.CreateUiButton(this, "", "", new Vector2(80, 30), "");
+            _deleteButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), $"InfoIconGarbage", true);
             _deleteButton.name = $"{Configuration.ResourcePrefix}DeleteFileButton";
-            _deleteButton.text = "X";
             _deleteButton.size = new Vector2(40f, 30f);
             _deleteButton.relativePosition = new Vector3(430 - _deleteButton.width - 8, 8);
             _deleteButton.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "DeleteButton");
 
-            _saveLoadButton = UIUtil.CreateUiButton(this, "", "", new Vector2(80, 30), "");
+            _saveLoadButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), string.Empty, true);
             _saveLoadButton.name = $"{Configuration.ResourcePrefix}SaveLoadFileButton";
             _saveLoadButton.text = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
             _saveLoadButton.tooltip = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");

@@ -88,22 +88,6 @@ namespace ParallelRoadTool.UI
             Focus();
         }
 
-        public override void OnDestroy()
-        {
-            try
-            {
-                Destroy(_fastList);
-                Destroy(_closeButton);
-                Destroy(_dragHandle);
-                Destroy(_importLabel);
-                Destroy(_modalEffect);
-                base.OnDestroy();
-            }
-            catch
-            {
-            }
-        }
-
         public static void Open()
         {
             if (Instance == null)
