@@ -12,11 +12,14 @@ namespace ParallelRoadTool.UI
         private static readonly SavedInt loadWindowY = new SavedInt("loadWindowY", Configuration.SettingsFileName, -1000, true);
 
         public class UIFastList : UIFastList<string, UISaveLoadFileRow> { }
-        public UIFastList fastList;
 
-        public UIButton close;
+        private UIFastList _fastList;
+        private UIButton _closeButton;
+        private UIDragHandle _dragHandle;
+        private UILabel _importLabel;
+        private UIComponent _modalEffect;
 
-        public static UILoadWindow instance;
+        public static UILoadWindow Instance;
 
         public override void Start()
         {
@@ -26,58 +29,58 @@ namespace ParallelRoadTool.UI
             size = new Vector2(465, 180);
             canFocus = true;
 
-            UIDragHandle dragHandle = AddUIComponent<UIDragHandle>();
-            dragHandle.target = parent;
-            dragHandle.relativePosition = Vector3.zero;
+            _dragHandle = AddUIComponent<UIDragHandle>();
+            _dragHandle.target = parent;
+            _dragHandle.relativePosition = Vector3.zero;
 
-            close = AddUIComponent<UIButton>();
-            close.size = new Vector2(30f, 30f);
-            close.text = "X";
-            close.textScale = 0.9f;
-            close.textColor = new Color32(118, 123, 123, 255);
-            close.focusedTextColor = new Color32(118, 123, 123, 255);
-            close.hoveredTextColor = new Color32(140, 142, 142, 255);
-            close.pressedTextColor = new Color32(99, 102, 102, 102);
-            close.textPadding = new RectOffset(8, 8, 8, 8);
-            close.canFocus = false;
-            close.playAudioEvents = true;
-            close.relativePosition = new Vector3(width - close.width, 0);
+            _closeButton = AddUIComponent<UIButton>();
+            _closeButton.size = new Vector2(30f, 30f);
+            _closeButton.text = "X";
+            _closeButton.textScale = 0.9f;
+            _closeButton.textColor = new Color32(118, 123, 123, 255);
+            _closeButton.focusedTextColor = new Color32(118, 123, 123, 255);
+            _closeButton.hoveredTextColor = new Color32(140, 142, 142, 255);
+            _closeButton.pressedTextColor = new Color32(99, 102, 102, 102);
+            _closeButton.textPadding = new RectOffset(8, 8, 8, 8);
+            _closeButton.canFocus = false;
+            _closeButton.playAudioEvents = true;
+            _closeButton.relativePosition = new Vector3(width - _closeButton.width, 0);
 
-            close.eventClicked += (c, p) =>
+            _closeButton.eventClicked += (c, p) =>
             {
                 Close();
             };
 
-            UILabel label = AddUIComponent<UILabel>();
-            label.textScale = 0.9f;
-            label.text = "Import";
-            label.relativePosition = new Vector2(8, 8);
-            label.SendToBack();
+            _importLabel = AddUIComponent<UILabel>();
+            _importLabel.textScale = 0.9f;
+            _importLabel.text = "Import";
+            _importLabel.relativePosition = new Vector2(8, 8);
+            _importLabel.SendToBack();
 
             // FastList
-            fastList = AddUIComponent<UIFastList>();
-            fastList.backgroundSprite = "UnlockingPanel";
-            fastList.width = width - 16;
-            fastList.height = 46 * 5;
-            fastList.canSelect = true;
-            fastList.relativePosition = new Vector3(8, 28);
+            _fastList = AddUIComponent<UIFastList>();
+            _fastList.backgroundSprite = "UnlockingPanel";
+            _fastList.width = width - 16;
+            _fastList.height = 46 * 5;
+            _fastList.canSelect = true;
+            _fastList.relativePosition = new Vector3(8, 28);
 
-            fastList.rowHeight = 46f;
+            _fastList.rowHeight = 46f;
 
-            height = fastList.relativePosition.y + fastList.height + 8;
-            dragHandle.size = size;
+            height = _fastList.relativePosition.y + _fastList.height + 8;
+            _dragHandle.size = size;
             absolutePosition = new Vector3(loadWindowX.value, loadWindowY.value);
             MakePixelPerfect();
 
             RefreshFileList();
 
-            UIComponent modalEffect = GetUIView().panelsLibraryModalEffect;
-            if (modalEffect != null && !modalEffect.isVisible)
+            _modalEffect = GetUIView().panelsLibraryModalEffect;
+            if (_modalEffect != null && !_modalEffect.isVisible)
             {
-                modalEffect.Show(false);
+                _modalEffect.Show(false);
                 ValueAnimator.Animate("ModalEffect", delegate (float val)
                 {
-                    modalEffect.opacity = val;
+                    _modalEffect.opacity = val;
                 }, new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
             }
 
@@ -85,22 +88,38 @@ namespace ParallelRoadTool.UI
             Focus();
         }
 
+        public override void OnDestroy()
+        {
+            try
+            {
+                Destroy(_fastList);
+                Destroy(_closeButton);
+                Destroy(_dragHandle);
+                Destroy(_importLabel);
+                Destroy(_modalEffect);
+                base.OnDestroy();
+            }
+            catch
+            {
+            }
+        }
+
         public static void Open()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = UIView.GetAView().AddUIComponent(typeof(UILoadWindow)) as UILoadWindow;
-                UIView.PushModal(instance);
+                Instance = UIView.GetAView().AddUIComponent(typeof(UILoadWindow)) as UILoadWindow;
+                UIView.PushModal(Instance);
             }
         }
 
         public static void Close()
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 UIView.PopModal();
 
-                UIComponent modalEffect = instance.GetUIView().panelsLibraryModalEffect;
+                UIComponent modalEffect = Instance.GetUIView().panelsLibraryModalEffect;
                 if (modalEffect != null && modalEffect.isVisible)
                 {
                     modalEffect.Hide();
@@ -114,9 +133,9 @@ namespace ParallelRoadTool.UI
                     });*/
                 }
 
-                instance.isVisible = false;
-                Destroy(instance.gameObject);
-                instance = null;
+                Instance.isVisible = false;
+                Destroy(Instance.gameObject);
+                Instance = null;
             }
         }
 
@@ -153,7 +172,7 @@ namespace ParallelRoadTool.UI
 
         public void RefreshFileList()
         {
-            fastList.rowsData.Clear();
+            _fastList.rowsData.Clear();
 
             if (Directory.Exists(Configuration.SaveFolder))
             {
@@ -162,10 +181,10 @@ namespace ParallelRoadTool.UI
                 foreach (string file in files)
                 {
                     if (Path.GetFileNameWithoutExtension(file) != Configuration.AutoSaveFileName) //exclude autosaved file from list) 
-                        fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
+                        _fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
                 }
 
-                fastList.DisplayAt(0);
+                _fastList.DisplayAt(0);
             }
 
             Focus();

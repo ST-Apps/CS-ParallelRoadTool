@@ -249,7 +249,6 @@ namespace ParallelRoadTool
 
             try
             {
-
                 if (File.Exists(path))
                 {
                     File.Delete(path);
