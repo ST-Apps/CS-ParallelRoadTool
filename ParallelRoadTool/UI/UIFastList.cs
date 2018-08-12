@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using ColossalFramework.UI;
 
-using System;
-
 namespace ParallelRoadTool.UI
 {
     public interface IUIFastListRow<O>

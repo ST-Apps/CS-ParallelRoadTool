@@ -84,9 +84,6 @@ namespace ParallelRoadTool.UI
                 DebugUtils.Log("Loading autosaved networks");
                 Singleton<ParallelRoadTool>.instance.Import(Configuration.AutoSaveFileName);
             }
-
-
-
         }
 
         public override void OnDestroy()

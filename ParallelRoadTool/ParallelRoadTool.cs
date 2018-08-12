@@ -219,7 +219,6 @@ namespace ParallelRoadTool
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Import failed", "The networks couldn't be imported from '" + path + "'\n\n" + e.Message, true);
             }
 
-            //var netTypeItems = new List<NetTypeItem>();
             _mainWindow.ClearItems();
             SelectedRoadTypes.Clear();
             foreach (PresetNetItem preset in PresetItems)

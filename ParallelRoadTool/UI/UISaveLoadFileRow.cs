@@ -9,10 +9,8 @@ namespace ParallelRoadTool.UI
     public class UISaveLoadFileRow : UIPanel, IUIFastListRow<string>
     {
         private UILabel _fileNameLabel;
-
         private UIButton _saveLoadButton;
         private UIButton _deleteButton;
-
         private UIPanel _background;
 
         public UIPanel Background
@@ -25,7 +23,6 @@ namespace ParallelRoadTool.UI
                     _background.width = width;
                     _background.height = 40;
                     _background.relativePosition = Vector2.zero;
-
                     _background.zOrder = 0;
                 }
 
@@ -67,7 +64,6 @@ namespace ParallelRoadTool.UI
                 {
                     UILoadWindow.Close();
                     Singleton<ParallelRoadTool>.instance.Import(_fileNameLabel.text);
-                    
                 }
             };
 
@@ -109,10 +105,12 @@ namespace ParallelRoadTool.UI
                 Background.backgroundSprite = null;
             }
         }
+
         public void Select(bool isRowOdd)
         {
 
         }
+
         public void Deselect(bool isRowOdd)
         {
 

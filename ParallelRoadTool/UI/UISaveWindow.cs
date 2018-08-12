@@ -107,7 +107,6 @@ namespace ParallelRoadTool.UI
             _fastList.height = 46 * 5;
             _fastList.canSelect = true;
             _fastList.relativePosition = new Vector3(8, _savePanel.relativePosition.y + _savePanel.height + 8);
-
             _fastList.rowHeight = 46f;
 
             _saveButton.eventClicked += (c, p) =>

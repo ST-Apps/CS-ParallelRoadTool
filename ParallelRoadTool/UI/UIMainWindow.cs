@@ -47,7 +47,6 @@ namespace ParallelRoadTool.UI
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
         private UICheckBox _tutorialToggleButton;
-
         private UIButton _loadButton;
         private UIButton _saveButton;
 
