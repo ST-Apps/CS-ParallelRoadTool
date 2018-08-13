@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace FineRoadTool
+namespace ParallelRoadTool.Wrappers
 {
     public class RoadAIWrapper
     {
