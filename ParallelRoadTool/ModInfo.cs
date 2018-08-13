@@ -9,10 +9,18 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        private const string Version = "1.1.2";
+        private const string Version = "1.2";
 #if DEBUG
         private const string Branch = "refactoring";
+        public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
+#else
+        public static readonly string ModName = $"Parallel Road Tool {Version}";
 #endif
+
+        public string Name => ModName;
+
+        public string Description =>
+            "This mod allows players to easily draw parallel/stacked roads in Cities: Skylines.";
 
         public ModInfo()
         {
@@ -27,17 +35,6 @@ namespace ParallelRoadTool
                 DebugUtils.LogException(e);
             }
         }
-
-#if DEBUG
-        public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
-#else
-        public static readonly string ModName = $"Parallel Road Tool {Version}";
-#endif
-
-        public string Name => ModName;
-
-        public string Description =>
-            "This mod allows players to easily draw parallel/stacked roads in Cities: Skylines.";
 
         public void OnSettingsUI(UIHelperBase helper)
         {
