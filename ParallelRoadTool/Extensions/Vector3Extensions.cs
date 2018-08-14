@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ParallelRoadTool.Extensions
 {
     public static class Vector3Extensions
     {
-
         /// <summary>
         ///     Given a point, a direction and a distance, we can get the coordinates for a point which is parallel to the given
         ///     one for the given direction.
@@ -29,6 +24,5 @@ namespace ParallelRoadTool.Extensions
 
             return offsetPoint;
         }
-
     }
 }

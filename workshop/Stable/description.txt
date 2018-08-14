@@ -12,20 +12,9 @@ Main features are:
 [b]Tested on C:S version 1.10.1-f3[/b]
 
 [quote]
-[h1]Current version: [b]1.1.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.2.1[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Fixed performance issues ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/39]#39[/url])
-[*] Fixed swirling when in left-hand drive ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/38]#38[/url] and [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/58]#58[/url])
-[*] Fixed localization on non-Windows devices ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/52]#52[/url])
-[*] Fixed missing localization in options menu ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/52]#52[/url])
-[*] Added Chinese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/46]#46[/url])
-[*] Added Spanish translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/40]#40[/url])
-[*] Added Japanese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/50]#50[/url])
-[*] Added German translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/41]#41[/url])
-[*] Added French translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/57]#57[/url])
-[*] Added Italian translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/55]#55[/url])
-[*] Added Dutch translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/54]#54[/url])
-[*] Added Portuguese translation ([url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues/59]#59[/url])
+[*] Fixed CTD when activating mod
 [/list]
 [/quote]
 

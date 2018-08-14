@@ -1,45 +1,48 @@
-﻿using ColossalFramework.Globalization;
-using ParallelRoadTool;
-using ParallelRoadTool.Extensions.LocaleModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using ColossalFramework.Globalization;
+using ParallelRoadTool.Models;
+using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool.Extensions
 {
     /// <summary>
-    /// <see cref="https://github.com/markusmitbrille/cities-skylines-custom-namelists/blob/master/CSLCNL/CSLCNL/LocaleManagerExtensions.cs"/>
+    ///     <see
+    ///         cref="https://github.com/markusmitbrille/cities-skylines-custom-namelists/blob/master/CSLCNL/CSLCNL/LocaleManagerExtensions.cs" />
     /// </summary>
-    static class LocaleManagerExtensions
+    internal static class LocaleManagerExtensions
     {
-        const string localeFieldName = "m_Locale";
-        const string localizedStringsFieldName = "m_LocalizedStrings";
-        const string localizedStringsCountFieldName = "m_LocalizedStringsCount";
+        private const string localeFieldName = "m_Locale";
+        private const string localizedStringsFieldName = "m_LocalizedStrings";
+        private const string localizedStringsCountFieldName = "m_LocalizedStringsCount";
 
-        static FieldInfo localeField = typeof(LocaleManager).GetField(localeFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-        static FieldInfo localizedStringsField = typeof(Locale).GetField(localizedStringsFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-        static FieldInfo localizedStringsCountField = typeof(Locale).GetField(localizedStringsCountFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo localeField =
+            typeof(LocaleManager).GetField(localeFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo localizedStringsField =
+            typeof(Locale).GetField(localizedStringsFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo localizedStringsCountField =
+            typeof(Locale).GetField(localizedStringsCountFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static Locale GetLocale(this LocaleManager localeManager)
         {
-            return (Locale)localeField.GetValue(localeManager);
+            return (Locale) localeField.GetValue(localeManager);
         }
 
         public static Dictionary<Locale.Key, string> GetLocalizedStrings(this Locale locale)
         {
-            return (Dictionary<Locale.Key, string>)localizedStringsField.GetValue(locale);
+            return (Dictionary<Locale.Key, string>) localizedStringsField.GetValue(locale);
         }
 
         public static Dictionary<Locale.Key, int> GetLocalizedStringsCount(this Locale locale)
         {
-            return (Dictionary<Locale.Key, int>)localizedStringsCountField.GetValue(locale);
+            return (Dictionary<Locale.Key, int>) localizedStringsCountField.GetValue(locale);
         }
 
         public static void RemoveRange(this LocaleManager localeManager, Locale.Key id)
         {
-            Locale locale = localeManager.GetLocale();
+            var locale = localeManager.GetLocale();
 
             // Set index to 0 so we can check for the string count
             id.m_Index = 0;
@@ -50,8 +53,8 @@ namespace ParallelRoadTool.Extensions
                 return;
             }
 
-            Dictionary<Locale.Key, string> localizedStrings = locale.GetLocalizedStrings();
-            Dictionary<Locale.Key, int> localizedStringsCount = locale.GetLocalizedStringsCount();
+            var localizedStrings = locale.GetLocalizedStrings();
+            var localizedStringsCount = locale.GetLocalizedStringsCount();
 
             for (int index = 0, lastIndex = locale.CountUnchecked(id); index <= lastIndex; index++, id.m_Index = index)
             {
@@ -64,7 +67,7 @@ namespace ParallelRoadTool.Extensions
 
         public static void AddString(this LocaleManager localeManager, LocalizedString localizedString)
         {
-            Locale locale = localeManager.GetLocale();
+            var locale = localeManager.GetLocale();
 
             // Construct 0-index id for the localized string from argument
             Locale.Key id;
@@ -73,24 +76,19 @@ namespace ParallelRoadTool.Extensions
             id.m_Index = 0;
 
             // Check if the id already exists; if so find next index
-            if (locale.Exists(id))
-            {
-                // Log message lags game on large namelists
-                // Log($"Localized string {localizedString.Identifier}[{localizedString.Key}] already exists, adding it with next available index.");
-                id.m_Index = locale.CountUnchecked(id);
-            }
+            if (locale.Exists(id)) id.m_Index = locale.CountUnchecked(id);
 
             // Add the localized string
             locale.AddLocalizedString(id, localizedString.Value);
 
             // Set the string counts accordingly
-            Dictionary<Locale.Key, int> localizedStringCounts = locale.GetLocalizedStringsCount();
+            var localizedStringCounts = locale.GetLocalizedStringsCount();
 
             // The count at the exact index appears to always be 0
             localizedStringCounts[id] = 0;
 
             // index = 0 appears to be a special case and indicates the count of localized strings with the same identifier and key
-            Locale.Key zeroIndexID = id;
+            var zeroIndexID = id;
             zeroIndexID.m_Index = 0;
             localizedStringCounts[zeroIndexID] = id.m_Index + 1;
 

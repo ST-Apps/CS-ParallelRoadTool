@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <NameList
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    name="PRT_fr">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  name="PRT_fr">
   <strings>
     <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Activer l'accrochage pour les intersections existantes</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Basculer l'outil de route parallèle</LocalizedString>
@@ -10,7 +11,7 @@
     <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Inverser le sens de direction pour cette route</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Supprimer le réseau</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Ajouter un réseau</LocalizedString>
-    
+
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Identique à la sélection</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Diminuer le décalage horizontal des réseaux parallèles</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Augmenter le décalage horizontal des réseaux parallèles</LocalizedString>
@@ -27,9 +28,9 @@
       5) Distance verticale entre le réseau et celui du premier réseau.
       6) Supprime le réseau de la liste.
       7) Bascule l'accrochage sur toutes les intersections existantes.
-         Désactivé : accrochage uniquement aux derniers segments dessinés lorsque le mod était activé.
-         Activé : va essayer de se rapprocher du segment plus proche disponible.
-         
+      Désactivé : accrochage uniquement aux derniers segments dessinés lorsque le mod était activé.
+      Activé : va essayer de se rapprocher du segment plus proche disponible.
+
       Les valeurs négatives sont autorisées pour les distances verticales et horizontales.
       Une distance horizontale négative placera la route du côté opposé.
       Une distance verticale négative placera la route sous le niveau du terrain.

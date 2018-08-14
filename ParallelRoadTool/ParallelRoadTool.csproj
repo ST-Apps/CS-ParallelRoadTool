@@ -50,19 +50,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Detours\NetManagerDetour.cs" />
     <Compile Include="Detours\NetToolDetour.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
-    <Compile Include="Extensions\LocaleModels\LocalizedString.cs" />
-    <Compile Include="Extensions\LocaleModels\LocalizedStringKey.cs" />
-    <Compile Include="Extensions\LocaleModels\NameList.cs" />
+    <Compile Include="Models\LocalizedString.cs" />
+    <Compile Include="Models\LocalizedStringKey.cs" />
+    <Compile Include="Models\NameList.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
-    <Compile Include="NetTypeItem.cs" />
+    <Compile Include="Models\NetTypeItem.cs" />
+    <Compile Include="Models\NetTypeItemEventArgs.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
-    <Compile Include="DebugUtils.cs" />
-    <Compile Include="OptionsKeymapping.cs" />
+    <Compile Include="Utils\DebugUtils.cs" />
+    <Compile Include="UI\OptionsKeymapping.cs" />
+    <Compile Include="Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
@@ -71,7 +74,7 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
-    <Compile Include="ResourceLoader.cs" />
+    <Compile Include="Utils\ResourceLoader.cs" />
     <Compile Include="Utils\CallerMemberNameAttribute.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
@@ -80,55 +83,55 @@
     <Compile Include="UI\UINetTypeItem.cs" />
     <Compile Include="UI\Base\UIDropDownTextFieldOption.cs" />
     <Compile Include="UI\Base\UIOption.cs" />
-    <Compile Include="UI\Base\UIUtil.cs" />
+    <Compile Include="Utils\UIUtil.cs" />
     <Compile Include="UI\UIOptionsPanel.cs" />
     <Compile Include="Utils\LocalizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\ru.xml" />
-    <EmbeddedResource Include="Localization\zh.xml" />
-    <EmbeddedResource Include="Icons\Tutorial.png" />
-    <EmbeddedResource Include="Localization\en.xml" />
-    <EmbeddedResource Include="Icons\Reverse.png" />
-    <EmbeddedResource Include="Icons\ReverseDisabled.png" />
-    <EmbeddedResource Include="Icons\ReverseFocused.png" />
-    <EmbeddedResource Include="Icons\ReverseHovered.png" />
-    <EmbeddedResource Include="Icons\ReversePressed.png" />
-    <EmbeddedResource Include="Icons\Parallel.png" />
-    <EmbeddedResource Include="Icons\ParallelDisabled.png" />
-    <EmbeddedResource Include="Icons\ParallelFocused.png" />
-    <EmbeddedResource Include="Icons\ParallelHovered.png" />
-    <EmbeddedResource Include="Icons\ParallelPressed.png" />
-    <EmbeddedResource Include="Icons\Remove.png" />
-    <EmbeddedResource Include="Icons\RemoveDisabled.png" />
-    <EmbeddedResource Include="Icons\RemoveFocused.png" />
-    <EmbeddedResource Include="Icons\RemoveHovered.png" />
-    <EmbeddedResource Include="Icons\RemovePressed.png" />
-    <EmbeddedResource Include="Icons\Add.png" />
-    <EmbeddedResource Include="Icons\AddDisabled.png" />
-    <EmbeddedResource Include="Icons\AddFocused.png" />
-    <EmbeddedResource Include="Icons\AddHovered.png" />
-    <EmbeddedResource Include="Icons\AddPressed.png" />
-    <EmbeddedResource Include="Icons\DragCursor.png" />
+    <EmbeddedResource Include="Assets\Localizations\ru.xml" />
+    <EmbeddedResource Include="Assets\Localizations\zh.xml" />
+    <EmbeddedResource Include="Assets\Icons\Tutorial.png" />
+    <EmbeddedResource Include="Assets\Localizations\en.xml" />
+    <EmbeddedResource Include="Assets\Icons\Reverse.png" />
+    <EmbeddedResource Include="Assets\Icons\ReverseDisabled.png" />
+    <EmbeddedResource Include="Assets\Icons\ReverseFocused.png" />
+    <EmbeddedResource Include="Assets\Icons\ReverseHovered.png" />
+    <EmbeddedResource Include="Assets\Icons\ReversePressed.png" />
+    <EmbeddedResource Include="Assets\Icons\Parallel.png" />
+    <EmbeddedResource Include="Assets\Icons\ParallelDisabled.png" />
+    <EmbeddedResource Include="Assets\Icons\ParallelFocused.png" />
+    <EmbeddedResource Include="Assets\Icons\ParallelHovered.png" />
+    <EmbeddedResource Include="Assets\Icons\ParallelPressed.png" />
+    <EmbeddedResource Include="Assets\Icons\Remove.png" />
+    <EmbeddedResource Include="Assets\Icons\RemoveDisabled.png" />
+    <EmbeddedResource Include="Assets\Icons\RemoveFocused.png" />
+    <EmbeddedResource Include="Assets\Icons\RemoveHovered.png" />
+    <EmbeddedResource Include="Assets\Icons\RemovePressed.png" />
+    <EmbeddedResource Include="Assets\Icons\Add.png" />
+    <EmbeddedResource Include="Assets\Icons\AddDisabled.png" />
+    <EmbeddedResource Include="Assets\Icons\AddFocused.png" />
+    <EmbeddedResource Include="Assets\Icons\AddHovered.png" />
+    <EmbeddedResource Include="Assets\Icons\AddPressed.png" />
+    <EmbeddedResource Include="Assets\Icons\DragCursor.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\es.xml" />
+    <EmbeddedResource Include="Assets\Localizations\es.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\ja.xml" />
+    <EmbeddedResource Include="Assets\Localizations\ja.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\de.xml" />
+    <EmbeddedResource Include="Assets\Localizations\de.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\fr.xml" />
+    <EmbeddedResource Include="Assets\Localizations\fr.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\it.xml" />
+    <EmbeddedResource Include="Assets\Localizations\it.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Localization\nl.xml" />
-    <Content Include="Localization\pt.xml" />
+    <Content Include="Assets\Localizations\nl.xml" />
+    <Content Include="Assets\Localizations\pt.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

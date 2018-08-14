@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 
 namespace ParallelRoadTool.UI.Base
 {
     /// <summary>
-    /// Utility class that allows right-click to drag, disabling left-click one.
+    ///     Utility class that allows right-click to drag, disabling left-click one.
     /// </summary>
     public class UIRightDragHandle : UIDragHandle
     {
-        // Original events are not working outside of this class, so we need to redefine them
-        public new event DragEventHandler eventDragStart;
-        public new event DragEventHandler eventDragEnd;
-
         public UIRightDragHandle()
         {
             base.eventDragStart += OnEventDragStart;
             base.eventDragEnd += OnEventDragEnd;
         }
+
+        // Original events are not working outside of this class, so we need to redefine them
+        public new event DragEventHandler eventDragStart;
+        public new event DragEventHandler eventDragEnd;
 
         private void OnEventDragEnd(UIComponent component, UIDragEventParameter eventparam)
         {
@@ -49,7 +45,6 @@ namespace ParallelRoadTool.UI.Base
                 p.wheelDelta);
 
             base.OnMouseMove(p);
-
         }
     }
 }
