@@ -9,7 +9,7 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        private const string Version = "1.2";
+        private const string Version = "1.2.1";
 #if DEBUG
         private const string Branch = "dev";
         public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
@@ -36,8 +36,14 @@ namespace ParallelRoadTool
             }
         }
 
+        private static bool _loading;
+
         public void OnSettingsUI(UIHelperBase helper)
         {
+            // HACK - We need this to prevent multiple initializations that cause a CTD on activation
+            if (_loading) return;
+            _loading = true;
+
             try
             {
                 // HACK - [ISSUE-51] We need to force localization loading or we won't see any localized string in mod's option while being in main menu
@@ -48,13 +54,15 @@ namespace ParallelRoadTool
 
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
-                group.AddSpace(10);
+                group.AddSpace(10);                
             }
             catch (Exception e)
             {
                 DebugUtils.Log("OnSettingsUI failed");
                 DebugUtils.LogException(e);
             }
+
+            _loading = false;
         }
     }
 }
