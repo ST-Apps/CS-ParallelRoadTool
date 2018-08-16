@@ -255,7 +255,7 @@ namespace ParallelRoadTool.Utils
                 uiButton.atlas = DefaultAtlas;
                 uiButton.textHorizontalAlignment = UIHorizontalAlignment.Center;
                 if (sprite == string.Empty)
-                    uiButton.normalFgSprite = $"Buttonmenu";
+                    uiButton.normalFgSprite = $"ButtonMenu";
                 else
                     uiButton.normalFgSprite = sprite;
                 uiButton.hoveredBgSprite = $"ButtonMenuHovered";
