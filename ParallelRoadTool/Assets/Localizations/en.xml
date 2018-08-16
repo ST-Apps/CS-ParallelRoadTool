@@ -11,12 +11,19 @@
     <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Toggle reverse direction for this road</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Remove network</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Add network</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SaveButton">Save networks</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="LoadButton">Load networks</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="DeleteButton">Delete preset</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ExportButton">Export networks</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ImportButton">Import networks</LocalizedString>
 
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Same as selected</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Decrease horizontal offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Increase horizontal offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Decrease vertical offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Increase vertical offset of parallel networks</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportButton">Export</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportButton">Import</LocalizedString>
 
     <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
     <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">

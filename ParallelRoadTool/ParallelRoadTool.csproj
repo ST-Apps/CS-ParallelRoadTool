@@ -76,6 +76,10 @@
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="Utils\ResourceLoader.cs" />
     <Compile Include="Utils\CallerMemberNameAttribute.cs" />
+    <Compile Include="UI\UISaveWindow.cs" />
+    <Compile Include="UI\UISaveLoadFileRow.cs" />
+    <Compile Include="UI\UIFastList.cs" />
+    <Compile Include="UI\UILoadWindow.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
@@ -130,6 +134,8 @@
     <EmbeddedResource Include="Assets\Localizations\it.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Icons\Load.png" />
+    <EmbeddedResource Include="Assets\Icons\Save.png" />
     <Content Include="Assets\Localizations\nl.xml" />
     <Content Include="Assets\Localizations\pt.xml" />
   </ItemGroup>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Detours;
@@ -120,6 +122,13 @@ namespace ParallelRoadTool
             {
                 DebugUtils.Log("Destroying ...");
 
+                //remove existing autosave
+                if (File.Exists(Path.Combine(Configuration.SaveFolder, Configuration.AutoSaveFileName + ".xml")))
+                    File.Delete(Path.Combine(Configuration.SaveFolder, Configuration.AutoSaveFileName + ".xml"));
+                //save current networks
+                DebugUtils.Log("Saving networks");
+                Export(Configuration.AutoSaveFileName);
+
                 ToggleDetours(false);
                 UnsubscribeToUIEvents();
 
@@ -158,6 +167,98 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Disabling parallel road support");
                 NetManagerDetour.Revert();
                 NetToolDetour.Revert();
+            }
+        }
+
+        public bool Export(string filename)
+        {
+            string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
+            Directory.CreateDirectory(Configuration.SaveFolder);
+
+            List<PresetNetItem> PresetItems = SelectedRoadTypes.Select(NetTypeItem => new PresetNetItem {HorizontalOffset = NetTypeItem.HorizontalOffset, IsReversed = NetTypeItem.IsReversed, NetName = NetTypeItem.NetInfo.name, VerticalOffset = NetTypeItem.VerticalOffset}).ToList();
+
+            var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
+
+            try
+            {
+                using (System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(path))
+                {
+                    xmlSerializer.Serialize(streamWriter, PresetItems);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugUtils.Log("Couldn't export networks");
+                DebugUtils.LogException(e);
+
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Export failed", "The networks couldn't be exported to '" + path + "'\n\n" + e.Message, true);
+                return false;
+            }
+            return true;
+        }
+
+        public void Import(string filename)
+        {
+            string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
+            var PresetItems = new List<PresetNetItem>();
+
+            var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
+
+            try
+            {
+                using (System.IO.StreamReader streamReader = new System.IO.StreamReader(path))
+                {
+                    PresetItems = (List<PresetNetItem>)xmlSerializer.Deserialize(streamReader);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugUtils.Log("Couldn't import networks");
+                DebugUtils.LogException(e);
+
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Import failed", "The networks couldn't be imported from '" + path + "'\n\n" + e.Message, true);
+            }
+
+            _mainWindow.ClearItems();
+            SelectedRoadTypes.Clear();
+            foreach (PresetNetItem preset in PresetItems)
+            {
+                NetInfo netInfo;
+
+                netInfo = PrefabCollection<NetInfo>.FindLoaded(preset.NetName);
+                if (netInfo != null)
+                {
+                    DebugUtils.Log("Adding network:" + netInfo.name);
+                    var item = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset, preset.IsReversed);
+                    SelectedRoadTypes.Add(item);
+                    _mainWindow.AddItem(item);
+                    NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+
+                }
+                else
+                {
+                    //TODO action for missing networks needed here
+                }
+            }
+        }
+
+        public void Delete(string filename)
+        {
+            string path = Path.Combine(Configuration.SaveFolder, filename + ".xml");
+
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugUtils.Log("Couldn't delete file");
+                DebugUtils.LogException(e);
+
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Delete failed", "Couldn't delete file '" + path + "'\n\n" + e.Message, true);
             }
         }
 

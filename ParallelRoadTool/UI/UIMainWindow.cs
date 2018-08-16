@@ -47,6 +47,8 @@ namespace ParallelRoadTool.UI
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
         private UICheckBox _tutorialToggleButton;
+        private UIButton _loadButton;
+        private UIButton _saveButton;
 
         private UISprite _tutorialIcon => ToolsModifierControl.advisorPanel?.Find<UISprite>("Icon");
         private UISprite _tutorialImage => ToolsModifierControl.advisorPanel?.Find<UISprite>("Sprite");
@@ -76,6 +78,8 @@ namespace ParallelRoadTool.UI
             _netList.OnItemChanged -= NetListOnOnItemChanged;
             _netList.OnItemAdded -= NetListOnOnItemAdded;
             _netList.OnItemDeleted -= NetListOnOnItemDeleted;
+            _loadButton.eventClicked -= _loadButton_eventClicked;
+            _saveButton.eventClicked -= _saveButton_eventClicked;
         }
 
         private void SubscribeToUIEvents()
@@ -88,6 +92,18 @@ namespace ParallelRoadTool.UI
             _netList.OnItemChanged += NetListOnOnItemChanged;
             _netList.OnItemAdded += NetListOnOnItemAdded;
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
+            _loadButton.eventClicked += _loadButton_eventClicked;
+            _saveButton.eventClicked += _saveButton_eventClicked;
+        }
+
+        private void _loadButton_eventClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            UILoadWindow.Open();
+        }
+
+        private void _saveButton_eventClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            UISaveWindow.Open();
         }
 
         private void NetListOnOnItemAdded(object sender, EventArgs eventArgs)
@@ -164,6 +180,10 @@ namespace ParallelRoadTool.UI
             _netList.DeleteItem(index);
         }
 
+        public void ClearItems()
+        {
+            _netList.ClearItems();
+        }
         public void ShowTutorial()
         {
             _tutorialToggleButton_eventCheckChanged(null, true);
@@ -241,6 +261,15 @@ namespace ParallelRoadTool.UI
             _tutorialToggleButton.BringToFront();
             _tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
 
+            _loadButton = UIUtil.CreateUiButton(_mainPanel, String.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "LoadButton"), new Vector2(36, 36), "Load");
+            _loadButton.relativePosition = new Vector3(166, 38);
+            _loadButton.BringToFront();
+
+            _saveButton = UIUtil.CreateUiButton(_mainPanel, String.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SaveButton"), new Vector2(36, 36), "Save");
+            _saveButton.relativePosition = new Vector3(166, 38);
+            _saveButton.BringToFront();
+            //TODO Needs button state based on networks count
+
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
 
@@ -273,6 +302,7 @@ namespace ParallelRoadTool.UI
 
             OnPositionChanged();
             DebugUtils.Log($"UIMainWindow created {size} | {position}");
+
         }
 
         public override void Update()
@@ -321,6 +351,8 @@ namespace ParallelRoadTool.UI
                 Destroy(_toolToggleButton);
                 Destroy(_snappingToggleButton);
                 Destroy(_tutorialToggleButton);
+                Destroy(_loadButton);
+                Destroy(_saveButton);
                 base.OnDestroy();
             }
             catch

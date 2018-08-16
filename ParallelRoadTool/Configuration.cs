@@ -1,4 +1,7 @@
-﻿namespace ParallelRoadTool
+﻿using ColossalFramework.IO;
+using System.IO;
+
+namespace ParallelRoadTool
 {
     /// <summary>
     ///     Constants and data needed for the mod to work
@@ -6,6 +9,8 @@
     public static class Configuration
     {
         public const string SettingsFileName = "ParallelRoadTool";
+        public const string AutoSaveFileName = "_PRTAutoSave";
+        public static readonly string SaveFolder = Path.Combine(DataLocation.localApplicationData, $"{AssemblyName}Exports");
 
         #region UI
 
@@ -43,7 +48,9 @@
             "ReverseFocused",
             "ReverseHovered",
             "ReversePressed",
-            "Tutorial"
+            "Tutorial",
+            "Load",
+            "Save"
         };
 
         public static readonly string[] DefaultSpritesNames =
