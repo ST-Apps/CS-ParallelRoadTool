@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using ParallelRoadTool.Utils;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -7,8 +8,8 @@ namespace ParallelRoadTool.UI
     {
         public override void Start()
         {
-            name = "PRT_OptionsPanel";
-            atlas = ResourceLoader.GetAtlas("Ingame");
+            name = $"{Configuration.ResourcePrefix}OptionsPanel";
+            atlas = UIUtil.DefaultAtlas;
             backgroundSprite = "GenericPanel";
             color = new Color32(206, 206, 206, 255);
             size = new Vector2(500 - 8 * 2, 36 + 2 * 8);

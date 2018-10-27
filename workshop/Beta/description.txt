@@ -1,4 +1,4 @@
-[h1][b][BETA] Parallel Road Tool[/b][/h1]
+﻿[h1][b][BETA] Parallel Road Tool[/b][/h1]
 helps you easily drawing parallel and stacked networks.
 Main features are:
 [list]
@@ -11,13 +11,14 @@ Main features are:
 [quote]
 [h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b][/h1]
 [h1][b]The beta version is meant for testing only and it can be unstable.[/b][/h1]
-[b]Tested on C:S version 1.10.1-f3[/b]
+[b]Tested on C:S version 1.11.0-f3[/b]
 [/quote]
 
 [quote]
-[h1]Current version: [b]1.1.1-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.3.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Updated Russian translation
+[*] Disabled tutorial support to prevent it from breaking game's button.
+[*] Networks are now alphabetically sorted
 [/list]
 [/quote]
 

@@ -2,24 +2,32 @@ using System;
 using ColossalFramework;
 using ColossalFramework.UI;
 using ICities;
-using ParallelRoadTool;
+using ParallelRoadTool.UI;
 using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        public const string Version = "1.1.1";
+        private const string Version = "1.3.0";
 #if DEBUG
-        public const string Branch = "dev";
+        private const string Branch = "dev";
+        public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
+#else
+        public static readonly string ModName = $"Parallel Road Tool {Version}";
 #endif
+
+        public string Name => ModName;
+
+        public string Description =>
+            "This mod allows players to easily draw parallel/stacked roads in Cities: Skylines.";
 
         public ModInfo()
         {
             try
             {
-                // Creating setting file
-                GameSettings.AddSettingsFile(new SettingsFile { fileName = ParallelRoadTool.SettingsFileName });
+                // Creating setting file 
+                GameSettings.AddSettingsFile(new SettingsFile {fileName = Configuration.SettingsFileName});
             }
             catch (Exception e)
             {
@@ -28,17 +36,14 @@ namespace ParallelRoadTool
             }
         }
 
-#if DEBUG
-        public string Name => $"[BETA] Parallel Road Tool {Version}-{Branch}";
-#else
-        public string Name => $"Parallel Road Tool {Version}";
-#endif
-
-        public string Description =>
-            "This mod allows players to easily draw parallel/stacked roads in Cities: Skylines.";
+        private static bool _loading;
 
         public void OnSettingsUI(UIHelperBase helper)
         {
+            // HACK - We need this to prevent multiple initializations that cause a CTD on activation
+            if (_loading) return;
+            _loading = true;
+
             try
             {
                 // HACK - [ISSUE-51] We need to force localization loading or we won't see any localized string in mod's option while being in main menu
@@ -49,13 +54,15 @@ namespace ParallelRoadTool
 
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
-                group.AddSpace(10);
+                group.AddSpace(10);                
             }
             catch (Exception e)
             {
                 DebugUtils.Log("OnSettingsUI failed");
                 DebugUtils.LogException(e);
             }
+
+            _loading = false;
         }
     }
 }

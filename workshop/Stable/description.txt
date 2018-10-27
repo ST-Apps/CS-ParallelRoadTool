@@ -12,9 +12,9 @@ Main features are:
 [b]Tested on C:S version 1.10.1-f3[/b]
 
 [quote]
-[h1]Current version: [b]1.1.1[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]1.2.1[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Updated Russian translation
+[*] Fixed CTD when activating mod
 [/list]
 [/quote]
 

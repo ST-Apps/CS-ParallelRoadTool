@@ -1,4 +1,4 @@
-﻿namespace ParallelRoadTool
+﻿namespace ParallelRoadTool.Models
 {
     public class NetTypeItem
     {

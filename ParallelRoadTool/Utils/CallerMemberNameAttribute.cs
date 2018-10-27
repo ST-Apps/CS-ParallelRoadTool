@@ -1,4 +1,8 @@
-﻿namespace System.Runtime.CompilerServices
+﻿using System;
+
+namespace ParallelRoadTool.Utils
 {
-    public sealed class CallerMemberNameAttribute : Attribute { }
+    public sealed class CallerMemberNameAttribute : Attribute
+    {
+    }
 }

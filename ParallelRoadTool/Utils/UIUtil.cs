@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ParallelRoadTool.UI.Base
+namespace ParallelRoadTool.Utils
 {
     public static class UIUtil
     {
@@ -19,7 +20,7 @@ namespace ParallelRoadTool.UI.Base
         private const float COLUMN_PADDING = 5f;
         private const float TEXT_FIELD_WIDTH = 35f;
         public static readonly UITextureAtlas TextureAtlas = LoadResources();
-        public static readonly UITextureAtlas DefaultAtlas = ResourceLoader.GetAtlas("Ingame");
+        public static readonly UITextureAtlas DefaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
         public static readonly UITextureAtlas AdvisorAtlas = ResourceLoader.GetAtlas("AdvisorSprites");
 
         public static UIView uiRoot;
@@ -204,7 +205,7 @@ namespace ParallelRoadTool.UI.Base
 
             if (prefab == null)
             {
-                itemName = Locale.Get("PRT_TEXTS", "SameAsSelectedLabel");
+                itemName = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
             }
             else
             {
@@ -229,23 +230,15 @@ namespace ParallelRoadTool.UI.Base
             uiButton.atlas = TextureAtlas;
             uiButton.text = text;
             uiButton.tooltip = tooltip;
-            //BUG: size parameter is never used
-            //uiButton.size = new Vector2(36, 36);
-            uiButton.size = size;
+            uiButton.size = new Vector2(36, 36);
             uiButton.textVerticalAlignment = UIVerticalAlignment.Middle;
             uiButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             uiButton.normalFgSprite = sprite;
-            // Changed sprite handling to remove need for multiple png's
-            //uiButton.hoveredFgSprite = $"{sprite}Hovered";
-            //uiButton.pressedFgSprite = $"{sprite}Pressed";
-            //uiButton.focusedFgSprite = $"{sprite}Focussed";
-            //uiButton.disabledFgSprite = $"{sprite}Disabled";
-            //uiButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
-            uiButton.hoveredBgSprite = $"OptionBaseHovered";
-            uiButton.pressedBgSprite = $"OptionBasePressed";
-            uiButton.focusedBgSprite = $"OptionBaseFocussed";
-            uiButton.disabledBgSprite = $"OptionBaseDisabled";
-
+            uiButton.hoveredFgSprite = $"{sprite}Hovered";
+            uiButton.pressedFgSprite = $"{sprite}Pressed";
+            uiButton.focusedFgSprite = $"{sprite}Focussed";
+            uiButton.disabledFgSprite = $"{sprite}Disabled";
+            uiButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
             uiButton.horizontalAlignment = UIHorizontalAlignment.Right;
             uiButton.verticalAlignment = UIVerticalAlignment.Middle;
 
@@ -257,13 +250,14 @@ namespace ParallelRoadTool.UI.Base
         //    return CreateCheckBox(parent, spriteName, toolTip, value, new Vector2(36, 36));
         // }
 
-        public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value, bool isStatic = false)
+        public static UICheckBox CreateCheckBox(UIComponent parent, string spriteName, string toolTip, bool value,
+            bool isStatic = false)
         {
             var checkBox = parent.AddUIComponent<UICheckBox>();
             checkBox.size = new Vector2(36, 36);
 
             var button = checkBox.AddUIComponent<UIButton>();
-            button.name = "PRT_" + spriteName;
+            button.name = $"{Configuration.ResourcePrefix}{spriteName}";
             button.atlas = !isStatic ? TextureAtlas : DefaultAtlas;
             button.tooltip = toolTip;
             button.relativePosition = new Vector2(0, 0);
@@ -310,51 +304,12 @@ namespace ParallelRoadTool.UI.Base
 
         private static UITextureAtlas LoadResources()
         {
-            string[] spriteNames =
-            {
-                "Add",
-                "AddDisabled",
-                "AddFocused",
-                "AddHovered",
-                "AddPressed",
-                "Remove",
-                "RemoveDisabled",
-                "RemoveFocused",
-                "RemoveHovered",
-                "RemovePressed",
-                "Parallel",
-                "ParallelDisabled",
-                "ParallelFocused",
-                "ParallelHovered",
-                "ParallelPressed",
-                "Reverse",
-                "ReverseDisabled",
-                "ReverseFocused",
-                "ReverseHovered",
-                "ReversePressed",
-                "Tutorial",
-                "Load",
-                "Save"
-            };
-
             var textureAtlas =
-                ResourceLoader.CreateTextureAtlas("ParallelRoadTool", spriteNames, "ParallelRoadTool.Icons.");
+                ResourceLoader.CreateTextureAtlas(Configuration.CustomAtlasName, Configuration.CustomSpritesNames,
+                    Configuration.IconsNamespace);
 
-            var defaultAtlas = ResourceLoader.GetAtlas("Ingame");
-            Texture2D[] textures =
-            {
-                defaultAtlas["OptionBase"].texture,
-                defaultAtlas["OptionBaseFocused"].texture,
-                defaultAtlas["OptionBaseHovered"].texture,
-                defaultAtlas["OptionBasePressed"].texture,
-                defaultAtlas["OptionBaseDisabled"].texture,
-                defaultAtlas["Snapping"].texture,
-                defaultAtlas["SnappingFocused"].texture,
-                defaultAtlas["SnappingHovered"].texture,
-                defaultAtlas["SnappingPressed"].texture,
-                defaultAtlas["SnappingDisabled"].texture
-            };
-
+            var defaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
+            var textures = Configuration.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
             ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
 
             return textureAtlas;
