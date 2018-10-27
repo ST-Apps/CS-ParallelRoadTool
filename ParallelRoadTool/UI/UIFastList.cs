@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using ColossalFramework.UI;
 
-using System;
-
 namespace ParallelRoadTool.UI
 {
     public interface IUIFastListRow<O>
@@ -52,34 +50,34 @@ namespace ParallelRoadTool.UI
         where I : UIComponent, IUIFastListRow<O>
     {
         #region Private members
-        private UIPanel m_panel;
-        private UIScrollbar m_scrollbar;
-        private FastList<I> m_rows;
-        private FastList<O> m_rowsData;
+        private UIPanel _panel;
+        private UIScrollbar _scrollbar;
+        private FastList<I> _rows;
+        private FastList<O> _rowsData;
 
-        private string m_backgroundSprite;
-        private Color32 m_color = new Color32(255, 255, 255, 255);
-        private float m_rowHeight = -1;
-        private float m_pos = -1;
-        private float m_stepSize = 0;
-        private bool m_canSelect = false;
-        private int m_selectedDataId = -1;
-        private int m_selectedRowId = -1;
-        private bool m_lock = false;
-        private bool m_updateContent = true;
-        private bool m_autoHideScrollbar = false;
-        private UIComponent m_lastMouseEnter;
+        private string _backgroundSprite;
+        private Color32 _color = new Color32(255, 255, 255, 255);
+        private float _rowHeight = -1;
+        private float _pos = -1;
+        private float _stepSize = 0;
+        private bool _canSelect = false;
+        private int _selectedDataId = -1;
+        private int _selectedRowId = -1;
+        private bool _lock = false;
+        private bool _updateContent = true;
+        private bool _autoHideScrollbar = false;
+        private UIComponent _lastMouseEnter;
         #endregion
 
         #region Public accessors
         public bool autoHideScrollbar
         {
-            get { return m_autoHideScrollbar; }
+            get { return _autoHideScrollbar; }
             set
             {
-                if (m_autoHideScrollbar != value)
+                if (_autoHideScrollbar != value)
                 {
-                    m_autoHideScrollbar = value;
+                    _autoHideScrollbar = value;
                     UpdateScrollbar();
                 }
             }
@@ -89,12 +87,12 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public Color32 backgroundColor
         {
-            get { return m_color; }
+            get { return _color; }
             set
             {
-                m_color = value;
-                if (m_panel != null)
-                    m_panel.color = value;
+                _color = value;
+                if (_panel != null)
+                    _panel.color = value;
             }
         }
 
@@ -103,14 +101,14 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public string backgroundSprite
         {
-            get { return m_backgroundSprite; }
+            get { return _backgroundSprite; }
             set
             {
-                if (m_backgroundSprite != value)
+                if (_backgroundSprite != value)
                 {
-                    m_backgroundSprite = value;
-                    if (m_panel != null)
-                        m_panel.backgroundSprite = value;
+                    _backgroundSprite = value;
+                    if (_panel != null)
+                        _panel.backgroundSprite = value;
                 }
             }
         }
@@ -122,20 +120,20 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public bool canSelect
         {
-            get { return m_canSelect; }
+            get { return _canSelect; }
             set
             {
-                if (m_canSelect != value)
+                if (_canSelect != value)
                 {
-                    m_canSelect = value;
+                    _canSelect = value;
 
-                    if (m_rows == null) return;
-                    for (int i = 0; i < m_rows.m_size; i++)
+                    if (_rows == null) return;
+                    for (int i = 0; i < _rows.m_size; i++)
                     {
-                        if (m_canSelect)
-                            m_rows[i].eventClick += OnRowClicked;
+                        if (_canSelect)
+                            _rows[i].eventClick += OnRowClicked;
                         else
-                            m_rows[i].eventClick -= OnRowClicked;
+                            _rows[i].eventClick -= OnRowClicked;
                     }
                 }
             }
@@ -149,14 +147,14 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public float listPosition
         {
-            get { return m_pos; }
+            get { return _pos; }
             set
             {
-                if (m_rowHeight <= 0) return;
-                if (m_pos != value)
+                if (_rowHeight <= 0) return;
+                if (_pos != value)
                 {
-                    float pos = Mathf.Max(Mathf.Min(value, m_rowsData.m_size - height / m_rowHeight), 0);
-                    m_updateContent = Mathf.FloorToInt(m_pos) != Mathf.FloorToInt(pos);
+                    float pos = Mathf.Max(Mathf.Min(value, _rowsData.m_size - height / _rowHeight), 0);
+                    _updateContent = Mathf.FloorToInt(_pos) != Mathf.FloorToInt(pos);
                     DisplayAt(pos);
                 }
             }
@@ -165,21 +163,21 @@ namespace ParallelRoadTool.UI
         /// <summary>
         /// This is the list of data that will be send to the IUIFastListRow.Display method
         /// Changing this list will reset the display position to 0
-        /// You can also change rowsData.m_buffer and rowsData.m_size
+        /// You can also change rowsData._buffer and rowsData.m_size
         /// and refresh the display with DisplayAt method
         /// </summary>
         public FastList<O> rowsData
         {
             get
             {
-                if (m_rowsData == null) m_rowsData = new FastList<O>();
-                return m_rowsData;
+                if (_rowsData == null) _rowsData = new FastList<O>();
+                return _rowsData;
             }
             set
             {
-                if (m_rowsData != value)
+                if (_rowsData != value)
                 {
-                    m_rowsData = value;
+                    _rowsData = value;
                     DisplayAt(0);
                 }
             }
@@ -190,12 +188,12 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public float rowHeight
         {
-            get { return m_rowHeight; }
+            get { return _rowHeight; }
             set
             {
-                if (m_rowHeight != value)
+                if (_rowHeight != value)
                 {
-                    m_rowHeight = value;
+                    _rowHeight = value;
                     CheckRows();
                 }
             }
@@ -207,39 +205,39 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public int selectedIndex
         {
-            get { return m_selectedDataId; }
+            get { return _selectedDataId; }
             set
             {
-                if (m_rowsData == null || m_rowsData.m_size == 0)
+                if (_rowsData == null || _rowsData.m_size == 0)
                 {
-                    m_selectedDataId = -1;
+                    _selectedDataId = -1;
                     return;
                 }
 
-                int oldId = m_selectedDataId;
-                if (oldId >= m_rowsData.m_size) oldId = -1;
-                m_selectedDataId = Mathf.Min(Mathf.Max(-1, value), m_rowsData.m_size - 1);
+                int oldId = _selectedDataId;
+                if (oldId >= _rowsData.m_size) oldId = -1;
+                _selectedDataId = Mathf.Min(Mathf.Max(-1, value), _rowsData.m_size - 1);
 
-                int pos = Mathf.FloorToInt(m_pos);
-                int newRowId = Mathf.Max(-1, m_selectedDataId - pos);
-                if (newRowId >= m_rows.m_size) newRowId = -1;
+                int pos = Mathf.FloorToInt(_pos);
+                int newRowId = Mathf.Max(-1, _selectedDataId - pos);
+                if (newRowId >= _rows.m_size) newRowId = -1;
 
-                if (newRowId >= 0 && newRowId == m_selectedRowId && !m_updateContent) return;
+                if (newRowId >= 0 && newRowId == _selectedRowId && !_updateContent) return;
 
-                if (m_selectedRowId >= 0)
+                if (_selectedRowId >= 0)
                 {
-                    m_rows[m_selectedRowId].Deselect((oldId % 2) == 1);
-                    m_selectedRowId = -1;
+                    _rows[_selectedRowId].Deselect((oldId % 2) == 1);
+                    _selectedRowId = -1;
                 }
 
                 if (newRowId >= 0)
                 {
-                    m_selectedRowId = newRowId;
-                    m_rows[m_selectedRowId].Select((m_selectedDataId % 2) == 1);
+                    _selectedRowId = newRowId;
+                    _rows[_selectedRowId].Select((_selectedDataId % 2) == 1);
                 }
 
-                if (eventSelectedIndexChanged != null && m_selectedDataId != oldId)
-                    eventSelectedIndexChanged(this, m_selectedDataId);
+                if (EventSelectedIndexChanged != null && _selectedDataId != oldId)
+                    EventSelectedIndexChanged(this, _selectedDataId);
             }
         }
 
@@ -247,8 +245,8 @@ namespace ParallelRoadTool.UI
         {
             get
             {
-                if (m_selectedDataId == -1) return null;
-                return m_rowsData.m_buffer[m_selectedDataId];
+                if (_selectedDataId == -1) return null;
+                return _rowsData.m_buffer[_selectedDataId];
             }
         }
 
@@ -261,8 +259,8 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public float stepSize
         {
-            get { return (m_stepSize > 0) ? m_stepSize : m_rowHeight; }
-            set { m_stepSize = value; }
+            get { return (_stepSize > 0) ? _stepSize : _rowHeight; }
+            set { _stepSize = value; }
         }
         #endregion
 
@@ -270,7 +268,7 @@ namespace ParallelRoadTool.UI
         /// <summary>
         /// Called when the currently selected row changed
         /// </summary>
-        public event PropertyChangedEventHandler<int> eventSelectedIndexChanged;
+        public event PropertyChangedEventHandler<int> EventSelectedIndexChanged;
         #endregion
 
         #region Public methods
@@ -279,11 +277,11 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public void Clear()
         {
-            m_rowsData.Clear();
+            _rowsData.Clear();
 
-            for (int i = 0; i < m_rows.m_size; i++)
+            for (int i = 0; i < _rows.m_size; i++)
             {
-                m_rows[i].enabled = false;
+                _rows[i].enabled = false;
             }
 
             UpdateScrollbar();
@@ -296,37 +294,37 @@ namespace ParallelRoadTool.UI
         /// <param name="pos">Index position in the list</param>
         public void DisplayAt(float pos)
         {
-            if (m_rowsData == null || m_rowHeight <= 0) return;
+            if (_rowsData == null || _rowHeight <= 0) return;
 
             SetupControls();
 
-            m_pos = Mathf.Max(Mathf.Min(pos, m_rowsData.m_size - height / m_rowHeight), 0f);
+            _pos = Mathf.Max(Mathf.Min(pos, _rowsData.m_size - height / _rowHeight), 0f);
 
-            for (int i = 0; i < m_rows.m_size; i++)
+            for (int i = 0; i < _rows.m_size; i++)
             {
-                int dataPos = Mathf.FloorToInt(m_pos + i);
-                float offset = rowHeight * (m_pos + i - dataPos);
-                if (dataPos < m_rowsData.m_size)
+                int dataPos = Mathf.FloorToInt(_pos + i);
+                float offset = rowHeight * (_pos + i - dataPos);
+                if (dataPos < _rowsData.m_size)
                 {
-                    if (m_updateContent)
-                        m_rows[i].Display(m_rowsData[dataPos], dataPos);
+                    if (_updateContent)
+                        _rows[i].Display(_rowsData[dataPos], dataPos);
 
-                    if (dataPos == m_selectedDataId && m_updateContent)
+                    if (dataPos == _selectedDataId && _updateContent)
                     {
-                        m_selectedRowId = i;
-                        m_rows[m_selectedRowId].Select((dataPos % 2) == 1);
+                        _selectedRowId = i;
+                        _rows[_selectedRowId].Select((dataPos % 2) == 1);
                     }
 
-                    m_rows[i].enabled = true;
+                    _rows[i].enabled = true;
                 }
                 else
-                    m_rows[i].enabled = false;
+                    _rows[i].enabled = false;
 
-                m_rows[i].relativePosition = new Vector3(0, i * rowHeight - offset);
+                _rows[i].relativePosition = new Vector3(0, i * rowHeight - offset);
             }
 
             UpdateScrollbar();
-            m_updateContent = true;
+            _updateContent = true;
         }
 
         /// <summary>
@@ -334,7 +332,7 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public void Refresh()
         {
-            DisplayAt(m_pos);
+            DisplayAt(_pos);
         }
         #endregion
 
@@ -350,16 +348,16 @@ namespace ParallelRoadTool.UI
         {
             base.OnDestroy();
 
-            if (m_panel == null) return;
+            if (_panel == null) return;
 
-            Destroy(m_panel);
-            Destroy(m_scrollbar);
+            Destroy(_panel);
+            Destroy(_scrollbar);
 
-            if (m_rows == null) return;
+            if (_rows == null) return;
 
-            for (int i = 0; i < m_rows.m_size; i++)
+            for (int i = 0; i < _rows.m_size; i++)
             {
-                Destroy(m_rows[i] as UnityEngine.Object);
+                Destroy(_rows[i] as UnityEngine.Object);
             }
         }
 
@@ -367,13 +365,13 @@ namespace ParallelRoadTool.UI
         {
             base.OnSizeChanged();
 
-            if (m_panel == null) return;
+            if (_panel == null) return;
 
-            m_panel.size = size;
+            _panel.size = size;
 
-            m_scrollbar.height = height;
-            m_scrollbar.trackObject.height = height;
-            m_scrollbar.AlignTo(this, UIAlignAnchor.TopRight);
+            _scrollbar.height = height;
+            _scrollbar.trackObject.height = height;
+            _scrollbar.AlignTo(this, UIAlignAnchor.TopRight);
 
             CheckRows();
         }
@@ -385,10 +383,10 @@ namespace ParallelRoadTool.UI
             if (!p.used)
             {
                 float prevPos = listPosition;
-                if (m_stepSize > 0 && m_rowHeight > 0)
-                    listPosition = m_pos - p.wheelDelta * m_stepSize / m_rowHeight;
+                if (_stepSize > 0 && _rowHeight > 0)
+                    listPosition = _pos - p.wheelDelta * _stepSize / _rowHeight;
                 else
-                    listPosition = m_pos - p.wheelDelta;
+                    listPosition = _pos - p.wheelDelta;
 
                 if (prevPos != listPosition)
                 {
@@ -396,7 +394,7 @@ namespace ParallelRoadTool.UI
                 }
 
                 if (selectOnMouseEnter)
-                    OnRowClicked(m_lastMouseEnter, p);
+                    OnRowClicked(_lastMouseEnter, p);
             }
         }
         #endregion
@@ -405,14 +403,14 @@ namespace ParallelRoadTool.UI
 
         protected void OnRowClicked(UIComponent component, UIMouseEventParameter p)
         {
-            if (selectOnMouseEnter) m_lastMouseEnter = component;
+            if (selectOnMouseEnter) _lastMouseEnter = component;
 
-            int max = Mathf.Min(m_rowsData.m_size, m_rows.m_size);
+            int max = Mathf.Min(_rowsData.m_size, _rows.m_size);
             for (int i = 0; i < max; i++)
             {
-                if (component == (UIComponent)m_rows[i])
+                if (component == (UIComponent)_rows[i])
                 {
-                    selectedIndex = i + Mathf.FloorToInt(m_pos);
+                    selectedIndex = i + Mathf.FloorToInt(_pos);
                     return;
                 }
             }
@@ -420,33 +418,33 @@ namespace ParallelRoadTool.UI
 
         private void CheckRows()
         {
-            if (m_panel == null || m_rowHeight <= 0) return;
+            if (_panel == null || _rowHeight <= 0) return;
 
-            int nbRows = Mathf.CeilToInt(height / m_rowHeight) + 1;
+            int nbRows = Mathf.CeilToInt(height / _rowHeight) + 1;
 
-            if (m_rows == null)
+            if (_rows == null)
             {
-                m_rows = new FastList<I>();
-                m_rows.SetCapacity(nbRows);
+                _rows = new FastList<I>();
+                _rows.SetCapacity(nbRows);
             }
 
-            if (m_rows.m_size < nbRows)
+            if (_rows.m_size < nbRows)
             {
                 // Adding missing rows
-                for (int i = m_rows.m_size; i < nbRows; i++)
+                for (int i = _rows.m_size; i < nbRows; i++)
                 {
-                    m_rows.Add(m_panel.AddUIComponent<I>());
-                    if (m_canSelect && !selectOnMouseEnter) m_rows[i].eventClick += OnRowClicked;
-                    else if (m_canSelect) m_rows[i].eventMouseEnter += OnRowClicked;
+                    _rows.Add(_panel.AddUIComponent<I>());
+                    if (_canSelect && !selectOnMouseEnter) _rows[i].eventClick += OnRowClicked;
+                    else if (_canSelect) _rows[i].eventMouseEnter += OnRowClicked;
                 }
             }
-            else if (m_rows.m_size > nbRows)
+            else if (_rows.m_size > nbRows)
             {
                 // Remove excess rows
-                for (int i = nbRows; i < m_rows.m_size; i++)
-                    Destroy(m_rows[i].gameObject);
+                for (int i = nbRows; i < _rows.m_size; i++)
+                    Destroy(_rows[i].gameObject);
 
-                m_rows.SetCapacity(nbRows);
+                _rows.SetCapacity(nbRows);
             }
 
             UpdateScrollbar();
@@ -454,81 +452,81 @@ namespace ParallelRoadTool.UI
 
         private void UpdateScrollbar()
         {
-            if (m_rowsData == null || m_rowHeight <= 0) return;
+            if (_rowsData == null || _rowHeight <= 0) return;
 
-            if (m_autoHideScrollbar)
+            if (_autoHideScrollbar)
             {
-                bool isVisible = m_rowsData.m_size * m_rowHeight > height;
+                bool isVisible = _rowsData.m_size * _rowHeight > height;
                 float newPanelWidth = isVisible ? width - 10f : width;
                 float newItemWidth = isVisible ? width - 20f : width;
 
-                m_panel.width = newPanelWidth;
-                for (int i = 0; i < m_rows.m_size; i++)
+                _panel.width = newPanelWidth;
+                for (int i = 0; i < _rows.m_size; i++)
                 {
-                    m_rows[i].width = newItemWidth;
+                    _rows[i].width = newItemWidth;
                 }
 
-                m_scrollbar.isVisible = isVisible;
+                _scrollbar.isVisible = isVisible;
             }
 
-            float H = m_rowHeight * m_rowsData.m_size;
-            float scrollSize = height * height / (m_rowHeight * m_rowsData.m_size);
-            float amount = stepSize * height / (m_rowHeight * m_rowsData.m_size);
+            float H = _rowHeight * _rowsData.m_size;
+            float scrollSize = height * height / (_rowHeight * _rowsData.m_size);
+            float amount = stepSize * height / (_rowHeight * _rowsData.m_size);
 
-            m_scrollbar.scrollSize = Mathf.Max(10f, scrollSize);
-            m_scrollbar.minValue = 0f;
-            m_scrollbar.maxValue = height;
-            m_scrollbar.incrementAmount = Mathf.Max(1f, amount);
+            _scrollbar.scrollSize = Mathf.Max(10f, scrollSize);
+            _scrollbar.minValue = 0f;
+            _scrollbar.maxValue = height;
+            _scrollbar.incrementAmount = Mathf.Max(1f, amount);
 
             UpdateScrollPosition();
         }
 
         private void UpdateScrollPosition()
         {
-            if (m_lock || m_rowHeight <= 0) return;
+            if (_lock || _rowHeight <= 0) return;
 
-            m_lock = true;
+            _lock = true;
 
-            float pos = m_pos * (height - m_scrollbar.scrollSize) / (m_rowsData.m_size - height / m_rowHeight);
-            if (pos != m_scrollbar.value)
-                m_scrollbar.value = pos;
+            float pos = _pos * (height - _scrollbar.scrollSize) / (_rowsData.m_size - height / _rowHeight);
+            if (pos != _scrollbar.value)
+                _scrollbar.value = pos;
 
-            m_lock = false;
+            _lock = false;
         }
 
 
         private void SetupControls()
         {
-            if (m_panel != null) return;
+            if (_panel != null) return;
 
             // Panel 
-            m_panel = AddUIComponent<UIPanel>();
-            m_panel.width = width - 10f;
-            m_panel.height = height;
-            m_panel.backgroundSprite = m_backgroundSprite;
-            m_panel.color = m_color;
-            m_panel.clipChildren = true;
-            m_panel.relativePosition = Vector2.zero;
+            _panel = AddUIComponent<UIPanel>();
+            _panel.width = width - 10f;
+            _panel.height = height;
+            _panel.backgroundSprite = _backgroundSprite;
+            _panel.color = _color;
+            _panel.clipChildren = true;
+            _panel.relativePosition = Vector2.zero;
 
             // Scrollbar
-            m_scrollbar = AddUIComponent<UIScrollbar>();
-            m_scrollbar.width = 20f;
-            m_scrollbar.height = height;
-            m_scrollbar.orientation = UIOrientation.Vertical;
-            m_scrollbar.pivot = UIPivotPoint.BottomLeft;
-            m_scrollbar.AlignTo(this, UIAlignAnchor.TopRight);
-            m_scrollbar.minValue = 0;
-            m_scrollbar.value = 0;
-            m_scrollbar.incrementAmount = 50;
+            _scrollbar = AddUIComponent<UIScrollbar>();
+            _scrollbar.width = 20f;
+            _scrollbar.height = height;
+            _scrollbar.orientation = UIOrientation.Vertical;
+            _scrollbar.pivot = UIPivotPoint.BottomLeft;
+            _scrollbar.AlignTo(this, UIAlignAnchor.TopRight);
+            _scrollbar.minValue = 0;
+            _scrollbar.value = 0;
+            _scrollbar.incrementAmount = 50;
 
-            UISlicedSprite tracSprite = m_scrollbar.AddUIComponent<UISlicedSprite>();
+            UISlicedSprite tracSprite = _scrollbar.AddUIComponent<UISlicedSprite>();
             tracSprite.relativePosition = Vector2.zero;
             tracSprite.autoSize = true;
             tracSprite.size = tracSprite.parent.size;
             tracSprite.fillDirection = UIFillDirection.Vertical;
             tracSprite.spriteName = "ScrollbarTrack";
 
-            m_scrollbar.trackObject = tracSprite;
+            _scrollbar.trackObject = tracSprite;
 
             UISlicedSprite thumbSprite = tracSprite.AddUIComponent<UISlicedSprite>();
             thumbSprite.relativePosition = Vector2.zero;
@@ -537,19 +535,19 @@ namespace ParallelRoadTool.UI
             thumbSprite.width = thumbSprite.parent.width - 8;
             thumbSprite.spriteName = "ScrollbarThumb";
 
-            m_scrollbar.thumbObject = thumbSprite;
+            _scrollbar.thumbObject = thumbSprite;
 
             // Rows
             CheckRows();
 
-            m_scrollbar.eventValueChanged += (c, t) =>
+            _scrollbar.eventValueChanged += (c, t) =>
             {
-                if (m_lock || m_rowHeight <= 0) return;
+                if (_lock || _rowHeight <= 0) return;
 
-                m_lock = true;
+                _lock = true;
 
-                listPosition = m_scrollbar.value * (m_rowsData.m_size - height / m_rowHeight) / (height - m_scrollbar.scrollSize - 1f);
-                m_lock = false;
+                listPosition = _scrollbar.value * (_rowsData.m_size - height / _rowHeight) / (height - _scrollbar.scrollSize - 1f);
+                _lock = false;
             };
         }
         #endregion

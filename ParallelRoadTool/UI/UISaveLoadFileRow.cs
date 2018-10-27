@@ -1,32 +1,32 @@
 ﻿using UnityEngine;
 using ColossalFramework.UI;
+using ColossalFramework;
+using ParallelRoadTool.Utils;
+using ColossalFramework.Globalization;
 
 namespace ParallelRoadTool.UI
 {
     public class UISaveLoadFileRow : UIPanel, IUIFastListRow<string>
     {
-        public UILabel fileNameLabel;
+        private UILabel _fileNameLabel;
+        private UIButton _saveLoadButton;
+        private UIButton _deleteButton;
+        private UIPanel _background;
 
-        public UIButton saveLoadButton;
-        public UIButton deleteButton;
-
-        private UIPanel m_background;
-
-        public UIPanel background
+        public UIPanel Background
         {
             get
             {
-                if (m_background == null)
+                if (_background == null)
                 {
-                    m_background = AddUIComponent<UIPanel>();
-                    m_background.width = width;
-                    m_background.height = 40;
-                    m_background.relativePosition = Vector2.zero;
-
-                    m_background.zOrder = 0;
+                    _background = AddUIComponent<UIPanel>();
+                    _background.width = width;
+                    _background.height = 40;
+                    _background.relativePosition = Vector2.zero;
+                    _background.zOrder = 0;
                 }
 
-                return m_background;
+                return _background;
             }
         }
 
@@ -34,81 +34,83 @@ namespace ParallelRoadTool.UI
         {
             height = 46;
 
-            fileNameLabel = AddUIComponent<UILabel>();
-            fileNameLabel.textScale = 0.9f;
-            fileNameLabel.autoSize = false;
-            fileNameLabel.height = 30;
-            fileNameLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            fileNameLabel.relativePosition = new Vector3(8, 8);
+            _fileNameLabel = AddUIComponent<UILabel>();
+            _fileNameLabel.textScale = 0.9f;
+            _fileNameLabel.autoSize = false;
+            _fileNameLabel.height = 30;
+            _fileNameLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            _fileNameLabel.relativePosition = new Vector3(8, 8);
 
-            deleteButton = UIUtils.CreateButton(this);
-            deleteButton.name = "PRT_DeleteFileButton";
-            deleteButton.text = "X";
-            deleteButton.size = new Vector2(40f, 30f);
-            deleteButton.relativePosition = new Vector3(430 - deleteButton.width - 8, 8);
-            deleteButton.tooltip = "Delete saved networks";
+            _deleteButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), $"InfoIconGarbage", true);
+            _deleteButton.name = $"{Configuration.ResourcePrefix}DeleteFileButton";
+            _deleteButton.size = new Vector2(40f, 30f);
+            _deleteButton.relativePosition = new Vector3(430 - _deleteButton.width - 8, 8);
+            _deleteButton.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "DeleteButton");
 
-            saveLoadButton = UIUtils.CreateButton(this);
-            saveLoadButton.name = "PRT_SaveLoadFileButton";
-            saveLoadButton.text = UISaveWindow.instance != null ? "Export" : "Import";
-            saveLoadButton.size = new Vector2(80f, 30f);
-            saveLoadButton.relativePosition = new Vector3(deleteButton.relativePosition.x - saveLoadButton.width - 8, 8);
+            _saveLoadButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), string.Empty, true);
+            _saveLoadButton.name = $"{Configuration.ResourcePrefix}SaveLoadFileButton";
+            _saveLoadButton.text = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
+            _saveLoadButton.tooltip = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");
+            _saveLoadButton.size = new Vector2(80f, 30f);
+            _saveLoadButton.relativePosition = new Vector3(_deleteButton.relativePosition.x - _saveLoadButton.width - 8, 8);
 
-            saveLoadButton.eventClicked += (c, p) =>
+            _saveLoadButton.eventClicked += (c, p) =>
             {
-                if (UISaveWindow.instance != null)
+                if (UISaveWindow.Instance != null)
                 {
-                    UISaveWindow.Export(fileNameLabel.text);
+                    UISaveWindow.Export(_fileNameLabel.text);
                 }
                 else
                 {
                     UILoadWindow.Close();
-                    ParallelRoadTool.Instance.Import(fileNameLabel.text);
+                    PresetsUtils.Import(_fileNameLabel.text);
                 }
             };
 
-            deleteButton.eventClicked += (c, p) =>
+            _deleteButton.eventClicked += (c, p) =>
             {
-                ConfirmPanel.ShowModal("Delete file", "Do you want to delete the file '" + fileNameLabel.text + "' permanently?", (comp, ret) =>
+                ConfirmPanel.ShowModal("Delete file", "Do you want to delete the file '" + _fileNameLabel.text + "' permanently?", (comp, ret) =>
                 {
                     if (ret == 1)
                     {
-                        ParallelRoadTool.Instance.Delete(fileNameLabel.text);
+                        PresetsUtils.Delete(_fileNameLabel.text);
 
-                        if (UISaveWindow.instance != null)
+                        if (UISaveWindow.Instance != null)
                         {
-                            UISaveWindow.instance.RefreshFileList();
+                            UISaveWindow.Instance.RefreshFileList();
                         }
                         else
                         {
-                            UILoadWindow.instance.RefreshFileList();
+                            UILoadWindow.Instance.RefreshFileList();
                         }
                     }
                 });
             };
 
-            fileNameLabel.width = saveLoadButton.relativePosition.x - 16f;
+            _fileNameLabel.width = _saveLoadButton.relativePosition.x - 16f;
         }
 
         public void Display(string data, int i)
         {
-            fileNameLabel.text = data;
+            _fileNameLabel.text = data;
 
             if (i % 2 == 1)
             {
-                background.backgroundSprite = "UnlockingItemBackground";
-                background.color = new Color32(0, 0, 0, 128);
-                background.width = parent.width;
+                Background.backgroundSprite = "UnlockingItemBackground";
+                Background.color = new Color32(0, 0, 0, 128);
+                Background.width = parent.width;
             }
             else
             {
-                background.backgroundSprite = null;
+                Background.backgroundSprite = null;
             }
         }
+
         public void Select(bool isRowOdd)
         {
 
         }
+
         public void Deselect(bool isRowOdd)
         {
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ColossalFramework;
 using ColossalFramework.UI;
@@ -126,6 +127,13 @@ namespace ParallelRoadTool
             {
                 DebugUtils.Log("Destroying ...");
 
+                //remove existing autosave 
+                if (File.Exists(Configuration.AutoSaveFilePath))
+                    File.Delete(Configuration.AutoSaveFilePath);
+                //save current networks 
+                DebugUtils.Log("Saving networks");
+                PresetsUtils.Export(Configuration.AutoSaveFileName);
+
                 ToggleDetours(false);
                 UnsubscribeToUIEvents();
 
@@ -171,6 +179,16 @@ namespace ParallelRoadTool
         {
             AvailableRoadNames[AvailableRoadTypes.Count] = net.GenerateBeautifiedNetName();
             AvailableRoadTypes.Add(net);
+        }
+
+        public void ClearItems()
+        {
+            _mainWindow.ClearItems();
+        }
+
+        public void AddItem(NetTypeItem item)
+        {
+            _mainWindow.AddItem(item);
         }
 
         #endregion

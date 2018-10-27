@@ -1,84 +1,85 @@
 ﻿using System;
 using System.IO;
-
 using UnityEngine;
-
 using ColossalFramework;
 using ColossalFramework.UI;
+using ParallelRoadTool.Utils;
+using ColossalFramework.Globalization;
 
 namespace ParallelRoadTool.UI
 {
     public class UISaveWindow : UIPanel
     {
-        public static readonly SavedInt saveWindowX = new SavedInt("saveWindowX", ParallelRoadTool.SettingsFileName, -1000, true);
-        public static readonly SavedInt saveWindowY = new SavedInt("saveWindowY", ParallelRoadTool.SettingsFileName, -1000, true);
+        public static readonly SavedInt saveWindowX = new SavedInt("saveWindowX", Configuration.SettingsFileName, -1000, true);
+        public static readonly SavedInt saveWindowY = new SavedInt("saveWindowY", Configuration.SettingsFileName, -1000, true);
 
         public class UIFastList : UIFastList<string, UISaveLoadFileRow> { }
-        public UIFastList fastList;
 
-        public UITextField fileNameInput;
+        private UIFastList _fastList;
+        private UITextField _fileNameInput;
+        private UIButton _saveButton;
+        private UIDragHandle _dragHandle;
+        private UIButton _closeButton;
+        private UILabel _exportLabel;
+        private UIPanel _savePanel;
+        private UIComponent _modalEffect;
 
-        public UIButton saveButton;
-        public UIPanel savePanel;
-
-        public UIButton close;
-
-        public static UISaveWindow instance;
+        public static UISaveWindow Instance;
 
         public override void Start()
         {
-            name = "PRT_SaveWindow";
-            atlas = UIUtils.GetAtlas("Ingame");
+            name = $"{Configuration.ResourcePrefix}SaveWindow";
+            atlas = UIUtil.DefaultAtlas;
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(465, 180);
             canFocus = true;
 
-            UIDragHandle dragHandle = AddUIComponent<UIDragHandle>();
-            dragHandle.target = parent;
-            dragHandle.relativePosition = Vector3.zero;
+            _dragHandle = AddUIComponent<UIDragHandle>();
+            _dragHandle.target = parent;
+            _dragHandle.relativePosition = Vector3.zero;
 
-            close = AddUIComponent<UIButton>();
-            close.size = new Vector2(30f, 30f);
-            close.text = "X";
-            close.textScale = 0.9f;
-            close.textColor = new Color32(118, 123, 123, 255);
-            close.focusedTextColor = new Color32(118, 123, 123, 255);
-            close.hoveredTextColor = new Color32(140, 142, 142, 255);
-            close.pressedTextColor = new Color32(99, 102, 102, 102);
-            close.textPadding = new RectOffset(8, 8, 8, 8);
-            close.canFocus = false;
-            close.playAudioEvents = true;
-            close.relativePosition = new Vector3(width - close.width, 0);
+            _closeButton = AddUIComponent<UIButton>();
+            _closeButton.size = new Vector2(30f, 30f);
+            _closeButton.text = "X";
+            _closeButton.textScale = 0.9f;
+            _closeButton.textColor = new Color32(118, 123, 123, 255);
+            _closeButton.focusedTextColor = new Color32(118, 123, 123, 255);
+            _closeButton.hoveredTextColor = new Color32(140, 142, 142, 255);
+            _closeButton.pressedTextColor = new Color32(99, 102, 102, 102);
+            _closeButton.textPadding = new RectOffset(8, 8, 8, 8);
+            _closeButton.canFocus = false;
+            _closeButton.playAudioEvents = true;
+            _closeButton.relativePosition = new Vector3(width - _closeButton.width, 0);
 
-            close.eventClicked += (c, p) =>
+            _closeButton.eventClicked += (c, p) =>
             {
                 Close();
             };
 
-            UILabel label = AddUIComponent<UILabel>();
-            label.textScale = 0.9f;
-            label.text = "Export";
-            label.relativePosition = new Vector2(8, 8);
-            label.SendToBack();
+            _exportLabel = AddUIComponent<UILabel>();
+            _exportLabel.textScale = 0.9f;
+            _exportLabel.text = "Export";
+            _exportLabel.relativePosition = new Vector2(8, 8);
+            _exportLabel.SendToBack();
 
             // Save Panel
-            UIPanel savePanel = AddUIComponent<UIPanel>();
-            savePanel.atlas = atlas;
-            savePanel.backgroundSprite = "GenericPanel";
-            savePanel.color = new Color32(206, 206, 206, 255);
-            savePanel.size = new Vector2(width - 16, 46);
-            savePanel.relativePosition = new Vector2(8, 28);
+            _savePanel = AddUIComponent<UIPanel>();
+            _savePanel.atlas = atlas;
+            _savePanel.backgroundSprite = "GenericPanel";
+            _savePanel.color = new Color32(206, 206, 206, 255);
+            _savePanel.size = new Vector2(width - 16, 46);
+            _savePanel.relativePosition = new Vector2(8, 28);
 
             // Input
-            fileNameInput = UIUtils.CreateTextField(savePanel);
-            fileNameInput.padding.top = 7;
-            fileNameInput.horizontalAlignment = UIHorizontalAlignment.Left;
-            fileNameInput.relativePosition = new Vector3(8, 8);
-            fileNameInput.submitOnFocusLost = false;
+            _fileNameInput = UIUtil.CreateTextField(_savePanel);
+            _fileNameInput.padding.top = 7;
+            _fileNameInput.horizontalAlignment = UIHorizontalAlignment.Left;
+            _fileNameInput.relativePosition = new Vector3(8, 8);
+            _fileNameInput.submitOnFocusLost = false;
 
-            fileNameInput.eventTextSubmitted += (c, p) =>
+            _fileNameInput.eventTextSubmitted += (c, p) =>
             {
-                string filename = fileNameInput.text.Trim();
+                string filename = _fileNameInput.text.Trim();
                 filename = String.Concat(filename.Split(Path.GetInvalidFileNameChars()));
 
                 if (!filename.IsNullOrWhiteSpace())
@@ -86,32 +87,31 @@ namespace ParallelRoadTool.UI
                     Export(filename);
                 }
 
-                fileNameInput.Focus();
-                fileNameInput.SelectAll();
+                _fileNameInput.Focus();
+                _fileNameInput.SelectAll();
             };
 
             // Save
-            saveButton = UIUtils.CreateButton(savePanel);
-            saveButton.name = "PRT_SaveButton";
-            saveButton.text = "Export";
-            saveButton.size = new Vector2(100f, 30f);
-            saveButton.relativePosition = new Vector3(savePanel.width - saveButton.width - 8, 8);
+            _saveButton = UIUtil.CreateUiButton(_savePanel, string.Empty, string.Empty, new Vector2(100, 30), string.Empty, true);
+            _saveButton.name = $"{Configuration.ResourcePrefix}SaveButton";
+            _saveButton.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton");
+            _saveButton.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton");
+            _saveButton.relativePosition = new Vector3(_savePanel.width - _saveButton.width - 8, 8);
 
-            fileNameInput.size = new Vector2(saveButton.relativePosition.x - 16f, 30f);
+            _fileNameInput.size = new Vector2(_saveButton.relativePosition.x - 16f, 30f);
 
             // FastList
-            fastList = AddUIComponent<UIFastList>();
-            fastList.backgroundSprite = "UnlockingPanel";
-            fastList.width = width - 16;
-            fastList.height = 46 * 5;
-            fastList.canSelect = true;
-            fastList.relativePosition = new Vector3(8, savePanel.relativePosition.y + savePanel.height + 8);
+            _fastList = AddUIComponent<UIFastList>();
+            _fastList.backgroundSprite = "UnlockingPanel";
+            _fastList.width = width - 16;
+            _fastList.height = 46 * 5;
+            _fastList.canSelect = true;
+            _fastList.relativePosition = new Vector3(8, _savePanel.relativePosition.y + _savePanel.height + 8);
+            _fastList.rowHeight = 46f;
 
-            fastList.rowHeight = 46f;
-
-            saveButton.eventClicked += (c, p) =>
+            _saveButton.eventClicked += (c, p) =>
             {
-                string filename = fileNameInput.text.Trim();
+                string filename = _fileNameInput.text.Trim();
                 filename = String.Concat(filename.Split(Path.GetInvalidFileNameChars()));
 
                 if (!filename.IsNullOrWhiteSpace())
@@ -119,34 +119,34 @@ namespace ParallelRoadTool.UI
                     Export(filename);
                 }
 
-                fileNameInput.Focus();
-                fileNameInput.SelectAll();
+                _fileNameInput.Focus();
+                _fileNameInput.SelectAll();
             };
 
-            height = fastList.relativePosition.y + fastList.height + 8;
-            dragHandle.size = size;
+            height = _fastList.relativePosition.y + _fastList.height + 8;
+            _dragHandle.size = size;
             absolutePosition = new Vector3(saveWindowX.value, saveWindowY.value);
             MakePixelPerfect();
 
             RefreshFileList();
 
-            UIComponent modalEffect = GetUIView().panelsLibraryModalEffect;
-            if (modalEffect != null && !modalEffect.isVisible)
+            _modalEffect = GetUIView().panelsLibraryModalEffect;
+            if (_modalEffect != null && !_modalEffect.isVisible)
             {
-                modalEffect.Show(false);
+                _modalEffect.Show(false);
                 ValueAnimator.Animate("ModalEffect", delegate (float val)
                 {
-                    modalEffect.opacity = val;
+                    _modalEffect.opacity = val;
                 }, new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
             }
 
             BringToFront();
-            fileNameInput.Focus();
+            _fileNameInput.Focus();
         }
 
         public static void Export(string filename)
         {
-            string file = Path.Combine(ParallelRoadTool.SaveFolder, filename + ".xml");
+            string file = Path.Combine(Configuration.AutoSaveFolderPath, filename + ".xml");
 
             if (File.Exists(file))
             {
@@ -154,36 +154,36 @@ namespace ParallelRoadTool.UI
                 {
                     if (ret == 1)
                     {
-                        DebugUtils.Log("Deleting " + file);
+                        //DebugUtils.Log("Deleting " + file);
                         File.Delete(file);
-                        ParallelRoadTool.Instance.Export(filename);
-                        instance.RefreshFileList();
+                        PresetsUtils.Export(filename);
+                        Instance.RefreshFileList();
                     }
                 });
             }
             else
             {
-                ParallelRoadTool.Instance.Export(filename);
-                instance.RefreshFileList();
+                PresetsUtils.Export(filename);
+                Instance.RefreshFileList();
             }
         }
 
         public static void Open()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = UIView.GetAView().AddUIComponent(typeof(UISaveWindow)) as UISaveWindow;
-                UIView.PushModal(instance);
+                Instance = UIView.GetAView().AddUIComponent(typeof(UISaveWindow)) as UISaveWindow;
+                UIView.PushModal(Instance);
             }
         }
 
         public static void Close()
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 UIView.PopModal();
 
-                UIComponent modalEffect = instance.GetUIView().panelsLibraryModalEffect;
+                UIComponent modalEffect = Instance.GetUIView().panelsLibraryModalEffect;
                 if (modalEffect != null && modalEffect.isVisible)
                 {
                     ValueAnimator.Animate("ModalEffect", delegate (float val)
@@ -195,9 +195,9 @@ namespace ParallelRoadTool.UI
                     });
                 }
 
-                instance.isVisible = false;
-                Destroy(instance.gameObject);
-                instance = null;
+                Instance.isVisible = false;
+                Destroy(Instance.gameObject);
+                Instance = null;
             }
         }
 
@@ -234,22 +234,23 @@ namespace ParallelRoadTool.UI
 
         public void RefreshFileList()
         {
-            fastList.rowsData.Clear();
+            _fastList.rowsData.Clear();
 
-            if (Directory.Exists(ParallelRoadTool.SaveFolder))
+            if (Directory.Exists(Configuration.AutoSaveFolderPath))
             {
-                string[] files = Directory.GetFiles(ParallelRoadTool.SaveFolder, "*.xml");
+                string[] files = Directory.GetFiles(Configuration.AutoSaveFolderPath, "*.xml");
 
                 foreach (string file in files)
                 {
-                    fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
+                    if (Path.GetFileNameWithoutExtension(file) != Configuration.AutoSaveFileName) //exclude autosaved file from list) 
+                        _fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
                 }
 
-                fastList.DisplayAt(0);
+                _fastList.DisplayAt(0);
             }
 
-            fileNameInput.Focus();
-            fileNameInput.SelectAll();
+            _fileNameInput.Focus();
+            _fileNameInput.SelectAll();
         }
     }
 }
