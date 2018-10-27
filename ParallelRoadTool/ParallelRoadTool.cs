@@ -86,6 +86,7 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Loading all available networks...");
                 // Default item, creates a net with the same type as source
                 AddNetworkType(null);
+                // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
                 var sortedNetworks = new SortedDictionary<string, NetInfo>();                
                 for (uint i = 0; i < count; i++)
                 {
