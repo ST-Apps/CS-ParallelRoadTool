@@ -49,6 +49,7 @@ namespace ParallelRoadTool.UI
 
             _saveLoadButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), string.Empty, true);
             _saveLoadButton.name = $"{Configuration.ResourcePrefix}SaveLoadFileButton";
+            // TODO: change button text to "overwrite"
             _saveLoadButton.text = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
             _saveLoadButton.tooltip = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");
             _saveLoadButton.size = new Vector2(80f, 30f);

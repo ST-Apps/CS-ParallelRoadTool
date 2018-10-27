@@ -75,21 +75,21 @@ namespace ParallelRoadTool.UI
             _fileNameInput.padding.top = 7;
             _fileNameInput.horizontalAlignment = UIHorizontalAlignment.Left;
             _fileNameInput.relativePosition = new Vector3(8, 8);
-            _fileNameInput.submitOnFocusLost = false;
+            _fileNameInput.submitOnFocusLost = true;            
 
-            _fileNameInput.eventTextSubmitted += (c, p) =>
-            {
-                string filename = _fileNameInput.text.Trim();
-                filename = String.Concat(filename.Split(Path.GetInvalidFileNameChars()));
+            //_fileNameInput.eventTextSubmitted += (c, p) =>
+            //{
+            //    string filename = _fileNameInput.text.Trim();
+            //    filename = String.Concat(filename.Split(Path.GetInvalidFileNameChars()));
 
-                if (!filename.IsNullOrWhiteSpace())
-                {
-                    Export(filename);
-                }
+            //    if (!filename.IsNullOrWhiteSpace())
+            //    {
+            //        Export(filename);
+            //    }
 
-                _fileNameInput.Focus();
-                _fileNameInput.SelectAll();
-            };
+            //    _fileNameInput.Focus();
+            //    _fileNameInput.SelectAll();
+            //};
 
             // Save
             _saveButton = UIUtil.CreateUiButton(_savePanel, string.Empty, string.Empty, new Vector2(100, 30), string.Empty, true);
@@ -108,7 +108,8 @@ namespace ParallelRoadTool.UI
             _fastList.canSelect = true;
             _fastList.relativePosition = new Vector3(8, _savePanel.relativePosition.y + _savePanel.height + 8);
             _fastList.rowHeight = 46f;
-
+            
+            // TODO: trigger this with enter key on fileNameInput
             _saveButton.eventClicked += (c, p) =>
             {
                 string filename = _fileNameInput.text.Trim();

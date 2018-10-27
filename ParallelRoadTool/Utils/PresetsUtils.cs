@@ -15,6 +15,9 @@ namespace ParallelRoadTool.Utils
         public static bool Export(string filename)
         {
             string path = Path.Combine(Configuration.AutoSaveFolderPath, filename + ".xml");
+
+            DebugUtils.Log($"Trying to save {filename} to {path}");
+
             Directory.CreateDirectory(Configuration.AutoSaveFolderPath);
             List<PresetNetItem> PresetItems = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes
                 .Select(NetTypeItem => new PresetNetItem { HorizontalOffset = NetTypeItem.HorizontalOffset, IsReversed = NetTypeItem.IsReversed, NetName = NetTypeItem.NetInfo.name, VerticalOffset = NetTypeItem.VerticalOffset })
