@@ -86,11 +86,16 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Loading all available networks...");
                 // Default item, creates a net with the same type as source
                 AddNetworkType(null);
+                var sortedNetworks = new SortedDictionary<string, NetInfo>();                
                 for (uint i = 0; i < count; i++)
                 {
                     var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
-                    if (prefab != null) AddNetworkType(prefab);
+                    if (prefab != null) {
+                        sortedNetworks[prefab.GenerateBeautifiedNetName()] = prefab;
+                    }
                 }
+                Array.Copy(sortedNetworks.Keys.ToArray(),0,AvailableRoadNames,1, sortedNetworks.Count);                
+                AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
 
