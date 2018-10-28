@@ -229,7 +229,19 @@ namespace ParallelRoadTool.Detours
                 _isPreviousInvert = invert;
 
             // If we're in upgrade mode we must stop here
-            if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade) return result;
+            // if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade) return result;
+            // HACK - [ISSUE 25] Enabling tool during upgrade mode so that we can add to existing roads
+            var isUpgradeActive = false;
+            var upgradeInvert = false;
+            if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade)
+            {
+                isUpgradeActive = true;
+                upgradeInvert = invert;
+                if (startDirection.x == endDirection.x && startDirection.y == endDirection.y)
+                    ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Straight;
+                else
+                    ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Curved;
+            }
 
             // True if we have a slope that is going down from start to end node
             var isEnteringSlope = NetManager.instance.m_nodes.m_buffer[invert ? startNode : endNode].m_elevation >
@@ -377,6 +389,12 @@ namespace ParallelRoadTool.Detours
             }
 
             _isPreviousInvert = invert;
+
+            // HACK - [ISSUE 25] Enabling tool during upgrade mode so that we can add to existing roads
+            if (!isUpgradeActive) return result;
+            ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Upgrade;
+            _isPreviousInvert = upgradeInvert;
+
             return result;
         }
     }
