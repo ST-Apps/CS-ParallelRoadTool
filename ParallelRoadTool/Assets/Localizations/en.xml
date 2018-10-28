@@ -24,6 +24,12 @@
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Increase vertical offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ExportButton">Export</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ImportButton">Import</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportFailedTitle">Export failed</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportFailedMessage">Failed exporting networks to {0} because:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportFailedTitle">Import failed</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportFailedMessage">Failed importing networks from {0} because:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedTitle">Delete failed</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedMessage">Failed deleting networks from {0} because:\r\n{1}</LocalizedString>
 
     <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
     <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
