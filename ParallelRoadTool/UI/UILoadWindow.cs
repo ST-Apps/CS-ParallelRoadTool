@@ -1,25 +1,43 @@
 ﻿using System.IO;
-using UnityEngine;
 using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Utils;
+using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
     public class UILoadWindow : UIPanel
     {
-        private static readonly SavedInt loadWindowX = new SavedInt("loadWindowX", Configuration.SettingsFileName, -1000, true);
-        private static readonly SavedInt loadWindowY = new SavedInt("loadWindowY", Configuration.SettingsFileName, -1000, true);
+        private static readonly SavedInt LoadWindowX =
+            new SavedInt("loadWindowX", Configuration.SettingsFileName, -1000, true);
+
+        private static readonly SavedInt LoadWindowY =
+            new SavedInt("loadWindowY", Configuration.SettingsFileName, -1000, true);
 
         public class UIFastList : UIFastList<string, UISaveLoadFileRow> { }
 
-        private UIFastList _fastList;
+        public static UILoadWindow Instance;
         private UIButton _closeButton;
         private UIDragHandle _dragHandle;
+
+        private UIFastList _fastList;
         private UILabel _importLabel;
         private UIComponent _modalEffect;
 
-        public static UILoadWindow Instance;
+        private void SubscribeToUiEvents()
+        {
+            _closeButton.eventClick += CloseButtonOnEventClick;
+        }
+
+        private void UnsubscribeFromUiEvents()
+        {
+            _closeButton.eventClick -= CloseButtonOnEventClick;
+        }
+
+        private void CloseButtonOnEventClick(UIComponent component, UIMouseEventParameter eventparam)
+        {
+            Close();
+        }
 
         public override void Start()
         {
@@ -46,11 +64,6 @@ namespace ParallelRoadTool.UI
             _closeButton.playAudioEvents = true;
             _closeButton.relativePosition = new Vector3(width - _closeButton.width, 0);
 
-            _closeButton.eventClicked += (c, p) =>
-            {
-                Close();
-            };
-
             _importLabel = AddUIComponent<UILabel>();
             _importLabel.textScale = 0.9f;
             _importLabel.text = "Import";
@@ -69,7 +82,7 @@ namespace ParallelRoadTool.UI
 
             height = _fastList.relativePosition.y + _fastList.height + 8;
             _dragHandle.size = size;
-            absolutePosition = new Vector3(loadWindowX.value, loadWindowY.value);
+            absolutePosition = new Vector3(LoadWindowX.value, LoadWindowY.value);
             MakePixelPerfect();
 
             RefreshFileList();
@@ -78,11 +91,11 @@ namespace ParallelRoadTool.UI
             if (_modalEffect != null && !_modalEffect.isVisible)
             {
                 _modalEffect.Show(false);
-                ValueAnimator.Animate("ModalEffect", delegate (float val)
-                {
-                    _modalEffect.opacity = val;
-                }, new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
+                ValueAnimator.Animate("ModalEffect", delegate(float val) { _modalEffect.opacity = val; },
+                    new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
             }
+
+            SubscribeToUiEvents();
 
             BringToFront();
             Focus();
@@ -90,37 +103,25 @@ namespace ParallelRoadTool.UI
 
         public static void Open()
         {
-            if (Instance == null)
-            {
-                Instance = UIView.GetAView().AddUIComponent(typeof(UILoadWindow)) as UILoadWindow;
-                UIView.PushModal(Instance);
-            }
+            if (Instance != null) return;
+
+            Instance = UIView.GetAView().AddUIComponent(typeof(UILoadWindow)) as UILoadWindow;
+            UIView.PushModal(Instance);
         }
 
         public static void Close()
         {
-            if (Instance != null)
-            {
-                UIView.PopModal();
+            if (Instance == null) return;
 
-                UIComponent modalEffect = Instance.GetUIView().panelsLibraryModalEffect;
-                if (modalEffect != null && modalEffect.isVisible)
-                {
-                    modalEffect.Hide();
+            UIView.PopModal();
 
-                    /*ValueAnimator.Animate("ModalEffect", delegate (float val)
-                    {
-                        modalEffect.opacity = val;
-                    }, new AnimatedFloat(1f, 0f, 0.7f, EasingType.CubicEaseOut), delegate
-                    {
-                        modalEffect.Hide();
-                    });*/
-                }
+            var modalEffect = Instance.GetUIView().panelsLibraryModalEffect;
+            if (modalEffect != null && modalEffect.isVisible) modalEffect.Hide();
 
-                Instance.isVisible = false;
-                Destroy(Instance.gameObject);
-                Instance = null;
-            }
+            Instance.UnsubscribeFromUiEvents();
+            Instance.isVisible = false;
+            Destroy(Instance.gameObject);
+            Instance = null;
         }
 
         protected override void OnKeyDown(UIKeyEventParameter p)
@@ -136,7 +137,7 @@ namespace ParallelRoadTool.UI
 
         protected override void OnPositionChanged()
         {
-            Vector2 resolution = GetUIView().GetScreenResolution();
+            var resolution = GetUIView().GetScreenResolution();
 
             if (absolutePosition.x == -1000)
             {
@@ -145,11 +146,11 @@ namespace ParallelRoadTool.UI
             }
 
             absolutePosition = new Vector2(
-                (int)Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
-                (int)Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
+                (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
+                (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
-            loadWindowX.value = (int)absolutePosition.x;
-            loadWindowY.value = (int)absolutePosition.y;
+            LoadWindowX.value = (int) absolutePosition.x;
+            LoadWindowY.value = (int) absolutePosition.y;
 
             base.OnPositionChanged();
         }
@@ -160,13 +161,12 @@ namespace ParallelRoadTool.UI
 
             if (Directory.Exists(Configuration.AutoSaveFolderPath))
             {
-                string[] files = Directory.GetFiles(Configuration.AutoSaveFolderPath, "*.xml");
+                var files = Directory.GetFiles(Configuration.AutoSaveFolderPath, "*.xml");
 
-                foreach (string file in files)
-                {
-                    if (Path.GetFileNameWithoutExtension(file) != Configuration.AutoSaveFileName) //exclude autosaved file from list) 
+                foreach (var file in files)
+                    if (Path.GetFileNameWithoutExtension(file) != Configuration.AutoSaveFileName
+                    ) //exclude autosaved file from list) 
                         _fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
-                }
 
                 _fastList.DisplayAt(0);
             }

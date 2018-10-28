@@ -16,6 +16,7 @@
     <LocalizedString identifier="PRT_TOOLTIPS" key="DeleteButton">Delete preset</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ExportButton">Export networks</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ImportButton">Import networks</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="OverwriteButton">Overwrite networks</LocalizedString>
 
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Same as selected</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Decrease horizontal offset of parallel networks</LocalizedString>
@@ -24,12 +25,15 @@
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Increase vertical offset of parallel networks</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ExportButton">Export</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ImportButton">Import</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="OverwriteButton">Overwrite</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="OverwriteConfirmationMessage">File '{0}.xml' already exists, do you want to overwrite it?</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ExportFailedTitle">Export failed</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ExportFailedMessage">Failed exporting networks to {0} because:\r\n{1}</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ImportFailedTitle">Import failed</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="ImportFailedMessage">Failed importing networks from {0} because:\r\n{1}</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedTitle">Delete failed</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedMessage">Failed deleting networks from {0} because:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteConfirmationMessage">Are you sure to delete '{0}.xml'?</LocalizedString>
 
     <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
     <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">

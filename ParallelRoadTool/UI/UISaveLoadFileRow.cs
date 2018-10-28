@@ -1,8 +1,7 @@
-﻿using UnityEngine;
+﻿using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using ColossalFramework;
 using ParallelRoadTool.Utils;
-using ColossalFramework.Globalization;
+using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
@@ -17,16 +16,68 @@ namespace ParallelRoadTool.UI
         {
             get
             {
-                if (_background == null)
+                if (_background != null)
                 {
-                    _background = AddUIComponent<UIPanel>();
-                    _background.width = width;
-                    _background.height = 40;
-                    _background.relativePosition = Vector2.zero;
-                    _background.zOrder = 0;
+                    return _background;
                 }
 
+                _background = AddUIComponent<UIPanel>();
+                _background.width = width;
+                _background.height = 40;
+                _background.relativePosition = Vector2.zero;
+                _background.zOrder = 0;
+
                 return _background;
+            }
+        }
+
+        private void UnsubscribeFromUiEvents()
+        {
+            _saveLoadButton.eventClicked -= SaveLoadButtonOnEventClicked;
+            _deleteButton.eventClicked -= DeleteButtonOnEventClicked;
+        }
+
+        private void SubscribeToUiEvents()
+        {
+            _saveLoadButton.eventClicked += SaveLoadButtonOnEventClicked;
+            _deleteButton.eventClicked += DeleteButtonOnEventClicked;
+        }
+
+        private void DeleteButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventparam)
+        {
+            ConfirmPanel.ShowModal(
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "DeleteButton"),
+                string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteConfirmationMessage"), _fileNameLabel.text),
+                (comp, ret) =>
+                {
+                    if (ret != 1)
+                    {
+                        return;
+                    }
+
+                    PresetsUtils.Delete(_fileNameLabel.text);
+
+                    if (UISaveWindow.Instance != null)
+                    {
+                        UISaveWindow.Instance.RefreshFileList();
+                    }
+                    else
+                    {
+                        UILoadWindow.Instance.RefreshFileList();
+                    }
+                });
+        }
+
+        private void SaveLoadButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventparam)
+        {
+            if (UISaveWindow.Instance != null)
+            {
+                UISaveWindow.Export(_fileNameLabel.text);
+            }
+            else
+            {
+                UILoadWindow.Close();
+                PresetsUtils.Import(_fileNameLabel.text);
             }
         }
 
@@ -49,44 +100,12 @@ namespace ParallelRoadTool.UI
 
             _saveLoadButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), string.Empty, true);
             _saveLoadButton.name = $"{Configuration.ResourcePrefix}SaveLoadFileButton";
-            // TODO: change button text to "overwrite"
-            _saveLoadButton.text = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
-            _saveLoadButton.tooltip = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton") : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");
+            _saveLoadButton.text = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "OverwriteButton") : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
+            _saveLoadButton.tooltip = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "OverwriteButton") : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");
             _saveLoadButton.size = new Vector2(80f, 30f);
             _saveLoadButton.relativePosition = new Vector3(_deleteButton.relativePosition.x - _saveLoadButton.width - 8, 8);
 
-            _saveLoadButton.eventClicked += (c, p) =>
-            {
-                if (UISaveWindow.Instance != null)
-                {
-                    UISaveWindow.Export(_fileNameLabel.text);
-                }
-                else
-                {
-                    UILoadWindow.Close();
-                    PresetsUtils.Import(_fileNameLabel.text);
-                }
-            };
-
-            _deleteButton.eventClicked += (c, p) =>
-            {
-                ConfirmPanel.ShowModal("Delete file", "Do you want to delete the file '" + _fileNameLabel.text + "' permanently?", (comp, ret) =>
-                {
-                    if (ret == 1)
-                    {
-                        PresetsUtils.Delete(_fileNameLabel.text);
-
-                        if (UISaveWindow.Instance != null)
-                        {
-                            UISaveWindow.Instance.RefreshFileList();
-                        }
-                        else
-                        {
-                            UILoadWindow.Instance.RefreshFileList();
-                        }
-                    }
-                });
-            };
+            SubscribeToUiEvents();
 
             _fileNameLabel.width = _saveLoadButton.relativePosition.x - 16f;
         }
@@ -115,6 +134,12 @@ namespace ParallelRoadTool.UI
         public void Deselect(bool isRowOdd)
         {
 
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            UnsubscribeFromUiEvents();
         }
     }
 }
