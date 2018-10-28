@@ -103,6 +103,11 @@ namespace ParallelRoadTool.UI
             _items[index].DisableSearchMode();           
         }
 
+        public void FilterItemDropdown(int index, string text)
+        {
+            _items[index].FilterDropdown(text);
+        }
+
         public void AddItem(NetTypeItem item, bool isCurrentItem = false)
         {
             var component = AddUIComponent<UINetTypeItem>();

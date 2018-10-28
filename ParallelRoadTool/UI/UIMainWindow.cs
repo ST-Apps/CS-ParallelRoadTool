@@ -82,6 +82,7 @@ namespace ParallelRoadTool.UI
             _netList.OnItemChanged -= NetListOnOnItemChanged;
             _netList.OnItemAdded -= NetListOnOnItemAdded;
             _netList.OnItemDeleted -= NetListOnOnItemDeleted;
+            _dropdownFilterField.eventTextChanged -= DropdownFilterFieldOnEventTextChanged;
         }
 
         private void SubscribeToUIEvents()
@@ -95,6 +96,12 @@ namespace ParallelRoadTool.UI
             _netList.OnItemAdded += NetListOnOnItemAdded;
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
             _netList.OnSearchModeToggled += NetListOnOnSearchModeToggled;
+            _dropdownFilterField.eventTextChanged += DropdownFilterFieldOnEventTextChanged;
+        }
+
+        private void DropdownFilterFieldOnEventTextChanged(UIComponent component, string value)
+        {
+            _netList.FilterItemDropdown(_filteredItemIndex, value);
         }
 
         private void NetListOnOnSearchModeToggled(UIComponent component, int value)
@@ -196,6 +203,7 @@ namespace ParallelRoadTool.UI
                 {
                     // We had filtering enabled for another item, so we need to disable it
                     _netList.DisableSearchMode(_filteredItemIndex);
+                    _dropdownFilterField.text = string.Empty;
                 }
 
                 _filteredItemIndex = index;

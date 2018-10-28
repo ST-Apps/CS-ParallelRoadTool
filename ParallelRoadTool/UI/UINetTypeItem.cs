@@ -15,6 +15,26 @@ namespace ParallelRoadTool.UI
     {
         #region Control
 
+        public void FilterDropdown(string text)
+        {
+            // Keeping current value if we're disabling search mode
+            var currentFilterText = _dropDown.selectedValue;
+
+            DebugUtils.Log($"Searching for {text} ...");
+            _filterText = text;
+            PopulateDropdown();
+            var index = 0;
+            if (string.IsNullOrEmpty(text))
+            {
+                // If we're disabling we need to sync current index with the global one
+                index = Array.IndexOf(_dropDown.items, currentFilterText);
+                DebugUtils.Log($"Disabling search mode with value {currentFilterText} and index {index}");
+            }
+            _dropDown.selectedIndex = index;            
+            DropDown_eventSelectedIndexChanged(_dropDown, index);
+            DebugUtils.Log($"Found {_dropDown.items.Length} items");
+        }
+
         public void DisableSearchMode()
         {
             _searchButton.isChecked = false;
@@ -58,6 +78,15 @@ namespace ParallelRoadTool.UI
             _dropDown.items = IsCurrentItem
                 ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1).ToArray()
                 : Singleton<ParallelRoadTool>.instance.AvailableRoadNames;
+
+            IsFiltered = false;
+            if (!string.IsNullOrEmpty(_filterText))
+            {
+                _dropDown.items = _dropDown.items
+                    .Where(i => i.ToLowerInvariant().Contains(_filterText.ToLowerInvariant())).ToArray();
+                IsFiltered = true;
+            }
+
             _dropDown.selectedIndex = 0;
             _populated = true;
         }
@@ -85,9 +114,12 @@ namespace ParallelRoadTool.UI
         public float VerticalOffset;
         public bool IsReversed;
         public bool IsCurrentItem;
+        public bool IsFiltered;
 
         private bool _populated;
         private bool _canFireChangedEvent;
+
+        private string _filterText;        
 
         #endregion
 
@@ -247,7 +279,8 @@ namespace ParallelRoadTool.UI
         {
             // TODO: instead of opening a popup we may show a textbox below mod's title (near the snapping button) and use that to filter our dropdown
             // Singleton<UISearchPopup>.instance.Open(this);  
-            DebugUtils.Log($"{nameof(SearchButtonOnEventCheckChanged)}");            
+            DebugUtils.Log($"{nameof(SearchButtonOnEventCheckChanged)}");   
+            if (!value) FilterDropdown(null);
             OnSearchModeToggled?.Invoke(this, Index);
         }
 
@@ -294,7 +327,7 @@ namespace ParallelRoadTool.UI
             IsReversed = _reverseCheckbox.isChecked;
 
             var eventArgs = new NetTypeItemEventArgs(Index, HorizontalOffset, VerticalOffset, _dropDown.selectedIndex,
-                IsReversed);
+                IsReversed, IsFiltered, _dropDown.selectedValue);
             OnChanged?.Invoke(this, eventArgs);
         }
 
