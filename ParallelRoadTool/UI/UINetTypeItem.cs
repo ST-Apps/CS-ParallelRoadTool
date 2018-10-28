@@ -15,6 +15,11 @@ namespace ParallelRoadTool.UI
     {
         #region Control
 
+        public void DisableSearchMode()
+        {
+            _searchButton.isChecked = false;
+        }
+
         public void UpdateItem()
         {
             _canFireChangedEvent = false;
@@ -106,6 +111,7 @@ namespace ParallelRoadTool.UI
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnChanged;
         public event EventHandler OnAddClicked;
         public event PropertyChangedEventHandler<int> OnDeleteClicked;
+        public event PropertyChangedEventHandler<int> OnSearchModeToggled;
 
         #endregion
 
@@ -207,7 +213,7 @@ namespace ParallelRoadTool.UI
         {
             if (!IsCurrentItem)
             {
-                _searchButton.eventClicked -= SearchButtonOnEventClicked;
+                _searchButton.eventCheckChanged -= SearchButtonOnEventCheckChanged;
                 _dropDown.eventSelectedIndexChanged -= DropDown_eventSelectedIndexChanged;
                 _reverseCheckbox.eventCheckChanged -= ReverseCheckboxOnEventCheckChanged;
                 _horizontalOffsetField.eventTextSubmitted -= HorizontalOffsetField_eventTextSubmitted;
@@ -224,7 +230,7 @@ namespace ParallelRoadTool.UI
         {
             if (!IsCurrentItem)
             {
-                _searchButton.eventClicked += SearchButtonOnEventClicked;
+                _searchButton.eventCheckChanged += SearchButtonOnEventCheckChanged;
                 _dropDown.eventSelectedIndexChanged += DropDown_eventSelectedIndexChanged;
                 _reverseCheckbox.eventCheckChanged += ReverseCheckboxOnEventCheckChanged;
                 _horizontalOffsetField.eventTextSubmitted += HorizontalOffsetField_eventTextSubmitted;
@@ -237,10 +243,12 @@ namespace ParallelRoadTool.UI
             }
         }
 
-        private void SearchButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventparam)
+        private void SearchButtonOnEventCheckChanged(UIComponent component, bool value)
         {
             // TODO: instead of opening a popup we may show a textbox below mod's title (near the snapping button) and use that to filter our dropdown
-            Singleton<UISearchPopup>.instance.Open(this);
+            // Singleton<UISearchPopup>.instance.Open(this);  
+            DebugUtils.Log($"{nameof(SearchButtonOnEventCheckChanged)}");            
+            OnSearchModeToggled?.Invoke(this, Index);
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)

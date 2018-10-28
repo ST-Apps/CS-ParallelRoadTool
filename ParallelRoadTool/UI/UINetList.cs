@@ -21,6 +21,7 @@ namespace ParallelRoadTool.UI
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnItemChanged;
         public event EventHandler OnItemAdded;
         public event PropertyChangedEventHandler<int> OnItemDeleted;
+        public event PropertyChangedEventHandler<int> OnSearchModeToggled;
 
         #endregion
 
@@ -32,6 +33,7 @@ namespace ParallelRoadTool.UI
             {
                 uiNetTypeItem.OnChanged -= UiNetTypeItemOnOnChanged;
                 uiNetTypeItem.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
+                uiNetTypeItem.OnSearchModeToggled -= UiNetTypeItemOnOnSearchModeToggled;
 
                 if (uiNetTypeItem.IsCurrentItem)
                     uiNetTypeItem.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
@@ -52,6 +54,12 @@ namespace ParallelRoadTool.UI
         {
             DebugUtils.Log($"{nameof(UiNetTypeItemOnOnAddClicked)}");
             OnItemAdded?.Invoke(this, null);
+        }
+
+        private void UiNetTypeItemOnOnSearchModeToggled(UIComponent component, int value)
+        {
+            DebugUtils.Log($"{nameof(UiNetTypeItemOnOnSearchModeToggled)}");
+            OnSearchModeToggled?.Invoke(this, value);
         }
 
         #endregion
@@ -90,6 +98,11 @@ namespace ParallelRoadTool.UI
 
         #region Control
 
+        public void DisableSearchMode(int index)
+        {
+            _items[index].DisableSearchMode();           
+        }
+
         public void AddItem(NetTypeItem item, bool isCurrentItem = false)
         {
             var component = AddUIComponent<UINetTypeItem>();
@@ -102,6 +115,7 @@ namespace ParallelRoadTool.UI
                 component.Index = _items.Count;
                 component.OnChanged += UiNetTypeItemOnOnChanged;
                 component.OnDeleteClicked += UiNetTypeItemOnOnDeleteClicked;
+                component.OnSearchModeToggled += UiNetTypeItemOnOnSearchModeToggled;
                 _items.Add(component);
             }
             else
@@ -111,7 +125,7 @@ namespace ParallelRoadTool.UI
             }
 
             _space.BringToFront();
-        }
+        }        
 
         public void UpdateItem(NetTypeItem item, int index)
         {

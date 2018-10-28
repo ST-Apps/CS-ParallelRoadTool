@@ -37,6 +37,11 @@ namespace ParallelRoadTool.UI
         // We use this to prevent handling events while the advisor is being updated
         private bool _isUpdatingTutorialAdvisor;
 
+        /// <summary>
+        /// Index of the NetTypeItem that we're currently filtering.
+        /// </summary>
+        private int _filteredItemIndex = -1;
+
         #endregion
 
         #region UI
@@ -47,6 +52,7 @@ namespace ParallelRoadTool.UI
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
         // private UICheckBox _tutorialToggleButton;
+        private UITextField _dropdownFilterField;
 
         private UISprite _tutorialIcon => ToolsModifierControl.advisorPanel?.Find<UISprite>("Icon");
         private UISprite _tutorialImage => ToolsModifierControl.advisorPanel?.Find<UISprite>("Sprite");
@@ -88,6 +94,12 @@ namespace ParallelRoadTool.UI
             _netList.OnItemChanged += NetListOnOnItemChanged;
             _netList.OnItemAdded += NetListOnOnItemAdded;
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
+            _netList.OnSearchModeToggled += NetListOnOnSearchModeToggled;
+        }
+
+        private void NetListOnOnSearchModeToggled(UIComponent component, int value)
+        {
+            ToggleDropdownFiltering(value);
         }
 
         private void NetListOnOnItemAdded(object sender, EventArgs eventArgs)
@@ -169,6 +181,29 @@ namespace ParallelRoadTool.UI
             _tutorialToggleButton_eventCheckChanged(null, true);
         }
 
+        public void ToggleDropdownFiltering(int index)
+        {
+            DebugUtils.Log($"Toggling search mode for item with index {index} and current filtered item {_filteredItemIndex}");
+            if (index == _filteredItemIndex)
+            {
+                // We need to disable filtering
+                _filteredItemIndex = -1;
+                _dropdownFilterField.isVisible = false;
+            }
+            else
+            {
+                if (_filteredItemIndex != -1)
+                {
+                    // We had filtering enabled for another item, so we need to disable it
+                    _netList.DisableSearchMode(_filteredItemIndex);
+                }
+
+                _filteredItemIndex = index;
+                _dropdownFilterField.isVisible = true;
+                _dropdownFilterField.Focus();
+            }
+        }
+
         #endregion
 
         #region Utility
@@ -228,6 +263,12 @@ namespace ParallelRoadTool.UI
 
             var space = bg.AddUIComponent<UIPanel>();
             space.size = new Vector2(1, 1);
+
+            // Add filter box
+            _dropdownFilterField = UIUtil.CreateTextField(this);
+            _dropdownFilterField.size = new Vector2(size.x - 72, 32);
+            _dropdownFilterField.relativePosition = new Vector2(16, 38);
+            _dropdownFilterField.isVisible = false;
 
             // Add options
             _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping",
