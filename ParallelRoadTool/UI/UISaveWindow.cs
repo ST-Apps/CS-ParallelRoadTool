@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
@@ -256,12 +257,12 @@ namespace ParallelRoadTool.UI
 
             if (Directory.Exists(Configuration.AutoSaveFolderPath))
             {
-                var files = Directory.GetFiles(Configuration.AutoSaveFolderPath, "*.xml");
+                var files = Directory.GetFiles(Configuration.AutoSaveFolderPath, "*.xml")
+                    .Where(f => Path.GetFileNameWithoutExtension(f) != Configuration.AutoSaveFileName)
+                    .Select(Path.GetFileNameWithoutExtension);
 
                 foreach (var file in files)
-                    if (Path.GetFileNameWithoutExtension(file) != Configuration.AutoSaveFileName
-                    ) //exclude autosaved file from list) 
-                        _fastList.rowsData.Add(Path.GetFileNameWithoutExtension(file));
+                        _fastList.rowsData.Add(file);
 
                 _fastList.DisplayAt(0);
             }
