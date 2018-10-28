@@ -35,7 +35,8 @@ namespace ParallelRoadTool.UI
                     _horizontalOffsetField.isVisible =
                         _verticalOffsetField.isVisible =
                             _reverseCheckbox.isVisible =
-                                _dropDown.isVisible = false;
+                                _searchButton.isVisible = 
+                                    _dropDown.isVisible = false;
                 _label.isVisible = _addButton.isVisible = true;
                 _label.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
             }
@@ -60,10 +61,11 @@ namespace ParallelRoadTool.UI
 
         #region Constants
 
-        private const int TextFieldWidth = 65;
+        private const int TextFieldWidth = 42;
+        private const int TextFieldHeight = 32;
         private const int LabelWidth = 250;
-        private const float ColumnPadding = 8f;
-        private const int ReverseButtonWidth = 36;
+        private const float ColumnPadding = 4f;
+        private const int ButtonSize = 36;
 
         #endregion
 
@@ -93,6 +95,7 @@ namespace ParallelRoadTool.UI
         private UITextField _verticalOffsetField;
         private UIButton _deleteButton;
         private UIButton _addButton;
+        private UICheckBox _searchButton;
 
         #endregion
 
@@ -114,7 +117,7 @@ namespace ParallelRoadTool.UI
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             color = new Color32(255, 255, 255, 255);
-            size = new Vector2(500 - 8 * 2 - 4 * 2, 40);
+            size = new Vector2(500 - 8 * 2 - 4 * 2, 40);            
 
             var panel = AddUIComponent<UIPanel>();
             panel.size = new Vector2(LabelWidth, 40);
@@ -124,19 +127,34 @@ namespace ParallelRoadTool.UI
             _dropDown.width = LabelWidth;
             _dropDown.relativePosition = Vector2.zero;
 
+            var currentXposition = LabelWidth + ColumnPadding;
+
+            // TODO: tooltip
+            _searchButton = UIUtil.CreateCheckBox(this, "FindIt",
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"), false);            
+            _searchButton.relativePosition = new Vector3(currentXposition, 4);
+
+            currentXposition += ButtonSize + ColumnPadding;
+
             _reverseCheckbox = UIUtil.CreateCheckBox(this, "Reverse",
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton"), false);
-            _reverseCheckbox.relativePosition = new Vector3(LabelWidth + ColumnPadding, 2);
+            _reverseCheckbox.relativePosition = new Vector3(currentXposition, 4);
+
+            currentXposition += ButtonSize + ColumnPadding;
 
             _horizontalOffsetField = UIUtil.CreateTextField(this);
-            _horizontalOffsetField.relativePosition =
-                new Vector3(LabelWidth + 2 * ColumnPadding + ReverseButtonWidth, 10);
+            _horizontalOffsetField.relativePosition = new Vector3(currentXposition, 4);
             _horizontalOffsetField.width = TextFieldWidth;
+            _horizontalOffsetField.height = TextFieldHeight;
+
+            currentXposition += TextFieldWidth + ColumnPadding;
 
             _verticalOffsetField = UIUtil.CreateTextField(this);
-            _verticalOffsetField.relativePosition =
-                new Vector3(LabelWidth + 3 * ColumnPadding + ReverseButtonWidth + TextFieldWidth, 10);
+            _verticalOffsetField.relativePosition = new Vector3(currentXposition, 4);
             _verticalOffsetField.width = TextFieldWidth;
+            _verticalOffsetField.height = TextFieldHeight;
+
+            currentXposition += TextFieldWidth + ColumnPadding;
 
             _label = AddUIComponent<UILabel>();
             _label.textScale = .8f;
@@ -147,20 +165,19 @@ namespace ParallelRoadTool.UI
             _label.isVisible = false;
 
             _deleteButton = UIUtil.CreateUiButton(this, string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"), new Vector2(36, 36),
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"), new Vector2(ButtonSize, ButtonSize),
                 "Remove");
             _deleteButton.zOrder = 0;
             _deleteButton.textScale = 0.8f;
-            _deleteButton.relativePosition =
-                new Vector3(2 * TextFieldWidth + LabelWidth + ReverseButtonWidth + 3 * ColumnPadding, 0);
+            _deleteButton.relativePosition = new Vector3(currentXposition, 4);
 
             _addButton = UIUtil.CreateUiButton(this, string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"), new Vector2(36, 36), "Add");
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"), new Vector2(ButtonSize, ButtonSize), "Add");
             _addButton.zOrder = 1;
             _addButton.isVisible = false;
             _addButton.textScale = 0.8f;
             _addButton.relativePosition =
-                new Vector3(2 * TextFieldWidth + LabelWidth + ReverseButtonWidth + 3 * ColumnPadding, 0);
+                new Vector3(2 * TextFieldWidth + LabelWidth + ButtonSize + 3 * ColumnPadding, 0);
 
             SubscribeToUiEvents();
 
@@ -178,6 +195,7 @@ namespace ParallelRoadTool.UI
             Destroy(_verticalOffsetField);
             Destroy(_deleteButton);
             Destroy(_addButton);
+            Destroy(_searchButton);
             base.OnDestroy();
         }
 
@@ -189,6 +207,7 @@ namespace ParallelRoadTool.UI
         {
             if (!IsCurrentItem)
             {
+                _searchButton.eventClicked -= SearchButtonOnEventClicked;
                 _dropDown.eventSelectedIndexChanged -= DropDown_eventSelectedIndexChanged;
                 _reverseCheckbox.eventCheckChanged -= ReverseCheckboxOnEventCheckChanged;
                 _horizontalOffsetField.eventTextSubmitted -= HorizontalOffsetField_eventTextSubmitted;
@@ -205,6 +224,7 @@ namespace ParallelRoadTool.UI
         {
             if (!IsCurrentItem)
             {
+                _searchButton.eventClicked += SearchButtonOnEventClicked;
                 _dropDown.eventSelectedIndexChanged += DropDown_eventSelectedIndexChanged;
                 _reverseCheckbox.eventCheckChanged += ReverseCheckboxOnEventCheckChanged;
                 _horizontalOffsetField.eventTextSubmitted += HorizontalOffsetField_eventTextSubmitted;
@@ -215,6 +235,12 @@ namespace ParallelRoadTool.UI
             {
                 _addButton.eventClicked += AddButton_eventClicked;
             }
+        }
+
+        private void SearchButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventparam)
+        {
+            // TODO: instead of opening a popup we may show a textbox below mod's title (near the snapping button) and use that to filter our dropdown
+            Singleton<UISearchPopup>.instance.Open(this);
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)

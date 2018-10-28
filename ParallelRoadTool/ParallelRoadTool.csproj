@@ -63,6 +63,8 @@
     <Compile Include="Models\NetTypeItemEventArgs.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
+    <Compile Include="UI\Base\UIBasePopup.cs" />
+    <Compile Include="UI\UISearchPopup.cs" />
     <Compile Include="Utils\DebugUtils.cs" />
     <Compile Include="UI\OptionsKeymapping.cs" />
     <Compile Include="Loader.cs" />
@@ -130,6 +132,11 @@
     <EmbeddedResource Include="Assets\Localizations\it.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Icons\FindIt.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItDisabled.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItFocused.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItHovered.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItPressed.png" />
     <Content Include="Assets\Localizations\nl.xml" />
     <Content Include="Assets\Localizations\pt.xml" />
   </ItemGroup>

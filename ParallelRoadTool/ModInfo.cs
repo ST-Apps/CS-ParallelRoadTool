@@ -11,7 +11,7 @@ namespace ParallelRoadTool
     {
         private const string Version = "1.3.0";
 #if DEBUG
-        private const string Branch = "dev";
+        private const string Branch = "ISSUE-14-2";
         public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
 #else
         public static readonly string ModName = $"Parallel Road Tool {Version}";
