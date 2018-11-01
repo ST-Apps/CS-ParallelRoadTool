@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using ColossalFramework;
@@ -282,7 +283,7 @@ namespace ParallelRoadTool.UI
 
         private void SearchButtonOnEventCheckChanged(UIComponent component, bool value)
         {            
-            DebugUtils.Log($"{nameof(SearchButtonOnEventCheckChanged)}");   
+            DebugUtils.Log($"{nameof(SearchButtonOnEventCheckChanged)}");
             if (!value) FilterDropdown(null);
             OnSearchModeToggled?.Invoke(this, Index);
         }

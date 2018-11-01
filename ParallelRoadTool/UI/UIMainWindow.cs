@@ -102,19 +102,14 @@ namespace ParallelRoadTool.UI
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
             _netList.OnSearchModeToggled += NetListOnOnSearchModeToggled;
             _dropdownFilterField.eventTextChanged += DropdownFilterFieldOnEventTextChanged;
-            _dropdownFilterField.eventLostFocus += DropdownFilterFieldOnEventLostFocus;
+            // _dropdownFilterField.eventLostFocus += DropdownFilterFieldOnEventLostFocus;
             _loadPresetsButton.eventClicked += LoadPresetsButtonOnClicked;
             _savePresetsButton.eventClicked += SavePresetsButtonOnClicked;
-        }
-
-        // private bool _canHandleSearchToggleEvent = true;
+        }        
 
         private void DropdownFilterFieldOnEventLostFocus(UIComponent component, UIFocusEventParameter eventparam)
-        {            
-            // _canHandleSearchToggleEvent = false;
+        {
             _netList.DisableSearchMode(_filteredItemIndex);
-            ToggleDropdownFiltering(_filteredItemIndex);
-            // _canHandleSearchToggleEvent = true;
         }
 
         private void DropdownFilterFieldOnEventTextChanged(UIComponent component, string value)
@@ -123,8 +118,7 @@ namespace ParallelRoadTool.UI
         }
 
         private void NetListOnOnSearchModeToggled(UIComponent component, int value)
-        {            
-            // if (!_canHandleSearchToggleEvent) return;            
+        {
             ToggleDropdownFiltering(value);
         }
 
