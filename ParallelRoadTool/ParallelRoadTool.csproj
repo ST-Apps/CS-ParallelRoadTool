@@ -61,8 +61,13 @@
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="Models\NetTypeItem.cs" />
     <Compile Include="Models\NetTypeItemEventArgs.cs" />
+    <Compile Include="Models\PresetNetItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
+    <Compile Include="UI\UIFastList.cs" />
+    <Compile Include="UI\UILoadWindow.cs" />
+    <Compile Include="UI\UISaveLoadFileRow.cs" />
+    <Compile Include="UI\UISaveWindow.cs" />
     <Compile Include="Utils\DebugUtils.cs" />
     <Compile Include="UI\OptionsKeymapping.cs" />
     <Compile Include="Loader.cs" />
@@ -74,6 +79,7 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
+    <Compile Include="Utils\PresetsUtils.cs" />
     <Compile Include="Utils\ResourceLoader.cs" />
     <Compile Include="Utils\CallerMemberNameAttribute.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
@@ -130,6 +136,8 @@
     <EmbeddedResource Include="Assets\Localizations\it.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Icons\Load.png" />
+    <EmbeddedResource Include="Assets\Icons\Save.png" />
     <Content Include="Assets\Localizations\nl.xml" />
     <Content Include="Assets\Localizations\pt.xml" />
   </ItemGroup>
