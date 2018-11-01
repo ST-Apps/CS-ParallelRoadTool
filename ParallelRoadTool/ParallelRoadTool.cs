@@ -268,9 +268,12 @@ namespace ParallelRoadTool
         {
             DebugUtils.Log($"{value.ItemIndex} / {SelectedRoadTypes.Count}");
             var item = SelectedRoadTypes[value.ItemIndex];
-            var netInfo = value.SelectedNetworkIndex == 0
-                ? null
-                : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
+            
+            var netInfo = value.IsFiltered
+                ? Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FirstOrDefault(n => n.GenerateBeautifiedNetName() == value.SelectedNetworkName)
+                : value.SelectedNetworkIndex == 0
+                    ? null
+                    : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
 
             item.NetInfo = netInfo;
             item.HorizontalOffset = value.HorizontalOffset;

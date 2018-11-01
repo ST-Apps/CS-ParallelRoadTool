@@ -68,6 +68,8 @@
     <Compile Include="UI\UILoadWindow.cs" />
     <Compile Include="UI\UISaveLoadFileRow.cs" />
     <Compile Include="UI\UISaveWindow.cs" />
+    <Compile Include="UI\Base\UIBasePopup.cs" />
+    <Compile Include="UI\UISearchPopup.cs" />
     <Compile Include="Utils\DebugUtils.cs" />
     <Compile Include="UI\OptionsKeymapping.cs" />
     <Compile Include="Loader.cs" />
@@ -136,6 +138,11 @@
     <EmbeddedResource Include="Assets\Localizations\it.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Icons\FindIt.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItDisabled.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItFocused.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItHovered.png" />
+    <EmbeddedResource Include="Assets\Icons\FindItPressed.png" />
     <EmbeddedResource Include="Assets\Icons\Load.png" />
     <EmbeddedResource Include="Assets\Icons\Save.png" />
     <Content Include="Assets\Localizations\nl.xml" />
