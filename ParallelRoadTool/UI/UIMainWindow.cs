@@ -46,7 +46,7 @@ namespace ParallelRoadTool.UI
         private UINetList _netList;
         private UICheckBox _toolToggleButton;
         private UICheckBox _snappingToggleButton;
-        private UICheckBox _tutorialToggleButton;
+        // private UICheckBox _tutorialToggleButton;
 
         private UISprite _tutorialIcon => ToolsModifierControl.advisorPanel?.Find<UISprite>("Icon");
         private UISprite _tutorialImage => ToolsModifierControl.advisorPanel?.Find<UISprite>("Sprite");
@@ -70,7 +70,7 @@ namespace ParallelRoadTool.UI
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
-            _tutorialToggleButton.eventCheckChanged -= _tutorialToggleButton_eventCheckChanged;
+            //_tutorialToggleButton.eventCheckChanged -= _tutorialToggleButton_eventCheckChanged;
             _buttonDragHandle.eventDragStart -= ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd -= ButtonDragHandleOnEventDragEnd;
             _netList.OnItemChanged -= NetListOnOnItemChanged;
@@ -82,7 +82,7 @@ namespace ParallelRoadTool.UI
         {
             _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged += SnappingToggleButtonOnEventCheckChanged;
-            _tutorialToggleButton.eventCheckChanged += _tutorialToggleButton_eventCheckChanged;
+            //_tutorialToggleButton.eventCheckChanged += _tutorialToggleButton_eventCheckChanged;
             _buttonDragHandle.eventDragStart += ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;
             _netList.OnItemChanged += NetListOnOnItemChanged;
@@ -235,11 +235,11 @@ namespace ParallelRoadTool.UI
             _snappingToggleButton.relativePosition = new Vector3(166, 38);
             _snappingToggleButton.BringToFront();
 
-            _tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "TutorialToggleButton"), false, true);
-            _tutorialToggleButton.relativePosition = new Vector3(166, 38);
-            _tutorialToggleButton.BringToFront();
-            _tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
+            //_tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp",
+            //    Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "TutorialToggleButton"), false, true);
+            //_tutorialToggleButton.relativePosition = new Vector3(166, 38);
+            //_tutorialToggleButton.BringToFront();
+            //_tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
 
             // Add main tool button to road options panel
             if (_toolToggleButton != null) return;
@@ -284,27 +284,27 @@ namespace ParallelRoadTool.UI
             if (!isVisible) return;
 
             // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
-            if (_tutorialIcon == null || !ToolsModifierControl.advisorPanel.isVisible || !ToolsModifierControl.advisorPanel.isOpen) return;
-            _isUpdatingTutorialAdvisor = true;
-            if (_tutorialIcon.spriteName == "Parallel")
-            {
-                if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
-                    _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
-            }
-            else
-            {
-                if (_tutorialImage.atlas.name != UIUtil.AdvisorAtlas.name)
-                {
-                    _tutorialIcon.atlas = UIUtil.DefaultAtlas;
-                    _tutorialImage.atlas = UIUtil.AdvisorAtlas;
-                }
-            }
+            //if (_tutorialIcon == null || !ToolsModifierControl.advisorPanel.isVisible || !ToolsModifierControl.advisorPanel.isOpen) return;
+            //_isUpdatingTutorialAdvisor = true;
+            //if (_tutorialIcon.spriteName == "Parallel")
+            //{
+            //    if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
+            //        _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
+            //}
+            //else
+            //{
+            //    if (_tutorialImage.atlas.name != UIUtil.AdvisorAtlas.name)
+            //    {
+            //        _tutorialIcon.atlas = UIUtil.DefaultAtlas;
+            //        _tutorialImage.atlas = UIUtil.AdvisorAtlas;
+            //    }
+            //}
 
-            _tutorialToggleButton.isChecked = _tutorialIcon.spriteName == "Parallel"
-                                              && _tutorialImage.atlas.name == UIUtil.TextureAtlas.name
-                                              && ToolsModifierControl.advisorPanel.isVisible
-                                              && ToolsModifierControl.advisorPanel.isOpen;
-            _isUpdatingTutorialAdvisor = false;
+            //_tutorialToggleButton.isChecked = _tutorialIcon.spriteName == "Parallel"
+            //                                  && _tutorialImage.atlas.name == UIUtil.TextureAtlas.name
+            //                                  && ToolsModifierControl.advisorPanel.isVisible
+            //                                  && ToolsModifierControl.advisorPanel.isOpen;
+            //_isUpdatingTutorialAdvisor = false;
 
             base.Update();
         }
@@ -320,7 +320,7 @@ namespace ParallelRoadTool.UI
                 Destroy(_netList);
                 Destroy(_toolToggleButton);
                 Destroy(_snappingToggleButton);
-                Destroy(_tutorialToggleButton);
+                //Destroy(_tutorialToggleButton);
                 base.OnDestroy();
             }
             catch
