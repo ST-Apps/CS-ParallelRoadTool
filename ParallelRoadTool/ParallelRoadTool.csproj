@@ -111,15 +111,7 @@
     <EmbeddedResource Include="Assets\Icons\ParallelHovered.png" />
     <EmbeddedResource Include="Assets\Icons\ParallelPressed.png" />
     <EmbeddedResource Include="Assets\Icons\Remove.png" />
-    <EmbeddedResource Include="Assets\Icons\RemoveDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\RemoveFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\RemoveHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\RemovePressed.png" />
     <EmbeddedResource Include="Assets\Icons\Add.png" />
-    <EmbeddedResource Include="Assets\Icons\AddDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\AddFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\AddHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\AddPressed.png" />
     <EmbeddedResource Include="Assets\Icons\DragCursor.png" />
   </ItemGroup>
   <ItemGroup>
