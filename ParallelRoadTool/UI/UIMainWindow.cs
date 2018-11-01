@@ -85,6 +85,7 @@ namespace ParallelRoadTool.UI
             _netList.OnItemAdded -= NetListOnOnItemAdded;
             _netList.OnItemDeleted -= NetListOnOnItemDeleted;
             _dropdownFilterField.eventTextChanged -= DropdownFilterFieldOnEventTextChanged;
+            // _dropdownFilterField.eventLostFocus -= DropdownFilterFieldOnEventLostFocus;
             _loadPresetsButton.eventClicked -= LoadPresetsButtonOnClicked;
             _savePresetsButton.eventClicked -= SavePresetsButtonOnClicked;
         }
@@ -101,8 +102,19 @@ namespace ParallelRoadTool.UI
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
             _netList.OnSearchModeToggled += NetListOnOnSearchModeToggled;
             _dropdownFilterField.eventTextChanged += DropdownFilterFieldOnEventTextChanged;
+            _dropdownFilterField.eventLostFocus += DropdownFilterFieldOnEventLostFocus;
             _loadPresetsButton.eventClicked += LoadPresetsButtonOnClicked;
             _savePresetsButton.eventClicked += SavePresetsButtonOnClicked;
+        }
+
+        // private bool _canHandleSearchToggleEvent = true;
+
+        private void DropdownFilterFieldOnEventLostFocus(UIComponent component, UIFocusEventParameter eventparam)
+        {            
+            // _canHandleSearchToggleEvent = false;
+            _netList.DisableSearchMode(_filteredItemIndex);
+            ToggleDropdownFiltering(_filteredItemIndex);
+            // _canHandleSearchToggleEvent = true;
         }
 
         private void DropdownFilterFieldOnEventTextChanged(UIComponent component, string value)
@@ -111,7 +123,8 @@ namespace ParallelRoadTool.UI
         }
 
         private void NetListOnOnSearchModeToggled(UIComponent component, int value)
-        {
+        {            
+            // if (!_canHandleSearchToggleEvent) return;            
             ToggleDropdownFiltering(value);
         }
 
@@ -310,9 +323,10 @@ namespace ParallelRoadTool.UI
 
             // Add filter box
             _dropdownFilterField = UIUtil.CreateTextField(this);
-            _dropdownFilterField.size = new Vector2(size.x - 72, 32);
+            _dropdownFilterField.size = new Vector2(size.x - 160, 32);            
             _dropdownFilterField.relativePosition = new Vector2(16, 38);
             _dropdownFilterField.isVisible = false;
+            //_dropdownFilterField.selectOnFocus = _dropdownFilterField.submitOnFocusLost = true;            
 
             // Add options
             _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping",

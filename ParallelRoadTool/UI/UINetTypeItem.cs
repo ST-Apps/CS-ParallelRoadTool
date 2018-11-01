@@ -52,6 +52,8 @@ namespace ParallelRoadTool.UI
                 _reverseCheckbox.isChecked = IsReversed;
                 _dropDown.selectedIndex = Singleton<ParallelRoadTool>.instance.AvailableRoadTypes
                     .FindIndex(ni => ni != null && ni.name == NetInfo.name);
+                _dropDown.tooltip = _dropDown.selectedValue;
+                _dropDown.RefreshTooltip();
             }
             else
             {
@@ -164,19 +166,19 @@ namespace ParallelRoadTool.UI
             _dropDown = UIUtil.CreateDropDown(panel);
             _dropDown.width = LabelWidth;
             _dropDown.relativePosition = Vector2.zero;
+            _dropDown.tooltip = _dropDown.selectedValue;
 
             var currentXposition = LabelWidth + ColumnPadding;
-
-            // TODO: tooltip
+            
             _searchButton = UIUtil.CreateCheckBox(this, "FindIt",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"), false);            
-            _searchButton.relativePosition = new Vector3(currentXposition, 4);
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SearchButton"), false);            
+            _searchButton.relativePosition = new Vector3(currentXposition, 2);
 
             currentXposition += ButtonSize + ColumnPadding;
 
             _reverseCheckbox = UIUtil.CreateCheckBox(this, "Reverse",
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton"), false);
-            _reverseCheckbox.relativePosition = new Vector3(currentXposition, 4);
+            _reverseCheckbox.relativePosition = new Vector3(currentXposition, 2);
 
             currentXposition += ButtonSize + ColumnPadding;
 
@@ -184,6 +186,8 @@ namespace ParallelRoadTool.UI
             _horizontalOffsetField.relativePosition = new Vector3(currentXposition, 4);
             _horizontalOffsetField.width = TextFieldWidth;
             _horizontalOffsetField.height = TextFieldHeight;
+            _horizontalOffsetField.tooltip =
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "HorizontalOffset");
 
             currentXposition += TextFieldWidth + ColumnPadding;
 
@@ -191,6 +195,8 @@ namespace ParallelRoadTool.UI
             _verticalOffsetField.relativePosition = new Vector3(currentXposition, 4);
             _verticalOffsetField.width = TextFieldWidth;
             _verticalOffsetField.height = TextFieldHeight;
+            _verticalOffsetField.tooltip =
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "VerticalOffset");
 
             currentXposition += TextFieldWidth + ColumnPadding;
 
@@ -207,15 +213,14 @@ namespace ParallelRoadTool.UI
                 "Remove");
             _deleteButton.zOrder = 0;
             _deleteButton.textScale = 0.8f;
-            _deleteButton.relativePosition = new Vector3(currentXposition, 4);
+            _deleteButton.relativePosition = new Vector3(currentXposition, 2);
 
             _addButton = UIUtil.CreateUiButton(this, string.Empty,
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"), new Vector2(ButtonSize, ButtonSize), "Add");
             _addButton.zOrder = 1;
             _addButton.isVisible = false;
             _addButton.textScale = 0.8f;
-            _addButton.relativePosition =
-                new Vector3(2 * TextFieldWidth + LabelWidth + ButtonSize + 3 * ColumnPadding, 0);
+            _addButton.relativePosition = new Vector3(currentXposition, 2);
 
             SubscribeToUiEvents();
 
@@ -276,9 +281,7 @@ namespace ParallelRoadTool.UI
         }
 
         private void SearchButtonOnEventCheckChanged(UIComponent component, bool value)
-        {
-            // TODO: instead of opening a popup we may show a textbox below mod's title (near the snapping button) and use that to filter our dropdown
-            // Singleton<UISearchPopup>.instance.Open(this);  
+        {            
             DebugUtils.Log($"{nameof(SearchButtonOnEventCheckChanged)}");   
             if (!value) FilterDropdown(null);
             OnSearchModeToggled?.Invoke(this, Index);
@@ -328,6 +331,8 @@ namespace ParallelRoadTool.UI
 
             var eventArgs = new NetTypeItemEventArgs(Index, HorizontalOffset, VerticalOffset, _dropDown.selectedIndex,
                 IsReversed, IsFiltered, _dropDown.selectedValue);
+            _dropDown.tooltip = _dropDown.selectedValue;
+            _dropDown.RefreshTooltip();
             OnChanged?.Invoke(this, eventArgs);
         }
 
