@@ -245,24 +245,24 @@ namespace ParallelRoadTool.Utils
             {
                 uiButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
                 uiButton.normalFgSprite = sprite;
-                uiButton.normalBgSprite = $"OptionBase";
-                uiButton.hoveredBgSprite = $"OptionBaseHovered";
-                uiButton.pressedBgSprite = $"OptionBasePressed";
-                uiButton.focusedBgSprite = $"OptionBaseFocused";
-                uiButton.disabledBgSprite = $"OptionBaseDisabled";
+                uiButton.normalBgSprite = "OptionBase";
+                uiButton.hoveredBgSprite = "OptionBaseHovered";
+                uiButton.pressedBgSprite = "OptionBasePressed";
+                uiButton.focusedBgSprite = "OptionBaseFocused";
+                uiButton.disabledBgSprite = "OptionBaseDisabled";
             }
             else
             {
                 uiButton.atlas = DefaultAtlas;
                 uiButton.textHorizontalAlignment = UIHorizontalAlignment.Center;
                 if (sprite == string.Empty)
-                    uiButton.normalFgSprite = $"ButtonMenu";
+                    uiButton.normalFgSprite = "ButtonMenu";
                 else
                     uiButton.normalFgSprite = sprite;
-                uiButton.hoveredBgSprite = $"ButtonMenuHovered";
-                uiButton.pressedBgSprite = $"ButtonMenuPressed";
-                uiButton.focusedBgSprite = $"ButtonMenuFocused";
-                uiButton.disabledBgSprite = $"ButtonMenuDisabled";
+                uiButton.hoveredBgSprite = "ButtonMenuHovered";
+                uiButton.pressedBgSprite = "ButtonMenuPressed";
+                uiButton.focusedBgSprite = "ButtonMenuFocused";
+                uiButton.disabledBgSprite = "ButtonMenuDisabled";
             }
 
             uiButton.textVerticalAlignment = UIVerticalAlignment.Middle;

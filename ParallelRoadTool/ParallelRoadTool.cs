@@ -88,15 +88,14 @@ namespace ParallelRoadTool
                 // Default item, creates a net with the same type as source
                 AddNetworkType(null);
                 // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
-                var sortedNetworks = new SortedDictionary<string, NetInfo>();                
+                var sortedNetworks = new SortedDictionary<string, NetInfo>();
                 for (uint i = 0; i < count; i++)
                 {
                     var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
-                    if (prefab != null) {
-                        sortedNetworks[prefab.GenerateBeautifiedNetName()] = prefab;
-                    }
+                    if (prefab != null) sortedNetworks[prefab.GenerateBeautifiedNetName()] = prefab;
                 }
-                Array.Copy(sortedNetworks.Keys.ToArray(),0,AvailableRoadNames,1, sortedNetworks.Count);                
+
+                Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
                 AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
                 DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");

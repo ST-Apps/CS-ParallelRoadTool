@@ -82,7 +82,8 @@ namespace ParallelRoadTool.Detours
         ///     Overlay's core method.
         ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
         ///     correct offsets.
-        ///     TODO: Probably RenderHelperLines is what we need to fix the look with curves, but detouring it makes Unity crash so we have to live with this little issue.
+        ///     TODO: Probably RenderHelperLines is what we need to fix the look with curves, but detouring it makes Unity crash so
+        ///     we have to live with this little issue.
         /// </summary>
         /// <param name="cameraInfo"></param>
         /// <param name="info"></param>
@@ -129,7 +130,7 @@ namespace ParallelRoadTool.Detours
                         startPoint.m_position.Offset(
                             startPoint.m_direction == Vector3.zero ? middlePoint.m_direction : startPoint.m_direction,
                             horizontalOffset, verticalOffset),
-                    m_segment = 0, //startPoint.m_segment
+                    m_segment = 0 //startPoint.m_segment
                 }, new NetTool.ControlPoint
                 {
                     m_direction = middlePoint.m_direction,
@@ -138,7 +139,7 @@ namespace ParallelRoadTool.Detours
                     m_outside = middlePoint.m_outside,
                     m_position =
                         middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
-                    m_segment = 0, //middlePoint.m_segment
+                    m_segment = 0 //middlePoint.m_segment
                 }, new NetTool.ControlPoint
                 {
                     m_direction = endPoint.m_direction,
@@ -146,7 +147,7 @@ namespace ParallelRoadTool.Detours
                     m_node = 0, //endPoint.m_node,
                     m_outside = endPoint.m_outside,
                     m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
-                    m_segment = 0, //endPoint.m_segment
+                    m_segment = 0 //endPoint.m_segment
                 });
             }
         }

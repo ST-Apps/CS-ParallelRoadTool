@@ -54,7 +54,7 @@ namespace ParallelRoadTool
 
                 panel.gameObject.AddComponent<OptionsKeymapping>();
 
-                group.AddSpace(10);                
+                group.AddSpace(10);
             }
             catch (Exception e)
             {

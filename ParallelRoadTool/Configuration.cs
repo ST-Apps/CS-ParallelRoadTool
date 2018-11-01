@@ -1,5 +1,5 @@
-﻿using ColossalFramework.IO;
-using System.IO;
+﻿using System.IO;
+using ColossalFramework.IO;
 
 namespace ParallelRoadTool
 {
@@ -10,7 +10,10 @@ namespace ParallelRoadTool
     {
         public const string SettingsFileName = "ParallelRoadTool";
         public const string AutoSaveFileName = "_PRTAutoSave";
-        public static readonly string AutoSaveFolderPath = Path.Combine(DataLocation.localApplicationData, $"{AssemblyName}Exports");
+
+        public static readonly string AutoSaveFolderPath =
+            Path.Combine(DataLocation.localApplicationData, $"{AssemblyName}Exports");
+
         public static readonly string AutoSaveFilePath = Path.Combine(AutoSaveFolderPath, AutoSaveFileName + ".xml");
 
         #region UI
