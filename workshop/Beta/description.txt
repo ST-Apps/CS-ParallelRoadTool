@@ -18,6 +18,8 @@ Main features are:
 [h1]Current version: [b]2.0.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Enabled tool while in upgrade mode so that you can add parallel/stacked segments to already existing networks
+[*] Added ability to save/load presets
+[*] Added search feature
 [/list]
 [/quote]
 
@@ -61,8 +63,7 @@ Please [b]open an issue on [url=https://github.com/ST-Apps/CS-ParallelRoadTool/i
 
 [quote]
 [h1]Features that may come somewhere in the future[/h1] 
-[list] 
-[*]Ability to save/load presets 
+[list]
 [*]Ability to toggle on/off terrain conforming
 [*]Ability to center cursor on the middle point between all the selected roads 
 [/list]
