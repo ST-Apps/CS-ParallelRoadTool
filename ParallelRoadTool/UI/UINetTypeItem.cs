@@ -187,6 +187,7 @@ namespace ParallelRoadTool.UI
             _horizontalOffsetField.relativePosition = new Vector3(currentXposition, 4);
             _horizontalOffsetField.width = TextFieldWidth;
             _horizontalOffsetField.height = TextFieldHeight;
+            _horizontalOffsetField.numericalOnly = true;
             _horizontalOffsetField.tooltip =
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "HorizontalOffset");
 
@@ -196,6 +197,7 @@ namespace ParallelRoadTool.UI
             _verticalOffsetField.relativePosition = new Vector3(currentXposition, 4);
             _verticalOffsetField.width = TextFieldWidth;
             _verticalOffsetField.height = TextFieldHeight;
+            _verticalOffsetField.numericalOnly = true;
             _verticalOffsetField.tooltip =
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "VerticalOffset");
 
