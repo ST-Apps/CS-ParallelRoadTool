@@ -322,6 +322,8 @@ namespace ParallelRoadTool.UI
 
         private void DeleteButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
+            if (_searchButton.isChecked)
+                OnSearchModeToggled?.Invoke(this, Index);
             OnDeleteClicked?.Invoke(this, Index);
         }
 
