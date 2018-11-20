@@ -333,13 +333,13 @@ namespace ParallelRoadTool.UI
             //_tutorialToggleButton.relativePosition = new Vector3(166, 38);
             //_tutorialToggleButton.BringToFront();
             //_tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
-
-            _loadPresetsButton = UIUtil.CreateUiButton(_mainPanel, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "LoadButton"), new Vector2(36, 36), "Load");
-            _loadPresetsButton.relativePosition = new Vector3(166, 38);
-            _loadPresetsButton.BringToFront();
+            
             _savePresetsButton = UIUtil.CreateUiButton(_mainPanel, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SaveButton"), new Vector2(36, 36), "Save");
             _savePresetsButton.relativePosition = new Vector3(166, 38);
             _savePresetsButton.BringToFront();
+            _loadPresetsButton = UIUtil.CreateUiButton(_mainPanel, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "LoadButton"), new Vector2(36, 36), "Load");
+            _loadPresetsButton.relativePosition = new Vector3(166, 38);
+            _loadPresetsButton.BringToFront();
 
             //TODO: Needs button state based on networks count 
 
