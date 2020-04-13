@@ -105,7 +105,7 @@ namespace ParallelRoadTool.UI
             // _dropdownFilterField.eventLostFocus += DropdownFilterFieldOnEventLostFocus;
             _loadPresetsButton.eventClicked += LoadPresetsButtonOnClicked;
             _savePresetsButton.eventClicked += SavePresetsButtonOnClicked;
-        }        
+        }
 
         private void DropdownFilterFieldOnEventLostFocus(UIComponent component, UIFocusEventParameter eventparam)
         {
@@ -317,7 +317,7 @@ namespace ParallelRoadTool.UI
 
             // Add filter box
             _dropdownFilterField = UIUtil.CreateTextField(this);
-            _dropdownFilterField.size = new Vector2(size.x - 160, 32);            
+            _dropdownFilterField.size = new Vector2(size.x - 160, 32);
             _dropdownFilterField.relativePosition = new Vector2(16, 38);
             _dropdownFilterField.isVisible = false;
             //_dropdownFilterField.selectOnFocus = _dropdownFilterField.submitOnFocusLost = true;            
@@ -333,7 +333,7 @@ namespace ParallelRoadTool.UI
             //_tutorialToggleButton.relativePosition = new Vector3(166, 38);
             //_tutorialToggleButton.BringToFront();
             //_tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
-            
+
             _savePresetsButton = UIUtil.CreateUiButton(_mainPanel, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SaveButton"), new Vector2(36, 36), "Save");
             _savePresetsButton.relativePosition = new Vector3(166, 38);
             _savePresetsButton.BringToFront();
@@ -479,8 +479,7 @@ namespace ParallelRoadTool.UI
         {
             if (UIView.HasModalInput()
                 || UIView.HasInputFocus()
-                || !Singleton<ParallelRoadTool>.exists
-                || !Singleton<ParallelRoadTool>.instance.IsToolActive)
+                || !Singleton<ParallelRoadTool>.exists)
             {
                 return;
             }
