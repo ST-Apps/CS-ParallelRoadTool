@@ -74,8 +74,7 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Loading PRT...");
 
                 // Init support data
-                var count = PrefabCollection<NetInfo>.PrefabCount();
-                AvailableRoadNames = new string[count + 1];
+                var count = PrefabCollection<NetInfo>.PrefabCount();                
                 AvailableRoadTypes = new List<NetInfo>();
                 SelectedRoadTypes = new List<NetTypeItem>();
                 IsSnappingEnabled = false;
@@ -85,8 +84,7 @@ namespace ParallelRoadTool
 
                 // Available networks loading
                 DebugUtils.Log("Loading all available networks...");
-                // Default item, creates a net with the same type as source
-                AddNetworkType(null);
+                
                 // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
                 var sortedNetworks = new SortedDictionary<string, NetInfo>();
                 for (uint i = 0; i < count; i++)
@@ -94,6 +92,10 @@ namespace ParallelRoadTool
                     var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
                     if (prefab != null) sortedNetworks[prefab.GenerateBeautifiedNetName()] = prefab;
                 }
+
+                AvailableRoadNames = new string[sortedNetworks.Keys.Count + 1];
+                // Default item, creates a net with the same type as source
+                AddNetworkType(null);                
 
                 Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
                 AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
