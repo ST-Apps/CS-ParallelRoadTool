@@ -24,6 +24,8 @@ namespace ParallelRoadTool.Utils
 
         public static void Log(string message, [CallerMemberName] string callerName = null)
         {
+            CSUtil.Commons.Log._Debug(ModPrefix + " [" + callerName + "] " + message);
+            /*
 #if DEBUG
             if (AllowedMethodsNames.Any() && !AllowedMethodsNames.Contains(callerName)) return;
             if (message == m_lastLog)
@@ -43,6 +45,7 @@ namespace ParallelRoadTool.Utils
 
             m_lastLog = message;
 #endif
+            */
         }
 
         public static void LogException(Exception e)

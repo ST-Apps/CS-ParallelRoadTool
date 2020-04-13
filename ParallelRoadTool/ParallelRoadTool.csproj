@@ -81,6 +81,7 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
+    <Compile Include="Utils\Log.cs" />
     <Compile Include="Utils\PresetsUtils.cs" />
     <Compile Include="Utils\ResourceLoader.cs" />
     <Compile Include="Utils\CallerMemberNameAttribute.cs" />
