@@ -46,38 +46,6 @@ namespace ParallelRoadTool.Detours
 
         #endregion
 
-        #region Utils
-
-        /// <summary>
-        ///     This methods skips our detour by calling the original method from the game, allowing the rendering for a single
-        ///     segment.
-        /// </summary>
-        /// <param name="cameraInfo"></param>
-        /// <param name="info"></param>
-        /// <param name="color"></param>
-        /// <param name="startPoint"></param>
-        /// <param name="middlePoint"></param>
-        /// <param name="endPoint"></param>
-        private static void RenderOverlayOriginal(RenderManager.CameraInfo cameraInfo, NetInfo info, Color color,
-            NetTool.ControlPoint startPoint, NetTool.ControlPoint middlePoint, NetTool.ControlPoint endPoint)
-        {
-            Revert();
-
-            From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
-            {
-                cameraInfo,
-                info,
-                color,
-                startPoint,
-                middlePoint,
-                endPoint
-            });
-
-            Deploy();
-        }
-
-        #endregion
-
         /// <summary>
         ///     Overlay's core method.
         ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
@@ -94,63 +62,88 @@ namespace ParallelRoadTool.Detours
         private void RenderOverlay(RenderManager.CameraInfo cameraInfo, NetInfo info, Color color,
             NetTool.ControlPoint startPoint, NetTool.ControlPoint middlePoint, NetTool.ControlPoint endPoint)
         {
-            // Let's render the original segment
-            RenderOverlayOriginal(cameraInfo, info, color, startPoint, middlePoint, endPoint);
+            // Disable our detour so that we can call the original method
+            Revert();
 
-            for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
+            try
             {
-                var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
-
-                // Horizontal offset must be negated to appear on the correct side of the original segment
-                var horizontalOffset = currentRoadInfos.HorizontalOffset *
-                                       (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic ? 1 : -1);
-                var verticalOffset = currentRoadInfos.VerticalOffset;
-
-                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
-                var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
-                // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
-                    ItemClass.CollisionType.Elevated)
-                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
-
-                // 50 shades of blue
-                var newColor = new Color(
-                    Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
-                    Mathf.Clamp(color.g * 255 + i, 0, 255) / 255, 
-                    Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
-                    color.a);
-
-                // Render parallel segments by shifting the position of the 3 ControlPoint
-                RenderOverlayOriginal(cameraInfo, selectedNetInfo, newColor, new NetTool.ControlPoint
+                // Let's render the original segment
+                From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
                 {
-                    m_direction = startPoint.m_direction,
-                    m_elevation = startPoint.m_elevation,
-                    m_node = 0, //startPoint.m_node,
-                    m_outside = startPoint.m_outside,
-                    // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
-                    m_position =
+                    cameraInfo,
+                    info,
+                    color,
+                    startPoint,
+                    middlePoint,
+                    endPoint
+                });
+
+                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
+                {
+                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
+
+                    // Horizontal offset must be negated to appear on the correct side of the original segment
+                    var horizontalOffset = currentRoadInfos.HorizontalOffset *
+                                           (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic ? 1 : -1);
+                    var verticalOffset = currentRoadInfos.VerticalOffset;
+
+                    // If the user didn't select a NetInfo we'll use the one he's using for the main road                
+                    var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
+                    // If the user is using a vertical offset we try getting the relative elevated net info and use it
+                    if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
+                        ItemClass.CollisionType.Elevated)
+                        selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+
+                    // 50 shades of blue
+                    var newColor = new Color(
+                        Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
+                        Mathf.Clamp(color.g * 255 + i, 0, 255) / 255,
+                        Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
+                        color.a);
+
+                    // Render parallel segments by shifting the position of the 3 ControlPoint
+                    From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
+                    {
+                    cameraInfo, selectedNetInfo, newColor,
+                    new NetTool.ControlPoint
+                    {
+                        m_direction = startPoint.m_direction,
+                        m_elevation = startPoint.m_elevation,
+                        m_node = 0, //startPoint.m_node,
+                        m_outside = startPoint.m_outside,
+                        // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
+                        m_position =
                         startPoint.m_position.Offset(
                             startPoint.m_direction == Vector3.zero ? middlePoint.m_direction : startPoint.m_direction,
                             horizontalOffset, verticalOffset),
-                    m_segment = 0 //startPoint.m_segment
-                }, new NetTool.ControlPoint
-                {
-                    m_direction = middlePoint.m_direction,
-                    m_elevation = middlePoint.m_elevation,
-                    m_node = 0, //middlePoint.m_node,
-                    m_outside = middlePoint.m_outside,
-                    m_position =
+                        m_segment = 0 //startPoint.m_segment
+                    },
+                    new NetTool.ControlPoint
+                    {
+                        m_direction = middlePoint.m_direction,
+                        m_elevation = middlePoint.m_elevation,
+                        m_node = 0, //middlePoint.m_node,
+                        m_outside = middlePoint.m_outside,
+                        m_position =
                         middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
-                    m_segment = 0 //middlePoint.m_segment
-                }, new NetTool.ControlPoint
-                {
-                    m_direction = endPoint.m_direction,
-                    m_elevation = endPoint.m_elevation,
-                    m_node = 0, //endPoint.m_node,
-                    m_outside = endPoint.m_outside,
-                    m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
-                    m_segment = 0 //endPoint.m_segment
-                });
+                        m_segment = 0 //middlePoint.m_segment
+                    },
+                    new NetTool.ControlPoint
+                    {
+                        m_direction = endPoint.m_direction,
+                        m_elevation = endPoint.m_elevation,
+                        m_node = 0, //endPoint.m_node,
+                        m_outside = endPoint.m_outside,
+                        m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
+                        m_segment = 0 //endPoint.m_segment
+                    }
+                    });
+                }
+            }
+            finally
+            {
+                // Restore our detour so that we can call the original method
+                Deploy();
             }
         }
     }

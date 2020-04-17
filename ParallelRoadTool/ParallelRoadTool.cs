@@ -18,21 +18,19 @@ namespace ParallelRoadTool
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadTool : MonoBehaviour
     {
-        #region Properties
+        #region Properties        
 
-        #region Data
-
-        public static bool IsInGameMode;
+        #region Data       
 
         public List<NetInfo> AvailableRoadTypes { get; private set; }
         public List<NetTypeItem> SelectedRoadTypes { get; private set; }
-        public string[] AvailableRoadNames;
-
+        public string[] AvailableRoadNames { get; private set; }
         public bool IsSnappingEnabled { get; private set; }
         public bool IsLeftHandTraffic { get; private set; }
 
-        private bool _isToolActive;
+        public static bool IsInGameMode;
 
+        private bool _isToolActive;
         public bool IsToolActive
         {
             get => _isToolActive
@@ -46,6 +44,8 @@ namespace ParallelRoadTool
                 _isToolActive = value;
             }
         }
+
+        public NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
 
         #endregion
 
@@ -128,10 +128,10 @@ namespace ParallelRoadTool
             {
                 DebugUtils.Log("Destroying ...");
 
-                //remove existing autosave 
+                // Remove existing autosave 
                 if (File.Exists(Configuration.AutoSaveFilePath))
                     File.Delete(Configuration.AutoSaveFilePath);
-                //save current networks 
+                // Save current networks 
                 DebugUtils.Log("Saving networks");
                 PresetsUtils.Export(Configuration.AutoSaveFileName);
 
@@ -141,6 +141,7 @@ namespace ParallelRoadTool
                 // Reset data structures
                 AvailableRoadTypes.Clear();
                 SelectedRoadTypes.Clear();
+                AvailableRoadNames = null;
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
 

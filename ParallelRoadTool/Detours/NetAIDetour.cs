@@ -48,37 +48,6 @@ namespace ParallelRoadTool.Detours
 
         #endregion
 
-        #region Utils
-
-        /// <summary>
-        ///     This methods skips our detour by calling the original method from the game, allowing the rendering for a single
-        ///     segment.
-        /// </summary>
-        /// <param name="cameraInfo"></param>
-        /// <param name="info"></param>
-        /// <param name="color"></param>
-        /// <param name="startPoint"></param>
-        /// <param name="middlePoint"></param>
-        /// <param name="endPoint"></param>
-        //private static int GetConstructionCostOriginal(Vector3 startPos, Vector3 endPos, float startHeight, float endHeight)
-        //{
-        //    Revert();
-
-        //    From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
-        //    {
-        //        cameraInfo,
-        //        info,
-        //        color,
-        //        startPoint,
-        //        middlePoint,
-        //        endPoint
-        //    });
-
-        //    Deploy();
-        //}
-
-        #endregion
-
         /// <summary>
         ///     Overlay's core method.
         ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
@@ -94,32 +63,40 @@ namespace ParallelRoadTool.Detours
         /// <param name="endPoint"></param>
         private int GetConstructionCost(Vector3 startPos, Vector3 endPos, float startHeight, float endHeight)
         {
+            // Disable our detour so that we can call the original method
             Revert();
 
-            var cost = Singleton<NetTool>.instance.m_prefab.m_netAI.GetConstructionCost(startPos, endPos, startHeight, endHeight);
-
-            for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
+            try
             {
-                var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
+                // Get initial cost for the currently selected network
+                var cost = Singleton<ParallelRoadTool>.instance.CurrentNetwork.m_netAI.GetConstructionCost(startPos, endPos, startHeight, endHeight);
 
-                // Horizontal offset must be negated to appear on the correct side of the original segment
-                var horizontalOffset = currentRoadInfos.HorizontalOffset *
-                                       (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic ? 1 : -1);
-                var verticalOffset = currentRoadInfos.VerticalOffset;
+                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
+                {
+                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
 
-                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
-                var selectedNetInfo = currentRoadInfos.NetInfo.GetNetInfoWithElevation(currentRoadInfos.NetInfo, out var isSlope);
-                // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
-                    ItemClass.CollisionType.Elevated)
-                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+                    // Horizontal offset must be negated to appear on the correct side of the original segment                    
+                    var verticalOffset = currentRoadInfos.VerticalOffset;
 
-                cost += selectedNetInfo.m_netAI.GetConstructionCost(startPos, endPos, startHeight, endHeight);                
+                    // If the user didn't select a NetInfo we'll use the one he's using for the main road                
+                    var selectedNetInfo = currentRoadInfos.NetInfo.GetNetInfoWithElevation(currentRoadInfos.NetInfo, out _);
+
+                    // If the user is using a vertical offset we try getting the relative elevated net info and use it
+                    if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
+                        selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+                    
+                    // Add the cost for the parallel segment
+                    // TODO: it would be good to have startPos and endPos for the parallel segments instead of the ones of the first segment, but we don't have the direction here so we can't offset properly.
+                    cost += selectedNetInfo.m_netAI.GetConstructionCost(startPos, endPos, startHeight, endHeight);
+                }
+
+                return cost;
             }
-
-            Deploy();
-
-            return cost;
+            finally
+            {
+                // Restore our detour so that we can call the original method
+                Deploy();
+            }
         }
 
     }
