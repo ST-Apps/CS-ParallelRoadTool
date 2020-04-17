@@ -96,6 +96,7 @@ namespace ParallelRoadTool.Utils
             var dropDown = CreateDropDown(parent);
             dropDown.relativePosition = new Vector3(TEXT_FIELD_WIDTH + 2 * COLUMN_PADDING, 8f);
             dropDown.width = dropDownWidth;
+            dropDown.autoListWidth = true;
 
             textField.height = dropDown.height;
 
@@ -157,7 +158,7 @@ namespace ParallelRoadTool.Utils
             dropDown.disabledBgSprite = "ButtonMenuDisabled";
             dropDown.hoveredBgSprite = "ButtonMenuHovered";
             dropDown.focusedBgSprite = "ButtonMenu";
-            dropDown.listWidth = 250;
+            dropDown.listWidth = parent.parent == null ? 250 : ((int)parent.parent?.width);
             dropDown.listHeight = 300;
             dropDown.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
             dropDown.popupColor = new Color32(45, 52, 61, 255);
@@ -193,7 +194,7 @@ namespace ParallelRoadTool.Utils
             dropDown.eventSizeChanged += (c, t) =>
             {
                 button.size = t;
-                dropDown.listWidth = (int) t.x;
+                dropDown.listWidth = (int)t.x;
             };
 
             return dropDown;
