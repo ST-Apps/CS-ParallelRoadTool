@@ -107,15 +107,17 @@ namespace ParallelRoadTool.Detours
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                
-                var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out var isSlope);
+                var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                     ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // 50 shades of blue
-                var newColor = new Color(Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
-                    Mathf.Clamp(color.g * 255 + i, 0, 255) / 255, Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
+                var newColor = new Color(
+                    Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
+                    Mathf.Clamp(color.g * 255 + i, 0, 255) / 255, 
+                    Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
                     color.a);
 
                 // Render parallel segments by shifting the position of the 3 ControlPoint

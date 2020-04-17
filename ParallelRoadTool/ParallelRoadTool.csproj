@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Detours\NetAIDetour.cs" />
     <Compile Include="Detours\NetManagerDetour.cs" />
     <Compile Include="Detours\NetToolDetour.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />

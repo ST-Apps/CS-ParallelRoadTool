@@ -167,12 +167,14 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Enabling parallel road support");
                 NetManagerDetour.Deploy();
                 NetToolDetour.Deploy();
+                NetAIDetour.Deploy();
             }
             else
             {
                 DebugUtils.Log("Disabling parallel road support");
                 NetManagerDetour.Revert();
                 NetToolDetour.Revert();
+                NetAIDetour.Revert();
             }
         }
 
