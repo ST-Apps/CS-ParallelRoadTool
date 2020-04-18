@@ -1,0 +1,3 @@
+[submodule "Submodules/RedirectionFramework"]
+	path = Submodules/RedirectionFramework
+	url = https://github.com/bloodypenguin/RedirectionFramework
