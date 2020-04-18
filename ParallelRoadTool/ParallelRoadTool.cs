@@ -82,8 +82,9 @@ namespace ParallelRoadTool
 
                 LoadNetworks();
 
-                // Subscribe to milestones updated
-                Singleton<UnlockManager>.instance.m_milestonesUpdated += OnMilestoneUpdate;
+                // Subscribe to milestones updated, but only if we're not in map editor
+                if (IsInGameMode)
+                    Singleton<UnlockManager>.instance.m_milestonesUpdated += OnMilestoneUpdate;
 
                 // Main UI init
                 DebugUtils.Log("Adding UI components");
@@ -154,14 +155,16 @@ namespace ParallelRoadTool
                 DebugUtils.Log("Enabling parallel road support");
                 NetManagerDetour.Deploy();
                 NetToolDetour.Deploy();
-                NetAIDetour.Deploy();
+                if (IsInGameMode)
+                    NetAIDetour.Deploy();
             }
             else
             {
                 DebugUtils.Log("Disabling parallel road support");
                 NetManagerDetour.Revert();
                 NetToolDetour.Revert();
-                NetAIDetour.Revert();
+                if (IsInGameMode)
+                    NetAIDetour.Revert();
             }
         }
 
@@ -181,7 +184,9 @@ namespace ParallelRoadTool
                 if (prefab != null)
                 {
                     var networkName = prefab.GenerateBeautifiedNetName();
-                    if (prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
+
+                    // No need to skip stuff in map editor mode
+                    if (!IsInGameMode || prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
                     {
                         sortedNetworks[networkName] = prefab;
                     }
