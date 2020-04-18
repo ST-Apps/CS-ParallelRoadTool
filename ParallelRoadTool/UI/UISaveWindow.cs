@@ -18,8 +18,8 @@ namespace ParallelRoadTool.UI
 
         public static UISaveWindow Instance;
 
-        private readonly bool _isSaving;
-        private readonly object _saveLock = new object();
+        //private readonly bool _isSaving;
+        //private readonly object _saveLock = new object();
         private UIButton _closeButton;
         private UIDragHandle _dragHandle;
         private UILabel _exportLabel;

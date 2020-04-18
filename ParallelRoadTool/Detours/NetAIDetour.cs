@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using ColossalFramework;
 using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Redirection;
 using ParallelRoadTool.Wrappers;
+using RedirectionFramework;
 using UnityEngine;
 
 namespace ParallelRoadTool.Detours
@@ -21,7 +21,7 @@ namespace ParallelRoadTool.Detours
                                                                                 null);
 
         private static readonly MethodInfo To =
-            typeof(NetAIDetour).GetMethod("GetConstructionCost", BindingFlags.NonPublic | BindingFlags.Instance);
+            typeof(NetAIDetour).GetMethod("GetConstructionCost", BindingFlags.NonPublic | BindingFlags.Static);
 
         private static RedirectCallsState _state;
         private static bool _deployed;
@@ -49,6 +49,7 @@ namespace ParallelRoadTool.Detours
         ///     TODO: Probably RenderHelperLines is what we need to fix the look with curves, but detouring it makes Unity crash so
         ///     we have to live with this little issue.
         /// </summary>
+
         // ReSharper disable once UnusedMember.Local
         private static int GetConstructionCost(Vector3 startPos, Vector3 endPos, float startHeight, float endHeight)
         {

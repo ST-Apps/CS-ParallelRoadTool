@@ -5,8 +5,8 @@ using ColossalFramework;
 using ColossalFramework.Math;
 using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Redirection;
 using ParallelRoadTool.Wrappers;
+using RedirectionFramework;
 using UnityEngine;
 
 namespace ParallelRoadTool.Detours

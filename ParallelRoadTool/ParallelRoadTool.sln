@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelRoadTool", "ParallelRoadTool.csproj", "{C323E306-D11E-48A7-9620-121E4ADC4765}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedirectionFramework", "..\Submodules\RedirectionFramework\RedirectionFramework.csproj", "{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

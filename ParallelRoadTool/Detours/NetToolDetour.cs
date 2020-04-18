@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using ColossalFramework;
 using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Redirection;
 using ParallelRoadTool.Wrappers;
+using RedirectionFramework;
 using UnityEngine;
 
 namespace ParallelRoadTool.Detours
