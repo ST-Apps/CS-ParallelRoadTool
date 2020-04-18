@@ -10,10 +10,10 @@ namespace ParallelRoadTool.UI
 {
     public class UISaveWindow : UIPanel
     {
-        public static readonly SavedInt saveWindowX =
+        public static readonly SavedInt SaveWindowX =
             new SavedInt("saveWindowX", Configuration.SettingsFileName, -1000, true);
 
-        public static readonly SavedInt saveWindowY =
+        public static readonly SavedInt SaveWindowY =
             new SavedInt("saveWindowY", Configuration.SettingsFileName, -1000, true);
 
         public static UISaveWindow Instance;
@@ -78,6 +78,7 @@ namespace ParallelRoadTool.UI
 
             _fileNameInput.Focus();
             _fileNameInput.SelectAll();
+
             //_isSaving = false;
         }
 
@@ -129,7 +130,7 @@ namespace ParallelRoadTool.UI
 
             // Save
             _saveButton = UIUtil.CreateUiButton(_savePanel, string.Empty, string.Empty, new Vector2(100, 30),
-                string.Empty, true);
+                                                string.Empty, true);
             _saveButton.name = $"{Configuration.ResourcePrefix}SaveButton";
             _saveButton.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportButton");
             _saveButton.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ExportButton");
@@ -148,7 +149,7 @@ namespace ParallelRoadTool.UI
 
             height = _fastList.relativePosition.y + _fastList.height + 8;
             _dragHandle.size = size;
-            absolutePosition = new Vector3(saveWindowX.value, saveWindowY.value);
+            absolutePosition = new Vector3(SaveWindowX.value, SaveWindowY.value);
             MakePixelPerfect();
 
             RefreshFileList();
@@ -158,7 +159,7 @@ namespace ParallelRoadTool.UI
             {
                 _modalEffect.Show(false);
                 ValueAnimator.Animate("ModalEffect", delegate(float val) { _modalEffect.opacity = val; },
-                    new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
+                                      new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
             }
 
             SubscribeToUiEvents();
@@ -174,17 +175,18 @@ namespace ParallelRoadTool.UI
             if (File.Exists(file))
             {
                 ConfirmPanel.ShowModal(
-                    Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "OverwriteButton"),
-                    string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "OverwriteConfirmationMessage"),
-                        filename),
-                    (comp, ret) =>
-                    {
-                        if (ret != 1) return;
-                        //DebugUtils.Log("Deleting " + file);
-                        File.Delete(file);
-                        PresetsUtils.Export(filename);
-                        Instance.RefreshFileList();
-                    });
+                                       Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "OverwriteButton"),
+                                       string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "OverwriteConfirmationMessage"),
+                                                     filename),
+                                       (comp, ret) =>
+                                       {
+                                           if (ret != 1) return;
+
+                                           //DebugUtils.Log("Deleting " + file);
+                                           File.Delete(file);
+                                           PresetsUtils.Export(filename);
+                                           Instance.RefreshFileList();
+                                       });
             }
             else
             {
@@ -211,7 +213,7 @@ namespace ParallelRoadTool.UI
                 var modalEffect = Instance.GetUIView().panelsLibraryModalEffect;
                 if (modalEffect != null && modalEffect.isVisible)
                     ValueAnimator.Animate("ModalEffect", delegate(float val) { modalEffect.opacity = val; },
-                        new AnimatedFloat(1f, 0f, 0.7f, EasingType.CubicEaseOut), delegate { modalEffect.Hide(); });
+                                          new AnimatedFloat(1f, 0f, 0.7f, EasingType.CubicEaseOut), delegate { modalEffect.Hide(); });
 
                 Instance.isVisible = false;
                 Instance.UnsubscribeFromUiEvents();
@@ -242,11 +244,11 @@ namespace ParallelRoadTool.UI
             }
 
             absolutePosition = new Vector2(
-                (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
-                (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
+                                           (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
+                                           (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
-            saveWindowX.value = (int) absolutePosition.x;
-            saveWindowY.value = (int) absolutePosition.y;
+            SaveWindowX.value = (int) absolutePosition.x;
+            SaveWindowY.value = (int) absolutePosition.y;
 
             base.OnPositionChanged();
         }
@@ -258,11 +260,11 @@ namespace ParallelRoadTool.UI
             if (Directory.Exists(Configuration.AutoSaveFolderPath))
             {
                 var files = Directory.GetFiles(Configuration.AutoSaveFolderPath, "*.xml")
-                    .Where(f => Path.GetFileNameWithoutExtension(f) != Configuration.AutoSaveFileName)
-                    .Select(Path.GetFileNameWithoutExtension);
+                                     .Where(f => Path.GetFileNameWithoutExtension(f) != Configuration.AutoSaveFileName)
+                                     .Select(Path.GetFileNameWithoutExtension);
 
                 foreach (var file in files)
-                        _fastList.rowsData.Add(file);
+                    _fastList.rowsData.Add(file);
 
                 _fastList.DisplayAt(0);
             }

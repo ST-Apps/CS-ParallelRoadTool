@@ -17,49 +17,52 @@ namespace ParallelRoadTool
     /// <summary>
     ///     Mod's main controller and data storage.
     /// </summary>
+
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadTool : MonoBehaviour
     {
-        #region Properties        
+        #region Properties
 
-        #region Data       
+        #region Data
 
         /// <summary>
-        /// <see cref="List{T}"/> containing all the available <see cref="NetInfo"/> objects.
-        /// A <see cref="NetInfo"/> can be any kind of network that the user can build.
+        ///     <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
+        ///     A <see cref="NetInfo" /> can be any kind of network that the user can build.
         /// </summary>
         public List<NetInfo> AvailableRoadTypes { get; private set; }
 
         /// <summary>
-        /// <see cref="List{T}"/> containing all the selected <see cref="NetTypeItem"/> objects.
-        /// This contains all the parallel/stacked networks that will be built once a main segment is created.
+        ///     <see cref="List{T}" /> containing all the selected <see cref="NetTypeItem" /> objects.
+        ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
         /// </summary>
         public List<NetTypeItem> SelectedRoadTypes { get; private set; }
 
         /// <summary>
-        /// Array containing the beautified names for the <see cref="AvailableRoadTypes"/>.
+        ///     Array containing the beautified names for the <see cref="AvailableRoadTypes" />.
         /// </summary>
         public string[] AvailableRoadNames { get; private set; }
 
         /// <summary>
-        /// This tells if the user wants the parallel/stacked nodes to snap with already existing nodes.
+        ///     This tells if the user wants the parallel/stacked nodes to snap with already existing nodes.
         /// </summary>
         public bool IsSnappingEnabled { get; private set; }
 
         /// <summary>
-        /// True if the current map is using left-hand traffic.
+        ///     True if the current map is using left-hand traffic.
         /// </summary>
         public bool IsLeftHandTraffic { get; private set; }
 
         /// <summary>
-        /// True only if <see cref="AppMode"/> is <see cref="AppMode.Game"/>.
+        ///     True only if <see cref="AppMode" /> is <see cref="AppMode.Game" />.
         /// </summary>
         public static bool IsInGameMode { get; set; }
 
         private bool _isToolActive;
+
         /// <summary>
-        /// Tool is considered active if the user enabled it and if we're currently using <see cref="NetTool"/> to draw a network.
-        /// This prevents unnecessary executions while the user is not building networks.
+        ///     Tool is considered active if the user enabled it and if we're currently using <see cref="NetTool" /> to draw a
+        ///     network.
+        ///     This prevents unnecessary executions while the user is not building networks.
         /// </summary>
         public bool IsToolActive
         {
@@ -76,7 +79,7 @@ namespace ParallelRoadTool
         }
 
         /// <summary>
-        /// Currently selected <see cref="NetInfo"/> within <see cref="NetTool"/>.
+        ///     Currently selected <see cref="NetInfo" /> within <see cref="NetTool" />.
         /// </summary>
         public NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
 
@@ -85,7 +88,7 @@ namespace ParallelRoadTool
         #region UI
 
         /// <summary>
-        /// Main UI panel.
+        ///     Main UI panel.
         /// </summary>
         private UIMainWindow _mainWindow;
 
@@ -96,8 +99,9 @@ namespace ParallelRoadTool
         #region Unity
 
         /// <summary>
-        /// This method initializes mod's first time loading.
-        /// If <see cref="NetTool"/> is detected we initialize all the support structures, load the available networks and finally create the UI.
+        ///     This method initializes mod's first time loading.
+        ///     If <see cref="NetTool" /> is detected we initialize all the support structures, load the available networks and
+        ///     finally create the UI.
         /// </summary>
         public void Start()
         {
@@ -150,8 +154,8 @@ namespace ParallelRoadTool
         }
 
         /// <summary>
-        /// This destroys all the used resourced, so that we can start fresh if the user wants to load a new game.
-        /// Before destroying everything, we store an auto-save file containing the current configuration.
+        ///     This destroys all the used resourced, so that we can start fresh if the user wants to load a new game.
+        ///     Before destroying everything, we store an auto-save file containing the current configuration.
         /// </summary>
         public void OnDestroy()
         {
@@ -200,7 +204,7 @@ namespace ParallelRoadTool
         #region Utils
 
         /// <summary>
-        /// Deploys/un-deploys the mod by toggling the custom detours.
+        ///     Deploys/un-deploys the mod by toggling the custom detours.
         /// </summary>
         /// <param name="toolEnabled"></param>
         private static void ToggleDetours(bool toolEnabled)
@@ -226,8 +230,9 @@ namespace ParallelRoadTool
         }
 
         /// <summary>
-        /// We load all the available networks, based on the currently unlocked milestones (only if <see cref="IsInGameMode"/> is true, otherwise we'll load them all).
-        /// Once the networks are loaded, we can update the already displayed UI to show the newly loaded networks.
+        ///     We load all the available networks, based on the currently unlocked milestones (only if <see cref="IsInGameMode" />
+        ///     is true, otherwise we'll load them all).
+        ///     Once the networks are loaded, we can update the already displayed UI to show the newly loaded networks.
         /// </summary>
         /// <param name="updateDropdowns"></param>
         private void LoadNetworks(bool updateDropdowns = false)
@@ -247,17 +252,14 @@ namespace ParallelRoadTool
 
                     // No need to skip stuff in map editor mode
                     if (!IsInGameMode || prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
-                    {
                         sortedNetworks[networkName] = prefab;
-                    }
                     else
-                    {
                         Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping {networkName} because {prefab.m_UnlockMilestone.m_name} is not passed yet.");
-                    }
                 }
             }
 
             AvailableRoadNames = new string[sortedNetworks.Keys.Count + 1];
+
             // Default item, creates a net with the same type as source
             AddNetworkType(null);
 
@@ -266,10 +268,7 @@ namespace ParallelRoadTool
 
             Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks");
 
-            if (updateDropdowns)
-            {
-                _mainWindow.UpdateDropdowns();
-            }
+            if (updateDropdowns) _mainWindow.UpdateDropdowns();
         }
 
         private void AddNetworkType(NetInfo net)
@@ -343,11 +342,6 @@ namespace ParallelRoadTool
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
             IsToolActive = value;
-
-            /*
-            if (value && ToolsModifierControl.advisorPanel.isVisible && ToolsModifierControl.advisorPanel.isOpen)
-                _mainWindow.ShowTutorial();
-            */
         }
 
         private void MainWindowOnNetworkItemAdded(object sender, EventArgs e)
@@ -369,10 +363,11 @@ namespace ParallelRoadTool
             var item = SelectedRoadTypes[value.ItemIndex];
 
             var netInfo = value.IsFiltered
-                ? Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FirstOrDefault(n => n.GenerateBeautifiedNetName() == value.SelectedNetworkName)
-                : value.SelectedNetworkIndex == 0
-                    ? null
-                    : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
+                              ? Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FirstOrDefault(n => n.GenerateBeautifiedNetName() ==
+                                                                                                            value.SelectedNetworkName)
+                              : value.SelectedNetworkIndex == 0
+                                  ? null
+                                  : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
 
             item.NetInfo = netInfo;
             item.HorizontalOffset = value.HorizontalOffset;

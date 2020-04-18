@@ -2,8 +2,13 @@
 {
     public class NetTypeItemEventArgs
     {
-        public NetTypeItemEventArgs(int itemIndex, float horizontalOffset, float verticalOffset,
-            int selectedNetworkIndex, bool isReversedNetwork, bool isFiltered, string selectedNetworkName)
+        public NetTypeItemEventArgs(int itemIndex,
+                                    float horizontalOffset,
+                                    float verticalOffset,
+                                    int selectedNetworkIndex,
+                                    bool isReversedNetwork,
+                                    bool isFiltered,
+                                    string selectedNetworkName)
         {
             ItemIndex = itemIndex;
             HorizontalOffset = horizontalOffset;

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
@@ -46,6 +47,7 @@ namespace ParallelRoadTool.Utils
             var serializer = new XmlSerializer(typeof(NameList));
 
             var assembly = Assembly.GetExecutingAssembly();
+
             // HACK - [ISSUE-51] On Mac and Linux LocalManager.cultureInfo always returns 'en' regardless of game language
             var resourceName = $"{Configuration.LocalizationNamespace}.{LocaleManager.instance.language}.xml";
 
@@ -55,14 +57,16 @@ namespace ParallelRoadTool.Utils
             Log.Info($"[{nameof(LocalizationManager)}.{nameof(OnLocaleChanged)}] Trying to read {resourceName} localization file...");
 
             using (var stream = assembly.GetManifestResourceStream(resourceName))
-            using (var reader = new StreamReader(stream))
             {
-                using (var xmlStream = XmlReader.Create(reader))
+                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException($"Can't load stream for file {resourceName}")))
                 {
-                    if (serializer.CanDeserialize(xmlStream))
+                    using (var xmlStream = XmlReader.Create(reader))
                     {
-                        var nameList = (NameList) serializer.Deserialize(xmlStream);
-                        nameList.Apply();
+                        if (serializer.CanDeserialize(xmlStream))
+                        {
+                            var nameList = (NameList) serializer.Deserialize(xmlStream);
+                            nameList.Apply();
+                        }
                     }
                 }
             }

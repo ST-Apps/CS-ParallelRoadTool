@@ -7,19 +7,16 @@ namespace ParallelRoadTool.UI
 {
     public class UISaveLoadFileRow : UIPanel, IUIFastListRow<string>
     {
+        private UIPanel _background;
+        private UIButton _deleteButton;
         private UILabel _fileNameLabel;
         private UIButton _saveLoadButton;
-        private UIButton _deleteButton;
-        private UIPanel _background;
 
         public UIPanel Background
         {
             get
             {
-                if (_background != null)
-                {
-                    return _background;
-                }
+                if (_background != null) return _background;
 
                 _background = AddUIComponent<UIPanel>();
                 _background.width = width;
@@ -29,6 +26,30 @@ namespace ParallelRoadTool.UI
 
                 return _background;
             }
+        }
+
+        public void Display(string data, int i)
+        {
+            _fileNameLabel.text = data;
+
+            if (i % 2 == 1)
+            {
+                Background.backgroundSprite = "UnlockingItemBackground";
+                Background.color = new Color32(0, 0, 0, 128);
+                Background.width = parent.width;
+            }
+            else
+            {
+                Background.backgroundSprite = null;
+            }
+        }
+
+        public void Select(bool isRowOdd)
+        {
+        }
+
+        public void Deselect(bool isRowOdd)
+        {
         }
 
         private void UnsubscribeFromUiEvents()
@@ -46,26 +67,20 @@ namespace ParallelRoadTool.UI
         private void DeleteButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventparam)
         {
             ConfirmPanel.ShowModal(
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "DeleteButton"),
-                string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteConfirmationMessage"), _fileNameLabel.text),
-                (comp, ret) =>
-                {
-                    if (ret != 1)
-                    {
-                        return;
-                    }
+                                   Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "DeleteButton"),
+                                   string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteConfirmationMessage"),
+                                                 _fileNameLabel.text),
+                                   (comp, ret) =>
+                                   {
+                                       if (ret != 1) return;
 
-                    PresetsUtils.Delete(_fileNameLabel.text);
+                                       PresetsUtils.Delete(_fileNameLabel.text);
 
-                    if (UISaveWindow.Instance != null)
-                    {
-                        UISaveWindow.Instance.RefreshFileList();
-                    }
-                    else
-                    {
-                        UILoadWindow.Instance.RefreshFileList();
-                    }
-                });
+                                       if (UISaveWindow.Instance != null)
+                                           UISaveWindow.Instance.RefreshFileList();
+                                       else
+                                           UILoadWindow.Instance.RefreshFileList();
+                                   });
         }
 
         private void SaveLoadButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventparam)
@@ -92,7 +107,7 @@ namespace ParallelRoadTool.UI
             _fileNameLabel.verticalAlignment = UIVerticalAlignment.Middle;
             _fileNameLabel.relativePosition = new Vector3(8, 8);
 
-            _deleteButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), $"InfoIconGarbage", true);
+            _deleteButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), "InfoIconGarbage", true);
             _deleteButton.name = $"{Configuration.ResourcePrefix}DeleteFileButton";
             _deleteButton.size = new Vector2(40f, 30f);
             _deleteButton.relativePosition = new Vector3(430 - _deleteButton.width - 8, 8);
@@ -100,40 +115,18 @@ namespace ParallelRoadTool.UI
 
             _saveLoadButton = UIUtil.CreateUiButton(this, string.Empty, string.Empty, new Vector2(80, 30), string.Empty, true);
             _saveLoadButton.name = $"{Configuration.ResourcePrefix}SaveLoadFileButton";
-            _saveLoadButton.text = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "OverwriteButton") : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
-            _saveLoadButton.tooltip = UISaveWindow.Instance != null ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "OverwriteButton") : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");
+            _saveLoadButton.text = UISaveWindow.Instance != null
+                                       ? Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "OverwriteButton")
+                                       : Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportButton");
+            _saveLoadButton.tooltip = UISaveWindow.Instance != null
+                                          ? Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "OverwriteButton")
+                                          : Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ImportButton");
             _saveLoadButton.size = new Vector2(80f, 30f);
             _saveLoadButton.relativePosition = new Vector3(_deleteButton.relativePosition.x - _saveLoadButton.width - 8, 8);
 
             SubscribeToUiEvents();
 
             _fileNameLabel.width = _saveLoadButton.relativePosition.x - 16f;
-        }
-
-        public void Display(string data, int i)
-        {
-            _fileNameLabel.text = data;
-
-            if (i % 2 == 1)
-            {
-                Background.backgroundSprite = "UnlockingItemBackground";
-                Background.color = new Color32(0, 0, 0, 128);
-                Background.width = parent.width;
-            }
-            else
-            {
-                Background.backgroundSprite = null;
-            }
-        }
-
-        public void Select(bool isRowOdd)
-        {
-
-        }
-
-        public void Deselect(bool isRowOdd)
-        {
-
         }
 
         public override void OnDestroy()

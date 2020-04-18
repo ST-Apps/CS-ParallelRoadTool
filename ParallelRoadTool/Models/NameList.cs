@@ -3,7 +3,6 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool.Models
 {

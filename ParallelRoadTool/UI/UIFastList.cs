@@ -1,55 +1,65 @@
-﻿using UnityEngine;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
+using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
     public interface IUIFastListRow<O>
     {
         #region Methods to implement
+
         /// <summary>
-        /// Method invoked very often, make sure it is fast
-        /// Avoid doing any calculations, the data should be already processed any ready to display.
+        ///     Method invoked very often, make sure it is fast
+        ///     Avoid doing any calculations, the data should be already processed any ready to display.
         /// </summary>
         /// <param name="data">What needs to be displayed</param>
         /// <param name="isRowOdd">Use this to display a different look for your odd rows</param>
         void Display(O data, int index);
 
         /// <summary>
-        /// Change the style of the selected item here
+        ///     Change the style of the selected item here
         /// </summary>
         /// <param name="index">Item index</param>
         void Select(bool isRowOdd);
+
         /// <summary>
-        /// Change the style of the item back from selected here
+        ///     Change the style of the item back from selected here
         /// </summary>
         /// <param name="isRowOdd">Use this to display a different look for your odd rows</param>
         void Deselect(bool isRowOdd);
+
         #endregion
     }
 
     /// <summary>
-    /// This component is specifically designed the handle the display of
-    /// very large amount of rows in a scrollable panel while minimizing
-    /// the impact on the performances.
-    /// 
-    /// This class will instantiate the rows for you based on the actual
-    /// height of the UIFastList and the rowHeight value provided.
-    /// 
-    /// How it works :
-    /// This class only instantiate as many rows as visible on screen (+1
-    /// extra to simulate in-between steps). Then the content of those is
-    /// updated according to what needs to be displayed by calling the
-    /// Display method declared in IUIFastListRow.
-    /// 
-    /// Provide the list of data with rowData. This data is send back to
-    /// your custom row when it needs to be displayed. For optimal
-    /// performances, make sure this data is already processed and ready
-    /// to display.
+    ///     This component is specifically designed the handle the display of
+    ///     very large amount of rows in a scrollable panel while minimizing
+    ///     the impact on the performances.
+    ///     This class will instantiate the rows for you based on the actual
+    ///     height of the UIFastList and the rowHeight value provided.
+    ///     How it works :
+    ///     This class only instantiate as many rows as visible on screen (+1
+    ///     extra to simulate in-between steps). Then the content of those is
+    ///     updated according to what needs to be displayed by calling the
+    ///     Display method declared in IUIFastListRow.
+    ///     Provide the list of data with rowData. This data is send back to
+    ///     your custom row when it needs to be displayed. For optimal
+    ///     performances, make sure this data is already processed and ready
+    ///     to display.
     /// </summary>
     public class UIFastList<O, I> : UIComponent
         where I : UIComponent, IUIFastListRow<O>
     {
+        #region Events
+
+        /// <summary>
+        ///     Called when the currently selected row changed
+        /// </summary>
+        public event PropertyChangedEventHandler<int> EventSelectedIndexChanged;
+
+        #endregion
+
         #region Private members
+
         private UIPanel _panel;
         private UIScrollbar _scrollbar;
         private FastList<I> _rows;
@@ -59,20 +69,22 @@ namespace ParallelRoadTool.UI
         private Color32 _color = new Color32(255, 255, 255, 255);
         private float _rowHeight = -1;
         private float _pos = -1;
-        private float _stepSize = 0;
-        private bool _canSelect = false;
+        private float _stepSize;
+        private bool _canSelect;
         private int _selectedDataId = -1;
         private int _selectedRowId = -1;
-        private bool _lock = false;
+        private bool _lock;
         private bool _updateContent = true;
-        private bool _autoHideScrollbar = false;
+        private bool _autoHideScrollbar;
         private UIComponent _lastMouseEnter;
+
         #endregion
 
         #region Public accessors
+
         public bool autoHideScrollbar
         {
-            get { return _autoHideScrollbar; }
+            get => _autoHideScrollbar;
             set
             {
                 if (_autoHideScrollbar != value)
@@ -82,12 +94,13 @@ namespace ParallelRoadTool.UI
                 }
             }
         }
+
         /// <summary>
-        /// Change the color of the background
+        ///     Change the color of the background
         /// </summary>
         public Color32 backgroundColor
         {
-            get { return _color; }
+            get => _color;
             set
             {
                 _color = value;
@@ -97,11 +110,11 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Change the sprite of the background
+        ///     Change the sprite of the background
         /// </summary>
         public string backgroundSprite
         {
-            get { return _backgroundSprite; }
+            get => _backgroundSprite;
             set
             {
                 if (_backgroundSprite != value)
@@ -114,13 +127,13 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Can rows be selected by clicking on them
-        /// Default value is false
-        /// Rows can still be selected via selectedIndex
+        ///     Can rows be selected by clicking on them
+        ///     Default value is false
+        ///     Rows can still be selected via selectedIndex
         /// </summary>
         public bool canSelect
         {
-            get { return _canSelect; }
+            get => _canSelect;
             set
             {
                 if (_canSelect != value)
@@ -128,32 +141,30 @@ namespace ParallelRoadTool.UI
                     _canSelect = value;
 
                     if (_rows == null) return;
-                    for (int i = 0; i < _rows.m_size; i++)
-                    {
+                    for (var i = 0; i < _rows.m_size; i++)
                         if (_canSelect)
                             _rows[i].eventClick += OnRowClicked;
                         else
                             _rows[i].eventClick -= OnRowClicked;
-                    }
                 }
             }
         }
 
         /// <summary>
-        /// Change the position in the list
-        /// Display the data at the position in the top row.
-        /// This doesn't update the list if the position stay the same
-        /// Use DisplayAt for that
+        ///     Change the position in the list
+        ///     Display the data at the position in the top row.
+        ///     This doesn't update the list if the position stay the same
+        ///     Use DisplayAt for that
         /// </summary>
         public float listPosition
         {
-            get { return _pos; }
+            get => _pos;
             set
             {
                 if (_rowHeight <= 0) return;
                 if (_pos != value)
                 {
-                    float pos = Mathf.Max(Mathf.Min(value, _rowsData.m_size - height / _rowHeight), 0);
+                    var pos = Mathf.Max(Mathf.Min(value, _rowsData.m_size - height / _rowHeight), 0);
                     _updateContent = Mathf.FloorToInt(_pos) != Mathf.FloorToInt(pos);
                     DisplayAt(pos);
                 }
@@ -161,10 +172,10 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// This is the list of data that will be send to the IUIFastListRow.Display method
-        /// Changing this list will reset the display position to 0
-        /// You can also change rowsData._buffer and rowsData.m_size
-        /// and refresh the display with DisplayAt method
+        ///     This is the list of data that will be send to the IUIFastListRow.Display method
+        ///     Changing this list will reset the display position to 0
+        ///     You can also change rowsData._buffer and rowsData.m_size
+        ///     and refresh the display with DisplayAt method
         /// </summary>
         public FastList<O> rowsData
         {
@@ -184,11 +195,11 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// This MUST be set, it is the height in pixels of each row
+        ///     This MUST be set, it is the height in pixels of each row
         /// </summary>
         public float rowHeight
         {
-            get { return _rowHeight; }
+            get => _rowHeight;
             set
             {
                 if (_rowHeight != value)
@@ -200,12 +211,12 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Currently selected row
-        /// -1 if none selected
+        ///     Currently selected row
+        ///     -1 if none selected
         /// </summary>
         public int selectedIndex
         {
-            get { return _selectedDataId; }
+            get => _selectedDataId;
             set
             {
                 if (_rowsData == null || _rowsData.m_size == 0)
@@ -214,26 +225,26 @@ namespace ParallelRoadTool.UI
                     return;
                 }
 
-                int oldId = _selectedDataId;
+                var oldId = _selectedDataId;
                 if (oldId >= _rowsData.m_size) oldId = -1;
                 _selectedDataId = Mathf.Min(Mathf.Max(-1, value), _rowsData.m_size - 1);
 
-                int pos = Mathf.FloorToInt(_pos);
-                int newRowId = Mathf.Max(-1, _selectedDataId - pos);
+                var pos = Mathf.FloorToInt(_pos);
+                var newRowId = Mathf.Max(-1, _selectedDataId - pos);
                 if (newRowId >= _rows.m_size) newRowId = -1;
 
                 if (newRowId >= 0 && newRowId == _selectedRowId && !_updateContent) return;
 
                 if (_selectedRowId >= 0)
                 {
-                    _rows[_selectedRowId].Deselect((oldId % 2) == 1);
+                    _rows[_selectedRowId].Deselect(oldId % 2 == 1);
                     _selectedRowId = -1;
                 }
 
                 if (newRowId >= 0)
                 {
                     _selectedRowId = newRowId;
-                    _rows[_selectedRowId].Select((_selectedDataId % 2) == 1);
+                    _rows[_selectedRowId].Select(_selectedDataId % 2 == 1);
                 }
 
                 if (EventSelectedIndexChanged != null && _selectedDataId != oldId)
@@ -250,46 +261,37 @@ namespace ParallelRoadTool.UI
             }
         }
 
-        public bool selectOnMouseEnter
-        { get; set; }
+        public bool selectOnMouseEnter { get; set; }
 
         /// <summary>
-        /// The number of pixels moved at each scroll step
-        /// When set to 0 or less, rowHeight is used instead.
+        ///     The number of pixels moved at each scroll step
+        ///     When set to 0 or less, rowHeight is used instead.
         /// </summary>
         public float stepSize
         {
-            get { return (_stepSize > 0) ? _stepSize : _rowHeight; }
-            set { _stepSize = value; }
+            get => _stepSize > 0 ? _stepSize : _rowHeight;
+            set => _stepSize = value;
         }
-        #endregion
 
-        #region Events
-        /// <summary>
-        /// Called when the currently selected row changed
-        /// </summary>
-        public event PropertyChangedEventHandler<int> EventSelectedIndexChanged;
         #endregion
 
         #region Public methods
+
         /// <summary>
-        /// Clear the list
+        ///     Clear the list
         /// </summary>
         public void Clear()
         {
             _rowsData.Clear();
 
-            for (int i = 0; i < _rows.m_size; i++)
-            {
-                _rows[i].enabled = false;
-            }
+            for (var i = 0; i < _rows.m_size; i++) _rows[i].enabled = false;
 
             UpdateScrollbar();
         }
 
         /// <summary>
-        /// Display the data at the position in the top row.
-        /// This update the list even if the position remind the same
+        ///     Display the data at the position in the top row.
+        ///     This update the list even if the position remind the same
         /// </summary>
         /// <param name="pos">Index position in the list</param>
         public void DisplayAt(float pos)
@@ -300,10 +302,10 @@ namespace ParallelRoadTool.UI
 
             _pos = Mathf.Max(Mathf.Min(pos, _rowsData.m_size - height / _rowHeight), 0f);
 
-            for (int i = 0; i < _rows.m_size; i++)
+            for (var i = 0; i < _rows.m_size; i++)
             {
-                int dataPos = Mathf.FloorToInt(_pos + i);
-                float offset = rowHeight * (_pos + i - dataPos);
+                var dataPos = Mathf.FloorToInt(_pos + i);
+                var offset = rowHeight * (_pos + i - dataPos);
                 if (dataPos < _rowsData.m_size)
                 {
                     if (_updateContent)
@@ -312,13 +314,15 @@ namespace ParallelRoadTool.UI
                     if (dataPos == _selectedDataId && _updateContent)
                     {
                         _selectedRowId = i;
-                        _rows[_selectedRowId].Select((dataPos % 2) == 1);
+                        _rows[_selectedRowId].Select(dataPos % 2 == 1);
                     }
 
                     _rows[i].enabled = true;
                 }
                 else
+                {
                     _rows[i].enabled = false;
+                }
 
                 _rows[i].relativePosition = new Vector3(0, i * rowHeight - offset);
             }
@@ -328,15 +332,17 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Refresh the display
+        ///     Refresh the display
         /// </summary>
         public void Refresh()
         {
             DisplayAt(_pos);
         }
+
         #endregion
 
         #region Overrides
+
         public override void Start()
         {
             base.Start();
@@ -355,10 +361,7 @@ namespace ParallelRoadTool.UI
 
             if (_rows == null) return;
 
-            for (int i = 0; i < _rows.m_size; i++)
-            {
-                Destroy(_rows[i] as UnityEngine.Object);
-            }
+            for (var i = 0; i < _rows.m_size; i++) Destroy(_rows[i]);
         }
 
         protected override void OnSizeChanged()
@@ -382,21 +385,19 @@ namespace ParallelRoadTool.UI
 
             if (!p.used)
             {
-                float prevPos = listPosition;
+                var prevPos = listPosition;
                 if (_stepSize > 0 && _rowHeight > 0)
                     listPosition = _pos - p.wheelDelta * _stepSize / _rowHeight;
                 else
                     listPosition = _pos - p.wheelDelta;
 
-                if (prevPos != listPosition)
-                {
-                    p.Use();
-                }
+                if (prevPos != listPosition) p.Use();
 
                 if (selectOnMouseEnter)
                     OnRowClicked(_lastMouseEnter, p);
             }
         }
+
         #endregion
 
         #region Private methods
@@ -405,22 +406,20 @@ namespace ParallelRoadTool.UI
         {
             if (selectOnMouseEnter) _lastMouseEnter = component;
 
-            int max = Mathf.Min(_rowsData.m_size, _rows.m_size);
-            for (int i = 0; i < max; i++)
-            {
-                if (component == (UIComponent)_rows[i])
+            var max = Mathf.Min(_rowsData.m_size, _rows.m_size);
+            for (var i = 0; i < max; i++)
+                if (component == _rows[i])
                 {
                     selectedIndex = i + Mathf.FloorToInt(_pos);
                     return;
                 }
-            }
         }
 
         private void CheckRows()
         {
             if (_panel == null || _rowHeight <= 0) return;
 
-            int nbRows = Mathf.CeilToInt(height / _rowHeight) + 1;
+            var nbRows = Mathf.CeilToInt(height / _rowHeight) + 1;
 
             if (_rows == null)
             {
@@ -431,7 +430,7 @@ namespace ParallelRoadTool.UI
             if (_rows.m_size < nbRows)
             {
                 // Adding missing rows
-                for (int i = _rows.m_size; i < nbRows; i++)
+                for (var i = _rows.m_size; i < nbRows; i++)
                 {
                     _rows.Add(_panel.AddUIComponent<I>());
                     if (_canSelect && !selectOnMouseEnter) _rows[i].eventClick += OnRowClicked;
@@ -441,7 +440,7 @@ namespace ParallelRoadTool.UI
             else if (_rows.m_size > nbRows)
             {
                 // Remove excess rows
-                for (int i = nbRows; i < _rows.m_size; i++)
+                for (var i = nbRows; i < _rows.m_size; i++)
                     Destroy(_rows[i].gameObject);
 
                 _rows.SetCapacity(nbRows);
@@ -456,22 +455,19 @@ namespace ParallelRoadTool.UI
 
             if (_autoHideScrollbar)
             {
-                bool isVisible = _rowsData.m_size * _rowHeight > height;
-                float newPanelWidth = isVisible ? width - 10f : width;
-                float newItemWidth = isVisible ? width - 20f : width;
+                var isVisible = _rowsData.m_size * _rowHeight > height;
+                var newPanelWidth = isVisible ? width - 10f : width;
+                var newItemWidth = isVisible ? width - 20f : width;
 
                 _panel.width = newPanelWidth;
-                for (int i = 0; i < _rows.m_size; i++)
-                {
-                    _rows[i].width = newItemWidth;
-                }
+                for (var i = 0; i < _rows.m_size; i++) _rows[i].width = newItemWidth;
 
                 _scrollbar.isVisible = isVisible;
             }
 
-            float H = _rowHeight * _rowsData.m_size;
-            float scrollSize = height * height / (_rowHeight * _rowsData.m_size);
-            float amount = stepSize * height / (_rowHeight * _rowsData.m_size);
+            var H = _rowHeight * _rowsData.m_size;
+            var scrollSize = height * height / (_rowHeight * _rowsData.m_size);
+            var amount = stepSize * height / (_rowHeight * _rowsData.m_size);
 
             _scrollbar.scrollSize = Mathf.Max(10f, scrollSize);
             _scrollbar.minValue = 0f;
@@ -487,7 +483,7 @@ namespace ParallelRoadTool.UI
 
             _lock = true;
 
-            float pos = _pos * (height - _scrollbar.scrollSize) / (_rowsData.m_size - height / _rowHeight);
+            var pos = _pos * (height - _scrollbar.scrollSize) / (_rowsData.m_size - height / _rowHeight);
             if (pos != _scrollbar.value)
                 _scrollbar.value = pos;
 
@@ -519,7 +515,7 @@ namespace ParallelRoadTool.UI
             _scrollbar.value = 0;
             _scrollbar.incrementAmount = 50;
 
-            UISlicedSprite tracSprite = _scrollbar.AddUIComponent<UISlicedSprite>();
+            var tracSprite = _scrollbar.AddUIComponent<UISlicedSprite>();
             tracSprite.relativePosition = Vector2.zero;
             tracSprite.autoSize = true;
             tracSprite.size = tracSprite.parent.size;
@@ -528,7 +524,7 @@ namespace ParallelRoadTool.UI
 
             _scrollbar.trackObject = tracSprite;
 
-            UISlicedSprite thumbSprite = tracSprite.AddUIComponent<UISlicedSprite>();
+            var thumbSprite = tracSprite.AddUIComponent<UISlicedSprite>();
             thumbSprite.relativePosition = Vector2.zero;
             thumbSprite.fillDirection = UIFillDirection.Vertical;
             thumbSprite.autoSize = true;
@@ -541,15 +537,17 @@ namespace ParallelRoadTool.UI
             CheckRows();
 
             _scrollbar.eventValueChanged += (c, t) =>
-            {
-                if (_lock || _rowHeight <= 0) return;
+                                            {
+                                                if (_lock || _rowHeight <= 0) return;
 
-                _lock = true;
+                                                _lock = true;
 
-                listPosition = _scrollbar.value * (_rowsData.m_size - height / _rowHeight) / (height - _scrollbar.scrollSize - 1f);
-                _lock = false;
-            };
+                                                listPosition = _scrollbar.value * (_rowsData.m_size - height / _rowHeight) /
+                                                               (height - _scrollbar.scrollSize - 1f);
+                                                _lock = false;
+                                            };
         }
+
         #endregion
     }
 }

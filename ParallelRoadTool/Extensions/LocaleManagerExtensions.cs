@@ -2,9 +2,7 @@
 using System.Reflection;
 using ColossalFramework.Globalization;
 using CSUtil.Commons;
-using ParallelRoadTool.Detours;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool.Extensions
 {
@@ -52,7 +50,7 @@ namespace ParallelRoadTool.Extensions
             if (!locale.Exists(id))
             {
                 Log._Debug($"[{nameof(LocaleManagerExtensions)}.{nameof(RemoveRange)}] Could not remove locale range {id}; localized string {id} does not exist!");
-                
+
                 return;
             }
 

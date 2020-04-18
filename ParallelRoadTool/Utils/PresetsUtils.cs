@@ -24,14 +24,14 @@ namespace ParallelRoadTool.Utils
             {
                 Directory.CreateDirectory(Configuration.AutoSaveFolderPath);
                 var presetItems = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes
-                    .Select(i => new PresetNetItem
-                    {
-                        HorizontalOffset = i.HorizontalOffset,
-                        IsReversed = i.IsReversed,
-                        NetName = i.NetInfo.name,
-                        VerticalOffset = i.VerticalOffset
-                    })
-                    .ToList();
+                                                             .Select(i => new PresetNetItem
+                                                             {
+                                                                 HorizontalOffset = i.HorizontalOffset,
+                                                                 IsReversed = i.IsReversed,
+                                                                 NetName = i.NetInfo.name,
+                                                                 VerticalOffset = i.VerticalOffset
+                                                             })
+                                                             .ToList();
                 var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
                 using (var streamWriter = new StreamWriter(path))
                 {
@@ -44,10 +44,10 @@ namespace ParallelRoadTool.Utils
                 Log.Exception(e);
 
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
-                    .SetMessage(
-                        Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportFailedTitle"),
-                        string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportFailedMessage"), path),
-                        true);
+                      .SetMessage(
+                                  Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportFailedTitle"),
+                                  string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportFailedMessage"), path),
+                                  true);
                 return false;
             }
 
@@ -73,7 +73,7 @@ namespace ParallelRoadTool.Utils
                 var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
                 using (var streamReader = new StreamReader(path))
                 {
-                    presetItems = (List<PresetNetItem>)xmlSerializer.Deserialize(streamReader);
+                    presetItems = (List<PresetNetItem>) xmlSerializer.Deserialize(streamReader);
                 }
 
                 Singleton<ParallelRoadTool>.instance.ClearItems();
@@ -91,7 +91,7 @@ namespace ParallelRoadTool.Utils
                     Log.Info($"[{nameof(PresetsUtils)}.{nameof(Import)}] Adding network {netInfo.name} from preset {filename}");
 
                     var item = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset,
-                        preset.IsReversed);
+                                               preset.IsReversed);
                     Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Add(item);
                     Singleton<ParallelRoadTool>.instance.AddItem(item);
                     NetManagerDetour.NetworksCount = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count;
@@ -103,10 +103,10 @@ namespace ParallelRoadTool.Utils
                 Log.Exception(e);
 
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
-                    .SetMessage(
-                        Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportFailedTitle"),
-                        string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportFailedMessage"), path),
-                        true);
+                      .SetMessage(
+                                  Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportFailedTitle"),
+                                  string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportFailedMessage"), path),
+                                  true);
             }
         }
 
@@ -123,10 +123,10 @@ namespace ParallelRoadTool.Utils
                 Log.Exception(e);
 
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
-                    .SetMessage(
-                        Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteFailedTitle"),
-                        string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteFailedMessage"), path),
-                        true);
+                      .SetMessage(
+                                  Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteFailedTitle"), 
+                                  string.Format(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteFailedMessage"), path),
+                                  true);
             }
         }
     }

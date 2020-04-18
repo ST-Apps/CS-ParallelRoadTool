@@ -15,14 +15,15 @@ namespace ParallelRoadTool.Detours
         #region Detour
 
         private static readonly MethodInfo From = typeof(NetTool).GetMethod("RenderOverlay",
-            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
-            null,
-            new[]
-            {
-                typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color), typeof(NetTool.ControlPoint),
-                typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
-            },
-            null);
+                                                                            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                                                                            null,
+                                                                            new[]
+                                                                            {
+                                                                                typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
+                                                                                typeof(NetTool.ControlPoint),
+                                                                                typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
+                                                                            },
+                                                                            null);
 
         private static readonly MethodInfo To =
             typeof(NetToolDetour).GetMethod("RenderOverlay", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -59,8 +60,14 @@ namespace ParallelRoadTool.Detours
         /// <param name="startPoint"></param>
         /// <param name="middlePoint"></param>
         /// <param name="endPoint"></param>
-        private void RenderOverlay(RenderManager.CameraInfo cameraInfo, NetInfo info, Color color,
-            NetTool.ControlPoint startPoint, NetTool.ControlPoint middlePoint, NetTool.ControlPoint endPoint)
+
+        // ReSharper disable once UnusedMember.Local
+        private void RenderOverlay(RenderManager.CameraInfo cameraInfo,
+                                   NetInfo info,
+                                   Color color,
+                                   NetTool.ControlPoint startPoint,
+                                   NetTool.ControlPoint middlePoint,
+                                   NetTool.ControlPoint endPoint)
         {
             // Disable our detour so that we can call the original method
             Revert();
@@ -90,6 +97,7 @@ namespace ParallelRoadTool.Detours
 
                     // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                     var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
+
                     // If the user is using a vertical offset we try getting the relative elevated net info and use it
                     if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                         ItemClass.CollisionType.Elevated)
@@ -97,47 +105,50 @@ namespace ParallelRoadTool.Detours
 
                     // 50 shades of blue
                     var newColor = new Color(
-                        Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
-                        Mathf.Clamp(color.g * 255 + i, 0, 255) / 255,
-                        Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
-                        color.a);
+                                             Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
+                                             Mathf.Clamp(color.g * 255 + i, 0, 255) / 255,
+                                             Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
+                                             color.a);
 
                     // Render parallel segments by shifting the position of the 3 ControlPoint
                     From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
                     {
-                    cameraInfo, selectedNetInfo, newColor,
-                    new NetTool.ControlPoint
-                    {
-                        m_direction = startPoint.m_direction,
-                        m_elevation = startPoint.m_elevation,
-                        m_node = 0, //startPoint.m_node,
-                        m_outside = startPoint.m_outside,
-                        // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
-                        m_position =
-                        startPoint.m_position.Offset(
-                            startPoint.m_direction == Vector3.zero ? middlePoint.m_direction : startPoint.m_direction,
-                            horizontalOffset, verticalOffset),
-                        m_segment = 0 //startPoint.m_segment
-                    },
-                    new NetTool.ControlPoint
-                    {
-                        m_direction = middlePoint.m_direction,
-                        m_elevation = middlePoint.m_elevation,
-                        m_node = 0, //middlePoint.m_node,
-                        m_outside = middlePoint.m_outside,
-                        m_position =
-                        middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
-                        m_segment = 0 //middlePoint.m_segment
-                    },
-                    new NetTool.ControlPoint
-                    {
-                        m_direction = endPoint.m_direction,
-                        m_elevation = endPoint.m_elevation,
-                        m_node = 0, //endPoint.m_node,
-                        m_outside = endPoint.m_outside,
-                        m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
-                        m_segment = 0 //endPoint.m_segment
-                    }
+                        cameraInfo, selectedNetInfo, newColor,
+                        new NetTool.ControlPoint
+                        {
+                            m_direction = startPoint.m_direction,
+                            m_elevation = startPoint.m_elevation,
+                            m_node = 0, //startPoint.m_node,
+                            m_outside = startPoint.m_outside,
+
+                            // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
+                            m_position =
+                                startPoint.m_position.Offset(
+                                                             startPoint.m_direction == Vector3.zero
+                                                                 ? middlePoint.m_direction
+                                                                 : startPoint.m_direction,
+                                                             horizontalOffset, verticalOffset),
+                            m_segment = 0 //startPoint.m_segment
+                        },
+                        new NetTool.ControlPoint
+                        {
+                            m_direction = middlePoint.m_direction,
+                            m_elevation = middlePoint.m_elevation,
+                            m_node = 0, //middlePoint.m_node,
+                            m_outside = middlePoint.m_outside,
+                            m_position =
+                                middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
+                            m_segment = 0 //middlePoint.m_segment
+                        },
+                        new NetTool.ControlPoint
+                        {
+                            m_direction = endPoint.m_direction,
+                            m_elevation = endPoint.m_elevation,
+                            m_node = 0, //endPoint.m_node,
+                            m_outside = endPoint.m_outside,
+                            m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
+                            m_segment = 0 //endPoint.m_segment
+                        }
                     });
                 }
             }

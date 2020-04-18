@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using ColossalFramework;
 using ColossalFramework.UI;
 using CSUtil.Commons;
 using ParallelRoadTool.Models;
@@ -107,7 +105,7 @@ namespace ParallelRoadTool.UI
 
         public void DisableSearchMode(int index)
         {
-            _items[index].DisableSearchMode();           
+            _items[index].DisableSearchMode();
         }
 
         public void FilterItemDropdown(int index, string text)
@@ -137,7 +135,7 @@ namespace ParallelRoadTool.UI
             }
 
             _space.BringToFront();
-        }        
+        }
 
         public void UpdateItem(NetTypeItem item, int index)
         {
@@ -162,6 +160,7 @@ namespace ParallelRoadTool.UI
 
             // Remove stored component
             _items.RemoveAt(index);
+
             // We need to shift index value for any element after current index or we'll lose update events
             for (var i = index; i < _items.Count; i++) _items[i].Index -= 1;
         }
@@ -181,10 +180,7 @@ namespace ParallelRoadTool.UI
 
         public void UpdateDropdowns()
         {
-            for (var i = _items.Count - 1; i >= 0; i--)
-            {
-                _items[i].UpdateDropdown();
-            }
+            for (var i = _items.Count - 1; i >= 0; i--) _items[i].UpdateDropdown();
         }
 
         #endregion

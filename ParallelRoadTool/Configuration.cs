@@ -49,7 +49,6 @@ namespace ParallelRoadTool
             "ReverseFocused",
             "ReverseHovered",
             "ReversePressed",
-            "Tutorial",
             "Load",
             "Save"
         };

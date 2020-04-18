@@ -18,7 +18,7 @@ namespace CSUtil.Commons
 
         private static readonly string LogFilename = Path.Combine(Application.dataPath, "PRT.log");
 
-        private static readonly Stopwatch _sw = Stopwatch.StartNew();
+        private static readonly Stopwatch Sw = Stopwatch.StartNew();
 
         static Log()
         {
@@ -45,6 +45,7 @@ namespace CSUtil.Commons
         ///     Will log only if debug mode, the string is prepared using string.Format
         /// </summary>
         /// <param name="format">The text</param>
+        /// <param name="args"></param>
         [Conditional("DEBUG")]
         public static void _DebugFormat(string format, params object[] args)
         {
@@ -58,6 +59,7 @@ namespace CSUtil.Commons
         /// </summary>
         /// <param name="cond">The condition</param>
         /// <param name="s">The function which returns text to log</param>
+
         // TODO: Add log thread and replace formatted strings with lists to perform late formatting in that thread
         [Conditional("DEBUG")]
         public static void _DebugIf(bool cond, Func<string> s)
@@ -165,12 +167,12 @@ namespace CSUtil.Commons
 
                 using (var w = File.AppendText(LogFilename))
                 {
-                    var secs = _sw.ElapsedTicks / Stopwatch.Frequency;
-                    var fraction = _sw.ElapsedTicks % Stopwatch.Frequency;
+                    var secs = Sw.ElapsedTicks / Stopwatch.Frequency;
+                    var fraction = Sw.ElapsedTicks % Stopwatch.Frequency;
                     w.WriteLine(
-                        $"[{level}] " +
-                        $"{secs:n0}.{fraction:D7}: " +
-                        $"{log}");
+                                $"[{level}] " +
+                                $"{secs:n0}.{fraction:D7}: " +
+                                $"{log}");
 
                     if (level == LogLevel.Warning || level == LogLevel.Error)
                     {

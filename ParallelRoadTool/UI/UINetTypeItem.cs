@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using ColossalFramework;
@@ -15,6 +14,28 @@ namespace ParallelRoadTool.UI
     // ReSharper disable once ClassNeverInstantiated.Global
     public class UINetTypeItem : UIPanel
     {
+        #region Utility
+
+        private void PopulateDropdown()
+        {
+            _dropDown.items = IsCurrentItem
+                                  ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1).ToArray()
+                                  : Singleton<ParallelRoadTool>.instance.AvailableRoadNames;
+
+            IsFiltered = false;
+            if (!string.IsNullOrEmpty(_filterText))
+            {
+                _dropDown.items = _dropDown.items
+                                           .Where(i => i.ToLowerInvariant().Contains(_filterText.ToLowerInvariant())).ToArray();
+                IsFiltered = true;
+            }
+
+            _dropDown.selectedIndex = 0;
+            _populated = true;
+        }
+
+        #endregion
+
         #region Control
 
         public void FilterDropdown(string text)
@@ -34,7 +55,8 @@ namespace ParallelRoadTool.UI
 
                 Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(FilterDropdown)}] Disabling search mode with value {currentFilterText} and index {index}");
             }
-            _dropDown.selectedIndex = index;            
+
+            _dropDown.selectedIndex = index;
             DropDown_eventSelectedIndexChanged(_dropDown, index);
 
             Log.Info($"[{nameof(UINetTypeItem)}.{nameof(FilterDropdown)}] Found {_dropDown.items.Length} items with query {text}");
@@ -56,7 +78,7 @@ namespace ParallelRoadTool.UI
                 _verticalOffsetField.text = VerticalOffset.ToString(CultureInfo.InvariantCulture);
                 _reverseCheckbox.isChecked = IsReversed;
                 _dropDown.selectedIndex = Singleton<ParallelRoadTool>.instance.AvailableRoadTypes
-                    .FindIndex(ni => ni != null && ni.name == NetInfo.name);
+                                                                     .FindIndex(ni => ni != null && ni.name == NetInfo.name);
                 _dropDown.tooltip = _dropDown.selectedValue;
                 _dropDown.RefreshTooltip();
             }
@@ -67,7 +89,7 @@ namespace ParallelRoadTool.UI
                     _horizontalOffsetField.isVisible =
                         _verticalOffsetField.isVisible =
                             _reverseCheckbox.isVisible =
-                                _searchButton.isVisible = 
+                                _searchButton.isVisible =
                                     _dropDown.isVisible = false;
                 _label.isVisible = _addButton.isVisible = true;
                 _label.text = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
@@ -77,35 +99,13 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Updating a dropdown means loading newly available networks while keeping the current selection.
-        /// We can simulate this by running the very first loading.
+        ///     Updating a dropdown means loading newly available networks while keeping the current selection.
+        ///     We can simulate this by running the very first loading.
         /// </summary>
         public void UpdateDropdown()
-        {            
+        {
             _populated = false;
             UpdateItem();
-        }
-
-        #endregion
-
-        #region Utility
-
-        private void PopulateDropdown()
-        {
-            _dropDown.items = IsCurrentItem
-                ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1).ToArray()
-                : Singleton<ParallelRoadTool>.instance.AvailableRoadNames;
-
-            IsFiltered = false;
-            if (!string.IsNullOrEmpty(_filterText))
-            {
-                _dropDown.items = _dropDown.items
-                    .Where(i => i.ToLowerInvariant().Contains(_filterText.ToLowerInvariant())).ToArray();
-                IsFiltered = true;
-            }
-
-            _dropDown.selectedIndex = 0;
-            _populated = true;
         }
 
         #endregion
@@ -136,7 +136,7 @@ namespace ParallelRoadTool.UI
         private bool _populated;
         private bool _canFireChangedEvent;
 
-        private string _filterText;        
+        private string _filterText;
 
         #endregion
 
@@ -172,7 +172,7 @@ namespace ParallelRoadTool.UI
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "SubcategoriesPanel";
             color = new Color32(255, 255, 255, 255);
-            size = new Vector2(500 - 8 * 2 - 4 * 2, 40);            
+            size = new Vector2(500 - 8 * 2 - 4 * 2, 40);
 
             var panel = AddUIComponent<UIPanel>();
             panel.size = new Vector2(LabelWidth, 40);
@@ -184,15 +184,15 @@ namespace ParallelRoadTool.UI
             _dropDown.tooltip = _dropDown.selectedValue;
 
             var currentXposition = LabelWidth + ColumnPadding;
-            
+
             _searchButton = UIUtil.CreateCheckBox(this, "FindIt",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SearchButton"), false);            
+                                                  Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SearchButton"), false);
             _searchButton.relativePosition = new Vector3(currentXposition, 2);
 
             currentXposition += ButtonSize + ColumnPadding;
 
             _reverseCheckbox = UIUtil.CreateCheckBox(this, "Reverse",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton"), false);
+                                                     Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton"), false);
             _reverseCheckbox.relativePosition = new Vector3(currentXposition, 2);
 
             currentXposition += ButtonSize + ColumnPadding;
@@ -200,8 +200,8 @@ namespace ParallelRoadTool.UI
             _horizontalOffsetField = UIUtil.CreateTextField(this);
             _horizontalOffsetField.relativePosition = new Vector3(currentXposition, 4);
             _horizontalOffsetField.width = TextFieldWidth;
-            _horizontalOffsetField.height = TextFieldHeight;            
-            _horizontalOffsetField.numericalOnly = _horizontalOffsetField.allowNegative = _horizontalOffsetField.submitOnFocusLost = true;            
+            _horizontalOffsetField.height = TextFieldHeight;
+            _horizontalOffsetField.numericalOnly = _horizontalOffsetField.allowNegative = _horizontalOffsetField.submitOnFocusLost = true;
             _horizontalOffsetField.tooltip =
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "HorizontalOffset");
 
@@ -226,14 +226,16 @@ namespace ParallelRoadTool.UI
             _label.isVisible = false;
 
             _deleteButton = UIUtil.CreateUiButton(this, string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"), new Vector2(ButtonSize, ButtonSize),
-                "Remove");
+                                                  Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"),
+                                                  new Vector2(ButtonSize, ButtonSize),
+                                                  "Remove");
             _deleteButton.zOrder = 0;
             _deleteButton.textScale = 0.8f;
             _deleteButton.relativePosition = new Vector3(currentXposition, 2);
 
             _addButton = UIUtil.CreateUiButton(this, string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"), new Vector2(ButtonSize, ButtonSize), "Add");
+                                               Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"),
+                                               new Vector2(ButtonSize, ButtonSize), "Add");
             _addButton.zOrder = 1;
             _addButton.isVisible = false;
             _addButton.textScale = 0.8f;
@@ -298,7 +300,7 @@ namespace ParallelRoadTool.UI
         }
 
         private void SearchButtonOnEventCheckChanged(UIComponent component, bool value)
-        {            
+        {
             Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(SearchButtonOnEventCheckChanged)}] Event triggered with value: {value}");
 
             if (!value) FilterDropdown(null);
@@ -355,7 +357,7 @@ namespace ParallelRoadTool.UI
             IsReversed = _reverseCheckbox.isChecked;
 
             var eventArgs = new NetTypeItemEventArgs(Index, HorizontalOffset, VerticalOffset, _dropDown.selectedIndex,
-                IsReversed, IsFiltered, _dropDown.selectedValue);
+                                                     IsReversed, IsFiltered, _dropDown.selectedValue);
             _dropDown.tooltip = _dropDown.selectedValue;
             _dropDown.RefreshTooltip();
             OnChanged?.Invoke(this, eventArgs);

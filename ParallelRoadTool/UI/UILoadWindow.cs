@@ -14,8 +14,6 @@ namespace ParallelRoadTool.UI
         private static readonly SavedInt LoadWindowY =
             new SavedInt("loadWindowY", Configuration.SettingsFileName, -1000, true);
 
-        public class UIFastList : UIFastList<string, UISaveLoadFileRow> { }
-
         public static UILoadWindow Instance;
         private UIButton _closeButton;
         private UIDragHandle _dragHandle;
@@ -92,7 +90,7 @@ namespace ParallelRoadTool.UI
             {
                 _modalEffect.Show(false);
                 ValueAnimator.Animate("ModalEffect", delegate(float val) { _modalEffect.opacity = val; },
-                    new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
+                                      new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
             }
 
             SubscribeToUiEvents();
@@ -146,8 +144,8 @@ namespace ParallelRoadTool.UI
             }
 
             absolutePosition = new Vector2(
-                (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
-                (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
+                                           (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
+                                           (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
             LoadWindowX.value = (int) absolutePosition.x;
             LoadWindowY.value = (int) absolutePosition.y;
@@ -172,6 +170,10 @@ namespace ParallelRoadTool.UI
             }
 
             Focus();
+        }
+
+        public class UIFastList : UIFastList<string, UISaveLoadFileRow>
+        {
         }
     }
 }

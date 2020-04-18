@@ -6,8 +6,6 @@ using ColossalFramework.Math;
 using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Redirection;
-using ParallelRoadTool.UI;
-using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
@@ -21,7 +19,7 @@ namespace ParallelRoadTool.Detours
         #region Detour
 
         private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
-            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                                                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
         private static readonly MethodInfo To =
             typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -86,13 +84,13 @@ namespace ParallelRoadTool.Detours
         /// <param name="info"></param>
         /// <param name="newNodePosition"></param>
         /// <returns></returns>
-        private static NetNode CreateNode(out ushort newNodeId, ref Randomizer randomizer, NetInfo info,
-            Vector3 newNodePosition)
+        private static void CreateNode(out ushort newNodeId,
+                                       ref Randomizer randomizer,
+                                       NetInfo info,
+                                       Vector3 newNodePosition)
         {
             NetManager.instance.CreateNode(out newNodeId, ref randomizer, info, newNodePosition,
-                Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
-
-            return NetManager.instance.m_nodes.m_buffer[newNodeId];
+                                           Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
         }
 
         /// <summary>
@@ -103,8 +101,10 @@ namespace ParallelRoadTool.Detours
         /// <param name="newNodePosition"></param>
         /// <param name="verticalOffset"></param>
         /// <returns></returns>
-        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition,
-            float verticalOffset)
+        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer,
+                                                  NetInfo info,
+                                                  Vector3 newNodePosition,
+                                                  float verticalOffset)
         {
             var netManager = Singleton<NetManager>.instance;
 
@@ -115,18 +115,18 @@ namespace ParallelRoadTool.Detours
 
             if (Singleton<ParallelRoadTool>.instance.IsSnappingEnabled &&
                 (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service,
-                     NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false,
-                     maxDistance, out var posA, out var posB, out var sqrDistA, out var sqrDistB) ||
+                                              NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false,
+                                              maxDistance, out var posA, out var posB, out _, out _) ||
                  PathManager.FindPathPosition(
-                     new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z),
-                     info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                     VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA,
-                     out sqrDistB) ||
+                                              new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z),
+                                              info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
+                                              VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out _,
+                                              out _) ||
                  PathManager.FindPathPosition(
-                     new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z),
-                     info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                     VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out sqrDistA,
-                     out sqrDistB)
+                                              new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z),
+                                              info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
+                                              VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out _,
+                                              out _)
                 )
             )
             {
@@ -146,8 +146,8 @@ namespace ParallelRoadTool.Detours
                     if (startNodeId != 0 && endNodeId != 0)
                         return (newNodePosition - startNode.m_position).sqrMagnitude <
                                (newNodePosition - endNode.m_position).sqrMagnitude
-                            ? startNodeId
-                            : endNodeId;
+                                   ? startNodeId
+                                   : endNodeId;
 
                     // endNode was not found, return startNode
                     if (startNodeId != 0) return startNodeId;
@@ -183,9 +183,18 @@ namespace ParallelRoadTool.Detours
         /// <param name="modifiedIndex"></param>
         /// <param name="invert"></param>
         /// <returns></returns>
-        private bool CreateSegment(out ushort segment, ref Randomizer randomizer, NetInfo info, ushort startNode,
-            ushort endNode, Vector3 startDirection, Vector3 endDirection, uint buildIndex, uint modifiedIndex,
-            bool invert)
+
+        // ReSharper disable once UnusedMember.Local
+        private bool CreateSegment(out ushort segment,
+                                   ref Randomizer randomizer,
+                                   NetInfo info,
+                                   ushort startNode,
+                                   ushort endNode,
+                                   Vector3 startDirection,
+                                   Vector3 endDirection,
+                                   uint buildIndex,
+                                   uint modifiedIndex,
+                                   bool invert)
         {
             // Disable our detour so that we can call the original method
             Revert();
@@ -196,7 +205,7 @@ namespace ParallelRoadTool.Detours
 
                 // Let's create the segment that the user requested
                 var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, startNode, endNode, startDirection,
-                    endDirection, buildIndex, modifiedIndex, invert);
+                                                               endDirection, buildIndex, modifiedIndex, invert);
 
                 if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                     _isPreviousInvert = invert;
@@ -210,10 +219,14 @@ namespace ParallelRoadTool.Detours
                 {
                     isUpgradeActive = true;
                     upgradeInvert = invert;
+
+                    // ReSharper disable CompareOfFloatsByEqualityOperator
                     if (startDirection.x == endDirection.x && startDirection.y == endDirection.y)
                         ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Straight;
                     else
                         ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Curved;
+
+                    // ReSharper restore CompareOfFloatsByEqualityOperator
                 }
 
                 // True if we have a slope that is going down from start to end node
@@ -243,6 +256,7 @@ namespace ParallelRoadTool.Detours
 
                     // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                     var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out var isSlope);
+
                     // If the user is using a vertical offset we try getting the relative elevated net info and use it
                     if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() !=
                         ItemClass.CollisionType.Elevated)
@@ -256,6 +270,7 @@ namespace ParallelRoadTool.Detours
                         invert = !invert;
                         isReversed = !isReversed;
                         horizontalOffset = -horizontalOffset;
+
                         //Singleton<ParallelRoadTool>.instance.IsSnappingEnabled = true;
                     }
 
@@ -288,10 +303,10 @@ namespace ParallelRoadTool.Detours
                     else
                     {
                         var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
-                            verticalOffset, invert);
+                                                                              verticalOffset, invert);
 
                         Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
-                        
+
                         newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                     }
 
@@ -307,7 +322,7 @@ namespace ParallelRoadTool.Detours
                     else
                     {
                         var newEndPosition = endNetNode.m_position.Offset(endDirection, horizontalOffset, verticalOffset,
-                            !(invert && isSlope && isEnteringSlope));
+                                                                          !(invert && isSlope && isEnteringSlope));
 
                         Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
 
@@ -339,23 +354,24 @@ namespace ParallelRoadTool.Detours
 
                         // Create the segment between the two cloned nodes, inverting start and end node
                         result = NetManager.instance.CreateSegment(out segment, ref randomizer, selectedNetInfo, newEndNodeId,
-                            newStartNodeId,
-                            tempStartDirection, tempEndDirection,
-                            Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
-                            Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
+                                                                   newStartNodeId,
+                                                                   tempStartDirection, tempEndDirection,
+                                                                   Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
+                                                                   Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                     }
                     else
                     {
                         // Create the segment between the two cloned nodes
                         result = NetManager.instance.CreateSegment(out segment, ref randomizer, selectedNetInfo, newStartNodeId,
-                            newEndNodeId, startDirection, endDirection,
-                            Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
-                            Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
+                                                                   newEndNodeId, startDirection, endDirection,
+                                                                   Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
+                                                                   Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
                     }
 
                     // Left-hand drive revert conditions back
                     if (!Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic) continue;
                     invert = !invert;
+
                     // isReversed = !isReversed;
                     _isPreviousInvert = invert;
                 }

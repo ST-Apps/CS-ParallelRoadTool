@@ -69,7 +69,6 @@
     <Compile Include="UI\UILoadWindow.cs" />
     <Compile Include="UI\UISaveLoadFileRow.cs" />
     <Compile Include="UI\UISaveWindow.cs" />
-    <Compile Include="UI\Base\UIBasePopup.cs" />
     <Compile Include="UI\OptionsKeymapping.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,8 +87,6 @@
     <Compile Include="UI\UIMainWindow.cs" />
     <Compile Include="UI\UINetList.cs" />
     <Compile Include="UI\UINetTypeItem.cs" />
-    <Compile Include="UI\Base\UIDropDownTextFieldOption.cs" />
-    <Compile Include="UI\Base\UIOption.cs" />
     <Compile Include="Utils\UIUtil.cs" />
     <Compile Include="UI\UIOptionsPanel.cs" />
     <Compile Include="Utils\LocalizationManager.cs" />
