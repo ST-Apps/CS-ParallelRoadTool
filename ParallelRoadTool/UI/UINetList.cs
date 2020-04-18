@@ -88,6 +88,8 @@ namespace ParallelRoadTool.UI
 
             _items = new List<UINetTypeItem>();
             AddItem(null, true);
+
+            PresetsUtils.Import(Configuration.AutoSaveFileName);
         }
 
         public override void OnDestroy()

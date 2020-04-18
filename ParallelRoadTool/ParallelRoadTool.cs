@@ -138,8 +138,6 @@ namespace ParallelRoadTool
 
                 SubscribeToUIEvents();
 
-                PresetsUtils.Import(Configuration.AutoSaveFileName);
-
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loaded");
             }
             catch (Exception e)

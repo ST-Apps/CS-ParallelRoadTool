@@ -51,6 +51,12 @@ namespace ParallelRoadTool
                 // HACK - [ISSUE-51] We need to force localization loading or we won't see any localized string in mod's option while being in main menu
                 LocalizationManager.LoadLocalization();
 
+                if (helper == null)
+                {
+                    Log.Error($"[{nameof(ModInfo)}.{nameof(OnSettingsUI)}] Failed creating settings UI (helper is null)");
+                    return;
+                }
+
                 if (!(helper.AddGroup(Name) is UIHelper group))
                 {
                     Log.Error($"[{nameof(ModInfo)}.{nameof(OnSettingsUI)}] Failed creating settings UI (group is null)");
