@@ -74,9 +74,10 @@ namespace ParallelRoadTool.Detours
 
             try
             {
+                var netTool = ToolsModifierControl.GetTool<NetTool>();
+
                 // Let's render the original segment
-                // TODO: chiamare il metodo originale senza reflection
-                From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
+                From.Invoke(netTool, new object[]
                 {
                     cameraInfo,
                     info,
@@ -111,7 +112,7 @@ namespace ParallelRoadTool.Detours
                                              color.a);
 
                     // Render parallel segments by shifting the position of the 3 ControlPoint
-                    From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
+                    From.Invoke(netTool, new object[]
                     {
                         cameraInfo, selectedNetInfo, newColor,
                         new NetTool.ControlPoint

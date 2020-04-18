@@ -43,11 +43,7 @@ namespace ParallelRoadTool.Detours
         #endregion
 
         /// <summary>
-        ///     Overlay's core method.
-        ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
-        ///     correct offsets.
-        ///     TODO: Probably RenderHelperLines is what we need to fix the look with curves, but detouring it makes Unity crash so
-        ///     we have to live with this little issue.
+        ///     First we get the cost for the main selected segment, then we compute the cost for each parallel/stacked ones to get to the final cost.
         /// </summary>
 
         // ReSharper disable once UnusedMember.Local
