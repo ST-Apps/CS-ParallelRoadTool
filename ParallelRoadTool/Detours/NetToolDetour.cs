@@ -68,6 +68,7 @@ namespace ParallelRoadTool.Detours
             try
             {
                 // Let's render the original segment
+                // TODO: chiamare il metodo originale senza reflection
                 From.Invoke(ToolsModifierControl.GetTool<NetTool>(), new object[]
                 {
                     cameraInfo,

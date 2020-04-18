@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using ColossalFramework;
 using ColossalFramework.UI;
+using CSUtil.Commons;
+using ICities;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI;
@@ -22,15 +24,43 @@ namespace ParallelRoadTool
 
         #region Data       
 
+        /// <summary>
+        /// <see cref="List{T}"/> containing all the available <see cref="NetInfo"/> objects.
+        /// A <see cref="NetInfo"/> can be any kind of network that the user can build.
+        /// </summary>
         public List<NetInfo> AvailableRoadTypes { get; private set; }
+
+        /// <summary>
+        /// <see cref="List{T}"/> containing all the selected <see cref="NetTypeItem"/> objects.
+        /// This contains all the parallel/stacked networks that will be built once a main segment is created.
+        /// </summary>
         public List<NetTypeItem> SelectedRoadTypes { get; private set; }
+
+        /// <summary>
+        /// Array containing the beautified names for the <see cref="AvailableRoadTypes"/>.
+        /// </summary>
         public string[] AvailableRoadNames { get; private set; }
+
+        /// <summary>
+        /// This tells if the user wants the parallel/stacked nodes to snap with already existing nodes.
+        /// </summary>
         public bool IsSnappingEnabled { get; private set; }
+
+        /// <summary>
+        /// True if the current map is using left-hand traffic.
+        /// </summary>
         public bool IsLeftHandTraffic { get; private set; }
 
-        public static bool IsInGameMode;
+        /// <summary>
+        /// True only if <see cref="AppMode"/> is <see cref="AppMode.Game"/>.
+        /// </summary>
+        public static bool IsInGameMode { get; set; }
 
         private bool _isToolActive;
+        /// <summary>
+        /// Tool is considered active if the user enabled it and if we're currently using <see cref="NetTool"/> to draw a network.
+        /// This prevents unnecessary executions while the user is not building networks.
+        /// </summary>
         public bool IsToolActive
         {
             get => _isToolActive
@@ -45,12 +75,18 @@ namespace ParallelRoadTool
             }
         }
 
+        /// <summary>
+        /// Currently selected <see cref="NetInfo"/> within <see cref="NetTool"/>.
+        /// </summary>
         public NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
 
         #endregion
 
         #region UI
 
+        /// <summary>
+        /// Main UI panel.
+        /// </summary>
         private UIMainWindow _mainWindow;
 
         #endregion
@@ -59,6 +95,10 @@ namespace ParallelRoadTool
 
         #region Unity
 
+        /// <summary>
+        /// This method initializes mod's first time loading.
+        /// If <see cref="NetTool"/> is detected we initialize all the support structures, load the available networks and finally create the UI.
+        /// </summary>
         public void Start()
         {
             try
@@ -66,12 +106,12 @@ namespace ParallelRoadTool
                 // Find NetTool and deploy
                 if (ToolsModifierControl.GetTool<NetTool>() == null)
                 {
-                    DebugUtils.Log("Net Tool not found");
+                    Log.Warning($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Net Tool not found, can't deploy!");
                     enabled = false;
                     return;
                 }
 
-                DebugUtils.Log("Loading PRT...");
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading version: {ModInfo.ModName} ({nameof(IsInGameMode)} is {IsInGameMode})");
 
                 // Init support data                              
                 SelectedRoadTypes = new List<NetTypeItem>();
@@ -86,8 +126,9 @@ namespace ParallelRoadTool
                 if (IsInGameMode)
                     Singleton<UnlockManager>.instance.m_milestonesUpdated += OnMilestoneUpdate;
 
+                Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Adding UI components");
+
                 // Main UI init
-                DebugUtils.Log("Adding UI components");
                 var view = UIView.GetAView();
                 _mainWindow = _mainWindow ??
                               view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
@@ -96,31 +137,41 @@ namespace ParallelRoadTool
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                 SubscribeToUIEvents();
-                DebugUtils.Log("Initialized");
+
+                PresetsUtils.Import(Configuration.AutoSaveFileName);
+
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loaded");
             }
             catch (Exception e)
             {
-                DebugUtils.Log("Start failed");
-                DebugUtils.LogException(e);
+                Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading failed");
+                Log.Exception(e);
+
                 enabled = false;
             }
         }
 
+        /// <summary>
+        /// This destroys all the used resourced, so that we can start fresh if the user wants to load a new game.
+        /// Before destroying everything, we store an auto-save file containing the current configuration.
+        /// </summary>
         public void OnDestroy()
         {
             try
             {
-                DebugUtils.Log("Destroying ...");
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroying...");
 
-                // Remove existing autosave 
+                // Remove existing auto-save 
                 if (File.Exists(Configuration.AutoSaveFilePath))
                     File.Delete(Configuration.AutoSaveFilePath);
+
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Saving networks...");
+
                 // Save current networks 
-                DebugUtils.Log("Saving networks");
                 PresetsUtils.Export(Configuration.AutoSaveFileName);
 
                 ToggleDetours(false);
-                UnsubscribeToUIEvents();
+                UnsubscribeFromUIEvents();
 
                 // Reset data structures
                 AvailableRoadTypes.Clear();
@@ -135,12 +186,14 @@ namespace ParallelRoadTool
                 // Destroy UI
                 Destroy(_mainWindow);
                 _mainWindow = null;
-                DebugUtils.Log("Destroyed! ...");
+
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroyed");
             }
             catch (Exception e)
             {
                 // HACK - [ISSUE 31]
-                DebugUtils.LogException(e);
+                Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroy failed");
+                Log.Exception(e);
             }
         }
 
@@ -148,11 +201,16 @@ namespace ParallelRoadTool
 
         #region Utils
 
+        /// <summary>
+        /// Deploys/un-deploys the mod by toggling the custom detours.
+        /// </summary>
+        /// <param name="toolEnabled"></param>
         private static void ToggleDetours(bool toolEnabled)
         {
             if (toolEnabled)
             {
-                DebugUtils.Log("Enabling parallel road support");
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabling detours...");
+
                 NetManagerDetour.Deploy();
                 NetToolDetour.Deploy();
                 if (IsInGameMode)
@@ -160,7 +218,8 @@ namespace ParallelRoadTool
             }
             else
             {
-                DebugUtils.Log("Disabling parallel road support");
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabling detours...");
+
                 NetManagerDetour.Revert();
                 NetToolDetour.Revert();
                 if (IsInGameMode)
@@ -168,11 +227,14 @@ namespace ParallelRoadTool
             }
         }
 
+        /// <summary>
+        /// We load all the available networks, based on the currently unlocked milestones (only if <see cref="IsInGameMode"/> is true, otherwise we'll load them all).
+        /// Once the networks are loaded, we can update the already displayed UI to show the newly loaded networks.
+        /// </summary>
+        /// <param name="updateDropdowns"></param>
         private void LoadNetworks(bool updateDropdowns = false)
         {
             // Available networks loading
-            DebugUtils.Log("Loading all available networks...");
-
             var count = PrefabCollection<NetInfo>.PrefabCount();
             AvailableRoadTypes = new List<NetInfo>();
 
@@ -192,7 +254,7 @@ namespace ParallelRoadTool
                     }
                     else
                     {
-                        DebugUtils.Log($"Skipping {networkName} because {prefab.m_UnlockMilestone.m_name} is not passed yet.");
+                        Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping {networkName} because {prefab.m_UnlockMilestone.m_name} is not passed yet.");
                     }
                 }
             }
@@ -204,7 +266,7 @@ namespace ParallelRoadTool
             Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
             AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
-            DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
+            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks");
 
             if (updateDropdowns)
             {
@@ -232,7 +294,7 @@ namespace ParallelRoadTool
 
         #region Handlers
 
-        private void UnsubscribeToUIEvents()
+        private void UnsubscribeFromUIEvents()
         {
             _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
             _mainWindow.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
@@ -304,7 +366,8 @@ namespace ParallelRoadTool
 
         private void MainWindowOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
         {
-            DebugUtils.Log($"{value.ItemIndex} / {SelectedRoadTypes.Count}");
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(MainWindowOnOnItemChanged)}] Dropdown selection changed, new selection is {value.ItemIndex} (total elements: {SelectedRoadTypes.Count})");
+
             var item = SelectedRoadTypes[value.ItemIndex];
 
             var netInfo = value.IsFiltered
@@ -329,7 +392,8 @@ namespace ParallelRoadTool
 
         private void OnMilestoneUpdate()
         {
-            DebugUtils.Log("Milestones updated, reloading networks...");
+            Log.Info("Milestones updated, reloading networks...");
+
             LoadNetworks(true);
         }
 

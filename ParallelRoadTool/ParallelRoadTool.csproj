@@ -70,8 +70,6 @@
     <Compile Include="UI\UISaveLoadFileRow.cs" />
     <Compile Include="UI\UISaveWindow.cs" />
     <Compile Include="UI\Base\UIBasePopup.cs" />
-    <Compile Include="UI\UISearchPopup.cs" />
-    <Compile Include="Utils\DebugUtils.cs" />
     <Compile Include="UI\OptionsKeymapping.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,7 +83,6 @@
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Utils\PresetsUtils.cs" />
     <Compile Include="Utils\ResourceLoader.cs" />
-    <Compile Include="Utils\CallerMemberNameAttribute.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="UI\UIMainWindow.cs" />

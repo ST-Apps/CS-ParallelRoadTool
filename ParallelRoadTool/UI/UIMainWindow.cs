@@ -5,6 +5,7 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Base;
 using ParallelRoadTool.Utils;
 using System;
+using CSUtil.Commons;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -124,28 +125,34 @@ namespace ParallelRoadTool.UI
 
         private void NetListOnOnItemAdded(object sender, EventArgs eventArgs)
         {
-            DebugUtils.Log($"{nameof(NetListOnOnItemAdded)}");
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(NetListOnOnItemAdded)}] Event triggered with eventArgs: {eventArgs}");
+
             OnNetworkItemAdded?.Invoke(this, null);
         }
 
         private void NetListOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
         {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(NetListOnOnItemChanged)}] Event triggered with value: {value}");
+
             OnItemChanged?.Invoke(this, value);
         }
 
         private void NetListOnOnItemDeleted(UIComponent component, int index)
         {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(NetListOnOnItemDeleted)}] Event triggered with index: {index}");
+
             OnNetworkItemDeleted?.Invoke(this, index);
         }
 
         private void TutorialButtonToggleOnEventChanged(UIComponent component, bool value)
         {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(TutorialButtonToggleOnEventChanged)}] Event triggered with value: {value}");
+
             if (_isUpdatingTutorialAdvisor)
             {
                 return;
             }
 
-            DebugUtils.Log($"_tutorialToggleButton_eventCheckChanged: {value}");
             if (value)
             {
                 ToolsModifierControl.advisorPanel.Show("ParallelRoadTool", "Parallel", "Tutorial", 0.0f);
@@ -172,7 +179,8 @@ namespace ParallelRoadTool.UI
 
         private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
         {
-            DebugUtils.Log("Snapping toggle pressed.");
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(SnappingToggleButtonOnEventCheckChanged)}] Event triggered with value: {value}");
+
             OnSnappingToggled?.Invoke(component, value);
         }
 
@@ -184,17 +192,22 @@ namespace ParallelRoadTool.UI
                 return;
             }
 
-            DebugUtils.Log("Tool toggle pressed.");
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(ToolToggleButtonOnEventCheckChanged)}] Event triggered with value: {value}");
+
             OnParallelToolToggled?.Invoke(component, value);
         }
 
         private void LoadPresetsButtonOnClicked(UIComponent component, UIMouseEventParameter parameter)
         {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(LoadPresetsButtonOnClicked)}] Event triggered with parameter: {parameter}");
+
             UILoadWindow.Open();
         }
 
         private void SavePresetsButtonOnClicked(UIComponent component, UIMouseEventParameter parameter)
         {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(SavePresetsButtonOnClicked)}] Event triggered with parameter: {parameter}");
+
             UISaveWindow.Open();
         }
 
@@ -224,7 +237,8 @@ namespace ParallelRoadTool.UI
 
         public void ToggleDropdownFiltering(int index)
         {
-            DebugUtils.Log($"Toggling search mode for item with index {index} and current filtered item {_filteredItemIndex}");
+            Log.Info($"[{nameof(UIMainWindow)}.{nameof(ToggleDropdownFiltering)}] Toggling search mode for item with index {index} and current filtered item {_filteredItemIndex}");
+
             if (index == _filteredItemIndex)
             {
                 // We need to disable filtering
@@ -394,7 +408,8 @@ namespace ParallelRoadTool.UI
             SubscribeToUIEvents();
 
             OnPositionChanged();
-            DebugUtils.Log($"UIMainWindow created {size} | {position}");
+
+            Log.Info($"[{nameof(UIMainWindow)}.{nameof(Start)}] UIMainWindow created with size {size} and position {position}");
         }
 
         public override void Update()

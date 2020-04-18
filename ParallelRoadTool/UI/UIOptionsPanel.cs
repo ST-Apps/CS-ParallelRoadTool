@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Utils;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace ParallelRoadTool.UI
             autoLayout = true;
             autoSize = false;
 
-            DebugUtils.Log($"UIOptionsPanel created {size} | {position}");
+            Log._Debug($"[UIOptionsPanel.Start] Panel created with size {size} and position {position}");
         }
     }
 }

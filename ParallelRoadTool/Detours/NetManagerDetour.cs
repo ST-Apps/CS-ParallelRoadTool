@@ -3,8 +3,10 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
+using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Redirection;
+using ParallelRoadTool.UI;
 using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
@@ -109,8 +111,7 @@ namespace ParallelRoadTool.Detours
             // This should be the best possible value for snapping
             var maxDistance = info.m_halfWidth;
 
-            DebugUtils.Log(
-                $"Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
+            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
             if (Singleton<ParallelRoadTool>.instance.IsSnappingEnabled &&
                 (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service,
@@ -129,8 +130,7 @@ namespace ParallelRoadTool.Detours
                 )
             )
             {
-                DebugUtils.Log(
-                    $"FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
+                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
 
                 if (posA.m_segment != 0)
                 {
@@ -140,8 +140,7 @@ namespace ParallelRoadTool.Detours
                     var startNode = netManager.m_nodes.m_buffer[startNodeId];
                     var endNode = netManager.m_nodes.m_buffer[endNodeId];
 
-                    DebugUtils.Log(
-                        $"posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
+                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
 
                     // Get node closer to current position
                     if (startNodeId != 0 && endNodeId != 0)
@@ -158,7 +157,7 @@ namespace ParallelRoadTool.Detours
                 }
             }
 
-            DebugUtils.Log($"No nodes has been found for position {newNodePosition}, creating a new one.");
+            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] No nodes has been found for position {newNodePosition}, creating a new one.");
 
             // Both startNode and endNode were not found, we need to create a new one
             CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
@@ -193,8 +192,7 @@ namespace ParallelRoadTool.Detours
 
             try
             {
-                DebugUtils.Log(
-                $"Creating a segment and {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
+                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Creating a segment and {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
 
                 // Let's create the segment that the user requested
                 var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, startNode, endNode, startDirection,
@@ -225,11 +223,12 @@ namespace ParallelRoadTool.Detours
                 // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
                 var caller = string.Join(".", new[]
                 {
-                new StackFrame(3).GetMethod().DeclaringType?.Name,
-                new StackFrame(2).GetMethod().Name,
-                new StackFrame(1).GetMethod().Name
-            });
-                DebugUtils.Log($"Caller trace is {caller}");
+                    new StackFrame(3).GetMethod().DeclaringType?.Name,
+                    new StackFrame(2).GetMethod().Name,
+                    new StackFrame(1).GetMethod().Name
+                });
+
+                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Caller trace is {caller}");
 
                 if (!AllowedCallers.Contains(caller)) return result;
 
@@ -239,7 +238,8 @@ namespace ParallelRoadTool.Detours
 
                     var horizontalOffset = currentRoadInfos.HorizontalOffset;
                     var verticalOffset = currentRoadInfos.VerticalOffset;
-                    DebugUtils.Log($"Using offsets: h {horizontalOffset} | v {verticalOffset}");
+
+                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Using offsets: h {horizontalOffset} | v {verticalOffset}");
 
                     // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                     var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out var isSlope);
@@ -259,7 +259,7 @@ namespace ParallelRoadTool.Detours
                         //Singleton<ParallelRoadTool>.instance.IsSnappingEnabled = true;
                     }
 
-                    DebugUtils.Log($"Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
+                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
 
                     // Get original nodes to clone them
                     var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
@@ -272,28 +272,26 @@ namespace ParallelRoadTool.Detours
                     ushort newStartNodeId;
                     if (!invert && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
                     {
-                        DebugUtils.Log(
-                            $"[START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
                         newStartNodeId = _clonedEndNodeId[i].Value;
-                        DebugUtils.Log(
-                            $"[START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                     }
                     else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
                              _startNodeId[i].Value == startNode)
                     {
-                        DebugUtils.Log(
-                            $"[START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
                         newStartNodeId = _clonedStartNodeId[i].Value;
-                        DebugUtils.Log(
-                            $"[START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                     }
                     else
                     {
                         var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
                             verticalOffset, invert);
 
-                        DebugUtils.Log(
-                            $"[START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                        
                         newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                     }
 
@@ -301,19 +299,18 @@ namespace ParallelRoadTool.Detours
                     ushort newEndNodeId;
                     if (invert && _endNodeId[i].HasValue && _endNodeId[i].Value == endNode)
                     {
-                        DebugUtils.Log(
-                            $"[END] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {endNode}");
                         newEndNodeId = _clonedEndNodeId[i].Value;
-                        DebugUtils.Log(
-                            $"[END] End node{endNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newEndNodeId].m_position}");
+
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [END] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {endNode}");
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [END] End node{endNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newEndNodeId].m_position}");
                     }
                     else
                     {
                         var newEndPosition = endNetNode.m_position.Offset(endDirection, horizontalOffset, verticalOffset,
                             !(invert && isSlope && isEnteringSlope));
 
-                        DebugUtils.Log(
-                            $"[END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
+                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
+
                         newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition, verticalOffset);
                     }
 

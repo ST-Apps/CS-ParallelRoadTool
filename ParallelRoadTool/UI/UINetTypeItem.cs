@@ -5,6 +5,7 @@ using System.Linq;
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Utils;
 using UnityEngine;
@@ -21,7 +22,8 @@ namespace ParallelRoadTool.UI
             // Keeping current value if we're disabling search mode
             var currentFilterText = _dropDown.selectedValue;
 
-            DebugUtils.Log($"Searching for {text} ...");
+            Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(FilterDropdown)}] Searching for {text} ...");
+
             _filterText = text;
             PopulateDropdown();
             var index = 0;
@@ -29,11 +31,13 @@ namespace ParallelRoadTool.UI
             {
                 // If we're disabling we need to sync current index with the global one
                 index = Array.IndexOf(_dropDown.items, currentFilterText);
-                DebugUtils.Log($"Disabling search mode with value {currentFilterText} and index {index}");
+
+                Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(FilterDropdown)}] Disabling search mode with value {currentFilterText} and index {index}");
             }
             _dropDown.selectedIndex = index;            
             DropDown_eventSelectedIndexChanged(_dropDown, index);
-            DebugUtils.Log($"Found {_dropDown.items.Length} items");
+
+            Log.Info($"[{nameof(UINetTypeItem)}.{nameof(FilterDropdown)}] Found {_dropDown.items.Length} items with query {text}");
         }
 
         public void DisableSearchMode()
@@ -295,38 +299,44 @@ namespace ParallelRoadTool.UI
 
         private void SearchButtonOnEventCheckChanged(UIComponent component, bool value)
         {            
-            DebugUtils.Log($"{nameof(SearchButtonOnEventCheckChanged)}");
+            Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(SearchButtonOnEventCheckChanged)}] Event triggered with value: {value}");
+
             if (!value) FilterDropdown(null);
             OnSearchModeToggled?.Invoke(this, Index);
         }
 
         private void DropDown_eventSelectedIndexChanged(UIComponent component, int index)
         {
-            DebugUtils.Log($"{nameof(DropDown_eventSelectedIndexChanged)}");
+            Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(DropDown_eventSelectedIndexChanged)}] Event triggered with index: {index}");
+
             FireChangedEvent();
         }
 
         private void HorizontalOffsetField_eventTextSubmitted(UIComponent component, string value)
         {
-            DebugUtils.Log($"{nameof(HorizontalOffsetField_eventTextSubmitted)}");
+            Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(HorizontalOffsetField_eventTextSubmitted)}] Event triggered with value: {value}");
+
             FireChangedEvent();
         }
 
         private void VerticalOffsetField_eventTextSubmitted(UIComponent component, string value)
         {
-            DebugUtils.Log($"{nameof(VerticalOffsetField_eventTextSubmitted)}");
+            Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(VerticalOffsetField_eventTextSubmitted)}] Event triggered with value: {value}");
+
             FireChangedEvent();
         }
 
         private void ReverseCheckboxOnEventCheckChanged(UIComponent component, bool value)
         {
-            DebugUtils.Log($"{nameof(ReverseCheckboxOnEventCheckChanged)}");
+            Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(ReverseCheckboxOnEventCheckChanged)}] Event triggered with value: {value}");
+
             FireChangedEvent();
         }
 
         private void AddButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
-            DebugUtils.Log($"{nameof(AddButton_eventClicked)}");
+            Log._Debug($"[{nameof(UINetTypeItem)}.{nameof(ReverseCheckboxOnEventCheckChanged)}] Event triggered with eventParam: {eventParam}");
+
             OnAddClicked?.Invoke(this, null);
         }
 

@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.Models;
 
@@ -39,8 +40,9 @@ namespace ParallelRoadTool.Utils
             }
             catch (Exception e)
             {
-                DebugUtils.Log($"Failed exporting {filename} to {path}");
-                DebugUtils.LogException(e);
+                Log.Info($"[{nameof(PresetsUtils)}.{nameof(Export)}] Failed exporting {filename} to {path}");
+                Log.Exception(e);
+
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
                     .SetMessage(
                         Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ExportFailedTitle"),
@@ -49,19 +51,29 @@ namespace ParallelRoadTool.Utils
                 return false;
             }
 
+            Log.Info($"[{nameof(PresetsUtils)}.{nameof(Export)}] Exported {filename} to {path}");
             return true;
         }
 
         public static void Import(string filename)
         {
             var path = Path.Combine(Configuration.AutoSaveFolderPath, filename + ".xml");
+            if (!File.Exists(path))
+            {
+                Log.Info($"[{nameof(PresetsUtils)}.{nameof(Import)}] No auto-save file found in path {path}");
+
+                return;
+            }
+
+            Log.Info($"[{nameof(PresetsUtils)}.{nameof(Import)}] Loading auto-saved networks from file {path}");
+
             try
             {
                 List<PresetNetItem> presetItems;
                 var xmlSerializer = new XmlSerializer(typeof(List<PresetNetItem>));
                 using (var streamReader = new StreamReader(path))
                 {
-                    presetItems = (List<PresetNetItem>) xmlSerializer.Deserialize(streamReader);
+                    presetItems = (List<PresetNetItem>)xmlSerializer.Deserialize(streamReader);
                 }
 
                 Singleton<ParallelRoadTool>.instance.ClearItems();
@@ -69,9 +81,15 @@ namespace ParallelRoadTool.Utils
                 foreach (var preset in presetItems)
                 {
                     var netInfo = PrefabCollection<NetInfo>.FindLoaded(preset.NetName);
-                    if (netInfo == null) continue;
+                    if (netInfo == null)
+                    {
+                        Log.Info($"[{nameof(PresetsUtils)}.{nameof(Import)}] Couldn't import network with name {preset.NetName} from preset {filename}");
 
-                    DebugUtils.Log($"Adding network {netInfo.name} from preset {filename}");
+                        continue;
+                    }
+
+                    Log.Info($"[{nameof(PresetsUtils)}.{nameof(Import)}] Adding network {netInfo.name} from preset {filename}");
+
                     var item = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset,
                         preset.IsReversed);
                     Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Add(item);
@@ -81,8 +99,9 @@ namespace ParallelRoadTool.Utils
             }
             catch (Exception e)
             {
-                DebugUtils.Log($"Failed importing {filename} from {path}");
-                DebugUtils.LogException(e);
+                Log.Info($"[{nameof(PresetsUtils)}.{nameof(Import)}] Failed importing {filename} from {path}");
+                Log.Exception(e);
+
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
                     .SetMessage(
                         Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "ImportFailedTitle"),
@@ -100,8 +119,9 @@ namespace ParallelRoadTool.Utils
             }
             catch (Exception e)
             {
-                DebugUtils.Log($"Failed deleting {filename} from {path}");
-                DebugUtils.LogException(e);
+                Log.Info($"[{nameof(PresetsUtils)}.{nameof(Delete)}] Failed deleting {filename} from {path}");
+                Log.Exception(e);
+
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
                     .SetMessage(
                         Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DeleteFailedTitle"),

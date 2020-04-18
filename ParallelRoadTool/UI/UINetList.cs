@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ColossalFramework;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Utils;
 using UnityEngine;
@@ -54,13 +55,15 @@ namespace ParallelRoadTool.UI
 
         private void UiNetTypeItemOnOnAddClicked(object sender, EventArgs eventArgs)
         {
-            DebugUtils.Log($"{nameof(UiNetTypeItemOnOnAddClicked)}");
+            Log._Debug($"[{nameof(UINetList)}.{nameof(UiNetTypeItemOnOnAddClicked)}] Event triggered with eventArgs: {eventArgs}");
+
             OnItemAdded?.Invoke(this, null);
         }
 
         private void UiNetTypeItemOnOnSearchModeToggled(UIComponent component, int value)
         {
-            DebugUtils.Log($"{nameof(UiNetTypeItemOnOnSearchModeToggled)}");
+            Log._Debug($"[{nameof(UINetList)}.{nameof(UiNetTypeItemOnOnSearchModeToggled)}] Event triggered with value: {value}");
+
             OnSearchModeToggled?.Invoke(this, value);
         }
 
@@ -85,13 +88,6 @@ namespace ParallelRoadTool.UI
 
             _items = new List<UINetTypeItem>();
             AddItem(null, true);
-
-            //load autosaved networks
-            if (File.Exists(Path.Combine(Configuration.AutoSaveFolderPath, Configuration.AutoSaveFileName + ".xml")))
-            {
-                DebugUtils.Log("Loading autosaved networks");
-                PresetsUtils.Import(Configuration.AutoSaveFileName);
-            }
         }
 
         public override void OnDestroy()
@@ -170,11 +166,13 @@ namespace ParallelRoadTool.UI
 
         public void ClearItems()
         {
-            DebugUtils.Log($"Deleting {_items.Count} networks");
+            Log._Debug($"[{nameof(UINetList)}.{nameof(ClearItems)}] Deleting {_items.Count} networks");
+
             // deleting items from last to first to avoid index shifting for remaining items
             for (var i = _items.Count - 1; i >= 0; i--)
             {
-                DebugUtils.Log($"Deleting item at index: {i}: {_items[i].NetInfo.name}");
+                Log._Debug($"[{nameof(UINetList)}.{nameof(ClearItems)}] Deleting item at index: {i}: {_items[i].NetInfo.name}");
+
                 DeleteItem(i);
             }
         }
