@@ -50,7 +50,7 @@ namespace ParallelRoadTool.Utils
 
         public static void LogException(Exception e)
         {
-            Log("Intercepted exception (not game breaking):");
+            CSUtil.Commons.Log.Error("Intercepted exception (not game breaking):");
             Debug.LogException(e);
         }
 

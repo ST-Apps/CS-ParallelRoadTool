@@ -73,34 +73,17 @@ namespace ParallelRoadTool
 
                 DebugUtils.Log("Loading PRT...");
 
-                // Init support data
-                var count = PrefabCollection<NetInfo>.PrefabCount();                
-                AvailableRoadTypes = new List<NetInfo>();
+                // Init support data                              
                 SelectedRoadTypes = new List<NetTypeItem>();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
                                     SimulationMetaData.MetaBool.True;
                 IsToolActive = false;
 
-                // Available networks loading
-                DebugUtils.Log("Loading all available networks...");
-                
-                // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
-                var sortedNetworks = new SortedDictionary<string, NetInfo>();
-                for (uint i = 0; i < count; i++)
-                {
-                    var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
-                    if (prefab != null) sortedNetworks[prefab.GenerateBeautifiedNetName()] = prefab;
-                }
+                LoadNetworks();
 
-                AvailableRoadNames = new string[sortedNetworks.Keys.Count + 1];
-                // Default item, creates a net with the same type as source
-                AddNetworkType(null);                
-
-                Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
-                AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
-
-                DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
+                // Subscribe to milestones updated
+                Singleton<UnlockManager>.instance.m_milestonesUpdated += OnMilestoneUpdate;
 
                 // Main UI init
                 DebugUtils.Log("Adding UI components");
@@ -145,6 +128,9 @@ namespace ParallelRoadTool
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
 
+                // Unsubscribe to milestones updated
+                Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
+
                 // Destroy UI
                 Destroy(_mainWindow);
                 _mainWindow = null;
@@ -176,6 +162,48 @@ namespace ParallelRoadTool
                 NetManagerDetour.Revert();
                 NetToolDetour.Revert();
                 NetAIDetour.Revert();
+            }
+        }
+
+        private void LoadNetworks(bool updateDropdowns = false)
+        {
+            // Available networks loading
+            DebugUtils.Log("Loading all available networks...");
+
+            var count = PrefabCollection<NetInfo>.PrefabCount();
+            AvailableRoadTypes = new List<NetInfo>();
+
+            // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
+            var sortedNetworks = new SortedDictionary<string, NetInfo>();
+            for (uint i = 0; i < count; i++)
+            {
+                var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
+                if (prefab != null)
+                {
+                    var networkName = prefab.GenerateBeautifiedNetName();
+                    if (prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
+                    {
+                        sortedNetworks[networkName] = prefab;
+                    }
+                    else
+                    {
+                        DebugUtils.Log($"Skipping {networkName} because {prefab.m_UnlockMilestone.m_name} is not passed yet.");
+                    }
+                }
+            }
+
+            AvailableRoadNames = new string[sortedNetworks.Keys.Count + 1];
+            // Default item, creates a net with the same type as source
+            AddNetworkType(null);
+
+            Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
+            AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
+
+            DebugUtils.Log($"Loaded {AvailableRoadTypes.Count} networks.");
+
+            if (updateDropdowns)
+            {
+                _mainWindow.UpdateDropdowns();
             }
         }
 
@@ -273,7 +301,7 @@ namespace ParallelRoadTool
         {
             DebugUtils.Log($"{value.ItemIndex} / {SelectedRoadTypes.Count}");
             var item = SelectedRoadTypes[value.ItemIndex];
-            
+
             var netInfo = value.IsFiltered
                 ? Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FirstOrDefault(n => n.GenerateBeautifiedNetName() == value.SelectedNetworkName)
                 : value.SelectedNetworkIndex == 0
@@ -292,6 +320,12 @@ namespace ParallelRoadTool
             _mainWindow.DeleteItem(index);
 
             NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+        }
+
+        private void OnMilestoneUpdate()
+        {
+            DebugUtils.Log("Milestones updated, reloading networks...");
+            LoadNetworks(true);
         }
 
         #endregion

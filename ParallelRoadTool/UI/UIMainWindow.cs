@@ -274,6 +274,11 @@ namespace ParallelRoadTool.UI
             _netList.ClearItems();
         }
 
+        public void UpdateDropdowns()
+        {
+            _netList.UpdateDropdowns();
+        }
+
         #endregion
 
         #region Unity

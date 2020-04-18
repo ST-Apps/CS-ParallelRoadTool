@@ -179,6 +179,14 @@ namespace ParallelRoadTool.UI
             }
         }
 
+        public void UpdateDropdowns()
+        {
+            for (var i = _items.Count - 1; i >= 0; i--)
+            {
+                _items[i].UpdateDropdown();
+            }
+        }
+
         #endregion
     }
 }

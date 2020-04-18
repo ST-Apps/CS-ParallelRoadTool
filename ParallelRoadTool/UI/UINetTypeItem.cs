@@ -72,6 +72,16 @@ namespace ParallelRoadTool.UI
             _canFireChangedEvent = true;
         }
 
+        /// <summary>
+        /// Updating a dropdown means loading newly available networks while keeping the current selection.
+        /// We can simulate this by running the very first loading.
+        /// </summary>
+        public void UpdateDropdown()
+        {            
+            _populated = false;
+            UpdateItem();
+        }
+
         #endregion
 
         #region Utility
