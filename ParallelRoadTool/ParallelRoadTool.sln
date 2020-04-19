@@ -7,6 +7,33 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelRoadTool", "Paralle
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedirectionFramework", "..\Submodules\RedirectionFramework\RedirectionFramework.csproj", "{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{705B2384-F806-471F-B22C-AAB55A61576A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{EF309BA7-0A77-486A-BC80-1DC2A0D2F0A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workshop", "Workshop", "{CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Beta", "Beta", "{C19406E2-E4CB-45C3-B671-7C53985BBA3C}"
+	ProjectSection(SolutionItems) = preProject
+		..\Docs\Workshop\Beta\description.txt = ..\Docs\Workshop\Beta\description.txt
+		..\Docs\Workshop\Beta\PreviewImage.png = ..\Docs\Workshop\Beta\PreviewImage.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stable", "Stable", "{AFD5188A-5909-4890-B949-0C4CDDE5B0CC}"
+	ProjectSection(SolutionItems) = preProject
+		..\Docs\Workshop\Stable\1) Basic@2x.png = ..\Docs\Workshop\Stable\1) Basic@2x.png
+		..\Docs\Workshop\Stable\2) Elevated-Lowered@2x.png = ..\Docs\Workshop\Stable\2) Elevated-Lowered@2x.png
+		..\Docs\Workshop\Stable\3) Snapping@2x.png = ..\Docs\Workshop\Stable\3) Snapping@2x.png
+		..\Docs\Workshop\Stable\4) Reverse@2x.png = ..\Docs\Workshop\Stable\4) Reverse@2x.png
+		..\Docs\Workshop\Stable\5) Canals@2x.png = ..\Docs\Workshop\Stable\5) Canals@2x.png
+		..\Docs\Workshop\Stable\6) Tunnels@2x.png = ..\Docs\Workshop\Stable\6) Tunnels@2x.png
+		..\Docs\Workshop\Stable\7) Train Merge@2x.png = ..\Docs\Workshop\Stable\7) Train Merge@2x.png
+		..\Docs\Workshop\Stable\8) Road Split-Merge@2x.png = ..\Docs\Workshop\Stable\8) Road Split-Merge@2x.png
+		..\Docs\Workshop\Stable\8) Samples 1@2x.png = ..\Docs\Workshop\Stable\8) Samples 1@2x.png
+		..\Docs\Workshop\Stable\description.txt = ..\Docs\Workshop\Stable\description.txt
+		..\Docs\Workshop\Stable\PreviewImage.png = ..\Docs\Workshop\Stable\PreviewImage.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +51,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E} = {705B2384-F806-471F-B22C-AAB55A61576A}
+		{CAE3D1D4-1372-4B86-8D26-9E1CA25064D5} = {EF309BA7-0A77-486A-BC80-1DC2A0D2F0A9}
+		{C19406E2-E4CB-45C3-B671-7C53985BBA3C} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}
+		{AFD5188A-5909-4890-B949-0C4CDDE5B0CC} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19E91299-91FF-47EA-8505-215462D86A23}

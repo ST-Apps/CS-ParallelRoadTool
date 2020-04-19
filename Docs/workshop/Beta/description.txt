@@ -11,7 +11,7 @@ Main features are:
 [quote]
 [h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b][/h1]
 [h1][b]The beta version is meant for testing only and it can be unstable.[/b][/h1]
-[b]Tested on C:S version 1.11.0-f3[/b]
+[b]Tested on C:S version 1.13.0-f8[/b]
 [/quote]
 
 [quote]
@@ -20,15 +20,23 @@ Main features are:
 [*] Enabled tool while in upgrade mode so that you can add parallel/stacked segments to already existing networks
 [*] Added ability to save/load presets
 [*] Added search feature
+[*] [b]Networks can now be built only after being unlocked (You can still build them all from the beginning if you have the Unlock All Milestones mod active)[/b]
+[*] [b]Added cost for parallel/stacked segments[/b]
+[*] [b]Increased dropdown size for better readability[/b]
+[*] Minor performances fixes
 [/list]
 [/quote]
 
 [quote]
 [h1]Support my work[/h1]
-Star the project on GitHub: 
+Star the project on GitHub:
+
 [url=https://github.com/ST-Apps/CS-ParallelRoadTool][img]https://i.imgur.com/zejzAZn.png[/img][/url] 
 
+[b]or[/b]
+
 Donate using PayPal:
+
 [url=paypal.me/STApps][img]https://i.imgur.com/HKFbi4p.jpg[/img][/url]
 [/quote] 
 
