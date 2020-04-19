@@ -5,6 +5,8 @@ namespace ParallelRoadTool.UI.Base
     /// <summary>
     ///     Utility class that allows right-click to drag, disabling left-click one.
     /// </summary>
+
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class UIRightDragHandle : UIDragHandle
     {
         public UIRightDragHandle()
@@ -32,7 +34,7 @@ namespace ParallelRoadTool.UI.Base
             if (p.buttons != UIMouseButton.Right) return;
 
             p = new UIMouseEventParameter(p.source, UIMouseButton.Left, p.clicks, p.ray, p.position, p.moveDelta,
-                p.wheelDelta);
+                                          p.wheelDelta);
 
             base.OnMouseDown(p);
         }
@@ -42,7 +44,7 @@ namespace ParallelRoadTool.UI.Base
             if (p.buttons != UIMouseButton.Right) return;
 
             p = new UIMouseEventParameter(p.source, UIMouseButton.Left, p.clicks, p.ray, p.position, p.moveDelta,
-                p.wheelDelta);
+                                          p.wheelDelta);
 
             base.OnMouseMove(p);
         }
