@@ -300,6 +300,8 @@ namespace ParallelRoadTool
 
             _mainWindow.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
             _mainWindow.OnItemChanged -= MainWindowOnOnItemChanged;
+
+            ToolsModifierControl.bulldozerButton.eventActiveStateIndexChanged -= BulldozerButton_eventActiveStateIndexChanged;
         }
 
         private void SubscribeToUIEvents()
@@ -312,6 +314,13 @@ namespace ParallelRoadTool
             _mainWindow.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
             _mainWindow.OnItemChanged += MainWindowOnOnItemChanged;
             _mainWindow.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
+
+            ToolsModifierControl.bulldozerButton.eventActiveStateIndexChanged += BulldozerButton_eventActiveStateIndexChanged;
+        }
+
+        private void BulldozerButton_eventActiveStateIndexChanged(UIComponent component, int value)
+        {
+            IsToolActive = value != 1;
         }
 
         private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
