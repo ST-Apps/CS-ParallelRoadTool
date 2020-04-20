@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
 using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using RedirectionFramework;
 using UnityEngine;
@@ -52,11 +52,40 @@ namespace ParallelRoadTool.Detours
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
         private static bool _isPreviousInvert;
 
-        // Our detour should execute only if caller is one of the following
-        private static readonly string[] AllowedCallers =
+        /// <summary>
+        ///     Our detour should execute ONLY if the caller is explicitly allowed.
+        ///     This prevents unexpected behaviors, but could require some changes in this method to allow compatibility with other
+        ///     mods.
+        ///     HACK - [ISSUE-10] [ISSUE-18]
+        /// </summary>
+        /// <param name="st"></param>
+        /// <returns></returns>
+        private bool IsAllowedCaller(StackTrace st)
         {
-            "NetTool.CreateNode.CreateNode"
-        };
+            // Extract both type and method
+            var callerType = st.GetFrame(2).GetMethod().DeclaringType;
+            var callerMethod = st.GetFrame(1).GetMethod();
+
+            // They should never be null because stack traces are usually longer than 3 lines, but let's add this check because you'll never know
+            if (callerType == null || callerMethod == null)
+            {
+                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(IsAllowedCaller)}] {nameof(callerType)} or {nameof(callerMethod)} is null.");
+                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(IsAllowedCaller)}] Stacktrace is\n{st}");
+
+                return false;
+            }
+
+            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(IsAllowedCaller)}] Caller is {callerType.Name}.{callerMethod.Name}");
+
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (callerType == typeof(NetTool))
+
+                // We must allow only CreateNode (and eventually patched Harmony methods)
+                // This is the compatibility patch for Network Skins 2
+                return HarmonyUtils.IsNameMatching(callerMethod.Name, "CreateNode");
+
+            return false;
+        }
 
         /// <summary>
         ///     Sets the number of enabled parallel networks
@@ -207,6 +236,9 @@ namespace ParallelRoadTool.Detours
                 var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, startNode, endNode, startDirection,
                                                                endDirection, buildIndex, modifiedIndex, invert);
 
+                // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
+                if (!IsAllowedCaller(new StackTrace(false))) return result;
+
                 if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                     _isPreviousInvert = invert;
 
@@ -232,18 +264,6 @@ namespace ParallelRoadTool.Detours
                 // True if we have a slope that is going down from start to end node
                 var isEnteringSlope = NetManager.instance.m_nodes.m_buffer[invert ? startNode : endNode].m_elevation >
                                       NetManager.instance.m_nodes.m_buffer[invert ? endNode : startNode].m_elevation;
-
-                // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
-                var caller = string.Join(".", new[]
-                {
-                    new StackFrame(3).GetMethod().DeclaringType?.Name,
-                    new StackFrame(2).GetMethod().Name,
-                    new StackFrame(1).GetMethod().Name
-                });
-
-                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Caller trace is {caller}");
-
-                if (!AllowedCallers.Contains(caller)) return result;
 
                 for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
                 {
