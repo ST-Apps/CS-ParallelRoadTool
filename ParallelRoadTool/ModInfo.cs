@@ -27,8 +27,9 @@ namespace ParallelRoadTool
         {
             try
             {
-                // Creating setting file 
-                GameSettings.AddSettingsFile(new SettingsFile {fileName = Configuration.SettingsFileName});
+                // Creating setting file only if it's not existing
+                if (GameSettings.FindSettingsFileByName(Configuration.SettingsFileName) == null)
+                    GameSettings.AddSettingsFile(new SettingsFile { fileName = Configuration.SettingsFileName });
             }
             catch (Exception e)
             {
