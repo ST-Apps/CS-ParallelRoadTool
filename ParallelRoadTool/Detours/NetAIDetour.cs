@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using ColossalFramework;
+using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Wrappers;
 using RedirectionFramework;
@@ -55,7 +57,7 @@ namespace ParallelRoadTool.Detours
             try
             {
                 // Get initial cost for the currently selected network
-                var cost = Singleton<ParallelRoadTool>.instance.CurrentNetwork.m_netAI.GetConstructionCost(startPos, endPos, startHeight, endHeight);
+                var cost = ParallelRoadTool.CurrentNetwork.m_netAI.GetConstructionCost(startPos, endPos, startHeight, endHeight);
 
                 foreach (var currentRoadInfos in Singleton<ParallelRoadTool>.instance.SelectedRoadTypes)
                 {
@@ -75,6 +77,14 @@ namespace ParallelRoadTool.Detours
                 }
 
                 return cost;
+            }
+            catch (Exception e)
+            {
+                // Log the exception and return 0 as we can't recover from this
+                Log._DebugOnlyError($"[{nameof(NetAIDetour)}.{nameof(GetConstructionCost)}] GetConstructionCost failed.");
+                Log.Exception(e);
+
+                return 0;
             }
             finally
             {

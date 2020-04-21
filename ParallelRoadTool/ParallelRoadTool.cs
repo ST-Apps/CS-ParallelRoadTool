@@ -6,6 +6,7 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using CSUtil.Commons;
 using ICities;
+using JetBrains.Annotations;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI;
@@ -57,31 +58,21 @@ namespace ParallelRoadTool
         /// </summary>
         public static bool IsInGameMode { get; set; }
 
-        private bool _isToolActive;
+        /// <summary>
+        /// Enabled means that the mod is ON, so we have detours deployed and our UI visible but ONLY if <see cref="_isToolActive"/> is true too.
+        /// If not, this means that when the current tool becomes <see cref="NetTool"/> again we'll redeploy the detours.
+        /// </summary>
+        private bool _isToolEnabled;
 
         /// <summary>
-        ///     Tool is considered active if the user enabled it and if we're currently using <see cref="NetTool" /> to draw a
-        ///     network.
-        ///     This prevents unnecessary executions while the user is not building networks.
+        /// Active means that we're currently in <see cref="NetTool"/> so we must display our button.
         /// </summary>
-        public bool IsToolActive
-        {
-            get => _isToolActive
-                   && ToolsModifierControl.GetTool<NetTool>() != null
-                   && ToolsModifierControl.GetTool<NetTool>().enabled;
-
-            private set
-            {
-                if (IsToolActive == value) return;
-                ToggleDetours(value);
-                _isToolActive = value;
-            }
-        }
+        private bool _isToolActive;
 
         /// <summary>
         ///     Currently selected <see cref="NetInfo" /> within <see cref="NetTool" />.
         /// </summary>
-        public NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
+        public static NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
 
         #endregion
 
@@ -122,7 +113,7 @@ namespace ParallelRoadTool
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
                                     SimulationMetaData.MetaBool.True;
-                IsToolActive = false;
+                _isToolActive = _isToolEnabled = false;
 
                 LoadNetworks();
 
@@ -141,6 +132,8 @@ namespace ParallelRoadTool
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                 SubscribeToUIEvents();
+
+                _mainWindow.OnToolChanged += ToolBaseDetour_OnToolChanged;
 
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loaded");
             }
@@ -181,6 +174,9 @@ namespace ParallelRoadTool
                 AvailableRoadNames = null;
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
+                _isToolActive = _isToolEnabled = false;
+
+                _mainWindow.OnToolChanged -= ToolBaseDetour_OnToolChanged;
 
                 // Unsubscribe to milestones updated
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -215,6 +211,7 @@ namespace ParallelRoadTool
 
                 NetManagerDetour.Deploy();
                 NetToolDetour.Deploy();
+                // NTD.Deploy();
                 if (IsInGameMode)
                     NetAIDetour.Deploy();
             }
@@ -224,6 +221,7 @@ namespace ParallelRoadTool
 
                 NetManagerDetour.Revert();
                 NetToolDetour.Revert();
+                // NTD.Revert();
                 if (IsInGameMode)
                     NetAIDetour.Revert();
             }
@@ -300,8 +298,6 @@ namespace ParallelRoadTool
 
             _mainWindow.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
             _mainWindow.OnItemChanged -= MainWindowOnOnItemChanged;
-
-            ToolsModifierControl.bulldozerButton.eventActiveStateIndexChanged -= BulldozerButton_eventActiveStateIndexChanged;
         }
 
         private void SubscribeToUIEvents()
@@ -314,13 +310,39 @@ namespace ParallelRoadTool
             _mainWindow.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
             _mainWindow.OnItemChanged += MainWindowOnOnItemChanged;
             _mainWindow.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
-
-            ToolsModifierControl.bulldozerButton.eventActiveStateIndexChanged += BulldozerButton_eventActiveStateIndexChanged;
         }
 
-        private void BulldozerButton_eventActiveStateIndexChanged(UIComponent component, int value)
+        /// <summary>
+        /// We need to react to changes in current tool.
+        /// If current tool is NOT <see cref="NetTool"/> then we must disable everything, while still remembering if the tool was enabled or not (so that we can restore this state once the tool becomes <see cref="NetTool"/> again).
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
+        private void ToolBaseDetour_OnToolChanged(UIComponent component, ToolBase value)
         {
-            IsToolActive = value != 1;
+            if (value is NetTool)
+            {
+                // If we're in NetTool, we must restore our previous state + make the button visible
+                _mainWindow.ToggleToolButton(true);
+                _isToolActive = true;
+
+                if (_isToolEnabled)
+                {
+                    // This means we also need to restore detours and show our main window again
+                    ToggleDetours(true);
+                    _mainWindow.isVisible = true;
+                }
+            }
+            else
+            {
+                // We're not anymore in NetTool, so we must hide all of our UI and disable detours
+                _mainWindow.ToggleToolButton(false);
+                _mainWindow.isVisible = false;
+                _isToolActive = false;
+                ToggleDetours(false);
+            }
+
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolBaseDetour_OnToolChanged)}] Changed tool to {value.GetType().Name} [{nameof(_isToolActive)}: {_isToolActive}, {nameof(_isToolEnabled)}: {_isToolEnabled}]");
         }
 
         private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
@@ -348,9 +370,17 @@ namespace ParallelRoadTool
             IsSnappingEnabled = value;
         }
 
+        /// <summary>
+        /// When the main button is toggled we must update <see cref="_isToolEnabled"/> but NOT <see cref="_isToolActive"/>.
+        /// This means that we're not controlling button's visibility here.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
-            IsToolActive = value;
+            _isToolEnabled = value;
+            ToggleDetours(value);
+            _mainWindow.isVisible = value;
         }
 
         private void MainWindowOnNetworkItemAdded(object sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
@@ -230,7 +231,7 @@ namespace ParallelRoadTool.Detours
 
             try
             {
-                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Creating a segment and {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
+                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Creating original segment for {info}");
 
                 // Let's create the segment that the user requested
                 var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, startNode, endNode, startDirection,
@@ -239,11 +240,12 @@ namespace ParallelRoadTool.Detours
                 // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
                 if (!IsAllowedCaller(new StackTrace(false))) return result;
 
+                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Adding {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
+
                 if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                     _isPreviousInvert = invert;
 
                 // If we're in upgrade mode we must stop here
-                // if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade) return result;
                 // HACK - [ISSUE 25] Enabling tool during upgrade mode so that we can add to existing roads
                 var isUpgradeActive = false;
                 var upgradeInvert = false;
@@ -404,6 +406,15 @@ namespace ParallelRoadTool.Detours
                 _isPreviousInvert = upgradeInvert;
 
                 return result;
+            }
+            catch (Exception e)
+            {
+                // Log the exception and return false as we can't recover from this
+                Log._DebugOnlyError($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] CreateSegment failed.");
+                Log.Exception(e);
+
+                segment = 0;
+                return false;
             }
             finally
             {

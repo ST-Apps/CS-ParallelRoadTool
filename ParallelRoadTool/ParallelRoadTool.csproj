@@ -54,6 +54,7 @@
     <Compile Include="Detours\NetAIDetour.cs" />
     <Compile Include="Detours\NetManagerDetour.cs" />
     <Compile Include="Detours\NetToolDetour.cs" />
+    <Compile Include="Detours\NTD.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
     <Compile Include="Models\LocalizedString.cs" />
     <Compile Include="Models\LocalizedStringKey.cs" />

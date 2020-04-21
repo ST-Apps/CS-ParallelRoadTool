@@ -40,6 +40,11 @@ namespace ParallelRoadTool.UI
         /// </summary>
         private int _filteredItemIndex = -1;
 
+        /// <summary>
+        ///     Current tool that is being used.
+        /// </summary>
+        private ToolBase _currentTool;
+
         #endregion
 
         #region UI
@@ -70,7 +75,9 @@ namespace ParallelRoadTool.UI
         public event EventHandler OnNetworkItemAdded;
         public event PropertyChangedEventHandler<int> OnNetworkItemDeleted;
 
-        private void UnsubscribeToUIEvents()
+        public event PropertyChangedEventHandler<ToolBase> OnToolChanged;
+
+        private void UnsubscribeFromUIEvents()
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
@@ -184,9 +191,21 @@ namespace ParallelRoadTool.UI
             UISaveWindow.Open();
         }
 
+        private void ToolChanged(UIComponent component, ToolBase tool)
+        {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(ToolChanged)}] Changed tool to {tool.GetType().Name}");
+
+            OnToolChanged?.Invoke(null, tool);
+        }
+
         #endregion
 
         #region Control
+
+        public void ToggleToolButton(bool value)
+        {
+            _toolToggleButton.isVisible = value;
+        }
 
         public void AddItem(NetTypeItem item)
         {
@@ -228,6 +247,16 @@ namespace ParallelRoadTool.UI
             }
         }
 
+        public void ClearItems()
+        {
+            _netList.ClearItems();
+        }
+
+        public void UpdateDropdowns()
+        {
+            _netList.UpdateDropdowns();
+        }
+
         #endregion
 
         #region Utility
@@ -247,14 +276,14 @@ namespace ParallelRoadTool.UI
                 OnVerticalOffsetKeypress?.Invoke(this, step);
         }
 
-        public void ClearItems()
-        {
-            _netList.ClearItems();
-        }
 
-        public void UpdateDropdowns()
+        private void CheckToolStatus()
         {
-            _netList.UpdateDropdowns();
+            if (_currentTool == ToolsModifierControl.toolController.CurrentTool)
+                return;
+
+            _currentTool = ToolsModifierControl.toolController.CurrentTool;
+            ToolChanged(null, _currentTool);
         }
 
         #endregion
@@ -357,18 +386,11 @@ namespace ParallelRoadTool.UI
             Log.Info($"[{nameof(UIMainWindow)}.{nameof(Start)}] UIMainWindow created with size {size} and position {position}");
         }
 
-        public override void Update()
-        {
-            isVisible = Singleton<ParallelRoadTool>.exists && Singleton<ParallelRoadTool>.instance.IsToolActive;
-            _toolToggleButton.isVisible = ToolsModifierControl.GetTool<NetTool>() != null && ToolsModifierControl.GetTool<NetTool>().enabled;
-            base.Update();
-        }
-
         public override void OnDestroy()
         {
             try
             {
-                UnsubscribeToUIEvents();
+                UnsubscribeFromUIEvents();
 
                 Destroy(_buttonDragHandle);
                 Destroy(_mainPanel);
@@ -408,7 +430,8 @@ namespace ParallelRoadTool.UI
         {
             if (UIView.HasModalInput()
                 || UIView.HasInputFocus()
-                || !Singleton<ParallelRoadTool>.exists)
+                || !Singleton<ParallelRoadTool>.exists
+                || !(ToolsModifierControl.toolController.CurrentTool is NetTool))
                 return;
 
             var e = Event.current;
@@ -423,6 +446,11 @@ namespace ParallelRoadTool.UI
             if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
 
             if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+        }
+
+        public override void Update()
+        {
+            CheckToolStatus();
         }
 
         #endregion

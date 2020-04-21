@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using ColossalFramework;
+using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Wrappers;
 using RedirectionFramework;
@@ -152,6 +154,12 @@ namespace ParallelRoadTool.Detours
                         }
                     });
                 }
+            }
+            catch (Exception e)
+            {
+                // Log the exception
+                Log._DebugOnlyError($"[{nameof(NetToolDetour)}.{nameof(RenderOverlay)}] CreateSegment failed.");
+                Log.Exception(e);
             }
             finally
             {
