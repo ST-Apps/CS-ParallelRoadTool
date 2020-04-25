@@ -362,7 +362,7 @@ namespace ParallelRoadTool.UI
             if (toolModeBar == null) return;
 
             var button = UIUtil.FindComponent<UICheckBox>($"{Configuration.ResourcePrefix}Parallel");
-            if (button != null) Destroy(button);
+            if (button != null) DestroyImmediate(button);
 
             _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel",
                                                       Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), false);
