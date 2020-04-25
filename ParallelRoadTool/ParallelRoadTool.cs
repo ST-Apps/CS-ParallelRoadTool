@@ -125,10 +125,9 @@ namespace ParallelRoadTool
 
                 // Main UI init
                 var view = UIView.GetAView();
-                _mainWindow = _mainWindow ??
-                              view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
+                _mainWindow ??= view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
                 if (_mainWindow != null)
-                    Destroy(_mainWindow);
+                    DestroyImmediate(_mainWindow);
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
                 SubscribeToUIEvents();
@@ -211,7 +210,7 @@ namespace ParallelRoadTool
 
                 NetManagerDetour.Deploy();
                 NetToolDetour.Deploy();
-                // NTD.Deploy();
+
                 if (IsInGameMode)
                     NetAIDetour.Deploy();
             }
@@ -221,7 +220,7 @@ namespace ParallelRoadTool
 
                 NetManagerDetour.Revert();
                 NetToolDetour.Revert();
-                // NTD.Revert();
+                
                 if (IsInGameMode)
                     NetAIDetour.Revert();
             }

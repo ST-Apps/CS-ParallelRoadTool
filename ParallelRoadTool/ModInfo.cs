@@ -63,7 +63,7 @@ namespace ParallelRoadTool
                     return;
                 }
 
-                if (!(group.self as UIPanel is UIPanel panel))
+                if (!(group.self is UIPanel panel))
                 {
                     Log.Error($"[{nameof(ModInfo)}.{nameof(OnSettingsUI)}] Failed creating settings UI (panel is null)");
                     return;

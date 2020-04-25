@@ -333,8 +333,6 @@ namespace ParallelRoadTool.UI
             _dropdownFilterField.relativePosition = new Vector2(16, 38);
             _dropdownFilterField.isVisible = false;
 
-            //_dropdownFilterField.selectOnFocus = _dropdownFilterField.submitOnFocusLost = true;            
-
             // Add options
             _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping",
                                                           Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"), false);
@@ -350,10 +348,12 @@ namespace ParallelRoadTool.UI
             _loadPresetsButton.relativePosition = new Vector3(166, 38);
             _loadPresetsButton.BringToFront();
 
-            //TODO: Needs button state based on networks count 
-
             // Add main tool button to road options panel
-            if (_toolToggleButton != null) return;
+            if (_toolToggleButton == null)
+            {
+                DestroyImmediate(_toolToggleButton);
+                _toolToggleButton = null;
+            }
 
             var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
             if (tsBar == null || !tsBar.gameObject.activeInHierarchy) return;

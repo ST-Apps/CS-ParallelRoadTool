@@ -130,7 +130,7 @@ namespace CSUtil.Commons
 
         public static void Exception(Exception e)
         {
-            LogToFile($"Exception detected, message is: {e.Message}", LogLevel.Exception);
+            LogToFile($"{e.GetType().FullName} detected, message is: {e.Message}", LogLevel.Exception);
             LogToFile(e.StackTrace, LogLevel.Exception);
         }
 
