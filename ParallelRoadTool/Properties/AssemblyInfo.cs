@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ParallelRoadTool")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Parallel Road Tool")]
+[assembly: AssemblyDescription("This mod allows players to easily draw parallel/stacked roads in any combination.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ParallelRoadTool")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("Stefano Tenuta")]
+[assembly: AssemblyProduct("Parallel Road Tool")]
+[assembly: AssemblyCopyright("Copyright © 2020 Stefano Tenuta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
