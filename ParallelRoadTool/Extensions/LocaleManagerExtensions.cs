@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework.Globalization;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool.Extensions
 {
@@ -49,7 +49,8 @@ namespace ParallelRoadTool.Extensions
 
             if (!locale.Exists(id))
             {
-                DebugUtils.Log($"Could not remove locale range {id}; localized string {id} does not exist!");
+                Log._Debug($"[{nameof(LocaleManagerExtensions)}.{nameof(RemoveRange)}] Could not remove locale range {id}; localized string {id} does not exist!");
+
                 return;
             }
 
@@ -62,7 +63,7 @@ namespace ParallelRoadTool.Extensions
                 localizedStringsCount.Remove(id);
             }
 
-            DebugUtils.Log($"Removed locale range {id.m_Identifier}[{id.m_Key}].");
+            Log._Debug($"[{nameof(LocaleManagerExtensions)}.{nameof(RemoveRange)}] Removed locale range {id.m_Identifier}[{id.m_Key}].");
         }
 
         public static void AddString(this LocaleManager localeManager, LocalizedString localizedString)

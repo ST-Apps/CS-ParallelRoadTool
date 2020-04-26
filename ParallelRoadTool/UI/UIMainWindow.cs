@@ -2,6 +2,7 @@
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Base;
 using ParallelRoadTool.Utils;
@@ -34,8 +35,15 @@ namespace ParallelRoadTool.UI
         // We use this to prevent clicks while user is dragging the button
         private bool _isDragging;
 
-        // We use this to prevent handling events while the advisor is being updated
-        private bool _isUpdatingTutorialAdvisor;
+        /// <summary>
+        ///     Index of the NetTypeItem that we're currently filtering.
+        /// </summary>
+        private int _filteredItemIndex = -1;
+
+        /// <summary>
+        ///     Current tool that is being used.
+        /// </summary>
+        private ToolBase _currentTool;
 
         #endregion
 
@@ -45,11 +53,12 @@ namespace ParallelRoadTool.UI
         private UIOptionsPanel _mainPanel;
         private UINetList _netList;
         private UICheckBox _toolToggleButton;
-        private UICheckBox _snappingToggleButton;
-        // private UICheckBox _tutorialToggleButton;
 
-        private UISprite _tutorialIcon => ToolsModifierControl.advisorPanel?.Find<UISprite>("Icon");
-        private UISprite _tutorialImage => ToolsModifierControl.advisorPanel?.Find<UISprite>("Sprite");
+        private UICheckBox _snappingToggleButton;
+
+        private UITextField _dropdownFilterField;
+        private UIButton _loadPresetsButton;
+        private UIButton _savePresetsButton;
 
         #endregion
 
@@ -66,54 +75,75 @@ namespace ParallelRoadTool.UI
         public event EventHandler OnNetworkItemAdded;
         public event PropertyChangedEventHandler<int> OnNetworkItemDeleted;
 
-        private void UnsubscribeToUIEvents()
+        public event PropertyChangedEventHandler<ToolBase> OnToolChanged;
+
+        private void UnsubscribeFromUIEvents()
         {
             _toolToggleButton.eventCheckChanged -= ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged -= SnappingToggleButtonOnEventCheckChanged;
-            //_tutorialToggleButton.eventCheckChanged -= _tutorialToggleButton_eventCheckChanged;
+
             _buttonDragHandle.eventDragStart -= ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd -= ButtonDragHandleOnEventDragEnd;
             _netList.OnItemChanged -= NetListOnOnItemChanged;
             _netList.OnItemAdded -= NetListOnOnItemAdded;
             _netList.OnItemDeleted -= NetListOnOnItemDeleted;
+            _dropdownFilterField.eventTextChanged -= DropdownFilterFieldOnEventTextChanged;
+
+            _loadPresetsButton.eventClicked -= LoadPresetsButtonOnClicked;
+            _savePresetsButton.eventClicked -= SavePresetsButtonOnClicked;
         }
 
         private void SubscribeToUIEvents()
         {
             _toolToggleButton.eventCheckChanged += ToolToggleButtonOnEventCheckChanged;
             _snappingToggleButton.eventCheckChanged += SnappingToggleButtonOnEventCheckChanged;
-            //_tutorialToggleButton.eventCheckChanged += _tutorialToggleButton_eventCheckChanged;
+
             _buttonDragHandle.eventDragStart += ButtonDragHandleOnEventDragStart;
             _buttonDragHandle.eventDragEnd += ButtonDragHandleOnEventDragEnd;
             _netList.OnItemChanged += NetListOnOnItemChanged;
             _netList.OnItemAdded += NetListOnOnItemAdded;
             _netList.OnItemDeleted += NetListOnOnItemDeleted;
+            _netList.OnSearchModeToggled += NetListOnOnSearchModeToggled;
+            _dropdownFilterField.eventTextChanged += DropdownFilterFieldOnEventTextChanged;
+
+            _loadPresetsButton.eventClicked += LoadPresetsButtonOnClicked;
+            _savePresetsButton.eventClicked += SavePresetsButtonOnClicked;
+        }
+
+        private void DropdownFilterFieldOnEventLostFocus(UIComponent component, UIFocusEventParameter eventparam)
+        {
+            _netList.DisableSearchMode(_filteredItemIndex);
+        }
+
+        private void DropdownFilterFieldOnEventTextChanged(UIComponent component, string value)
+        {
+            _netList.FilterItemDropdown(_filteredItemIndex, value);
+        }
+
+        private void NetListOnOnSearchModeToggled(UIComponent component, int value)
+        {
+            ToggleDropdownFiltering(value);
         }
 
         private void NetListOnOnItemAdded(object sender, EventArgs eventArgs)
         {
-            DebugUtils.Log($"{nameof(NetListOnOnItemAdded)}");
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(NetListOnOnItemAdded)}] Event triggered with eventArgs: {eventArgs}");
+
             OnNetworkItemAdded?.Invoke(this, null);
         }
 
         private void NetListOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
         {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(NetListOnOnItemChanged)}] Event triggered with value: {value}");
+
             OnItemChanged?.Invoke(this, value);
         }
 
         private void NetListOnOnItemDeleted(UIComponent component, int index)
         {
-            OnNetworkItemDeleted?.Invoke(this, index);
-        }
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(NetListOnOnItemDeleted)}] Event triggered with index: {index}");
 
-        private void _tutorialToggleButton_eventCheckChanged(UIComponent component, bool value)
-        {
-            if (_isUpdatingTutorialAdvisor) return;
-            DebugUtils.Log($"_tutorialToggleButton_eventCheckChanged: {value}");
-            if (value)
-                ToolsModifierControl.advisorPanel.Show("ParallelRoadTool", "Parallel", "Tutorial", 0.0f);
-            else
-                ToolsModifierControl.advisorPanel.Hide();
+            OnNetworkItemDeleted?.Invoke(this, index);
         }
 
         private void ButtonDragHandleOnEventDragStart(UIComponent component, UIDragEventParameter eventparam)
@@ -126,13 +156,14 @@ namespace ParallelRoadTool.UI
             _isDragging = false;
 
             // Also save position
-            SavedToggleX.value = (int)_toolToggleButton.absolutePosition.x;
-            SavedToggleY.value = (int)_toolToggleButton.absolutePosition.y;
+            SavedToggleX.value = (int) _toolToggleButton.absolutePosition.x;
+            SavedToggleY.value = (int) _toolToggleButton.absolutePosition.y;
         }
 
         private void SnappingToggleButtonOnEventCheckChanged(UIComponent component, bool value)
         {
-            DebugUtils.Log("Snapping toggle pressed.");
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(SnappingToggleButtonOnEventCheckChanged)}] Event triggered with value: {value}");
+
             OnSnappingToggled?.Invoke(component, value);
         }
 
@@ -141,13 +172,40 @@ namespace ParallelRoadTool.UI
             // Prevent click during dragging
             if (_isDragging) return;
 
-            DebugUtils.Log("Tool toggle pressed.");
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(ToolToggleButtonOnEventCheckChanged)}] Event triggered with value: {value}");
+
             OnParallelToolToggled?.Invoke(component, value);
+        }
+
+        private void LoadPresetsButtonOnClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(LoadPresetsButtonOnClicked)}] Event triggered with parameter: {parameter}");
+
+            UILoadWindow.Open();
+        }
+
+        private void SavePresetsButtonOnClicked(UIComponent component, UIMouseEventParameter parameter)
+        {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(SavePresetsButtonOnClicked)}] Event triggered with parameter: {parameter}");
+
+            UISaveWindow.Open();
+        }
+
+        private void ToolChanged(UIComponent component, ToolBase tool)
+        {
+            Log._Debug($"[{nameof(UIMainWindow)}.{nameof(ToolChanged)}] Changed tool to {tool.GetType().Name}");
+
+            OnToolChanged?.Invoke(null, tool);
         }
 
         #endregion
 
         #region Control
+
+        public void ToggleToolButton(bool value)
+        {
+            _toolToggleButton.isVisible = value;
+        }
 
         public void AddItem(NetTypeItem item)
         {
@@ -164,9 +222,39 @@ namespace ParallelRoadTool.UI
             _netList.DeleteItem(index);
         }
 
-        public void ShowTutorial()
+        public void ToggleDropdownFiltering(int index)
         {
-            _tutorialToggleButton_eventCheckChanged(null, true);
+            Log.Info($"[{nameof(UIMainWindow)}.{nameof(ToggleDropdownFiltering)}] Toggling search mode for item with index {index} and current filtered item {_filteredItemIndex}");
+
+            if (index == _filteredItemIndex)
+            {
+                // We need to disable filtering
+                _filteredItemIndex = -1;
+                _dropdownFilterField.isVisible = false;
+            }
+            else
+            {
+                if (_filteredItemIndex != -1)
+                {
+                    // We had filtering enabled for another item, so we need to disable it
+                    _netList.DisableSearchMode(_filteredItemIndex);
+                    _dropdownFilterField.text = string.Empty;
+                }
+
+                _filteredItemIndex = index;
+                _dropdownFilterField.isVisible = true;
+                _dropdownFilterField.Focus();
+            }
+        }
+
+        public void ClearItems()
+        {
+            _netList.ClearItems();
+        }
+
+        public void UpdateDropdowns()
+        {
+            _netList.UpdateDropdowns();
         }
 
         #endregion
@@ -186,6 +274,16 @@ namespace ParallelRoadTool.UI
                 OnHorizontalOffsetKeypress?.Invoke(this, step);
             else
                 OnVerticalOffsetKeypress?.Invoke(this, step);
+        }
+
+
+        private void CheckToolStatus()
+        {
+            if (_currentTool == ToolsModifierControl.toolController.CurrentTool)
+                return;
+
+            _currentTool = ToolsModifierControl.toolController.CurrentTool;
+            ToolChanged(null, _currentTool);
         }
 
         #endregion
@@ -229,20 +327,33 @@ namespace ParallelRoadTool.UI
             var space = bg.AddUIComponent<UIPanel>();
             space.size = new Vector2(1, 1);
 
+            // Add filter box
+            _dropdownFilterField = UIUtil.CreateTextField(this);
+            _dropdownFilterField.size = new Vector2(size.x - 160, 32);
+            _dropdownFilterField.relativePosition = new Vector2(16, 38);
+            _dropdownFilterField.isVisible = false;
+
             // Add options
             _snappingToggleButton = UIUtil.CreateCheckBox(_mainPanel, "Snapping",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"), false);
+                                                          Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"), false);
             _snappingToggleButton.relativePosition = new Vector3(166, 38);
             _snappingToggleButton.BringToFront();
 
-            //_tutorialToggleButton = UIUtil.CreateCheckBox(_mainPanel, "ToolbarIconHelp",
-            //    Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "TutorialToggleButton"), false, true);
-            //_tutorialToggleButton.relativePosition = new Vector3(166, 38);
-            //_tutorialToggleButton.BringToFront();
-            //_tutorialToggleButton.isVisible = ParallelRoadTool.IsInGameMode;
+            _savePresetsButton = UIUtil.CreateUiButton(_mainPanel, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SaveButton"),
+                                                       new Vector2(36, 36), "Save");
+            _savePresetsButton.relativePosition = new Vector3(166, 38);
+            _savePresetsButton.BringToFront();
+            _loadPresetsButton = UIUtil.CreateUiButton(_mainPanel, string.Empty, Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "LoadButton"),
+                                                       new Vector2(36, 36), "Load");
+            _loadPresetsButton.relativePosition = new Vector3(166, 38);
+            _loadPresetsButton.BringToFront();
 
             // Add main tool button to road options panel
-            if (_toolToggleButton != null) return;
+            if (_toolToggleButton == null)
+            {
+                DestroyImmediate(_toolToggleButton);
+                _toolToggleButton = null;
+            }
 
             var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
             if (tsBar == null || !tsBar.gameObject.activeInHierarchy) return;
@@ -251,17 +362,16 @@ namespace ParallelRoadTool.UI
             if (toolModeBar == null) return;
 
             var button = UIUtil.FindComponent<UICheckBox>($"{Configuration.ResourcePrefix}Parallel");
-            if (button != null)
-                Destroy(button);
+            if (button != null) DestroyImmediate(button);
 
             _toolToggleButton = UIUtil.CreateCheckBox(tsBar, "Parallel",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), false);
+                                                      Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"), false);
             if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
                 _toolToggleButton.absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);
             else
                 _toolToggleButton.absolutePosition =
                     new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1,
-                        toolModeBar.absolutePosition.y);
+                                toolModeBar.absolutePosition.y);
 
             // HACK - [ISSUE-26] Tool's main button must be draggable to prevent overlapping other mods buttons.
             _buttonDragHandle = _toolToggleButton.AddUIComponent<UIRightDragHandle>();
@@ -272,55 +382,24 @@ namespace ParallelRoadTool.UI
             SubscribeToUIEvents();
 
             OnPositionChanged();
-            DebugUtils.Log($"UIMainWindow created {size} | {position}");
-        }
 
-        public override void Update()
-        {
-            isVisible = Singleton<ParallelRoadTool>.exists && Singleton<ParallelRoadTool>.instance.IsToolActive;
-            _toolToggleButton.isVisible = ToolsModifierControl.GetTool<NetTool>() != null && ToolsModifierControl.GetTool<NetTool>().enabled;
-
-            // TODO: let's see if disabling tutorial helps with performances as I'm getting mixed reports and can't reproduce the issue
-            if (!isVisible) return;
-
-            // HACK - Adding textures to default atlas fails and TutorialAdvisor only uses default atlas, so we need to update the selected atlas based on the tutorial we're showing.
-            //if (_tutorialIcon == null || !ToolsModifierControl.advisorPanel.isVisible || !ToolsModifierControl.advisorPanel.isOpen) return;
-            //_isUpdatingTutorialAdvisor = true;
-            //if (_tutorialIcon.spriteName == "Parallel")
-            //{
-            //    if (_tutorialImage.atlas.name != UIUtil.TextureAtlas.name)
-            //        _tutorialIcon.atlas = _tutorialImage.atlas = UIUtil.TextureAtlas;
-            //}
-            //else
-            //{
-            //    if (_tutorialImage.atlas.name != UIUtil.AdvisorAtlas.name)
-            //    {
-            //        _tutorialIcon.atlas = UIUtil.DefaultAtlas;
-            //        _tutorialImage.atlas = UIUtil.AdvisorAtlas;
-            //    }
-            //}
-
-            //_tutorialToggleButton.isChecked = _tutorialIcon.spriteName == "Parallel"
-            //                                  && _tutorialImage.atlas.name == UIUtil.TextureAtlas.name
-            //                                  && ToolsModifierControl.advisorPanel.isVisible
-            //                                  && ToolsModifierControl.advisorPanel.isOpen;
-            //_isUpdatingTutorialAdvisor = false;
-
-            base.Update();
+            Log.Info($"[{nameof(UIMainWindow)}.{nameof(Start)}] UIMainWindow created with size {size} and position {position}");
         }
 
         public override void OnDestroy()
         {
             try
             {
-                UnsubscribeToUIEvents();
+                UnsubscribeFromUIEvents();
 
                 Destroy(_buttonDragHandle);
                 Destroy(_mainPanel);
                 Destroy(_netList);
                 Destroy(_toolToggleButton);
                 Destroy(_snappingToggleButton);
-                //Destroy(_tutorialToggleButton);
+
+                Destroy(_loadPresetsButton);
+                Destroy(_savePresetsButton);
                 base.OnDestroy();
             }
             catch
@@ -333,35 +412,45 @@ namespace ParallelRoadTool.UI
         {
             var resolution = GetUIView().GetScreenResolution();
 
-            if (absolutePosition.x == -1000)
-                absolutePosition = new Vector2((resolution.x - width) / 2, (resolution.y - height) / 2);
+            if (absolutePosition.x == -1000) absolutePosition = new Vector2((resolution.x - width) / 2, (resolution.y - height) / 2);
 
             absolutePosition = new Vector2(
-                (int)Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
-                (int)Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
+                                           (int) Mathf.Clamp(absolutePosition.x, 0, resolution.x - width),
+                                           (int) Mathf.Clamp(absolutePosition.y, 0, resolution.y - height));
 
             // HACK - [ISSUE-9] Setting window's position seems not enough, we also need to set position for the first children of the window.
             var firstChildren = m_ChildComponents.FirstOrDefault();
             if (firstChildren != null) firstChildren.absolutePosition = absolutePosition;
 
-            SavedWindowX.value = (int)absolutePosition.x;
-            SavedWindowY.value = (int)absolutePosition.y;
+            SavedWindowX.value = (int) absolutePosition.x;
+            SavedWindowY.value = (int) absolutePosition.y;
         }
 
         public void OnGUI()
         {
-            if (UIView.HasModalInput() 
+            if (UIView.HasModalInput()
                 || UIView.HasInputFocus()
                 || !Singleton<ParallelRoadTool>.exists
-                || !Singleton<ParallelRoadTool>.instance.IsToolActive) return;
+                || !(ToolsModifierControl.toolController.CurrentTool is NetTool))
+                return;
 
             var e = Event.current;
+
             // Checking key presses
-            if (OptionsKeymapping.toggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
-            if (OptionsKeymapping.decreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
-            if (OptionsKeymapping.increaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
-            if (OptionsKeymapping.decreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
-            if (OptionsKeymapping.increaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+            if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
+
+            if (OptionsKeymapping.DecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
+
+            if (OptionsKeymapping.IncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
+
+            if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
+
+            if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+        }
+
+        public override void Update()
+        {
+            CheckToolStatus();
         }
 
         #endregion

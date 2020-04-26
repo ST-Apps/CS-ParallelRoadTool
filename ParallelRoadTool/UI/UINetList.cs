@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Utils;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace ParallelRoadTool.UI
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnItemChanged;
         public event EventHandler OnItemAdded;
         public event PropertyChangedEventHandler<int> OnItemDeleted;
+        public event PropertyChangedEventHandler<int> OnSearchModeToggled;
 
         #endregion
 
@@ -32,6 +34,7 @@ namespace ParallelRoadTool.UI
             {
                 uiNetTypeItem.OnChanged -= UiNetTypeItemOnOnChanged;
                 uiNetTypeItem.OnDeleteClicked -= UiNetTypeItemOnOnDeleteClicked;
+                uiNetTypeItem.OnSearchModeToggled -= UiNetTypeItemOnOnSearchModeToggled;
 
                 if (uiNetTypeItem.IsCurrentItem)
                     uiNetTypeItem.OnAddClicked -= UiNetTypeItemOnOnAddClicked;
@@ -50,8 +53,16 @@ namespace ParallelRoadTool.UI
 
         private void UiNetTypeItemOnOnAddClicked(object sender, EventArgs eventArgs)
         {
-            DebugUtils.Log($"{nameof(UiNetTypeItemOnOnAddClicked)}");
+            Log._Debug($"[{nameof(UINetList)}.{nameof(UiNetTypeItemOnOnAddClicked)}] Event triggered with eventArgs: {eventArgs}");
+
             OnItemAdded?.Invoke(this, null);
+        }
+
+        private void UiNetTypeItemOnOnSearchModeToggled(UIComponent component, int value)
+        {
+            Log._Debug($"[{nameof(UINetList)}.{nameof(UiNetTypeItemOnOnSearchModeToggled)}] Event triggered with value: {value}");
+
+            OnSearchModeToggled?.Invoke(this, value);
         }
 
         #endregion
@@ -75,6 +86,8 @@ namespace ParallelRoadTool.UI
 
             _items = new List<UINetTypeItem>();
             AddItem(null, true);
+
+            PresetsUtils.Import(Configuration.AutoSaveFileName);
         }
 
         public override void OnDestroy()
@@ -90,6 +103,16 @@ namespace ParallelRoadTool.UI
 
         #region Control
 
+        public void DisableSearchMode(int index)
+        {
+            _items[index].DisableSearchMode();
+        }
+
+        public void FilterItemDropdown(int index, string text)
+        {
+            _items[index].FilterDropdown(text);
+        }
+
         public void AddItem(NetTypeItem item, bool isCurrentItem = false)
         {
             var component = AddUIComponent<UINetTypeItem>();
@@ -102,6 +125,7 @@ namespace ParallelRoadTool.UI
                 component.Index = _items.Count;
                 component.OnChanged += UiNetTypeItemOnOnChanged;
                 component.OnDeleteClicked += UiNetTypeItemOnOnDeleteClicked;
+                component.OnSearchModeToggled += UiNetTypeItemOnOnSearchModeToggled;
                 _items.Add(component);
             }
             else
@@ -136,8 +160,27 @@ namespace ParallelRoadTool.UI
 
             // Remove stored component
             _items.RemoveAt(index);
+
             // We need to shift index value for any element after current index or we'll lose update events
             for (var i = index; i < _items.Count; i++) _items[i].Index -= 1;
+        }
+
+        public void ClearItems()
+        {
+            Log._Debug($"[{nameof(UINetList)}.{nameof(ClearItems)}] Deleting {_items.Count} networks");
+
+            // deleting items from last to first to avoid index shifting for remaining items
+            for (var i = _items.Count - 1; i >= 0; i--)
+            {
+                Log._Debug($"[{nameof(UINetList)}.{nameof(ClearItems)}] Deleting item at index: {i}: {_items[i].NetInfo.name}");
+
+                DeleteItem(i);
+            }
+        }
+
+        public void UpdateDropdowns()
+        {
+            for (var i = _items.Count - 1; i >= 0; i--) _items[i].UpdateDropdown();
         }
 
         #endregion

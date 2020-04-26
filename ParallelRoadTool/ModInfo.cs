@@ -1,6 +1,7 @@
 using System;
 using ColossalFramework;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ICities;
 using ParallelRoadTool.UI;
 using ParallelRoadTool.Utils;
@@ -9,9 +10,9 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        private const string Version = "1.3.0";
+        private const string Version = "2.0.0";
 #if DEBUG
-        private const string Branch = "master";
+        private const string Branch = "dev";
         public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
 #else
         public static readonly string ModName = $"Parallel Road Tool {Version}";
@@ -20,19 +21,20 @@ namespace ParallelRoadTool
         public string Name => ModName;
 
         public string Description =>
-            "This mod allows players to easily draw parallel/stacked roads in Cities: Skylines.";
+            "This mod allows players to easily draw parallel/stacked roads in any combination.";
 
         public ModInfo()
         {
             try
             {
-                // Creating setting file 
-                GameSettings.AddSettingsFile(new SettingsFile { fileName = Configuration.SettingsFileName });
+                // Creating setting file only if it's not existing
+                if (GameSettings.FindSettingsFileByName(Configuration.SettingsFileName) == null)
+                    GameSettings.AddSettingsFile(new SettingsFile { fileName = Configuration.SettingsFileName });
             }
             catch (Exception e)
             {
-                DebugUtils.Log("Could not load/create the setting file.");
-                DebugUtils.LogException(e);
+                Log.Info($"[{nameof(ModInfo)}.{nameof(ModInfo)}] Could not load/create the setting file.");
+                Log.Exception(e);
             }
         }
 
@@ -49,20 +51,36 @@ namespace ParallelRoadTool
                 // HACK - [ISSUE-51] We need to force localization loading or we won't see any localized string in mod's option while being in main menu
                 LocalizationManager.LoadLocalization();
 
-                var group = helper.AddGroup(Name) as UIHelper;
-                var panel = group.self as UIPanel;
+                if (helper == null)
+                {
+                    Log.Error($"[{nameof(ModInfo)}.{nameof(OnSettingsUI)}] Failed creating settings UI (helper is null)");
+                    return;
+                }
+
+                if (!(helper.AddGroup(Name) is UIHelper group))
+                {
+                    Log.Error($"[{nameof(ModInfo)}.{nameof(OnSettingsUI)}] Failed creating settings UI (group is null)");
+                    return;
+                }
+
+                if (!(group.self is UIPanel panel))
+                {
+                    Log.Error($"[{nameof(ModInfo)}.{nameof(OnSettingsUI)}] Failed creating settings UI (panel is null)");
+                    return;
+                }
 
                 panel.gameObject.AddComponent<OptionsKeymapping>();
-
                 group.AddSpace(10);
             }
             catch (Exception e)
             {
-                DebugUtils.Log("OnSettingsUI failed");
-                DebugUtils.LogException(e);
+                Log.Info($"[{nameof(ModInfo)}.{nameof(OnSettingsUI)}] Failed creating settings UI");
+                Log.Exception(e);
             }
-
-            _loading = false;
+            finally
+            {
+                _loading = false;
+            }
         }
     }
 }

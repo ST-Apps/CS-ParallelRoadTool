@@ -9,19 +9,31 @@ Main features are:
 [/list]
 
 [h1]For new features and/or debugging, you can subscribe to the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1400711138]beta version[/url][/h1]
-[b]Tested on C:S version 1.11.1-f3[/b]
+[b]Tested on C:S version 1.13.0-f8[/b]
 
 [quote]
-[h1]Current version: [b]1.3.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]2.0.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Disabled tutorial support to prevent it from breaking game's button.
-[*] Networks are now alphabetically sorted
+[*] Enabled tool while in upgrade mode so that you can add parallel/stacked segments to already existing networks
+[*] Added ability to save/load presets
+[*] Added search feature
+[*] [b]Networks can now be built only after being unlocked (You can still build them all from the beginning if you have the Unlock All Milestones mod active)[/b]
+[*] [b]Added cost for parallel/stacked segments[/b]
+[*] [b]Increased dropdown size for better readability[/b]
+[*] Minor performances fixes
 [/list]
 [/quote]
 
 [quote]
-[h1]Support my work[/h1] 
+[h1]Support my work[/h1]
+Star the project on GitHub:
+
+[url=https://github.com/ST-Apps/CS-ParallelRoadTool][img]https://i.imgur.com/zejzAZn.png[/img][/url] 
+
+[b]or[/b]
+
 Donate using PayPal:
+
 [url=paypal.me/STApps][img]https://i.imgur.com/HKFbi4p.jpg[/img][/url]
 [/quote] 
 
@@ -32,7 +44,6 @@ Donate using PayPal:
 [*]Sharp angles produce weird results, curves work better
 [*]Roads will always follow terrain elevation 
 [*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
-[*]Tutorial image doesn't always show up (and tutorial window too), sometimes you may need to press the tutorial button multiple times
 [/list]
 [/quote]
 
@@ -58,7 +69,6 @@ Please [b]open an issue on [url=https://github.com/ST-Apps/CS-ParallelRoadTool/i
 [quote]
 [h1]Features that may come somewhere in the future[/h1] 
 [list] 
-[*]Ability to save/load presets 
 [*]Ability to toggle on/off terrain conforming
 [*]Ability to center cursor on the middle point between all the selected roads 
 [/list]
@@ -86,5 +96,6 @@ If there's no issue for the thing you'd like to work on, feel free to open a new
 [*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
 [*][url=https://steamcommunity.com/id/samsamts]SamsamTS[/url] for his FineRoadAnarchy mod, which provided me the basics for this one
 [*][url=https://steamcommunity.com/id/victorphilipp]LinuxFan[/url] for his pointers on how to fix snapping
+[*][url=https://github.com/BadiBasso]BadiBasso[/url] for his Network Skins patch and general help
 [/list]
 [/quote]

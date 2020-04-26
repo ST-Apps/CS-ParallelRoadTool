@@ -1,8 +1,8 @@
 ﻿using System.Xml.Serialization;
 using ColossalFramework;
 using ColossalFramework.Globalization;
+using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Utils;
 
 namespace ParallelRoadTool.Models
 {
@@ -21,7 +21,7 @@ namespace ParallelRoadTool.Models
             var localeManager = SingletonLite<LocaleManager>.instance;
             foreach (var localizedString in LocalizedStrings) localeManager.AddString(localizedString);
 
-            DebugUtils.Log($"Namelist {Name} applied.");
+            Log._Debug($"[{nameof(NameList)}.{nameof(Apply)}] Namelist {Name} applied.");
         }
     }
 }

@@ -6,50 +6,59 @@ using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class OptionsKeymapping : UICustomControl
     {
-        private static readonly string kKeyBindingTemplate = "KeyBindingTemplate";
+        private const string KKeyBindingTemplate = "KeyBindingTemplate";
 
-        public static readonly SavedInputKey toggleParallelRoads = new SavedInputKey("toggleParallelRoads",
-            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.P, true, false, false), true);
+        public static readonly SavedInputKey ToggleParallelRoads = new SavedInputKey("toggleParallelRoads",
+                                                                                     Configuration.SettingsFileName,
+                                                                                     SavedInputKey.Encode(KeyCode.P, true, false, false), true);
 
-        public static readonly SavedInputKey increaseHorizontalOffset = new SavedInputKey("increaseHorizontalOffset",
-            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, false, false), true);
+        public static readonly SavedInputKey IncreaseHorizontalOffset = new SavedInputKey("increaseHorizontalOffset",
+                                                                                          Configuration.SettingsFileName,
+                                                                                          SavedInputKey.Encode(KeyCode.Equals, true, false, false),
+                                                                                          true);
 
-        public static readonly SavedInputKey decreaseHorizontalOffset = new SavedInputKey("decreaseHorizontalOffset",
-            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, false, false), true);
+        public static readonly SavedInputKey DecreaseHorizontalOffset = new SavedInputKey("decreaseHorizontalOffset",
+                                                                                          Configuration.SettingsFileName,
+                                                                                          SavedInputKey.Encode(KeyCode.Minus, true, false, false),
+                                                                                          true);
 
-        public static readonly SavedInputKey increaseVerticalOffset = new SavedInputKey("increaseVerticalOffset",
-            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Equals, true, true, false), true);
+        public static readonly SavedInputKey IncreaseVerticalOffset = new SavedInputKey("increaseVerticalOffset",
+                                                                                        Configuration.SettingsFileName,
+                                                                                        SavedInputKey.Encode(KeyCode.Equals, true, true, false),
+                                                                                        true);
 
-        public static readonly SavedInputKey decreaseVerticalOffset = new SavedInputKey("decreaseVerticalOffset",
-            Configuration.SettingsFileName, SavedInputKey.Encode(KeyCode.Minus, true, true, false), true);
+        public static readonly SavedInputKey DecreaseVerticalOffset = new SavedInputKey("decreaseVerticalOffset",
+                                                                                        Configuration.SettingsFileName,
+                                                                                        SavedInputKey.Encode(KeyCode.Minus, true, true, false), true);
 
-        private int count;
+        private int _count;
 
-        private SavedInputKey m_EditingBinding;
+        private SavedInputKey _mEditingBinding;
 
-        private string m_EditingBindingCategory;
+        private string _mEditingBindingCategory;
 
         private void Awake()
         {
             AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton"),
-                toggleParallelRoads);
+                          ToggleParallelRoads);
             AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseHorizontalOffsetOption"),
-                decreaseHorizontalOffset);
+                          DecreaseHorizontalOffset);
             AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseHorizontalOffsetOption"),
-                increaseHorizontalOffset);
+                          IncreaseHorizontalOffset);
             AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "DecreaseVerticalOffsetOption"),
-                decreaseVerticalOffset);
+                          DecreaseVerticalOffset);
             AddKeymapping(Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "IncreaseVerticalOffsetOption"),
-                increaseVerticalOffset);
+                          IncreaseVerticalOffset);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)
         {
             var uIPanel =
-                component.AttachUIComponent(UITemplateManager.GetAsGameObject(kKeyBindingTemplate)) as UIPanel;
-            if (count++ % 2 == 1) uIPanel.backgroundSprite = null;
+                component.AttachUIComponent(UITemplateManager.GetAsGameObject(KKeyBindingTemplate)) as UIPanel;
+            if (_count++ % 2 == 1) uIPanel.backgroundSprite = null;
 
             var uILabel = uIPanel.Find<UILabel>("Name");
             var uIButton = uIPanel.Find<UIButton>("Binding");
@@ -116,30 +125,30 @@ namespace ParallelRoadTool.UI
 
         private void OnBindingKeyDown(UIComponent comp, UIKeyEventParameter p)
         {
-            if (m_EditingBinding != null && !IsModifierKey(p.keycode))
+            if (_mEditingBinding != null && !IsModifierKey(p.keycode))
             {
                 p.Use();
                 UIView.PopModal();
                 var keycode = p.keycode;
                 var inputKey = p.keycode == KeyCode.Escape
-                    ? m_EditingBinding.value
-                    : SavedInputKey.Encode(keycode, p.control, p.shift, p.alt);
+                                   ? _mEditingBinding.value
+                                   : SavedInputKey.Encode(keycode, p.control, p.shift, p.alt);
                 if (p.keycode == KeyCode.Backspace) inputKey = SavedInputKey.Empty;
-                m_EditingBinding.value = inputKey;
+                _mEditingBinding.value = inputKey;
                 var uITextComponent = p.source as UITextComponent;
-                uITextComponent.text = m_EditingBinding.ToLocalizedString("KEYNAME");
-                m_EditingBinding = null;
-                m_EditingBindingCategory = string.Empty;
+                uITextComponent.text = _mEditingBinding.ToLocalizedString("KEYNAME");
+                _mEditingBinding = null;
+                _mEditingBindingCategory = string.Empty;
             }
         }
 
         private void OnBindingMouseDown(UIComponent comp, UIMouseEventParameter p)
         {
-            if (m_EditingBinding == null)
+            if (_mEditingBinding == null)
             {
                 p.Use();
-                m_EditingBinding = (SavedInputKey) p.source.objectUserData;
-                m_EditingBindingCategory = p.source.stringUserData;
+                _mEditingBinding = (SavedInputKey) p.source.objectUserData;
+                _mEditingBindingCategory = p.source.stringUserData;
                 var uIButton = p.source as UIButton;
                 uIButton.buttonsMask = UIMouseButton.Left | UIMouseButton.Right | UIMouseButton.Middle |
                                        UIMouseButton.Special0 | UIMouseButton.Special1 | UIMouseButton.Special2 |
@@ -153,14 +162,14 @@ namespace ParallelRoadTool.UI
                 p.Use();
                 UIView.PopModal();
                 var inputKey = SavedInputKey.Encode(ButtonToKeycode(p.buttons), IsControlDown(), IsShiftDown(),
-                    IsAltDown());
+                                                    IsAltDown());
 
-                m_EditingBinding.value = inputKey;
+                _mEditingBinding.value = inputKey;
                 var uIButton2 = p.source as UIButton;
-                uIButton2.text = m_EditingBinding.ToLocalizedString("KEYNAME");
+                uIButton2.text = _mEditingBinding.ToLocalizedString("KEYNAME");
                 uIButton2.buttonsMask = UIMouseButton.Left;
-                m_EditingBinding = null;
-                m_EditingBindingCategory = string.Empty;
+                _mEditingBinding = null;
+                _mEditingBindingCategory = string.Empty;
             }
         }
 
@@ -195,7 +204,7 @@ namespace ParallelRoadTool.UI
             {
                 var uITextComponent = current.Find<UITextComponent>("Binding");
                 var savedInputKey = (SavedInputKey) uITextComponent.objectUserData;
-                if (m_EditingBinding != savedInputKey)
+                if (_mEditingBinding != savedInputKey)
                     uITextComponent.text = savedInputKey.ToLocalizedString("KEYNAME");
             }
         }
