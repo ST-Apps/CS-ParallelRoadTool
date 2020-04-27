@@ -237,6 +237,17 @@ namespace ParallelRoadTool.Detours
                 var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, startNode, endNode, startDirection,
                                                                endDirection, buildIndex, modifiedIndex, invert);
 
+                if (Singleton<ParallelRoadTool>.instance.IsMouseLongPress
+                    && ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade
+                    && startNode == _startNodeId[0]
+                    && endNode == _endNodeId[0])
+                {
+                    // HACK - [ISSUE-84] Prevent executing multiple times when we have a long mouse press on the very same segment
+                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Skipping because mouse has not been released yet from the previous upgrade.");
+
+                    return result;
+                }
+
                 // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
                 if (!IsAllowedCaller(new StackTrace(false))) return result;
 

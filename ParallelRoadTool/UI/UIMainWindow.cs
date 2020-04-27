@@ -436,6 +436,19 @@ namespace ParallelRoadTool.UI
 
             var e = Event.current;
 
+            if (e.isMouse)
+            {
+                // HACK - [ISSUE-84] Report if we're currently having a long mouse press
+                Singleton<ParallelRoadTool>.instance.IsMouseLongPress = e.type switch
+                {
+                    EventType.MouseDown => true,
+                    EventType.MouseUp   => false,
+                    _                   => Singleton<ParallelRoadTool>.instance.IsMouseLongPress
+                };
+
+                Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Settings {nameof(Singleton<ParallelRoadTool>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadTool>.instance.IsMouseLongPress}");
+            }
+
             // Checking key presses
             if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
 
