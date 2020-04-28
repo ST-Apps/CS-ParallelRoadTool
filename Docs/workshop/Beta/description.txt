@@ -15,15 +15,10 @@ Main features are:
 [/quote]
 
 [quote]
-[h1]Current version: [b]2.0.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]2.0.1-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Enabled tool while in upgrade mode so that you can add parallel/stacked segments to already existing networks
-[*] Added ability to save/load presets
-[*] Added search feature
-[*] [b]Networks can now be built only after being unlocked (You can still build them all from the beginning if you have the Unlock All Milestones mod active)[/b]
-[*] [b]Added cost for parallel/stacked segments[/b]
-[*] [b]Increased dropdown size for better readability[/b]
-[*] Minor performances fixes
+[*] Fixed an issue with Anarchy that caused multiple roads updates while keeping mouse pressed
+[*] Added a panic X button to close mod's window when other methods do not work
 [/list]
 [/quote]
 

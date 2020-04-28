@@ -59,6 +59,7 @@ namespace ParallelRoadTool.UI
         private UITextField _dropdownFilterField;
         private UIButton _loadPresetsButton;
         private UIButton _savePresetsButton;
+        private UIButton _closeButton;
 
         #endregion
 
@@ -91,6 +92,8 @@ namespace ParallelRoadTool.UI
 
             _loadPresetsButton.eventClicked -= LoadPresetsButtonOnClicked;
             _savePresetsButton.eventClicked -= SavePresetsButtonOnClicked;
+
+            _closeButton.eventClicked -= CloseButtonOneventClicked;
         }
 
         private void SubscribeToUIEvents()
@@ -108,6 +111,13 @@ namespace ParallelRoadTool.UI
 
             _loadPresetsButton.eventClicked += LoadPresetsButtonOnClicked;
             _savePresetsButton.eventClicked += SavePresetsButtonOnClicked;
+
+            _closeButton.eventClicked += CloseButtonOneventClicked;
+        }
+
+        private void CloseButtonOneventClicked(UIComponent component, UIMouseEventParameter eventparam)
+        {
+            ToggleToolCheckbox(true);
         }
 
         private void DropdownFilterFieldOnEventLostFocus(UIComponent component, UIFocusEventParameter eventparam)
@@ -261,10 +271,18 @@ namespace ParallelRoadTool.UI
 
         #region Utility
 
-        private void ToggleToolCheckbox()
+        private void ToggleToolCheckbox(bool forceClose = false)
         {
-            _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
-            OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
+            if (forceClose)
+            {
+                _toolToggleButton.isChecked = false;
+                OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
+            }
+            else
+            {
+                _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
+                OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
+            }
         }
 
         private void AdjustNetOffset(float step, bool isHorizontal = true)
@@ -308,18 +326,28 @@ namespace ParallelRoadTool.UI
             bg.autoLayoutDirection = LayoutDirection.Vertical;
             bg.autoFitChildrenVertically = true;
 
-            var label = bg.AddUIComponent<UILabel>();
+            var topPanel = bg.AddUIComponent<UIPanel>();
+            topPanel.size = new Vector2(500, 28);
+            topPanel.padding = new RectOffset(8, 8, 8, 8);
+
+            var label = topPanel.AddUIComponent<UILabel>();
             label.name = $"{Configuration.ResourcePrefix}TitleLabel";
-            label.textScale = 0.9f;
             label.text = ModInfo.ModName;
-            label.autoSize = false;
-            label.width = 500;
+            label.relativePosition = Vector2.zero;
             label.SendToBack();
 
-            var dragHandle = label.AddUIComponent<UIDragHandle>();
+            _closeButton = topPanel.AddUIComponent<UIButton>();
+            _closeButton.text = "";
+            _closeButton.normalBgSprite = "buttonclose";
+            _closeButton.hoveredBgSprite = "buttonclosehover";
+            _closeButton.pressedBgSprite = "buttonclosepressed";
+            _closeButton.size = new Vector2(32, 32);
+            _closeButton.relativePosition = new Vector3(width - 44, -8);
+
+            var dragHandle = topPanel.AddUIComponent<UIDragHandle>();
             dragHandle.target = this;
             dragHandle.relativePosition = Vector3.zero;
-            dragHandle.size = label.size;
+            dragHandle.size = topPanel.size - new Vector2(60, 0);
 
             _mainPanel = bg.AddUIComponent(typeof(UIOptionsPanel)) as UIOptionsPanel;
             _netList = bg.AddUIComponent(typeof(UINetList)) as UINetList;
@@ -435,6 +463,19 @@ namespace ParallelRoadTool.UI
                 return;
 
             var e = Event.current;
+
+            if (e.isMouse)
+            {
+                // HACK - [ISSUE-84] Report if we're currently having a long mouse press
+                Singleton<ParallelRoadTool>.instance.IsMouseLongPress = e.type switch
+                {
+                    EventType.MouseDown => true,
+                    EventType.MouseUp   => false,
+                    _                   => Singleton<ParallelRoadTool>.instance.IsMouseLongPress
+                };
+
+                Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Settings {nameof(Singleton<ParallelRoadTool>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadTool>.instance.IsMouseLongPress}");
+            }
 
             // Checking key presses
             if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
