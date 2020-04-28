@@ -54,6 +54,12 @@ namespace ParallelRoadTool
         public bool IsLeftHandTraffic { get; private set; }
 
         /// <summary>
+        ///     True if we detect a mouse long press, needed to prevent multiple updates when Anarchy is on.
+        ///     HACK - [ISSUE-84]
+        /// </summary>
+        public bool IsMouseLongPress { get; set; }
+
+        /// <summary>
         ///     True only if <see cref="AppMode" /> is <see cref="AppMode.Game" />.
         /// </summary>
         public static bool IsInGameMode { get; set; }

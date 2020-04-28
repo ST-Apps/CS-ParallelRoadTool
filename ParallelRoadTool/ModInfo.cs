@@ -12,7 +12,7 @@ namespace ParallelRoadTool
     {
         private const string Version = "2.0.0";
 #if DEBUG
-        private const string Branch = "dev";
+        private const string Branch = "issues/84";
         public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
 #else
         public static readonly string ModName = $"Parallel Road Tool {Version}";
