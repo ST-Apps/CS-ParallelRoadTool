@@ -15,7 +15,7 @@ Main features are:
 [/quote]
 
 [quote]
-[h1]Current version: [b]2.0.0-issues/84[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]2.0.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1400711138]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Fixed an issue with Anarchy that caused multiple roads updates while keeping mouse pressed
 [*] Added a panic X button to close mod's window when other methods do not work
