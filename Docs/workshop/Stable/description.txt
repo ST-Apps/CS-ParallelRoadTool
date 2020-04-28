@@ -6,21 +6,18 @@ Main features are:
 [*] [b]Visual overlay guidelines[/b] to help you visualizing what you're going to build before actually building
 [*] [b]One-way networks support[/b]: you can reverse the direction of any one-way network, so that [b]you can easily build highways without needing to manually upgrade direction later[/b]
 [*] Left-hand drive support
+[*] [b]Upgrade mode: you can add parallel/stacked segments to already existing networks[/b]
+[*] [b]Save/load presets[/b]
 [/list]
 
 [h1]For new features and/or debugging, you can subscribe to the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1400711138]beta version[/url][/h1]
 [b]Tested on C:S version 1.13.0-f8[/b]
 
 [quote]
-[h1]Current version: [b]2.0.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]2.0.1[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Enabled tool while in upgrade mode so that you can add parallel/stacked segments to already existing networks
-[*] Added ability to save/load presets
-[*] Added search feature
-[*] [b]Networks can now be built only after being unlocked (You can still build them all from the beginning if you have the Unlock All Milestones mod active)[/b]
-[*] [b]Added cost for parallel/stacked segments[/b]
-[*] [b]Increased dropdown size for better readability[/b]
-[*] Minor performances fixes
+[*] Fixed an issue with Anarchy that caused multiple roads updates while keeping mouse pressed
+[*] Added a panic X button to close mod's window when other methods do not work
 [/list]
 [/quote]
 
