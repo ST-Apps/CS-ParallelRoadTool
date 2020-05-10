@@ -21,7 +21,6 @@ Main features are:
 [*] Added back the ability to use decimal offsets for parallel/stacked distances
 [*] Added buttons to restore mod's window/button positions when they end up off-screen (you can find them in mod's settings)
 [/list]
-[/list]
 [/quote]
 
 [quote]
