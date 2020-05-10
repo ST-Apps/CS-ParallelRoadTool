@@ -19,6 +19,7 @@ Main features are:
 [list]
 [*] Fixed an issue with Anarchy that caused multiple roads updates while keeping mouse pressed
 [*] Added a panic X button to close mod's window when other methods do not work
+[*] Added buttons to restore mod's window/button positions when they end up off-screen (you can find them in mod's settings)
 [/list]
 [/quote]
 

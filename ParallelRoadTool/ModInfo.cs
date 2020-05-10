@@ -10,7 +10,7 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        private const string Version = "2.0.2";
+        private const string Version = "2.0.3";
 #if DEBUG
         private const string Branch = "dev";
         public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
@@ -29,7 +29,7 @@ namespace ParallelRoadTool
             {
                 // Creating setting file only if it's not existing
                 if (GameSettings.FindSettingsFileByName(Configuration.SettingsFileName) == null)
-                    GameSettings.AddSettingsFile(new SettingsFile { fileName = Configuration.SettingsFileName });
+                    GameSettings.AddSettingsFile(new SettingsFile {fileName = Configuration.SettingsFileName});
             }
             catch (Exception e)
             {
@@ -71,6 +71,24 @@ namespace ParallelRoadTool
 
                 panel.gameObject.AddComponent<OptionsKeymapping>();
                 group.AddSpace(10);
+
+                // Reset main window's position
+                group.AddButton("Reset tool window position",
+                                () =>
+                                {
+                                    if (!Singleton<ParallelRoadTool>.exists) return;
+                                    Singleton<ParallelRoadTool>.instance.ResetToolWindowPosition();
+                                });
+
+                group.AddSpace(10);
+
+                // Reset tool toggle button's position
+                group.AddButton("Reset tool button position",
+                                () =>
+                                {
+                                    if (!Singleton<ParallelRoadTool>.exists) return;
+                                    Singleton<ParallelRoadTool>.instance.ResetToolButtonPosition();
+                                });
             }
             catch (Exception e)
             {

@@ -267,6 +267,14 @@ namespace ParallelRoadTool.UI
             _netList.UpdateDropdowns();
         }
 
+        public void ResetToolToggleButtonPosition()
+        {
+            var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
+            var toolModeBar = UIUtil.FindComponent<UITabstrip>("ToolMode", tsBar, UIUtil.FindOptions.NameContains);
+
+            _toolToggleButton.absolutePosition = new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1, toolModeBar.absolutePosition.y);
+        }
+
         #endregion
 
         #region Utility
