@@ -290,6 +290,16 @@ namespace ParallelRoadTool
             _mainWindow.AddItem(item);
         }
 
+        public void ResetToolWindowPosition()
+        {
+            _mainWindow.absolutePosition = new Vector3(-1000, -1000);
+        }
+
+        public void ResetToolButtonPosition()
+        {
+            _mainWindow.ResetToolToggleButtonPosition();
+        }
+
         #endregion
 
         #region Handlers
