@@ -14,10 +14,12 @@ Main features are:
 [b]Tested on C:S version 1.13.0-f8[/b]
 
 [quote]
-[h1]Current version: [b]2.0.1[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]2.0.3[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Fixed an issue with Anarchy that caused multiple roads updates while keeping mouse pressed
 [*] Added a panic X button to close mod's window when other methods do not work
+[*] Added back the ability to use decimal offsets for parallel/stacked distances
+[*] Added buttons to restore mod's window/button positions when they end up off-screen (you can find them in mod's settings)
 [/list]
 [/quote]
 
