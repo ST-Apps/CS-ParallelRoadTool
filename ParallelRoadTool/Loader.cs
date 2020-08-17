@@ -19,6 +19,9 @@ namespace ParallelRoadTool
         public override void OnReleased()
         {
             Object.DestroyImmediate(Singleton<ParallelRoadTool>.instance);
+
+            // Unload the localization
+            LocalizationManager.UnloadLocalization();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
