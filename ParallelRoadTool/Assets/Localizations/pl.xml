@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<NameList
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  name="PRT_pl">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Przełącz przyciąganie do istniejących węzłów</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Przełącz Narzędzie Tworzenia Równoległych Dróg</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Przełącz ekran samouczka</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Przełącz odwrócenie kierunku ruchu dla tej drogi</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Usuń sieć drogową</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Dodaj sieć drogową</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SaveButton">Zapisz szablon</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="LoadButton">Wczytaj szablon</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="DeleteButton">Usuń szablon</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ExportButton">Eksportuj szablony</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ImportButton">Importuj szablony</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="OverwriteButton">Nadpisz szablon</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="HorizontalOffset">Pozioma odległość od poprzedniego segmentu</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="VerticalOffset">Pionowa odległosć od poprzedniego segmentu</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SearchButton">Wyszukaj sieć drogową</LocalizedString>
+
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Tak samo, jak zaznaczone</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Zmniejsz poziome przesunięcie równoległych sieci drogowych</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Zwiększ poziome przesunięcie równoległych sieci drogowych</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Zmniejsz pionowe przesunięcie równoległych sieci drogowych</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Zwiększ pionowe przesunięcie równoległych sieci drogowych</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportButton">Eksoprtuj</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportButton">Importuj</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="OverwriteButton">Nadpisz</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="OverwriteConfirmationMessage">Plik '{0}.xml' już istnieje, czy chcesz go nadpisać?</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportFailedTitle">Eksport nieudany</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportFailedMessage">Eksport sieci do {0} zakończony niepowodzeniem. Przyczyna:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportFailedTitle">Import nieudany</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportFailedMessage">Import sieci z {0} zakończony niepowodzeniem. Przyczyna:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedTitle">Usuwanie nieudane</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedMessage">Usuwanie sieci z {0} zakończone niepowodzeniem. Przyczyna:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteConfirmationMessage">Czy na pewno chcesz usunąć '{0}.xml'?</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Narzędzie Tworzenia Równoległych Dróg</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (jeśli nie widzisz powyższego obrazka uruchom ponownie samouczek)
+      1) Dodaje wybraną sieć do Twojej listy
+      2) Pozwala zmienić zaznaczoną sieć na inną
+      3) Zmienia kierunek ruchu sieci
+      4) Horizontal distance between the network and the first one
+      5) Vertical distance between the network and the first one
+      6) Usuwa sieć z listy
+      7) Przełącza przyciąganie do istniejących węzłów
+      Wył.: Przyciąga tylko do ostatnio utworzonych segmentów, kiedy mod był aktywny.
+      Wł. : Podejmie próbę przyciągnięcia do najbliższego dostępnego segmentu.
+
+      Ujemne wartości są dozwolone za równo dla pionowych jak i poziomych odległości.
+      Ujemna pozioma wartość umieści drogę po drugiej stronie.
+      Ujemna pionowa wartość umieści drogę poniżej poziomu terenu.
+    </LocalizedString>
+  </strings>
+</NameList>
