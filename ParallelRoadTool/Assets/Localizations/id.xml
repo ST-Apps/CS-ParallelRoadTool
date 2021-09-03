@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<NameList
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  name="PRT_id">
+  <strings>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Tombol gertakan untuk titik yang ada</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Tombol Alat Jalan Sejajar</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Tombol Layar Latihan</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Tombol Lawan Arah untuk Jalan ini</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Buang Jaringan</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Tambah Jaringan</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SaveButton">Simpan Prasetel</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="LoadButton">Muat Prasetel</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="DeleteButton">Hapus Prasetel</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ExportButton">Ekspor Prasetel</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ImportButton">Impor Prasetel</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="OverwriteButton">Tulis Ulang Prasetel</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="HorizontalOffset">Jarak Horizontal dari Segmen Sebelumnya</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="VerticalOffset">Jarak Vertikal dari Segmen Sebelumnya</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="SearchButton">Cari Jaringan</LocalizedString>
+
+    <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Sama seperti yang dipilih</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseHorizontalOffsetOption">Kurangkan penyeimbangan horizontal pada jaringan sejajar</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseHorizontalOffsetOption">Tingkatkan penyeimbangan horizontal pada jaringan sejajar</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Kurangkan penyeimbangan vertikal pada jaringan sejajar</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Tingkatkan penyeimbangan vertikal pada jaringan sejajar</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportButton">Ekspor</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportButton">Impor</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="OverwriteButton">Tulis Ulang</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="OverwriteConfirmationMessage">Berkas '{0}.xml' sudah ada, apakah kamu mau tulis ulang?</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportFailedTitle">Ekspor gagal</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ExportFailedMessage">Gagal mengekspor jaringan ke {0} karena:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportFailedTitle">Impor gagal</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="ImportFailedMessage">Gagal mengimpor jaringan dari {0} karena:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedTitle">Gagal menghapus</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedMessage">Gagal menghapus jaringan dari {0} karena:\r\n{1}</LocalizedString>
+    <LocalizedString identifier="PRT_TEXTS" key="DeleteConfirmationMessage">Apakah kamu yakin untuk menghapus '{0}.xml'?</LocalizedString>
+
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Alat Jalan Sejajar</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+      (Jika kamu tidak melihat gambar diatas, tolong tutup dan buka kembali latihan)
+      1) Tambah jaringan yang dipilih sekarang ke dalam daftarmu
+      2) Membolehkan kamu untuk merubah jaringan yang dipilih ke salah satu jaringan yang lainnya
+      3) Membalik arah jaringan
+      4) Jarak horizontal antara jaringan dan salah satunya
+      5) Jarak vertikal antara jaringan dan salah satunya
+      6) Buang jaringan dari daftar
+      7) Tombol gertakan untuk semua titik yang ada.
+      Mati: gertak hanya untuk segmen terakhir yang dibuat ketika mod dinyalakan.
+      Nyala : akan mencoba untuk menggertak ke segmen terdekat yang tersedia.
+
+      Nilai negatif diperbolehkan untuk kedua jarak horizontal dan vertikal.
+      Sebuah jarak horizontal negatif akan menempatkan jalan pada sisi yang berlawanan.
+      Sebuah jarak vertikal negatif akan menempatkan jalan dibawah tingkat terrain.
+    </LocalizedString>
+  </strings>
+</NameList>
