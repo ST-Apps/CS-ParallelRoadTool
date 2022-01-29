@@ -20,7 +20,22 @@ namespace ParallelRoadTool.Detours
         #region Detour
 
         private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
-                                                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                                                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                                                                               null,
+                                                                               new[]
+                                                                               {
+                                                                                   typeof(ushort).MakeByRefType(),
+                                                                                   typeof(Randomizer).MakeByRefType(),
+                                                                                   typeof(NetInfo),
+                                                                                   typeof(ushort),
+                                                                                   typeof(ushort),
+                                                                                   typeof(Vector3),
+                                                                                   typeof(Vector3),
+                                                                                   typeof(uint),
+                                                                                   typeof(uint),
+                                                                                   typeof(bool)
+                                                                               },
+                                                                               null);
 
         private static readonly MethodInfo To =
             typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -158,7 +173,7 @@ namespace ParallelRoadTool.Detours
                                               VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out _,
                                               out _)
                 )
-            )
+               )
             {
                 Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
 
