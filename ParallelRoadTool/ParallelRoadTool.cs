@@ -219,6 +219,8 @@ namespace ParallelRoadTool
 
                 if (IsInGameMode)
                     NetAIDetour.Deploy();
+
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabled detours");
             }
             else
             {
@@ -229,6 +231,8 @@ namespace ParallelRoadTool
                 
                 if (IsInGameMode)
                     NetAIDetour.Revert();
+
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabled detours");
             }
         }
 

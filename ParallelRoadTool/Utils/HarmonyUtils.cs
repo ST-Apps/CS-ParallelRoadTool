@@ -15,7 +15,7 @@
         public static bool IsNameMatching(string methodName, string name)
         {
             return methodName == name
-                   || methodName.StartsWith($"{name}_Patch")
+                   || methodName.Contains($"{name}_Patch")
                    || methodName.StartsWith($"DMD<DMD<{name}_Patch");
         }
     }
