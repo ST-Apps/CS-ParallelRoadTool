@@ -20,7 +20,23 @@ namespace ParallelRoadTool.Detours
         #region Detour
 
         private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
-                                                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                                                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                                                                               null,
+                                                                               new[]
+                                                                               {
+                                                                                   typeof(ushort).MakeByRefType(),
+                                                                                   typeof(Randomizer).MakeByRefType(),
+                                                                                   typeof(NetInfo),
+                                                                                   typeof(TreeInfo),
+                                                                                   typeof(ushort),
+                                                                                   typeof(ushort),
+                                                                                   typeof(Vector3),
+                                                                                   typeof(Vector3),
+                                                                                   typeof(uint),
+                                                                                   typeof(uint),
+                                                                                   typeof(bool)
+                                                                               },
+                                                                               null);
 
         private static readonly MethodInfo To =
             typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -32,12 +48,13 @@ namespace ParallelRoadTool.Detours
         {
             if (_deployed) return;
             _state = RedirectionHelper.RedirectCalls(From, To);
-            _deployed = true;
 
             // Initialize helper structures
             if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
                 _clonedStartNodeId == null)
                 NetworksCount = 1;
+
+            _deployed = true;
         }
 
         public static void Revert()
@@ -64,8 +81,8 @@ namespace ParallelRoadTool.Detours
         private bool IsAllowedCaller(StackTrace st)
         {
             // Extract both type and method
-            var callerType = st.GetFrame(2).GetMethod().DeclaringType;
-            var callerMethod = st.GetFrame(1).GetMethod();
+            var callerType = st.GetFrame(2)?.GetMethod()?.DeclaringType;
+            var callerMethod = st.GetFrame(1)?.GetMethod();
 
             // They should never be null because stack traces are usually longer than 3 lines, but let's add this check because you'll never know
             if (callerType == null || callerMethod == null)
@@ -158,7 +175,7 @@ namespace ParallelRoadTool.Detours
                                               VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out _,
                                               out _)
                 )
-            )
+               )
             {
                 Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
 
@@ -205,6 +222,7 @@ namespace ParallelRoadTool.Detours
         /// <param name="segment"></param>
         /// <param name="randomizer"></param>
         /// <param name="info"></param>
+        /// <param name="treeInfo"></param>
         /// <param name="startNode"></param>
         /// <param name="endNode"></param>
         /// <param name="startDirection"></param>
@@ -218,6 +236,7 @@ namespace ParallelRoadTool.Detours
         private bool CreateSegment(out ushort segment,
                                    ref Randomizer randomizer,
                                    NetInfo info,
+                                   TreeInfo treeInfo,
                                    ushort startNode,
                                    ushort endNode,
                                    Vector3 startDirection,
@@ -226,6 +245,8 @@ namespace ParallelRoadTool.Detours
                                    uint modifiedIndex,
                                    bool invert)
         {
+            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Starting...");
+
             // Disable our detour so that we can call the original method
             Revert();
 
@@ -234,7 +255,7 @@ namespace ParallelRoadTool.Detours
                 Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Creating original segment for {info}");
 
                 // Let's create the segment that the user requested
-                var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, startNode, endNode, startDirection,
+                var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, treeInfo, startNode, endNode, startDirection,
                                                                endDirection, buildIndex, modifiedIndex, invert);
 
                 if (Singleton<ParallelRoadTool>.instance.IsMouseLongPress
@@ -249,7 +270,12 @@ namespace ParallelRoadTool.Detours
                 }
 
                 // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
-                if (!IsAllowedCaller(new StackTrace(false))) return result;
+                if (!IsAllowedCaller(new StackTrace(false)))
+                {
+                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Skipped because caller is not allowed.");
+
+                    return result;
+                }
 
                 Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Adding {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
 
