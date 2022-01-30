@@ -10,7 +10,7 @@ namespace ParallelRoadTool
 {
     public class ModInfo : IUserMod
     {
-        private const string Version = "2.0.4";
+        private const string Version = "2.0.5";
 #if DEBUG
         private const string Branch = "dev";
         public static readonly string ModName = $"[BETA] Parallel Road Tool {Version}-{Branch}";
