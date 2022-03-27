@@ -3,7 +3,7 @@
 <NameList
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  name="PRT_en">
+  name="PRT_pt">
   <strings>
     <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Ligar ou desligar encaixe em vias existentes</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Ligar ou desligar a ferramenta de vias paralelas</LocalizedString>
