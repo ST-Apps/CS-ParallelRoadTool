@@ -5,6 +5,7 @@ using System.Linq;
 using ColossalFramework;
 using ColossalFramework.UI;
 using CSUtil.Commons;
+using HarmonyLib;
 using ICities;
 using JetBrains.Annotations;
 using ParallelRoadTool.Detours;
@@ -64,16 +65,18 @@ namespace ParallelRoadTool
         /// </summary>
         public static bool IsInGameMode { get; set; }
 
+        public static bool IsToolEnabled => _isToolActive && _isToolEnabled;
+
         /// <summary>
         /// Enabled means that the mod is ON, so we have detours deployed and our UI visible but ONLY if <see cref="_isToolActive"/> is true too.
         /// If not, this means that when the current tool becomes <see cref="NetTool"/> again we'll redeploy the detours.
         /// </summary>
-        private bool _isToolEnabled;
+        private static bool _isToolEnabled;
 
         /// <summary>
         /// Active means that we're currently in <see cref="NetTool"/> so we must display our button.
         /// </summary>
-        private bool _isToolActive;
+        private static bool _isToolActive;
 
         /// <summary>
         ///     Currently selected <see cref="NetInfo" /> within <see cref="NetTool" />.
@@ -140,6 +143,12 @@ namespace ParallelRoadTool
 
                 _mainWindow.OnToolChanged += ToolBaseDetour_OnToolChanged;
 
+                // Patch
+                var harmony = new Harmony("it.stapps.cities.parallelroadtool");
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patching with Harmony...");
+                harmony.PatchAll();
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patches applied, loading...");
+
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loaded");
             }
             catch (Exception e)
@@ -170,7 +179,7 @@ namespace ParallelRoadTool
                 // Save current networks 
                 PresetsUtils.Export(Configuration.AutoSaveFileName);
 
-                ToggleDetours(false);
+                //ToggleDetours(false);
                 UnsubscribeFromUIEvents();
 
                 // Reset data structures
@@ -204,37 +213,37 @@ namespace ParallelRoadTool
 
         #region Utils
 
-        /// <summary>
-        ///     Deploys/un-deploys the mod by toggling the custom detours.
-        /// </summary>
-        /// <param name="toolEnabled"></param>
-        private static void ToggleDetours(bool toolEnabled)
-        {
-            if (toolEnabled)
-            {
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabling detours...");
+        ///// <summary>
+        /////     Deploys/un-deploys the mod by toggling the custom detours.
+        ///// </summary>
+        ///// <param name="toolEnabled"></param>
+        //private static void ToggleDetours(bool toolEnabled)
+        //{
+        //    if (toolEnabled)
+        //    {
+        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabling detours...");
 
-                NetManagerDetour.Deploy();
-                NetToolDetour.Deploy();
+        //        NetManagerDetour.Deploy();
+        //        NetToolDetour.Deploy();
 
-                if (IsInGameMode)
-                    NetAIDetour.Deploy();
+        //        if (IsInGameMode)
+        //            NetAIDetour.Deploy();
 
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabled detours");
-            }
-            else
-            {
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabling detours...");
+        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabled detours");
+        //    }
+        //    else
+        //    {
+        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabling detours...");
 
-                NetManagerDetour.Revert();
-                NetToolDetour.Revert();
+        //        NetManagerDetour.Revert();
+        //        NetToolDetour.Revert();
                 
-                if (IsInGameMode)
-                    NetAIDetour.Revert();
+        //        if (IsInGameMode)
+        //            NetAIDetour.Revert();
 
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabled detours");
-            }
-        }
+        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabled detours");
+        //    }
+        //}
 
         /// <summary>
         ///     We load all the available networks, based on the currently unlocked milestones (only if <see cref="IsInGameMode" />
@@ -348,7 +357,7 @@ namespace ParallelRoadTool
                 if (_isToolEnabled)
                 {
                     // This means we also need to restore detours and show our main window again
-                    ToggleDetours(true);
+                    //ToggleDetours(true);
                     _mainWindow.isVisible = true;
                 }
             }
@@ -358,7 +367,7 @@ namespace ParallelRoadTool
                 _mainWindow.ToggleToolButton(false);
                 _mainWindow.isVisible = false;
                 _isToolActive = false;
-                ToggleDetours(false);
+                //ToggleDetours(false);
             }
 
             Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolBaseDetour_OnToolChanged)}] Changed tool to {value.GetType().Name} [{nameof(_isToolActive)}: {_isToolActive}, {nameof(_isToolEnabled)}: {_isToolEnabled}]");
@@ -398,7 +407,7 @@ namespace ParallelRoadTool
         private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
         {
             _isToolEnabled = value;
-            ToggleDetours(value);
+            //ToggleDetours(value);
             _mainWindow.isVisible = value;
         }
 
@@ -411,7 +420,7 @@ namespace ParallelRoadTool
             SelectedRoadTypes.Add(item);
 
             _mainWindow.AddItem(item);
-            NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
         }
 
         private void MainWindowOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
@@ -438,7 +447,7 @@ namespace ParallelRoadTool
             SelectedRoadTypes.RemoveAt(index);
             _mainWindow.DeleteItem(index);
 
-            NetManagerDetour.NetworksCount = SelectedRoadTypes.Count;
+            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
         }
 
         private void OnMilestoneUpdate()

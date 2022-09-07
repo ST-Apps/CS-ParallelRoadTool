@@ -2,9 +2,9 @@
 using System.Reflection;
 using ColossalFramework;
 using CSUtil.Commons;
+using HarmonyLib;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Wrappers;
-using RedirectionFramework;
 using UnityEngine;
 
 namespace ParallelRoadTool.Detours
@@ -12,7 +12,17 @@ namespace ParallelRoadTool.Detours
     /// <summary>
     ///     Detour used to hook into the RenderOverlay method for segments.
     /// </summary>
-    public struct NetToolDetour
+    [HarmonyPatch(
+        typeof(NetTool),
+        nameof(NetTool.RenderOverlay),
+        new[]
+        {
+            typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
+        }
+    )]
+    public class NetToolPatch
     {
         #region Detour
 
@@ -28,24 +38,24 @@ namespace ParallelRoadTool.Detours
                                                                             null);
 
         private static readonly MethodInfo To =
-            typeof(NetToolDetour).GetMethod("RenderOverlay", BindingFlags.NonPublic | BindingFlags.Instance);
+            typeof(NetToolPatch).GetMethod("RenderOverlay", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static RedirectCallsState _state;
-        private static bool _deployed;
+        //private static RedirectCallsState _state;
+        //private static bool _deployed;
 
-        public static void Deploy()
-        {
-            if (_deployed) return;
-            _state = RedirectionHelper.RedirectCalls(From, To);
-            _deployed = true;
-        }
+        //public static void Deploy()
+        //{
+        //    if (_deployed) return;
+        //    _state = RedirectionHelper.RedirectCalls(From, To);
+        //    _deployed = true;
+        //}
 
-        public static void Revert()
-        {
-            if (!_deployed) return;
-            RedirectionHelper.RevertRedirect(From, _state);
-            _deployed = false;
-        }
+        //public static void Revert()
+        //{
+        //    if (!_deployed) return;
+        //    RedirectionHelper.RevertRedirect(From, _state);
+        //    _deployed = false;
+        //}
 
         #endregion
 
@@ -64,7 +74,7 @@ namespace ParallelRoadTool.Detours
         /// <param name="endPoint"></param>
 
         // ReSharper disable once UnusedMember.Local
-        private void RenderOverlay(RenderManager.CameraInfo cameraInfo,
+        private static void Postfix(RenderManager.CameraInfo cameraInfo,
                                    NetInfo info,
                                    Color color,
                                    NetTool.ControlPoint startPoint,
@@ -72,22 +82,30 @@ namespace ParallelRoadTool.Detours
                                    NetTool.ControlPoint endPoint)
         {
             // Disable our detour so that we can call the original method
-            Revert();
+            //Revert();
 
             try
             {
+
+
+                if (!ParallelRoadTool.IsToolEnabled)
+                {
+                    // Log._Debug($"[{nameof(NetAIPatch)}.{nameof(Postfix)}] Skipping because mod is not currently active.");
+                    return;
+                }
+
                 var netTool = ToolsModifierControl.GetTool<NetTool>();
 
                 // Let's render the original segment
-                From.Invoke(netTool, new object[]
-                {
-                    cameraInfo,
-                    info,
-                    color,
-                    startPoint,
-                    middlePoint,
-                    endPoint
-                });
+                //From.Invoke(netTool, new object[]
+                //{
+                //    cameraInfo,
+                //    info,
+                //    color,
+                //    startPoint,
+                //    middlePoint,
+                //    endPoint
+                //});
 
                 for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
                 {
@@ -114,8 +132,7 @@ namespace ParallelRoadTool.Detours
                                              color.a);
 
                     // Render parallel segments by shifting the position of the 3 ControlPoint
-                    From.Invoke(netTool, new object[]
-                    {
+                    NetToolReversePatch.RenderOverlay(netTool,
                         cameraInfo, selectedNetInfo, newColor,
                         new NetTool.ControlPoint
                         {
@@ -152,20 +169,47 @@ namespace ParallelRoadTool.Detours
                             m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
                             m_segment = 0 //endPoint.m_segment
                         }
-                    });
+                    );
                 }
             }
             catch (Exception e)
             {
                 // Log the exception
-                Log._DebugOnlyError($"[{nameof(NetToolDetour)}.{nameof(RenderOverlay)}] CreateSegment failed.");
+                Log._DebugOnlyError($"[{nameof(NetToolPatch)}.{nameof(Postfix)}] CreateSegment failed.");
                 Log.Exception(e);
             }
             finally
             {
                 // Restore our detour so that we can call the original method
-                Deploy();
+                //Deploy();
             }
+        }
+    }
+
+    [HarmonyPatch]
+    internal class NetToolReversePatch
+    {
+        [HarmonyReversePatch]
+        [HarmonyPatch(
+            typeof(NetTool),
+            nameof(NetTool.RenderOverlay),
+            new[]
+            {
+                typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
+                typeof(NetTool.ControlPoint),
+                typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
+            }
+        )]
+        public static void RenderOverlay(object instance,
+            RenderManager.CameraInfo cameraInfo,
+                                   NetInfo info,
+                                   Color color,
+                                   NetTool.ControlPoint startPoint,
+                                   NetTool.ControlPoint middlePoint,
+                                   NetTool.ControlPoint endPoint)
+        {
+            // its a stub so it has no initial content
+            throw new NotImplementedException("It's a stub");
         }
     }
 }

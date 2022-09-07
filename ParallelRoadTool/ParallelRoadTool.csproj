@@ -36,26 +36,29 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.2.2\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>B:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>D:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ColossalManaged">
-      <HintPath>B:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
+      <HintPath>D:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
     </Reference>
     <Reference Include="ICities">
-      <HintPath>B:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
+      <HintPath>D:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>B:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>D:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="Detours\NetAIDetour.cs" />
-    <Compile Include="Detours\NetManagerDetour.cs" />
-    <Compile Include="Detours\NetToolDetour.cs" />
+    <Compile Include="Detours\NetAIPatch.cs" />
+    <Compile Include="Detours\NetManagerPatch.cs" />
+    <Compile Include="Detours\NetToolPatch.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
     <Compile Include="Models\LocalizedString.cs" />
     <Compile Include="Models\LocalizedStringKey.cs" />
@@ -133,12 +136,8 @@
     <Content Include="Assets\Localizations\pt.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Submodules\RedirectionFramework\RedirectionFramework.csproj">
-      <Project>{aa84f143-e218-45ed-aaeb-6ec3af1f176e}</Project>
-      <Name>RedirectionFramework</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
@@ -146,6 +145,7 @@ del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionNam
 
 xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
 xcopy /y "$(TargetDir)RedirectionFramework.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
+xcopy /y "$(SolutionDir)\packages\Lib.Harmony.2.2.2\lib\net35\0Harmony.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
 
 cd "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
 

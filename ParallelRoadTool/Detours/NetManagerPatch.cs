@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Math;
 using CSUtil.Commons;
+using HarmonyLib;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
-using RedirectionFramework;
 using UnityEngine;
 
 namespace ParallelRoadTool.Detours
@@ -15,54 +14,85 @@ namespace ParallelRoadTool.Detours
     /// <summary>
     ///     Mod's core class, it executes the detour to intercept segment's creation.
     /// </summary>
-    public struct NetManagerDetour
+    [HarmonyPatch(
+        typeof(NetManager),
+        nameof(NetManager.CreateSegment),
+        new[] {
+            typeof(ushort),
+            typeof(Randomizer),
+            typeof(NetInfo),
+            typeof(TreeInfo),
+            typeof(ushort),
+            typeof(ushort),
+            typeof(Vector3),
+            typeof(Vector3),
+            typeof(uint),
+            typeof(uint),
+            typeof(bool)
+        },
+        new[]
+        {
+            ArgumentType.Out,
+            ArgumentType.Ref,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal
+        }
+    )]
+    public class NetManagerPatch
     {
         #region Detour
 
-        private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
-                                                                               BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
-                                                                               null,
-                                                                               new[]
-                                                                               {
-                                                                                   typeof(ushort).MakeByRefType(),
-                                                                                   typeof(Randomizer).MakeByRefType(),
-                                                                                   typeof(NetInfo),
-                                                                                   typeof(TreeInfo),
-                                                                                   typeof(ushort),
-                                                                                   typeof(ushort),
-                                                                                   typeof(Vector3),
-                                                                                   typeof(Vector3),
-                                                                                   typeof(uint),
-                                                                                   typeof(uint),
-                                                                                   typeof(bool)
-                                                                               },
-                                                                               null);
+        //private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
+        //                                                                       BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+        //                                                                       null,
+        //                                                                       new[]
+        //                                                                       {
+        //                                                                           typeof(ushort).MakeByRefType(),
+        //                                                                           typeof(Randomizer).MakeByRefType(),
+        //                                                                           typeof(NetInfo),
+        //                                                                           typeof(TreeInfo),
+        //                                                                           typeof(ushort),
+        //                                                                           typeof(ushort),
+        //                                                                           typeof(Vector3),
+        //                                                                           typeof(Vector3),
+        //                                                                           typeof(uint),
+        //                                                                           typeof(uint),
+        //                                                                           typeof(bool)
+        //                                                                       },
+        //                                                                       null);
 
-        private static readonly MethodInfo To =
-            typeof(NetManagerDetour).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
+        //private static readonly MethodInfo To =
+        //    typeof(NetManagerPatch).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static RedirectCallsState _state;
-        private static bool _deployed;
+        //private static RedirectCallsState _state;
+        //private static bool _deployed;
 
-        public static void Deploy()
-        {
-            if (_deployed) return;
-            _state = RedirectionHelper.RedirectCalls(From, To);
+        //public static void Deploy()
+        //{
+        //    if (_deployed) return;
+        //    _state = RedirectionHelper.RedirectCalls(From, To);
 
-            // Initialize helper structures
-            if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
-                _clonedStartNodeId == null)
-                NetworksCount = 1;
+        //    // Initialize helper structures
+        //    if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
+        //        _clonedStartNodeId == null)
+        //        NetworksCount = 1;
 
-            _deployed = true;
-        }
+        //    _deployed = true;
+        //}
 
-        public static void Revert()
-        {
-            if (!_deployed) return;
-            RedirectionHelper.RevertRedirect(From, _state);
-            _deployed = false;
-        }
+        //public static void Revert()
+        //{
+        //    if (!_deployed) return;
+        //    RedirectionHelper.RevertRedirect(From, _state);
+        //    _deployed = false;
+        //}
 
         #endregion
 
@@ -78,8 +108,10 @@ namespace ParallelRoadTool.Detours
         /// </summary>
         /// <param name="st"></param>
         /// <returns></returns>
-        private bool IsAllowedCaller(StackTrace st)
+        private static bool IsAllowedCaller(StackTrace st)
         {
+            return true;
+
             // Extract both type and method
             var callerType = st.GetFrame(2)?.GetMethod()?.DeclaringType;
             var callerMethod = st.GetFrame(1)?.GetMethod();
@@ -87,13 +119,13 @@ namespace ParallelRoadTool.Detours
             // They should never be null because stack traces are usually longer than 3 lines, but let's add this check because you'll never know
             if (callerType == null || callerMethod == null)
             {
-                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(IsAllowedCaller)}] {nameof(callerType)} or {nameof(callerMethod)} is null.");
-                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(IsAllowedCaller)}] Stacktrace is\n{st}");
+                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] {nameof(callerType)} or {nameof(callerMethod)} is null.");
+                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] Stacktrace is\n{st}");
 
                 return false;
             }
 
-            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(IsAllowedCaller)}] Caller is {callerType.Name}.{callerMethod.Name}");
+            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] Caller is {callerType.Name}.{callerMethod.Name}");
 
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if (callerType == typeof(NetTool))
@@ -158,7 +190,7 @@ namespace ParallelRoadTool.Detours
             // This should be the best possible value for snapping
             var maxDistance = info.m_halfWidth;
 
-            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
+            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
             if (Singleton<ParallelRoadTool>.instance.IsSnappingEnabled &&
                 (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service,
@@ -177,7 +209,7 @@ namespace ParallelRoadTool.Detours
                 )
                )
             {
-                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
+                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
 
                 if (posA.m_segment != 0)
                 {
@@ -187,7 +219,7 @@ namespace ParallelRoadTool.Detours
                     var startNode = netManager.m_nodes.m_buffer[startNodeId];
                     var endNode = netManager.m_nodes.m_buffer[endNodeId];
 
-                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
+                    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
 
                     // Get node closer to current position
                     if (startNodeId != 0 && endNodeId != 0)
@@ -204,7 +236,7 @@ namespace ParallelRoadTool.Detours
                 }
             }
 
-            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(NodeAtPositionOrNew)}] No nodes has been found for position {newNodePosition}, creating a new one.");
+            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] No nodes has been found for position {newNodePosition}, creating a new one.");
 
             // Both startNode and endNode were not found, we need to create a new one
             CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
@@ -233,7 +265,7 @@ namespace ParallelRoadTool.Detours
         /// <returns></returns>
 
         // ReSharper disable once UnusedMember.Local
-        private bool CreateSegment(out ushort segment,
+        private static void Postfix(out ushort segment,
                                    ref Randomizer randomizer,
                                    NetInfo info,
                                    TreeInfo treeInfo,
@@ -243,41 +275,49 @@ namespace ParallelRoadTool.Detours
                                    Vector3 endDirection,
                                    uint buildIndex,
                                    uint modifiedIndex,
-                                   bool invert)
+                                   bool invert,
+                                   ref bool __result,
+                                   object[] __args)
         {
-            Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Starting...");
-
             // Disable our detour so that we can call the original method
-            Revert();
+            // Revert();
 
             try
             {
-                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Creating original segment for {info}");
+                segment = (ushort)__args[0];
+
+                if (!ParallelRoadTool.IsToolEnabled)
+                {
+                    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Skipping because mod is not currently active.");
+                    return;
+                }
+
+                //Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Creating original segment for {info}");
 
                 // Let's create the segment that the user requested
-                var result = NetManager.instance.CreateSegment(out segment, ref randomizer, info, treeInfo, startNode, endNode, startDirection,
-                                                               endDirection, buildIndex, modifiedIndex, invert);
+                //__result = NetManagerReversePatch.CreateSegment(NetManager.instance, out segment, ref randomizer, info, treeInfo, startNode, endNode, startDirection,
+                //                                               endDirection, buildIndex, modifiedIndex, invert);
 
                 if (Singleton<ParallelRoadTool>.instance.IsMouseLongPress
-                    && ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade
-                    && startNode == _startNodeId[0]
-                    && endNode == _endNodeId[0])
+                && ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade
+                && startNode == _startNodeId[0]
+                && endNode == _endNodeId[0])
                 {
                     // HACK - [ISSUE-84] Prevent executing multiple times when we have a long mouse press on the very same segment
-                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Skipping because mouse has not been released yet from the previous upgrade.");
+                    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Skipping because mouse has not been released yet from the previous upgrade.");
 
-                    return result;
+                    return;
                 }
 
                 // HACK - [ISSUE-10] [ISSUE-18] Check if we've been called by an allowed caller, otherwise we can stop here
                 if (!IsAllowedCaller(new StackTrace(false)))
                 {
-                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Skipped because caller is not allowed.");
+                    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Skipped because caller is not allowed.");
 
-                    return result;
+                    return;
                 }
 
-                Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Adding {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
+                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Adding {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
 
                 if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                     _isPreviousInvert = invert;
@@ -311,7 +351,7 @@ namespace ParallelRoadTool.Detours
                     var horizontalOffset = currentRoadInfos.HorizontalOffset;
                     var verticalOffset = currentRoadInfos.VerticalOffset;
 
-                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Using offsets: h {horizontalOffset} | v {verticalOffset}");
+                    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Using offsets: h {horizontalOffset} | v {verticalOffset}");
 
                     // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                     var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out var isSlope);
@@ -333,7 +373,7 @@ namespace ParallelRoadTool.Detours
                         //Singleton<ParallelRoadTool>.instance.IsSnappingEnabled = true;
                     }
 
-                    Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
+                    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Using netInfo {selectedNetInfo.name} | reversed={isReversed} | invert={invert}");
 
                     // Get original nodes to clone them
                     var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
@@ -348,23 +388,23 @@ namespace ParallelRoadTool.Detours
                     {
                         newStartNodeId = _clonedEndNodeId[i].Value;
 
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                     }
                     else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
                              _startNodeId[i].Value == startNode)
                     {
                         newStartNodeId = _clonedStartNodeId[i].Value;
 
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                     }
                     else
                     {
                         var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
                                                                               verticalOffset, invert);
 
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
 
                         newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                     }
@@ -375,15 +415,15 @@ namespace ParallelRoadTool.Detours
                     {
                         newEndNodeId = _clonedEndNodeId[i].Value;
 
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [END] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {endNode}");
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [END] End node{endNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newEndNodeId].m_position}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [END] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {endNode}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [END] End node{endNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newEndNodeId].m_position}");
                     }
                     else
                     {
                         var newEndPosition = endNetNode.m_position.Offset(endDirection, horizontalOffset, verticalOffset,
                                                                           !(invert && isSlope && isEnteringSlope));
 
-                        Log._Debug($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] [END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
 
                         newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition, verticalOffset);
                     }
@@ -412,7 +452,7 @@ namespace ParallelRoadTool.Detours
                         }
 
                         // Create the segment between the two cloned nodes, inverting start and end node
-                        result = NetManager.instance.CreateSegment(out segment, ref randomizer, selectedNetInfo, newEndNodeId,
+                        __result = NetManagerReversePatch.CreateSegment(NetManager.instance, out segment, ref randomizer, selectedNetInfo, treeInfo, newEndNodeId,
                                                                    newStartNodeId,
                                                                    tempStartDirection, tempEndDirection,
                                                                    Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
@@ -421,7 +461,7 @@ namespace ParallelRoadTool.Detours
                     else
                     {
                         // Create the segment between the two cloned nodes
-                        result = NetManager.instance.CreateSegment(out segment, ref randomizer, selectedNetInfo, newStartNodeId,
+                        __result = NetManagerReversePatch.CreateSegment(NetManager.instance, out segment, ref randomizer, selectedNetInfo, treeInfo, newStartNodeId,
                                                                    newEndNodeId, startDirection, endDirection,
                                                                    Singleton<SimulationManager>.instance.m_currentBuildIndex + 1,
                                                                    Singleton<SimulationManager>.instance.m_currentBuildIndex, invert);
@@ -438,26 +478,77 @@ namespace ParallelRoadTool.Detours
                 _isPreviousInvert = invert;
 
                 // HACK - [ISSUE 25] Enabling tool during upgrade mode so that we can add to existing roads
-                if (!isUpgradeActive) return result;
+                if (!isUpgradeActive) return;
                 ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Upgrade;
                 _isPreviousInvert = upgradeInvert;
-
-                return result;
             }
             catch (Exception e)
             {
                 // Log the exception and return false as we can't recover from this
-                Log._DebugOnlyError($"[{nameof(NetManagerDetour)}.{nameof(CreateSegment)}] CreateSegment failed.");
+                Log._DebugOnlyError($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] CreateSegment failed.");
                 Log.Exception(e);
 
                 segment = 0;
-                return false;
+                __result = false;
             }
             finally
             {
                 // Restore our detour so that we can call the original method
-                Deploy();
+                // Deploy();
             }
+        }
+    }
+
+    [HarmonyPatch]
+    internal class NetManagerReversePatch
+    {
+        [HarmonyReversePatch]
+        [HarmonyPatch(
+            typeof(NetManager),
+            nameof(NetManager.CreateSegment),
+            new[] {
+                typeof(ushort),
+                typeof(Randomizer),
+                typeof(NetInfo),
+                typeof(TreeInfo),
+                typeof(ushort),
+                typeof(ushort),
+                typeof(Vector3),
+                typeof(Vector3),
+                typeof(uint),
+                typeof(uint),
+                typeof(bool)
+            },
+            new[]
+            {
+                ArgumentType.Out,
+                ArgumentType.Ref,
+                ArgumentType.Normal,
+                ArgumentType.Normal,
+                ArgumentType.Normal,
+                ArgumentType.Normal,
+                ArgumentType.Normal,
+                ArgumentType.Normal,
+                ArgumentType.Normal,
+                ArgumentType.Normal,
+                ArgumentType.Normal
+            }
+        )]
+        public static bool CreateSegment(object instance, 
+                                   out ushort segment,
+                                   ref Randomizer randomizer,
+                                   NetInfo info,
+                                   TreeInfo treeInfo,
+                                   ushort startNode,
+                                   ushort endNode,
+                                   Vector3 startDirection,
+                                   Vector3 endDirection,
+                                   uint buildIndex,
+                                   uint modifiedIndex,
+                                   bool invert)
+        {
+            // its a stub so it has no initial content
+            throw new NotImplementedException("It's a stub");
         }
     }
 }

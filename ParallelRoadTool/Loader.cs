@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using CSUtil.Commons;
 using ICities;
 using ParallelRoadTool.Utils;
 using UnityEngine;
@@ -27,12 +28,16 @@ namespace ParallelRoadTool
         public override void OnLevelLoaded(LoadMode mode)
         {
             // First step is always to load localization
+            Log.Info($"[{nameof(Loader)}.{nameof(OnLevelLoaded)}] Loading localization...");
             LocalizationManager.LoadLocalization();
+            Log.Info($"[{nameof(Loader)}.{nameof(OnLevelLoaded)}] Localization loaded");
 
+            Log.Info($"[{nameof(Loader)}.{nameof(OnLevelLoaded)}] Starting mod...");
             if (!Singleton<ParallelRoadTool>.exists)
                 Singleton<ParallelRoadTool>.Ensure();
             else
                 Singleton<ParallelRoadTool>.instance.Start();
+            Log.Info($"[{nameof(Loader)}.{nameof(OnLevelLoaded)}] Mod started");
         }
     }
 }

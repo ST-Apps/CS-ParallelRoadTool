@@ -16,7 +16,7 @@ namespace CSUtil.Commons
     {
         private static readonly object LogLock = new object();
 
-        private static readonly string LogFilename = Path.Combine(Application.dataPath, "PRT.log");
+        private static readonly string LogFilename = Path.Combine(Application.dataPath, Path.Combine( "Logs", "ParallelRoadTtool.log"));
 
         private static readonly Stopwatch Sw = Stopwatch.StartNew();
 

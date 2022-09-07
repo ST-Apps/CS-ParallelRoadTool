@@ -94,7 +94,7 @@ namespace ParallelRoadTool.Utils
                                                preset.IsReversed);
                     Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Add(item);
                     Singleton<ParallelRoadTool>.instance.AddItem(item);
-                    NetManagerDetour.NetworksCount = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count;
+                    NetManagerPatch.NetworksCount = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count;
                 }
             }
             catch (Exception e)
