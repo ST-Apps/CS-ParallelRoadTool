@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29920.165
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelRoadTool", "ParallelRoadTool.csproj", "{C323E306-D11E-48A7-9620-121E4ADC4765}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedirectionFramework", "..\Submodules\RedirectionFramework\RedirectionFramework.csproj", "{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{705B2384-F806-471F-B22C-AAB55A61576A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{EF309BA7-0A77-486A-BC80-1DC2A0D2F0A9}"
 	ProjectSection(SolutionItems) = preProject
@@ -47,16 +43,11 @@ Global
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E} = {705B2384-F806-471F-B22C-AAB55A61576A}
 		{CAE3D1D4-1372-4B86-8D26-9E1CA25064D5} = {EF309BA7-0A77-486A-BC80-1DC2A0D2F0A9}
 		{C19406E2-E4CB-45C3-B671-7C53985BBA3C} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}
 		{AFD5188A-5909-4890-B949-0C4CDDE5B0CC} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}

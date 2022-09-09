@@ -176,7 +176,7 @@ namespace ParallelRoadTool.UI
 
             var panel = AddUIComponent<UIPanel>();
             panel.size = new Vector2(LabelWidth, 40);
-            panel.relativePosition = Vector2.zero;
+            panel.relativePosition = Vector2.zero;            
 
             _dropDown = UIUtil.CreateDropDown(panel);
             _dropDown.width = LabelWidth;
@@ -360,6 +360,7 @@ namespace ParallelRoadTool.UI
                                                      IsReversed, IsFiltered, _dropDown.selectedValue);
             _dropDown.tooltip = _dropDown.selectedValue;
             _dropDown.RefreshTooltip();
+
             OnChanged?.Invoke(this, eventArgs);
         }
 

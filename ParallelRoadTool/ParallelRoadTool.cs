@@ -98,6 +98,8 @@ namespace ParallelRoadTool
 
         #region Unity
 
+        // private UINetInfoPanel _netInfoPanel;
+
         /// <summary>
         ///     This method initializes mod's first time loading.
         ///     If <see cref="NetTool" /> is detected we initialize all the support structures, load the available networks and
@@ -138,6 +140,11 @@ namespace ParallelRoadTool
                 if (_mainWindow != null)
                     DestroyImmediate(_mainWindow);
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
+
+                // TEMP
+                // _netInfoPanel = view.AddUIComponent(typeof(UINetInfoPanel)) as UINetInfoPanel;
+                view.AddUIComponent(typeof(UI_NEW.UIMainWindow));
+                // TEMP
 
                 SubscribeToUIEvents();
 
@@ -409,6 +416,10 @@ namespace ParallelRoadTool
             _isToolEnabled = value;
             //ToggleDetours(value);
             _mainWindow.isVisible = value;
+
+            var netInfo = AvailableRoadTypes.Skip(2).First();
+            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading {netInfo} in info panel");
+            // _netInfoPanel.Refresh(netInfo);
         }
 
         private void MainWindowOnNetworkItemAdded(object sender, EventArgs e)

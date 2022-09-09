@@ -70,11 +70,15 @@
     <Compile Include="Models\PresetNetItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
-    <Compile Include="UI\UIFastList.cs" />
-    <Compile Include="UI\UILoadWindow.cs" />
-    <Compile Include="UI\UISaveLoadFileRow.cs" />
-    <Compile Include="UI\UISaveWindow.cs" />
-    <Compile Include="UI\OptionsKeymapping.cs" />
+    <Compile Include="UI\UIConstants.cs" />
+    <Compile Include="UI\UIMainWindow.cs" />
+    <Compile Include="UI\UINetInfoPanel.cs" />
+    <Compile Include="UI\Utils\UIHelpers.cs" />
+    <Compile Include="UI_LEGACY\UIFastList.cs" />
+    <Compile Include="UI_LEGACY\UILoadWindow.cs" />
+    <Compile Include="UI_LEGACY\UISaveLoadFileRow.cs" />
+    <Compile Include="UI_LEGACY\UISaveWindow.cs" />
+    <Compile Include="UI_LEGACY\OptionsKeymapping.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\HarmonyUtils.cs" />
@@ -82,12 +86,12 @@
     <Compile Include="Utils\PresetsUtils.cs" />
     <Compile Include="Utils\ResourceLoader.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
-    <Compile Include="UI\Base\UIRightDragHandle.cs" />
-    <Compile Include="UI\UIMainWindow.cs" />
-    <Compile Include="UI\UINetList.cs" />
-    <Compile Include="UI\UINetTypeItem.cs" />
+    <Compile Include="UI_LEGACY\Base\UIRightDragHandle.cs" />
+    <Compile Include="UI_LEGACY\UIMainWindow.cs" />
+    <Compile Include="UI_LEGACY\UINetList.cs" />
+    <Compile Include="UI_LEGACY\UINetTypeItem.cs" />
     <Compile Include="Utils\UIUtil.cs" />
-    <Compile Include="UI\UIOptionsPanel.cs" />
+    <Compile Include="UI_LEGACY\UIOptionsPanel.cs" />
     <Compile Include="Utils\LocalizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +142,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
