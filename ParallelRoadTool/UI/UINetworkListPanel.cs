@@ -57,6 +57,8 @@ namespace ParallelRoadTool.UI
             if (isCurrentNetwork)
             {
                 netSetupPanel.color = new Color(0, 0.710f, 1, 1);
+                netSetupPanel.opacity = 0.5f;
+                netSetupPanel.HideTools();
             } else
             {
                 netSetupPanel.color = UnityEngine.Random.ColorHSV(0f, 1f, 0f, 1f, 0f, 1f, 1f, 1f);

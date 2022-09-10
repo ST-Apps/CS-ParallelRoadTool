@@ -38,6 +38,7 @@ namespace ParallelRoadTool.UI_NEW
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(512, 256);
             absolutePosition = new Vector2(100, 100);
+            autoFitChildrenVertically = true;
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Vertical;
             autoLayoutPadding = LayoutPadding;
@@ -146,6 +147,9 @@ namespace ParallelRoadTool.UI_NEW
             networkListPanel = AddUIComponent<UINetworkListPanel>();
             networkListPanel.padding = padding;
             networkListPanel.FitWidth(this, UIConstants.Padding);
+
+            // Main/Spacer
+            AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2);
         }
 
         public override void Start()
@@ -153,11 +157,14 @@ namespace ParallelRoadTool.UI_NEW
             // TMP
             networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(4).First(), true);
             networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(2).First());
+            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(22).First());
+            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(11).First());
+            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(83).First());
             networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(42).First());
 
-            // Before returning we can fit based on children's height and add back some padding
-            FitChildrenVertically();
-            height += UIConstants.Padding;
+            //// Before returning we can fit based on children's height and add back some padding
+            //FitChildrenVertically();
+            //height += UIConstants.Padding;
         }
 
         #endregion

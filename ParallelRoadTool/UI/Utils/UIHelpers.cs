@@ -199,6 +199,59 @@ namespace ParallelRoadTool.UI.Utils
             return uiSprite;
         }
 
+        public static UICheckBox CreateCheckbox(
+            UIComponent parent,
+            Vector2 size,
+            string spriteName,
+            string tooltip
+        )
+        {
+            // Main container
+            var checkBox = parent.AddUIComponent<UICheckBox>();
+            checkBox.size = size;
+
+            // Button
+            var button = checkBox.AddUIComponent<UIButton>();            
+            button.size = size;
+            button.atlas = Atlas;
+            button.tooltip = tooltip;
+            button.relativePosition = new Vector2(0, 0);
+
+            // Background sprites
+            button.normalBgSprite = "OptionBase";
+            button.hoveredBgSprite = "OptionBaseHovered";
+            button.pressedBgSprite = "OptionBasePressed";
+            button.disabledBgSprite = "OptionBaseDisabled";
+
+            // Foreground sprites
+            button.normalFgSprite = spriteName;
+            button.focusedFgSprite = spriteName;
+            button.hoveredFgSprite = spriteName + "Hovered";
+            button.pressedFgSprite = spriteName + "Pressed";
+            button.disabledFgSprite = spriteName + "Disabled";
+
+            // Change sprites on selection change
+            checkBox.eventCheckChanged += (c, v) =>
+            {
+                if (v)
+                {
+                    // Checkbox is selected
+                    button.normalBgSprite = "OptionBaseFocused";
+                    button.normalFgSprite = spriteName + "Pressed";
+                    button.focusedFgSprite = spriteName + "Pressed";
+                } else
+                {
+                    // Checkbox is NOT selected
+                    button.normalBgSprite = "OptionBase";
+                    button.normalFgSprite = spriteName;
+                    button.focusedFgSprite = spriteName;
+
+                }
+            };
+
+            return checkBox;
+        }
+
         public static UICheckBox CreateCheckBox(UIComponent parent,
             Vector2 size,
                                                 string spriteName,
@@ -222,6 +275,8 @@ namespace ParallelRoadTool.UI.Utils
             button.disabledBgSprite = "OptionBaseDisabled";
 
             button.normalFgSprite = spriteName;
+            button.focusedFgSprite = spriteName;
+
             if (!isStatic)
             {
                 button.hoveredFgSprite = spriteName + "Hovered";
@@ -234,7 +289,7 @@ namespace ParallelRoadTool.UI.Utils
             {
                 button.normalBgSprite = "OptionBaseFocused";
                 if (!isStatic)
-                    button.normalFgSprite = spriteName + "Focused";
+                    button.normalFgSprite = spriteName + "Pressed";
             }
 
             checkBox.eventCheckChanged += (c, s) =>
@@ -243,7 +298,7 @@ namespace ParallelRoadTool.UI.Utils
                 {
                     button.normalBgSprite = "OptionBaseFocused";
                     if (!isStatic)
-                        button.normalFgSprite = spriteName + "Focused";
+                        button.normalFgSprite = spriteName + "Pressed";
                 }
                 else
                 {

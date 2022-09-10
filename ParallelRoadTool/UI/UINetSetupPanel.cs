@@ -90,9 +90,6 @@ namespace ParallelRoadTool.UI
                         _verticalOffsetField.submitOnFocusLost = true;
             _verticalOffsetField.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "VerticalOffset");
 
-            // NetSetup/Offsets/Spacer
-            // _offsetsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding);
-
             // NetSetup/Buttons
             _buttonsPanel = AddUIComponent<UIPanel>();
             _buttonsPanel.name = $"{name}_Buttons";
@@ -101,9 +98,6 @@ namespace ParallelRoadTool.UI
             _buttonsPanel.anchor = UIAnchorStyle.CenterVertical;
             _buttonsPanel.autoFitChildrenHorizontally = true;
             _buttonsPanel.autoFitChildrenVertically = true;
-
-            // NetSetup/Buttons/Spacer
-            // _buttonsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding);
 
             // NetSetup/Buttons/Delete
             _deleteButton = UIHelpers.CreateUiButton(
@@ -115,16 +109,12 @@ namespace ParallelRoadTool.UI
             );
 
             // NetSetup/Buttons/Reverse
-            _reverseCheckbox = UIHelpers.CreateCheckBox(
+            _reverseCheckbox = UIHelpers.CreateCheckbox(
                 _buttonsPanel,
                 new Vector2(UIConstants.SmallButtonSize, UIConstants.SmallButtonSize),
                 "Reverse",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton"),
-                false
+                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton")
             );
-
-            // NetSetup/Buttons/Spacer
-            // _buttonsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding);
         }
 
         public override void Start()
@@ -140,6 +130,12 @@ namespace ParallelRoadTool.UI
         internal void Refresh(NetInfo netInfo)
         {
             _netInfoPanel.Refresh(netInfo);
+        }
+
+        internal void HideTools()
+        {
+            _offsetsPanel.isVisible = false;
+            _buttonsPanel.isVisible = false;
         }
 
         #endregion
