@@ -25,6 +25,6 @@
         /// <summary>
         /// Height for a middle bar (e.g. options).
         /// </summary>
-        internal const int MiddleBarHeight = 48;
+        internal const int MiddleBarHeight = 36;
     }
 }

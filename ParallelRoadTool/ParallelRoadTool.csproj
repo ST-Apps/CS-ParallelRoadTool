@@ -73,6 +73,8 @@
     <Compile Include="UI\UIConstants.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
     <Compile Include="UI\UINetInfoPanel.cs" />
+    <Compile Include="UI\UINetSetupPanel.cs" />
+    <Compile Include="UI\UINetworkListPanel.cs" />
     <Compile Include="UI\Utils\UIHelpers.cs" />
     <Compile Include="UI_LEGACY\UIFastList.cs" />
     <Compile Include="UI_LEGACY\UILoadWindow.cs" />
@@ -136,6 +138,8 @@
     <EmbeddedResource Include="Assets\Icons\FindItPressed.png" />
     <EmbeddedResource Include="Assets\Icons\Load.png" />
     <EmbeddedResource Include="Assets\Icons\Save.png" />
+    <EmbeddedResource Include="Assets\Icons\HorizontalOffset.png" />
+    <EmbeddedResource Include="Assets\Icons\VerticalOffset.png" />
     <Content Include="Assets\Localizations\nl.xml" />
     <Content Include="Assets\Localizations\pt.xml" />
   </ItemGroup>

@@ -145,9 +145,9 @@ namespace ParallelRoadTool.UI
         private UILabel _label;
         private UIDropDown _dropDown;
         private UICheckBox _reverseCheckbox;
+        private UIButton _deleteButton;
         private UITextField _horizontalOffsetField;
         private UITextField _verticalOffsetField;
-        private UIButton _deleteButton;
         private UIButton _addButton;
         private UICheckBox _searchButton;
 

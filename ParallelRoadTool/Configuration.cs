@@ -38,18 +38,20 @@ namespace ParallelRoadTool
             "FindItFocused",
             "FindItHovered",
             "FindItPressed",
-            "Remove",
+            "HorizontalOffset",
+            "Load",
             "Parallel",
             "ParallelDisabled",
             "ParallelFocused",
             "ParallelHovered",
             "ParallelPressed",
+            "Remove",
             "Reverse",
             "ReverseDisabled",
             "ReverseFocused",
             "ReverseHovered",
             "ReversePressed",
-            "Load",
+            "VerticalOffset",
             "Save"
         };
 

@@ -94,6 +94,8 @@ namespace ParallelRoadTool.Detours
                     return;
                 }
 
+                Log._Debug($"[{nameof(NetAIPatch)}.{nameof(Postfix)}] COLOR IS: {color}");
+
                 var netTool = ToolsModifierControl.GetTool<NetTool>();
 
                 // Let's render the original segment
