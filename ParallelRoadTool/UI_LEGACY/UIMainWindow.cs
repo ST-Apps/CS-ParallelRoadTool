@@ -4,11 +4,12 @@ using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using CSUtil.Commons;
 using ParallelRoadTool.Models;
+using ParallelRoadTool.UI;
 using ParallelRoadTool.UI.Base;
 using ParallelRoadTool.Utils;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI_LEGACY
 {
     public class UIMainWindow : UIPanel
     {

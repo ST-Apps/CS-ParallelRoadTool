@@ -8,13 +8,11 @@ using CSUtil.Commons;
 using HarmonyLib;
 using ICities;
 using JetBrains.Annotations;
-using ParallelRoadTool.Detours;
+using ParallelRoadTool.Patches;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI;
-using ParallelRoadTool.UI_NEW;
 using ParallelRoadTool.Utils;
 using UnityEngine;
-using UIMainWindow = ParallelRoadTool.UI_NEW.UIMainWindow;
 
 namespace ParallelRoadTool
 {
@@ -25,6 +23,49 @@ namespace ParallelRoadTool
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadTool : MonoBehaviour
     {
+        #region NEW
+
+        private readonly Harmony _harmony = new Harmony(ModInfo.HarmonyId);
+
+        private ModStatuses modStatuses = ModStatuses.Disabled;
+
+        private UIController UIController => Singleton<UIController>.instance;
+
+        private void ToolControllerPatch_CurrentToolChanged(object sender, CurrentToolChangedEventArgs e)
+        {
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] Changed tool to {e.Tool.GetType().Name}.");
+
+            if (e.Tool is NetTool)
+            {
+                modStatuses |= ModStatuses.Enabled;
+            }
+            else
+            {
+                modStatuses &= ~ModStatuses.Enabled;
+            }
+
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] New mod status is: {modStatuses:g}.");
+            UIController.UpdateVisibility(modStatuses);
+        }
+
+        private void UIController_ToolToggleButtonEventCheckChanged(UIComponent component, bool value)
+        {
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] Changed tool button to {value}.");
+
+            if (value)
+            {
+                modStatuses |= ModStatuses.Active;
+            } else
+            {
+                modStatuses &= ~ModStatuses.Active;
+            }
+
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] New mod status is: {modStatuses:g}.");
+            UIController.UpdateVisibility(modStatuses);
+        }
+
+        #endregion
+
         #region Properties
 
         #region Data
@@ -39,7 +80,7 @@ namespace ParallelRoadTool
         ///     <see cref="List{T}" /> containing all the selected <see cref="NetTypeItem" /> objects.
         ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
         /// </summary>
-        public List<NetTypeItem> SelectedRoadTypes { get; private set; }
+        public List<NetTypeItem> SelectedRoadTypes { get; } = new List<NetTypeItem>();
 
         /// <summary>
         ///     Array containing the beautified names for the <see cref="AvailableRoadTypes" />.
@@ -94,18 +135,56 @@ namespace ParallelRoadTool
         /// </summary>
         // private UIMainWindow _mainWindow_OLD;
 
-        /// <summary>
-        ///     Main UI panel.
-        /// </summary>
-        private UIMainWindow _mainWindow;
-
-        private UIToolToggleButton _toolToggleButton;
-
         #endregion
 
         #endregion
 
         #region Unity
+
+        public void Awake()
+        {
+            try
+            {
+                // If NetTool is not available we can't move further
+                if (ToolsModifierControl.GetTool<NetTool>() == null)
+                {
+                    Log.Warning($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Net Tool not found, can't deploy!");
+
+                    // Fully disable mod's GameComponent
+                    enabled = false;
+                    return;
+                }
+
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading version: {ModInfo.ModName} ({nameof(IsInGameMode)} is {IsInGameMode}).");
+
+                // Initialize support data
+                SelectedRoadTypes.Clear();
+                IsSnappingEnabled = false;
+                IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic == SimulationMetaData.MetaBool.True;
+                _isToolActive = _isToolEnabled = false;
+
+                // Load available networks
+                LoadNetworks();
+
+                // Apply harmony patches
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patching with Harmony...");
+                _harmony.PatchAll();
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patches applied.");
+
+                // Mod is now fully enabled
+                modStatuses ^= ModStatuses.Disabled;
+                modStatuses ^= ModStatuses.Deployed;
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Mod status is now {modStatuses:g}.");
+            }
+            catch (Exception e)
+            {
+                Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading failed.");
+                Log.Exception(e);
+
+                // Fully disable mod's GameComponent
+                enabled = false;
+            }
+        }
 
         /// <summary>
         ///     This method initializes mod's first time loading.
@@ -116,51 +195,11 @@ namespace ParallelRoadTool
         {
             try
             {
-                // Find NetTool and deploy
-                if (ToolsModifierControl.GetTool<NetTool>() == null)
-                {
-                    Log.Warning($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Net Tool not found, can't deploy!");
-                    enabled = false;
-                    return;
-                }
-
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading version: {ModInfo.ModName} ({nameof(IsInGameMode)} is {IsInGameMode})");
-
-                // Init support data                              
-                SelectedRoadTypes = new List<NetTypeItem>();
-                IsSnappingEnabled = false;
-                IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
-                                    SimulationMetaData.MetaBool.True;
-                _isToolActive = _isToolEnabled = false;
-
-                LoadNetworks();
-
-                // Subscribe to milestones updated, but only if we're not in map editor
-                if (IsInGameMode)
-                    Singleton<UnlockManager>.instance.m_milestonesUpdated += OnMilestoneUpdate;
-
                 Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Adding UI components");
+                UIController.Initialize();
+                UIController.UpdateVisibility(modStatuses);
 
-                // Main UI init
-                var view = UIView.GetAView();
-
-                _mainWindow ??= view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
-                if (_mainWindow != null)
-                    DestroyImmediate(_mainWindow);
-                _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
-
-                var button = UIUtil.FindComponent<UICheckBox>($"{Configuration.ResourcePrefix}Parallel");
-                if (button != null) DestroyImmediate(button);
-                _toolToggleButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
-
-                SubscribeToUIEvents();
-
-                // Patch
-                Harmony.DEBUG = true;
-                var harmony = new Harmony("it.stapps.cities.parallelroadtool");
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patching with Harmony...");
-                harmony.PatchAll();
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patches applied, loading...");
+                AttachToEvents();
 
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loaded");
             }
@@ -193,7 +232,7 @@ namespace ParallelRoadTool
                 PresetsUtils.Export(Configuration.AutoSaveFileName);
 
                 //ToggleDetours(false);
-                UnsubscribeFromUIEvents();
+                DetachFromEvents();
 
                 // Reset data structures
                 AvailableRoadTypes.Clear();
@@ -206,9 +245,7 @@ namespace ParallelRoadTool
                 // Unsubscribe to milestones updated
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
 
-                // Destroy UI
-                Destroy(_mainWindow);
-                _mainWindow = null;
+                UIController.Cleanup();
 
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroyed");
             }
@@ -248,7 +285,7 @@ namespace ParallelRoadTool
 
         //        NetManagerDetour.Revert();
         //        NetToolDetour.Revert();
-                
+
         //        if (IsInGameMode)
         //            NetAIDetour.Revert();
 
@@ -285,13 +322,20 @@ namespace ParallelRoadTool
                 }
             }
 
-            AvailableRoadNames = new string[sortedNetworks.Keys.Count + 1];
+            AvailableRoadNames = sortedNetworks.Keys.ToArray();
+            AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
+
+            // TODO: decide what to do with it
+            // AvailableRoadNames = new string[sortedNetworks.Keys.Count + 1];
 
             // Default item, creates a net with the same type as source
-            AddNetworkType(null);
+            // TODO: decide what to do with it
+            // AddNetworkType(null);
 
-            Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
-            AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
+            // TODO: decide what to do with it
+            // Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
+            // TODO: decide what to do with it
+            // AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
             Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks");
 
@@ -317,22 +361,18 @@ namespace ParallelRoadTool
             // _mainWindow.AddItem(item);
         }
 
-        public void ResetToolWindowPosition()
-        {
-            _mainWindow.absolutePosition = new Vector3(-1000, -1000);
-        }
-
-        public void ResetToolButtonPosition()
-        {
-            _toolToggleButton.ResetPosition();
-        }
-
         #endregion
 
         #region Handlers
 
-        private void UnsubscribeFromUIEvents()
+        private void DetachFromEvents()
         {
+            ToolControllerPatch.CurrentToolChanged -= ToolControllerPatch_CurrentToolChanged;
+            UIController.ToolToggleButtonEventCheckChanged -= UIController_ToolToggleButtonEventCheckChanged;
+
+            if (IsInGameMode)
+                Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
+
             //_mainWindow_OLD.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
             //_mainWindow_OLD.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
             //_mainWindow_OLD.OnHorizontalOffsetKeypress -= MainWindowOnOnHorizontalOffsetKeypress;
@@ -342,8 +382,15 @@ namespace ParallelRoadTool
             //_mainWindow_OLD.OnItemChanged -= MainWindowOnOnItemChanged;
         }
 
-        private void SubscribeToUIEvents()
+        private void AttachToEvents()
         {
+            ToolControllerPatch.CurrentToolChanged += ToolControllerPatch_CurrentToolChanged;
+            UIController.ToolToggleButtonEventCheckChanged += UIController_ToolToggleButtonEventCheckChanged;
+
+            // Subscribe to milestones updated, but only if we're not in map editor
+            if (IsInGameMode)
+                Singleton<UnlockManager>.instance.m_milestonesUpdated += OnMilestoneUpdate;
+
             //_mainWindow_OLD.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
             //_mainWindow_OLD.OnSnappingToggled += MainWindowOnOnSnappingToggled;
             //_mainWindow_OLD.OnHorizontalOffsetKeypress += MainWindowOnOnHorizontalOffsetKeypress;
@@ -354,40 +401,40 @@ namespace ParallelRoadTool
             //_mainWindow_OLD.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
         }
 
-        /// <summary>
-        /// We need to react to changes in current tool.
-        /// If current tool is NOT <see cref="NetTool"/> then we must disable everything, while still remembering if the tool was enabled or not (so that we can restore this state once the tool becomes <see cref="NetTool"/> again).
-        /// </summary>
-        /// <param name="component"></param>
-        /// <param name="value"></param>
-        private void ToolBaseDetour_OnToolChanged(UIComponent component, ToolBase value)
-        {
-            if (value is NetTool)
-            {
-                // If we're in NetTool, we must restore our previous state + make the button visible
-                // TODO: decide what to do with it
-                // _mainWindow_OLD.ToggleToolButton(true);
-                _isToolActive = true;
+        ///// <summary>
+        ///// We need to react to changes in current tool.
+        ///// If current tool is NOT <see cref="NetTool"/> then we must disable everything, while still remembering if the tool was enabled or not (so that we can restore this state once the tool becomes <see cref="NetTool"/> again).
+        ///// </summary>
+        ///// <param name="component"></param>
+        ///// <param name="value"></param>
+        //private void ToolBaseDetour_OnToolChanged(UIComponent component, ToolBase value)
+        //{
+        //    if (value is NetTool)
+        //    {
+        //        // If we're in NetTool, we must restore our previous state + make the button visible
+        //        // TODO: decide what to do with it
+        //        // _mainWindow_OLD.ToggleToolButton(true);
+        //        _isToolActive = true;
 
-                if (_isToolEnabled)
-                {
-                    // This means we also need to restore detours and show our main window again
-                    //ToggleDetours(true);
-                    _mainWindow.isVisible = true;
-                }
-            }
-            else
-            {
-                // We're not anymore in NetTool, so we must hide all of our UI and disable detours
-                // TODO: decide what to do with it
-                // _mainWindow_OLD.ToggleToolButton(false);
-                _mainWindow.isVisible = false;
-                _isToolActive = false;
-                //ToggleDetours(false);
-            }
+        //        if (_isToolEnabled)
+        //        {
+        //            // This means we also need to restore detours and show our main window again
+        //            //ToggleDetours(true);
+        //            _mainWindow.isVisible = true;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // We're not anymore in NetTool, so we must hide all of our UI and disable detours
+        //        // TODO: decide what to do with it
+        //        // _mainWindow_OLD.ToggleToolButton(false);
+        //        _mainWindow.isVisible = false;
+        //        _isToolActive = false;
+        //        //ToggleDetours(false);
+        //    }
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolBaseDetour_OnToolChanged)}] Changed tool to {value.GetType().Name} [{nameof(_isToolActive)}: {_isToolActive}, {nameof(_isToolEnabled)}: {_isToolEnabled}]");
-        }
+        //    Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolBaseDetour_OnToolChanged)}] Changed tool to {value.GetType().Name} [{nameof(_isToolActive)}: {_isToolActive}, {nameof(_isToolEnabled)}: {_isToolEnabled}]");
+        //}
 
         private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
         {
@@ -416,22 +463,22 @@ namespace ParallelRoadTool
             IsSnappingEnabled = value;
         }
 
-        /// <summary>
-        /// When the main button is toggled we must update <see cref="_isToolEnabled"/> but NOT <see cref="_isToolActive"/>.
-        /// This means that we're not controlling button's visibility here.
-        /// </summary>
-        /// <param name="component"></param>
-        /// <param name="value"></param>
-        private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
-        {
-            _isToolEnabled = value;
-            //ToggleDetours(value);
-            _mainWindow.isVisible = value;
+        ///// <summary>
+        ///// When the main button is toggled we must update <see cref="_isToolEnabled"/> but NOT <see cref="_isToolActive"/>.
+        ///// This means that we're not controlling button's visibility here.
+        ///// </summary>
+        ///// <param name="component"></param>
+        ///// <param name="value"></param>
+        //private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
+        //{
+        //    _isToolEnabled = value;
+        //    //ToggleDetours(value);
+        //    _mainWindow.isVisible = value;
 
-            var netInfo = AvailableRoadTypes.Skip(2).First();
-            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading {netInfo} in info panel");
-            // _netInfoPanel.Refresh(netInfo);
-        }
+        //    var netInfo = AvailableRoadTypes.Skip(2).First();
+        //    Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading {netInfo} in info panel");
+        //    // _netInfoPanel.Refresh(netInfo);
+        //}
 
         private void MainWindowOnNetworkItemAdded(object sender, EventArgs e)
         {

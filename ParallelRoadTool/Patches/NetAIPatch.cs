@@ -6,7 +6,7 @@ using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
-namespace ParallelRoadTool.Detours
+namespace ParallelRoadTool.Patches
 {
     [HarmonyPatch(
         typeof(PlayerNetAI),

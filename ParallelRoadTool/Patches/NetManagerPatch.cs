@@ -9,7 +9,7 @@ using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
-namespace ParallelRoadTool.Detours
+namespace ParallelRoadTool.Patches
 {
     /// <summary>
     ///     Mod's core class, it executes the detour to intercept segment's creation.

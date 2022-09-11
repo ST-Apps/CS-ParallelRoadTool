@@ -7,7 +7,7 @@ using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
-namespace ParallelRoadTool.Detours
+namespace ParallelRoadTool.Patches
 {
     /// <summary>
     ///     Detour used to hook into the RenderOverlay method for segments.

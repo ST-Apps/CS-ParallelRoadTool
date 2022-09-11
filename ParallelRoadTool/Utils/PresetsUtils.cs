@@ -7,7 +7,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using CSUtil.Commons;
-using ParallelRoadTool.Detours;
+using ParallelRoadTool.Patches;
 using ParallelRoadTool.Models;
 
 namespace ParallelRoadTool.Utils

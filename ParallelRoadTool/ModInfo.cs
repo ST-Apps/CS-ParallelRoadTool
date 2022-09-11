@@ -18,6 +18,8 @@ namespace ParallelRoadTool
         public static readonly string ModName = $"Parallel Road Tool {Version}";
 #endif
 
+        public static string HarmonyId = "it.stapps.cities.parallelroadtool";
+
         public string Name => ModName;
 
         public string Description =>
@@ -76,8 +78,8 @@ namespace ParallelRoadTool
                 group.AddButton("Reset tool window position",
                                 () =>
                                 {
-                                    if (!Singleton<ParallelRoadTool>.exists) return;
-                                    Singleton<ParallelRoadTool>.instance.ResetToolWindowPosition();
+                                    if (!Singleton<UIController>.exists) return;
+                                    Singleton<UIController>.instance.ResetToolWindowPosition();
                                 });
 
                 group.AddSpace(10);
@@ -86,8 +88,8 @@ namespace ParallelRoadTool
                 group.AddButton("Reset tool button position",
                                 () =>
                                 {
-                                    if (!Singleton<ParallelRoadTool>.exists) return;
-                                    Singleton<ParallelRoadTool>.instance.ResetToolButtonPosition();
+                                    if (!Singleton<UIController>.exists) return;
+                                    Singleton<UIController>.instance.ResetToolButtonPosition();
                                 });
             }
             catch (Exception e)

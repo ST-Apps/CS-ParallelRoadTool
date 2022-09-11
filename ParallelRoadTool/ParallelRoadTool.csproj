@@ -56,10 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="Detours\NetAIPatch.cs" />
-    <Compile Include="Detours\NetManagerPatch.cs" />
-    <Compile Include="Detours\NetToolPatch.cs" />
-    <Compile Include="Detours\ToolControllerPatch.cs" />
+    <Compile Include="Models\CurrentToolChangedEventArgs.cs" />
+    <Compile Include="Models\ModStatuses.cs" />
+    <Compile Include="Patches\NetAIPatch.cs" />
+    <Compile Include="Patches\NetManagerPatch.cs" />
+    <Compile Include="Patches\NetToolPatch.cs" />
+    <Compile Include="Patches\ToolControllerPatch.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
     <Compile Include="Models\ExtendedNetInfo.cs" />
     <Compile Include="Models\LocalizedString.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="UI\Interfaces\IUIList.cs" />
     <Compile Include="UI\Interfaces\IUIListabeItem.cs" />
     <Compile Include="UI\UIConstants.cs" />
+    <Compile Include="UI\UIController.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
     <Compile Include="UI\UINetInfoPanel.cs" />
     <Compile Include="UI\UINetSetupPanel.cs" />

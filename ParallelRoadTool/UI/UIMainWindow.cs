@@ -1,14 +1,12 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using CSUtil.Commons;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.UI;
 using ParallelRoadTool.UI.Utils;
 using System.Linq;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI_NEW
+namespace ParallelRoadTool.UI
 {
     /// <summary>
     /// Main UI for PRT.
@@ -180,7 +178,6 @@ namespace ParallelRoadTool.UI_NEW
         {
             // Main
             name = $"{Configuration.ResourcePrefix}MainWindow";
-            isVisible = true;
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(512, 256);
             absolutePosition = new Vector2(100, 100);

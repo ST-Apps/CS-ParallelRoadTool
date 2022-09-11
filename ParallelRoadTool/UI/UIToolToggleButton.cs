@@ -21,6 +21,15 @@ namespace ParallelRoadTool.UI
 
         #endregion
 
+        #region Events
+
+        private void ButtonDragHandle_eventDragEnd(UIComponent component, UIDragEventParameter eventParam)
+        {
+            UpdateSavedPosition();
+        }
+
+        #endregion
+
         #region Unity
 
         #region Components
@@ -33,12 +42,6 @@ namespace ParallelRoadTool.UI
 
         public override void Awake()
         {
-            var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
-            if (tsBar == null || !tsBar.gameObject.activeInHierarchy) return;
-
-            var toolModeBar = UIUtil.FindComponent<UITabstrip>("ToolMode", tsBar, UIUtil.FindOptions.NameContains);
-            if (toolModeBar == null) return;
-
             var spriteName = "Parallel";
             var toolTip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton");
             size = new Vector2(36, 36);
@@ -74,13 +77,6 @@ namespace ParallelRoadTool.UI
                 }
             };
 
-            if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
-                absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);
-            else
-                absolutePosition =
-                    new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1,
-                                toolModeBar.absolutePosition.y);
-
             // HACK - [ISSUE-26] Tool's main button must be draggable to prevent overlapping other mods buttons.
             _buttonDragHandle = AddUIComponent<UIRightDragHandle>();
             _buttonDragHandle.size = size;
@@ -88,9 +84,42 @@ namespace ParallelRoadTool.UI
             _buttonDragHandle.target = this;
         }
 
+        public override void Start()
+        {
+            AttachToEvents();
+
+            if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
+                absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);
+            else
+                ResetPosition();
+        }
+
+        public override void OnDestroy()
+        {
+            DetachFromEvents();
+
+            base.OnDestroy();
+        }
+
+        private void AttachToEvents()
+        {
+            _buttonDragHandle.eventDragEnd += ButtonDragHandle_eventDragEnd;
+        }
+
+        private void DetachFromEvents()
+        {
+            _buttonDragHandle.eventDragEnd -= ButtonDragHandle_eventDragEnd;
+        }
+
         #endregion
 
         #endregion
+
+        private void UpdateSavedPosition()
+        {
+            SavedToggleX.value = (int)absolutePosition.x;
+            SavedToggleY.value = (int)absolutePosition.y;
+        }
 
         public void ResetPosition()
         {
@@ -98,6 +127,7 @@ namespace ParallelRoadTool.UI
             var toolModeBar = UIUtil.FindComponent<UITabstrip>("ToolMode", tsBar, UIUtil.FindOptions.NameContains);
 
             absolutePosition = new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1, toolModeBar.absolutePosition.y);
+            UpdateSavedPosition();
         }
 
     }
