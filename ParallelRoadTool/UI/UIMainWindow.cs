@@ -1,18 +1,22 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using CSUtil.Commons;
+using ParallelRoadTool.Models;
 using ParallelRoadTool.UI;
 using ParallelRoadTool.UI.Utils;
-using ParallelRoadTool.Utils;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI_NEW
 {
+    /// <summary>
+    /// Main UI for PRT.
+    /// This window contains:
+    /// - an header with the closing button
+    /// - a row with all the tools and features
+    /// - a list of panels used to display selected NetInfo instances
+    /// </summary>
     public class UIMainWindow : UIPanel
     {
         #region Constants
@@ -26,23 +30,38 @@ namespace ParallelRoadTool.UI_NEW
 
         #region Components
 
-        private UINetworkListPanel networkListPanel;
+        private UIButton _closeButton;
+        private UINetworkListPanel _networkListPanel;
+        private UICheckBox _toggleSnappingButton;
+        private UIButton _addNetworkButton;
+        private UINetInfoPanel _currentNetworkInfoPanel;
 
         #endregion
 
-        public override void Awake()
-        {
-            // Main
-            name = $"{Configuration.ResourcePrefix}MainWindow";
-            isVisible = true;
-            backgroundSprite = "SubcategoriesPanel";
-            size = new Vector2(512, 256);
-            absolutePosition = new Vector2(100, 100);
-            autoFitChildrenVertically = true;
-            autoLayout = true;
-            autoLayoutDirection = LayoutDirection.Vertical;
-            autoLayoutPadding = LayoutPadding;
+        #region Events
 
+        public event MouseEventHandler CloseButtonEventClicked
+        {
+            add { _closeButton.eventClicked += value; }
+            remove { _closeButton.eventClicked -= value; }
+        }
+
+        public event MouseEventHandler AddNetworkButtonEventClicked
+        {
+            add { _addNetworkButton.eventClicked += value; }
+            remove { _addNetworkButton.eventClicked -= value; }
+        }
+
+        public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
+        {
+            add { _toggleSnappingButton.eventCheckChanged += value; }
+            remove { _toggleSnappingButton.eventCheckChanged -= value; }
+        }
+
+        #endregion
+
+        private void BuildHeader()
+        {
             // Main/Header
             var headerPanel = AddUIComponent<UIPanel>();
             headerPanel.name = $"{name}_Header";
@@ -66,16 +85,19 @@ namespace ParallelRoadTool.UI_NEW
             dragHandle.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
 
             // Main/Header/CloseButton
-            var closeButton = headerPanel.AddUIComponent<UIButton>();
-            closeButton.name = $"{headerPanel.name}_CloseButton";
-            closeButton.text = "";
-            closeButton.normalBgSprite = "buttonclose";
-            closeButton.hoveredBgSprite = "buttonclosehover";
-            closeButton.pressedBgSprite = "buttonclosepressed";
-            closeButton.size = new Vector2(UIConstants.SmallButtonSize, UIConstants.SmallButtonSize);
-            closeButton.anchor = UIAnchorStyle.CenterVertical;
-            closeButton.AlignTo(headerPanel, UIAlignAnchor.TopRight);
+            _closeButton = headerPanel.AddUIComponent<UIButton>();
+            _closeButton.name = $"{headerPanel.name}_CloseButton";
+            _closeButton.text = "";
+            _closeButton.normalBgSprite = "buttonclose";
+            _closeButton.hoveredBgSprite = "buttonclosehover";
+            _closeButton.pressedBgSprite = "buttonclosepressed";
+            _closeButton.size = new Vector2(UIConstants.SmallButtonSize, UIConstants.SmallButtonSize);
+            _closeButton.anchor = UIAnchorStyle.CenterVertical;
+            _closeButton.AlignTo(headerPanel, UIAlignAnchor.TopRight);
+        }
 
+        private void BuildToolbar()
+        {
             // Main/Toolbar
             var toolbarPanel = AddUIComponent<UIPanel>();
             toolbarPanel.name = $"{name}_Toolbar";
@@ -124,29 +146,62 @@ namespace ParallelRoadTool.UI_NEW
             toolsPanel.autoLayoutStart = LayoutStart.TopRight;
 
             // Main/Toolbar/Tools/ToggleSnappingButton
-            var toggleSnappingButton = UIHelpers.CreateCheckBox(
+            _toggleSnappingButton = UIHelpers.CreateCheckBox(
                 toolsPanel,
                 "Snapping",
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"),
                 new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize),
                 false
             );
-            toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
+            _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
 
             // Main/Toolbar/Tools/AddNetworkButton
-            var addNetworkButton = UIHelpers.CreateUiButton(
+            _addNetworkButton = UIHelpers.CreateUiButton(
                 toolsPanel,
                 new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize),
                 string.Empty,
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"),
                 "Add"
             );
-            addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";
+            _addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";
+        }
+
+        #region Lifecycle
+
+        private void AttachUIEvents()
+        {
+        }
+
+        private void DetachUIEvents()
+        {
+        }
+
+        public override void Awake()
+        {
+            // Main
+            name = $"{Configuration.ResourcePrefix}MainWindow";
+            isVisible = true;
+            backgroundSprite = "SubcategoriesPanel";
+            size = new Vector2(512, 256);
+            absolutePosition = new Vector2(100, 100);
+            autoFitChildrenVertically = true;
+            autoLayout = true;
+            autoLayoutDirection = LayoutDirection.Vertical;
+            autoLayoutPadding = LayoutPadding;
+
+            BuildHeader();
+            BuildToolbar();
+
+            // Main/CurrentNetwork
+            _currentNetworkInfoPanel = AddUIComponent<UINetInfoPanel>();
+            _currentNetworkInfoPanel.padding = padding;
+            _currentNetworkInfoPanel.FitWidth(this, UIConstants.Padding);
+            _currentNetworkInfoPanel.MakeReadOnly();
 
             // Main/NetworkList
-            networkListPanel = AddUIComponent<UINetworkListPanel>();
-            networkListPanel.padding = padding;
-            networkListPanel.FitWidth(this, UIConstants.Padding);
+            _networkListPanel = AddUIComponent<UINetworkListPanel>();
+            _networkListPanel.padding = padding;
+            _networkListPanel.FitWidth(this, UIConstants.Padding);
 
             // Main/Spacer
             AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2);
@@ -154,18 +209,41 @@ namespace ParallelRoadTool.UI_NEW
 
         public override void Start()
         {
-            // TMP
-            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(4).First(), true);
-            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(2).First());
-            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(22).First());
-            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(11).First());
-            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(83).First());
-            networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(42).First());
+            AttachUIEvents();
+            //// TODO: remove
+            //_networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(4).First(), true);
+            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(2).First()));
+            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(22).First()));
+            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(42).First()));
+            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(44).First()));
+            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(76).First()));
 
-            //// Before returning we can fit based on children's height and add back some padding
-            //FitChildrenVertically();
-            //height += UIConstants.Padding;
+            ////networkListPanel.UINetSetupPanelClicked += (s) =>
+            ////{
+            ////    var uiObject = new GameObject();
+            ////    uiObject.transform.parent = UIView.GetAView().transform;
+            ////    var messageBox = uiObject.AddComponent<UIPanel>();
+            ////    messageBox.size = new Vector2(300, 300);
+            ////    messageBox.color = s.color;
+            ////    messageBox.absolutePosition = new Vector2(100, 100);
+
+            ////    UIView.PushModal(messageBox);
+            ////    messageBox.Show(true);
+            ////    messageBox.Focus();
+
+            ////    // TODO: not working
+            ////    // TODO: modal with search box and a scrollable panel of UINetInfoPanel
+
+            ////    Log._Debug($"[{nameof(UIMainWindow)}.{nameof(Start)}] Pushed modal to position {messageBox.absolutePosition}");
+            ////};
         }
+
+        public override void OnDestroy()
+        {
+            DetachUIEvents();
+        }
+
+        #endregion
 
         #endregion
     }

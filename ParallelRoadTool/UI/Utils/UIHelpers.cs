@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework.Math;
+using ColossalFramework.UI;
 using ParallelRoadTool.Utils;
 using System.Linq;
 using UnityEngine;
@@ -18,6 +19,19 @@ namespace ParallelRoadTool.UI.Utils
         #endregion
 
         #region Helpers
+
+        /// <summary>
+        /// Generates a random color starting from a string's hash.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static Color ColorFromString(string str)
+        {
+            var hash = str.GetHashCode();
+            var hue = Mathf.Abs(hash % 360) / 360f;
+
+            return Color.HSVToRGB(hue, 0.5f, 0.85f);
+        }
 
         /// <summary>
         /// Fits component's width to its parent while keeping margin on both left and right size

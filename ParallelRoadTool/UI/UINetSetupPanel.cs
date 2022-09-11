@@ -1,18 +1,31 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using ParallelRoadTool.Models;
+using ParallelRoadTool.UI.Interfaces;
 using ParallelRoadTool.UI.Utils;
 using ParallelRoadTool.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
-    internal class UINetSetupPanel : UIPanel
+    internal class UINetSetupPanel : UIPanel, IUIListabeItem<ExtendedNetInfo>
     {
+        #region Events
+
+        #region Events
+
+        public event Action<UINetInfoPanel> UINetInfoPanelClicked;
+
+        #endregion
+
+        #endregion
+
         #region Unity
 
         #region Components
@@ -26,6 +39,8 @@ namespace ParallelRoadTool.UI
         private UIPanel _buttonsPanel;
         private UICheckBox _reverseCheckbox;
         private UIButton _deleteButton;
+
+        public string Id { get; set; }
 
         #endregion
 
@@ -121,21 +136,28 @@ namespace ParallelRoadTool.UI
         {
             // Make NetInfoPanel wide enough to fill the empty space
             _netInfoPanel.width = width - _offsetsPanel.width -_buttonsPanel.width;
+
+            // TODO: improve with subscribe/unsubscribe
+            _netInfoPanel.eventClicked += (s, e) =>
+            {
+                UINetInfoPanelClicked?.Invoke(_netInfoPanel);
+            };
         }
 
         #endregion
 
         #region Control
 
-        internal void Refresh(NetInfo netInfo)
-        {
-            _netInfoPanel.Refresh(netInfo);
-        }
-
         internal void HideTools()
         {
             _offsetsPanel.isVisible = false;
             _buttonsPanel.isVisible = false;
+        }
+
+        public void Render(ExtendedNetInfo netInfo)
+        {
+            color = netInfo.Color;
+            _netInfoPanel.Render(netInfo);
         }
 
         #endregion

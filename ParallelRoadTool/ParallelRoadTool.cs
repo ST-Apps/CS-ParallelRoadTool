@@ -11,8 +11,10 @@ using JetBrains.Annotations;
 using ParallelRoadTool.Detours;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI;
+using ParallelRoadTool.UI_NEW;
 using ParallelRoadTool.Utils;
 using UnityEngine;
+using UIMainWindow = ParallelRoadTool.UI_NEW.UIMainWindow;
 
 namespace ParallelRoadTool
 {
@@ -90,15 +92,20 @@ namespace ParallelRoadTool
         /// <summary>
         ///     Main UI panel.
         /// </summary>
+        // private UIMainWindow _mainWindow_OLD;
+
+        /// <summary>
+        ///     Main UI panel.
+        /// </summary>
         private UIMainWindow _mainWindow;
+
+        private UIToolToggleButton _toolToggleButton;
 
         #endregion
 
         #endregion
 
         #region Unity
-
-        // private UINetInfoPanel _netInfoPanel;
 
         /// <summary>
         ///     This method initializes mod's first time loading.
@@ -136,21 +143,20 @@ namespace ParallelRoadTool
 
                 // Main UI init
                 var view = UIView.GetAView();
+
                 _mainWindow ??= view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
                 if (_mainWindow != null)
                     DestroyImmediate(_mainWindow);
                 _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
 
-                // TEMP
-                // _netInfoPanel = view.AddUIComponent(typeof(UINetInfoPanel)) as UINetInfoPanel;
-                view.AddUIComponent(typeof(UI_NEW.UIMainWindow));
-                // TEMP
+                var button = UIUtil.FindComponent<UICheckBox>($"{Configuration.ResourcePrefix}Parallel");
+                if (button != null) DestroyImmediate(button);
+                _toolToggleButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
 
                 SubscribeToUIEvents();
 
-                _mainWindow.OnToolChanged += ToolBaseDetour_OnToolChanged;
-
                 // Patch
+                Harmony.DEBUG = true;
                 var harmony = new Harmony("it.stapps.cities.parallelroadtool");
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patching with Harmony...");
                 harmony.PatchAll();
@@ -196,8 +202,6 @@ namespace ParallelRoadTool
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
                 _isToolActive = _isToolEnabled = false;
-
-                _mainWindow.OnToolChanged -= ToolBaseDetour_OnToolChanged;
 
                 // Unsubscribe to milestones updated
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -291,7 +295,8 @@ namespace ParallelRoadTool
 
             Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks");
 
-            if (updateDropdowns) _mainWindow.UpdateDropdowns();
+            // TODO: decide what to do with it
+            // if (updateDropdowns) _mainWindow_OLD.UpdateDropdowns();
         }
 
         private void AddNetworkType(NetInfo net)
@@ -302,12 +307,14 @@ namespace ParallelRoadTool
 
         public void ClearItems()
         {
-            _mainWindow.ClearItems();
+            // TODO: decide what to do with it
+            // _mainWindow.ClearItems();
         }
 
         public void AddItem(NetTypeItem item)
         {
-            _mainWindow.AddItem(item);
+            // TODO: decide what to do with it
+            // _mainWindow.AddItem(item);
         }
 
         public void ResetToolWindowPosition()
@@ -317,7 +324,7 @@ namespace ParallelRoadTool
 
         public void ResetToolButtonPosition()
         {
-            _mainWindow.ResetToolToggleButtonPosition();
+            _toolToggleButton.ResetPosition();
         }
 
         #endregion
@@ -326,25 +333,25 @@ namespace ParallelRoadTool
 
         private void UnsubscribeFromUIEvents()
         {
-            _mainWindow.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
-            _mainWindow.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
-            _mainWindow.OnHorizontalOffsetKeypress -= MainWindowOnOnHorizontalOffsetKeypress;
-            _mainWindow.OnVerticalOffsetKeypress -= MainWindowOnOnVerticalOffsetKeypress;
+            //_mainWindow_OLD.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
+            //_mainWindow_OLD.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
+            //_mainWindow_OLD.OnHorizontalOffsetKeypress -= MainWindowOnOnHorizontalOffsetKeypress;
+            //_mainWindow_OLD.OnVerticalOffsetKeypress -= MainWindowOnOnVerticalOffsetKeypress;
 
-            _mainWindow.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
-            _mainWindow.OnItemChanged -= MainWindowOnOnItemChanged;
+            //_mainWindow_OLD.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
+            //_mainWindow_OLD.OnItemChanged -= MainWindowOnOnItemChanged;
         }
 
         private void SubscribeToUIEvents()
         {
-            _mainWindow.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
-            _mainWindow.OnSnappingToggled += MainWindowOnOnSnappingToggled;
-            _mainWindow.OnHorizontalOffsetKeypress += MainWindowOnOnHorizontalOffsetKeypress;
-            _mainWindow.OnVerticalOffsetKeypress += MainWindowOnOnVerticalOffsetKeypress;
+            //_mainWindow_OLD.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
+            //_mainWindow_OLD.OnSnappingToggled += MainWindowOnOnSnappingToggled;
+            //_mainWindow_OLD.OnHorizontalOffsetKeypress += MainWindowOnOnHorizontalOffsetKeypress;
+            //_mainWindow_OLD.OnVerticalOffsetKeypress += MainWindowOnOnVerticalOffsetKeypress;
 
-            _mainWindow.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
-            _mainWindow.OnItemChanged += MainWindowOnOnItemChanged;
-            _mainWindow.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
+            //_mainWindow_OLD.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
+            //_mainWindow_OLD.OnItemChanged += MainWindowOnOnItemChanged;
+            //_mainWindow_OLD.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
         }
 
         /// <summary>
@@ -358,7 +365,8 @@ namespace ParallelRoadTool
             if (value is NetTool)
             {
                 // If we're in NetTool, we must restore our previous state + make the button visible
-                _mainWindow.ToggleToolButton(true);
+                // TODO: decide what to do with it
+                // _mainWindow_OLD.ToggleToolButton(true);
                 _isToolActive = true;
 
                 if (_isToolEnabled)
@@ -371,7 +379,8 @@ namespace ParallelRoadTool
             else
             {
                 // We're not anymore in NetTool, so we must hide all of our UI and disable detours
-                _mainWindow.ToggleToolButton(false);
+                // TODO: decide what to do with it
+                // _mainWindow_OLD.ToggleToolButton(false);
                 _mainWindow.isVisible = false;
                 _isToolActive = false;
                 //ToggleDetours(false);
@@ -386,7 +395,8 @@ namespace ParallelRoadTool
             {
                 var item = SelectedRoadTypes[i];
                 item.VerticalOffset += (1 + i) * step;
-                _mainWindow.UpdateItem(item, i);
+                // TODO: decide what to do with it
+                // _mainWindow.UpdateItem(item, i);
             }
         }
 
@@ -396,7 +406,8 @@ namespace ParallelRoadTool
             {
                 var item = SelectedRoadTypes[i];
                 item.HorizontalOffset += (1 + i) * step;
-                _mainWindow.UpdateItem(item, i);
+                // TODO: decide what to do with it
+                // // TODO: decide what to do with it_mainWindow.UpdateItem(item, i);
             }
         }
 
@@ -430,7 +441,8 @@ namespace ParallelRoadTool
             var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
             SelectedRoadTypes.Add(item);
 
-            _mainWindow.AddItem(item);
+            // TODO: decide what to do with it
+            // _mainWindow.AddItem(item);
             NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
         }
 
@@ -456,7 +468,8 @@ namespace ParallelRoadTool
         private void MainWindowOnOnNetworkItemDeleted(UIComponent component, int index)
         {
             SelectedRoadTypes.RemoveAt(index);
-            _mainWindow.DeleteItem(index);
+            // TODO: decide what to do with it
+            // _mainWindow.DeleteItem(index);
 
             NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
         }

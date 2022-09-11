@@ -1,5 +1,8 @@
 ﻿namespace ParallelRoadTool.UI
 {
+    /// <summary>
+    /// Some shared constants to better define UI's layout.
+    /// </summary>
     internal static class UIConstants
     {
         /// <summary>

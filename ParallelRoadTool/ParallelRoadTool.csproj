@@ -59,7 +59,9 @@
     <Compile Include="Detours\NetAIPatch.cs" />
     <Compile Include="Detours\NetManagerPatch.cs" />
     <Compile Include="Detours\NetToolPatch.cs" />
+    <Compile Include="Detours\ToolControllerPatch.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
+    <Compile Include="Models\ExtendedNetInfo.cs" />
     <Compile Include="Models\LocalizedString.cs" />
     <Compile Include="Models\LocalizedStringKey.cs" />
     <Compile Include="Models\NameList.cs" />
@@ -70,11 +72,15 @@
     <Compile Include="Models\PresetNetItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
+    <Compile Include="UI\Interfaces\IUIList.cs" />
+    <Compile Include="UI\Interfaces\IUIListabeItem.cs" />
     <Compile Include="UI\UIConstants.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
     <Compile Include="UI\UINetInfoPanel.cs" />
     <Compile Include="UI\UINetSetupPanel.cs" />
     <Compile Include="UI\UINetworkListPanel.cs" />
+    <Compile Include="UI\UIToolToggleButton.cs" />
+    <Compile Include="UI\Utils\UICustomListBox.cs" />
     <Compile Include="UI\Utils\UIHelpers.cs" />
     <Compile Include="UI_LEGACY\UIFastList.cs" />
     <Compile Include="UI_LEGACY\UILoadWindow.cs" />
