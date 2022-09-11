@@ -113,7 +113,7 @@ namespace ParallelRoadTool.UI
             _items[index].FilterDropdown(text);
         }
 
-        public void AddItem(NetTypeItem item, bool isCurrentItem = false)
+        public void AddItem(NetInfoItem item, bool isCurrentItem = false)
         {
             var component = AddUIComponent<UINetTypeItem>();
             if (!isCurrentItem)
@@ -137,7 +137,7 @@ namespace ParallelRoadTool.UI
             _space.BringToFront();
         }
 
-        public void UpdateItem(NetTypeItem item, int index)
+        public void UpdateItem(NetInfoItem item, int index)
         {
             var currentItem = _items[index];
             currentItem.HorizontalOffset = item.HorizontalOffset;

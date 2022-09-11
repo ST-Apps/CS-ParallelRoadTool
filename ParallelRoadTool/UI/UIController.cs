@@ -27,7 +27,8 @@ namespace ParallelRoadTool.UI
 
         #region Events/Callbacks
 
-        public event EventHandler ClosedButtonEventClicked;
+        public event EventHandler CloseButtonEventClicked;
+        public event EventHandler AddNetworkButtonEventClicked;
 
         public event PropertyChangedEventHandler<bool> ToolToggleButtonEventCheckChanged
         {
@@ -37,7 +38,12 @@ namespace ParallelRoadTool.UI
 
         private void MainWindow_CloseButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
-            ClosedButtonEventClicked?.Invoke(null, null);
+            CloseButtonEventClicked?.Invoke(null, null);
+        }
+
+        private void MainWindow_AddNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            AddNetworkButtonEventClicked?.Invoke(null, null);
         }
 
         #endregion
@@ -84,6 +90,7 @@ namespace ParallelRoadTool.UI
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's main button created.");
         }
+        
         public void Cleanup()
         {
             // Destroy UI
@@ -97,11 +104,13 @@ namespace ParallelRoadTool.UI
         private void AttachToEvents()
         {
             _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
+            _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
         }
 
         private void DetachFromEvents()
         {
             _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
+            _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
         }
 
         #endregion
@@ -136,6 +145,11 @@ namespace ParallelRoadTool.UI
         public void UpdateCurrentNetwork(NetInfo netInfo)
         {
             _mainWindow.UpdateCurrentNetwork(netInfo);
+        }
+
+        public void AddNetwork(NetInfoItem netInfo)
+        {
+            _mainWindow.AddNetwork(netInfo);
         }
 
         #endregion

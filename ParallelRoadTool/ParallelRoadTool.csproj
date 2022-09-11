@@ -65,7 +65,6 @@
     <Compile Include="Patches\NetToolsPrefabPatch.cs" />
     <Compile Include="Patches\ToolControllerPatch.cs" />
     <Compile Include="Extensions\LocaleManagerExtensions.cs" />
-    <Compile Include="Models\ExtendedNetInfo.cs" />
     <Compile Include="Models\LocalizedString.cs" />
     <Compile Include="Models\LocalizedStringKey.cs" />
     <Compile Include="Models\NameList.cs" />
@@ -83,7 +82,7 @@
     <Compile Include="UI\UIMainWindow.cs" />
     <Compile Include="UI\UINetInfoPanel.cs" />
     <Compile Include="UI\UINetSetupPanel.cs" />
-    <Compile Include="UI\UINetworkListPanel.cs" />
+    <Compile Include="UI\UINetListPanel.cs" />
     <Compile Include="UI\UIToolToggleButton.cs" />
     <Compile Include="UI\Utils\UICustomListBox.cs" />
     <Compile Include="UI\Utils\UIHelpers.cs" />

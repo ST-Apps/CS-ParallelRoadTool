@@ -25,19 +25,32 @@ namespace ParallelRoadTool
     {
         #region NEW
 
-        private readonly Harmony _harmony = new Harmony(ModInfo.HarmonyId);
-
-        private ModStatuses modStatuses = ModStatuses.Disabled;
+        private readonly Harmony _harmony = new Harmony(ModInfo.HarmonyId);        
 
         private UIController UIController => Singleton<UIController>.instance;
+
+        private void UIController_AddNetworkButtonEventClicked(object sender, EventArgs e)
+        {
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network.");
+
+            // Previous item's offset so that we can try to separate this one from previous one without overlapping
+            var prevOffset = SelectedRoadTypes.Any() ? SelectedRoadTypes.Last().HorizontalOffset : 0;
+            var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
+            var item = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
+            SelectedRoadTypes.Add(item);
+
+            UIController.AddNetwork(item);
+            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
+            
+        }
 
         private void UIController_ClosedButtonEventClicked(object sender, EventArgs e)
         {
             Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ClosedButtonEventClicked)}] Received click on close button.");
-            modStatuses &= ~ModStatuses.Active;
+            ModStatuses &= ~ModStatuses.Active;
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ClosedButtonEventClicked)}] New mod status is: {modStatuses:g}.");
-            UIController.UpdateVisibility(modStatuses);
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ClosedButtonEventClicked)}] New mod status is: {ModStatuses:g}.");
+            UIController.UpdateVisibility(ModStatuses);
         }
 
         private void ToolControllerPatch_CurrentToolChanged(object sender, CurrentToolChangedEventArgs e)
@@ -46,15 +59,15 @@ namespace ParallelRoadTool
 
             if (e.Tool is NetTool)
             {
-                modStatuses |= ModStatuses.Enabled;
+                ModStatuses |= ModStatuses.Enabled;
             }
             else
             {
-                modStatuses &= ~ModStatuses.Enabled;
+                ModStatuses &= ~ModStatuses.Enabled;
             }
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] New mod status is: {modStatuses:g}.");
-            UIController.UpdateVisibility(modStatuses);
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] New mod status is: {ModStatuses:g}.");
+            UIController.UpdateVisibility(ModStatuses);
         }
 
         private void UIController_ToolToggleButtonEventCheckChanged(UIComponent component, bool value)
@@ -63,14 +76,14 @@ namespace ParallelRoadTool
 
             if (value)
             {
-                modStatuses |= ModStatuses.Active;
+                ModStatuses |= ModStatuses.Active;
             } else
             {
-                modStatuses &= ~ModStatuses.Active;
+                ModStatuses &= ~ModStatuses.Active;
             }
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] New mod status is: {modStatuses:g}.");
-            UIController.UpdateVisibility(modStatuses);
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] New mod status is: {ModStatuses:g}.");
+            UIController.UpdateVisibility(ModStatuses);
         }
 
         private void NetToolsPrefabPatch_CurrentNetInfoChanged(object sender, CurrentNetInfoPrefabChangedEventArgs e)
@@ -90,15 +103,15 @@ namespace ParallelRoadTool
         public List<NetInfo> AvailableRoadTypes { get; private set; }
 
         /// <summary>
-        ///     <see cref="List{T}" /> containing all the selected <see cref="NetTypeItem" /> objects.
+        ///     <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
         ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
         /// </summary>
-        public List<NetTypeItem> SelectedRoadTypes { get; } = new List<NetTypeItem>();
+        public List<NetInfoItem> SelectedRoadTypes { get; } = new List<NetInfoItem>();
 
-        /// <summary>
-        ///     Array containing the beautified names for the <see cref="AvailableRoadTypes" />.
-        /// </summary>
-        public string[] AvailableRoadNames { get; private set; }
+        ///// <summary>
+        /////     Array containing the beautified names for the <see cref="AvailableRoadTypes" />.
+        ///// </summary>
+        //public string[] AvailableRoadNames { get; private set; }
 
         /// <summary>
         ///     This tells if the user wants the parallel/stacked nodes to snap with already existing nodes.
@@ -121,18 +134,7 @@ namespace ParallelRoadTool
         /// </summary>
         public static bool IsInGameMode { get; set; }
 
-        public static bool IsToolEnabled => _isToolActive && _isToolEnabled;
-
-        /// <summary>
-        /// Enabled means that the mod is ON, so we have detours deployed and our UI visible but ONLY if <see cref="_isToolActive"/> is true too.
-        /// If not, this means that when the current tool becomes <see cref="NetTool"/> again we'll redeploy the detours.
-        /// </summary>
-        private static bool _isToolEnabled;
-
-        /// <summary>
-        /// Active means that we're currently in <see cref="NetTool"/> so we must display our button.
-        /// </summary>
-        private static bool _isToolActive;
+        public static ModStatuses ModStatuses { get; private set; } = ModStatuses.Disabled;
 
         /// <summary>
         ///     Currently selected <see cref="NetInfo" /> within <see cref="NetTool" />.
@@ -174,7 +176,6 @@ namespace ParallelRoadTool
                 SelectedRoadTypes.Clear();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic == SimulationMetaData.MetaBool.True;
-                _isToolActive = _isToolEnabled = false;
 
                 // Load available networks
                 LoadNetworks();
@@ -185,9 +186,9 @@ namespace ParallelRoadTool
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patches applied.");
 
                 // Mod is now fully enabled
-                modStatuses ^= ModStatuses.Disabled;
-                modStatuses ^= ModStatuses.Deployed;
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Mod status is now {modStatuses:g}.");
+                ModStatuses ^= ModStatuses.Disabled;
+                ModStatuses ^= ModStatuses.Deployed;
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Mod status is now {ModStatuses:g}.");
             }
             catch (Exception e)
             {
@@ -210,7 +211,7 @@ namespace ParallelRoadTool
             {
                 Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Adding UI components");
                 UIController.Initialize();
-                UIController.UpdateVisibility(modStatuses);
+                UIController.UpdateVisibility(ModStatuses);
 
                 AttachToEvents();
 
@@ -250,10 +251,9 @@ namespace ParallelRoadTool
                 // Reset data structures
                 AvailableRoadTypes.Clear();
                 SelectedRoadTypes.Clear();
-                AvailableRoadNames = null;
+                //AvailableRoadNames = null;
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
-                _isToolActive = _isToolEnabled = false;
 
                 // Unsubscribe to milestones updated
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -337,7 +337,7 @@ namespace ParallelRoadTool
                 }
             }
 
-            AvailableRoadNames = sortedNetworks.Keys.ToArray();
+            //AvailableRoadNames = sortedNetworks.Keys.ToArray();
             AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
             // TODO: decide what to do with it
@@ -360,7 +360,7 @@ namespace ParallelRoadTool
 
         private void AddNetworkType(NetInfo net)
         {
-            AvailableRoadNames[AvailableRoadTypes.Count] = net.GenerateBeautifiedNetName();
+            //AvailableRoadNames[AvailableRoadTypes.Count] = net.GenerateBeautifiedNetName();
             AvailableRoadTypes.Add(net);
         }
 
@@ -370,7 +370,7 @@ namespace ParallelRoadTool
             // _mainWindow.ClearItems();
         }
 
-        public void AddItem(NetTypeItem item)
+        public void AddItem(NetInfoItem item)
         {
             // TODO: decide what to do with it
             // _mainWindow.AddItem(item);
@@ -385,7 +385,8 @@ namespace ParallelRoadTool
             ToolControllerPatch.CurrentToolChanged -= ToolControllerPatch_CurrentToolChanged;
             NetToolsPrefabPatch.CurrentNetInfoChanged -= NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged -= UIController_ToolToggleButtonEventCheckChanged;
-            UIController.ClosedButtonEventClicked -= UIController_ClosedButtonEventClicked;
+            UIController.CloseButtonEventClicked -= UIController_ClosedButtonEventClicked;
+            UIController.AddNetworkButtonEventClicked -= UIController_AddNetworkButtonEventClicked;
 
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -404,7 +405,8 @@ namespace ParallelRoadTool
             ToolControllerPatch.CurrentToolChanged += ToolControllerPatch_CurrentToolChanged;
             NetToolsPrefabPatch.CurrentNetInfoChanged += NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged += UIController_ToolToggleButtonEventCheckChanged;
-            UIController.ClosedButtonEventClicked += UIController_ClosedButtonEventClicked;
+            UIController.CloseButtonEventClicked += UIController_ClosedButtonEventClicked;
+            UIController.AddNetworkButtonEventClicked += UIController_AddNetworkButtonEventClicked;
 
             // Subscribe to milestones updated, but only if we're not in map editor
             if (IsInGameMode)
@@ -504,7 +506,7 @@ namespace ParallelRoadTool
             // Previous item's offset so that we can try to separate this one from previous one without overlapping
             var prevOffset = SelectedRoadTypes.Any() ? SelectedRoadTypes.Last().HorizontalOffset : 0;
             var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
-            var item = new NetTypeItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
+            var item = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
             SelectedRoadTypes.Add(item);
 
             // TODO: decide what to do with it
@@ -525,7 +527,8 @@ namespace ParallelRoadTool
                                   ? null
                                   : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
 
-            item.NetInfo = netInfo;
+            // TODO: decide what to do with it
+            // item.NetInfo = netInfo;
             item.HorizontalOffset = value.HorizontalOffset;
             item.VerticalOffset = value.VerticalOffset;
             item.IsReversed = value.IsReversedNetwork;

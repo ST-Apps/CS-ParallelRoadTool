@@ -11,12 +11,12 @@ using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
-    internal class UINetworkListPanel : UIPanel
+    internal class UINetListPanel : UIPanel
     {
         #region Constants
 
         // We only have padding for bottom side to separate multiple elements
-        private readonly RectOffset LayoutPadding = new RectOffset(0, 0, 0, UIConstants.Padding / 2);
+        private readonly RectOffset LayoutPadding = new RectOffset(0, 0, 0, UIConstants.Padding);
 
         #endregion
 
@@ -53,15 +53,21 @@ namespace ParallelRoadTool.UI
         /// </summary>
         /// <param name="netInfo"></param>
         /// <param name="isCurrentNetwork">True if this is the info panel for the currently selected network in <see cref="NetTool"/>. Current network can't be customized.</param>
-        internal void AddNetwork(ExtendedNetInfo netInfo)
+        internal void AddNetwork(NetInfoItem netInfo)
         {
             // Basic setup
             var netSetupPanel = AddUIComponent<UINetSetupPanel>();
             netSetupPanel.FitWidth(this, 0);
+            netSetupPanel.DeleteNetworkButtonEventClicked += NetSetupPanel_DeleteNetworkButtonEventClicked;
             _netSetupPanels.Add(netSetupPanel);
 
             // Finally render the panel
             netSetupPanel.Render(netInfo);
+        }
+
+        private void NetSetupPanel_DeleteNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

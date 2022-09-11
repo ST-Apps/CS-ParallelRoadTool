@@ -218,12 +218,12 @@ namespace ParallelRoadTool.UI_LEGACY
             _toolToggleButton.isVisible = value;
         }
 
-        public void AddItem(NetTypeItem item)
+        public void AddItem(NetInfoItem item)
         {
             _netList.AddItem(item);
         }
 
-        public void UpdateItem(NetTypeItem item, int index)
+        public void UpdateItem(NetInfoItem item, int index)
         {
             _netList.UpdateItem(item, index);
         }

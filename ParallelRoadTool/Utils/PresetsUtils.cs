@@ -90,7 +90,7 @@ namespace ParallelRoadTool.Utils
 
                     Log.Info($"[{nameof(PresetsUtils)}.{nameof(Import)}] Adding network {netInfo.name} from preset {filename}");
 
-                    var item = new NetTypeItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset,
+                    var item = new NetInfoItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset,
                                                preset.IsReversed);
                     Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Add(item);
                     Singleton<ParallelRoadTool>.instance.AddItem(item);

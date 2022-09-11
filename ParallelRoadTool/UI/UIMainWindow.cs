@@ -29,7 +29,7 @@ namespace ParallelRoadTool.UI
         #region Components
 
         private UIButton _closeButton;
-        private UINetworkListPanel _networkListPanel;
+        private UINetListPanel _networkListPanel;
         private UICheckBox _toggleSnappingButton;
         private UIButton _addNetworkButton;
         private UINetSetupPanel _currentNetworkSetupPanel;
@@ -197,7 +197,7 @@ namespace ParallelRoadTool.UI
             _currentNetworkSetupPanel.IsReadOnly = true;
 
             // Main/NetworkList
-            _networkListPanel = AddUIComponent<UINetworkListPanel>();
+            _networkListPanel = AddUIComponent<UINetListPanel>();
             _networkListPanel.padding = padding;
             _networkListPanel.FitWidth(this, UIConstants.Padding);
 
@@ -249,7 +249,12 @@ namespace ParallelRoadTool.UI
 
         public void UpdateCurrentNetwork(NetInfo netInfo)
         {
-            _currentNetworkSetupPanel.Render(new ExtendedNetInfo(netInfo));
+            _currentNetworkSetupPanel.Render(new NetInfoItem(netInfo));
+        }
+
+        public void AddNetwork(NetInfoItem netInfo)
+        {
+            _networkListPanel.AddNetwork(netInfo);
         }
 
         #endregion

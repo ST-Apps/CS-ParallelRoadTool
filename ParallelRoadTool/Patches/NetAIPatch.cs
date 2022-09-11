@@ -3,6 +3,7 @@ using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Models;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
@@ -63,7 +64,7 @@ namespace ParallelRoadTool.Patches
             try
             {
 
-                if (!ParallelRoadTool.IsToolEnabled)
+                if (!ParallelRoadTool.ModStatuses.IsFlagSet(ModStatuses.Active))
                 {
                      // Log._Debug($"[{nameof(NetAIPatch)}.{nameof(Postfix)}] Skipping because mod is not currently active.");
                     return;

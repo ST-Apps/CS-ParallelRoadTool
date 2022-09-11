@@ -5,6 +5,7 @@ using ColossalFramework.Math;
 using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Models;
 using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
@@ -286,7 +287,7 @@ namespace ParallelRoadTool.Patches
             {
                 segment = (ushort)__args[0];
 
-                if (!ParallelRoadTool.IsToolEnabled)
+                if (!ParallelRoadTool.ModStatuses.IsFlagSet(ModStatuses.Active))
                 {
                     Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Skipping because mod is not currently active.");
                     return;
