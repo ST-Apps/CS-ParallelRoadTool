@@ -44,10 +44,12 @@ namespace ParallelRoadTool.UI
 
         public void Render(ExtendedNetInfo netInfo)
         {
-            Log.Info($"[{nameof(UINetInfoPanel)}.{nameof(Render)}] Received a new network {netInfo.Name} [{_thumbnail == null}]");
+            Log.Info(@$"[{nameof(UINetInfoPanel)}.{nameof(Render)}] Received a new network ""{netInfo.Name}"".");
+            Log._Debug(@$"[{nameof(UINetInfoPanel)}.{nameof(Render)}] Network's metadata: [ATLAS = ""{netInfo.Atlas?.name}"", THUMBNAIL = ""{netInfo.Thumbnail}""].");
+            Log._Debug(@$"[{nameof(UINetInfoPanel)}.{nameof(Render)}] Network's ORIGINAL metadata: [ATLAS = ""{netInfo.NetInfo.m_Atlas?.name}"", THUMBNAIL = ""{netInfo.NetInfo.m_Thumbnail}""].");
 
-            _thumbnail.atlas = netInfo.Atlas;
-            _thumbnail.spriteName = netInfo.Thumbnail;
+            _thumbnail.atlas = netInfo.NetInfo.m_Atlas; // netInfo.Atlas;
+            _thumbnail.spriteName = netInfo.NetInfo.m_Thumbnail; // netInfo.Thumbnail;
             _label.text = netInfo.BeautifiedName;
 
             Id = netInfo.Name;

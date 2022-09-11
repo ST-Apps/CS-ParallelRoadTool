@@ -318,7 +318,9 @@ namespace ParallelRoadTool
                     if (!IsInGameMode || prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
                         sortedNetworks[networkName] = prefab;
                     else
-                        Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping {networkName} because {prefab.m_UnlockMilestone.m_name} is not passed yet.");
+                        Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because ""{prefab.m_UnlockMilestone.m_name}"" is not passed yet.");
+
+                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{prefab.m_Atlas?.name}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
                 }
             }
 
@@ -337,7 +339,7 @@ namespace ParallelRoadTool
             // TODO: decide what to do with it
             // AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
-            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks");
+            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks.");
 
             // TODO: decide what to do with it
             // if (updateDropdowns) _mainWindow_OLD.UpdateDropdowns();
