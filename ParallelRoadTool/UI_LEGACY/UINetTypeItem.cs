@@ -18,20 +18,20 @@ namespace ParallelRoadTool.UI
 
         private void PopulateDropdown()
         {
-            _dropDown.items = IsCurrentItem
-                                  ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1).ToArray()
-                                  : Singleton<ParallelRoadTool>.instance.AvailableRoadNames;
+            //_dropDown.items = IsCurrentItem
+            //                      ? Singleton<ParallelRoadTool>.instance.AvailableRoadNames.Take(1).ToArray()
+            //                      : Singleton<ParallelRoadTool>.instance.AvailableRoadNames;
 
-            IsFiltered = false;
-            if (!string.IsNullOrEmpty(_filterText))
-            {
-                _dropDown.items = _dropDown.items
-                                           .Where(i => i.ToLowerInvariant().Contains(_filterText.ToLowerInvariant())).ToArray();
-                IsFiltered = true;
-            }
+            //IsFiltered = false;
+            //if (!string.IsNullOrEmpty(_filterText))
+            //{
+            //    _dropDown.items = _dropDown.items
+            //                               .Where(i => i.ToLowerInvariant().Contains(_filterText.ToLowerInvariant())).ToArray();
+            //    IsFiltered = true;
+            //}
 
-            _dropDown.selectedIndex = 0;
-            _populated = true;
+            //_dropDown.selectedIndex = 0;
+            //_populated = true;
         }
 
         #endregion

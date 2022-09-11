@@ -23,7 +23,7 @@ namespace ParallelRoadTool.Patches
             typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
         }
     )]
-    internal class NetToolNodePatch
+    internal class NetToolCameraPatch
     {
         #region Detour
 
@@ -39,7 +39,7 @@ namespace ParallelRoadTool.Patches
                                                                             null);
 
         private static readonly MethodInfo To =
-            typeof(NetToolNodePatch).GetMethod("RenderOverlay", BindingFlags.NonPublic | BindingFlags.Instance);
+            typeof(NetToolCameraPatch).GetMethod("RenderOverlay", BindingFlags.NonPublic | BindingFlags.Instance);
 
         //private static RedirectCallsState _state;
         //private static bool _deployed;
@@ -127,16 +127,21 @@ namespace ParallelRoadTool.Patches
                         ItemClass.CollisionType.Elevated)
                         selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
+                    var newColor = currentRoadInfos.Color;
+
                     // 50 shades of blue
-                    var newColor = new Color(
-                                             Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
-                                             Mathf.Clamp(color.g * 255 + i, 0, 255) / 255,
-                                             Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
-                                             color.a);
+                    //var newColor = new Color(
+                    //                         Mathf.Clamp(color.r * 255 + i, 0, 255) / 255,
+                    //                         Mathf.Clamp(color.g * 255 + i, 0, 255) / 255,
+                    //                         Mathf.Clamp(color.b * 255 + i, 0, 255) / 255,
+                    //                         color.a);
 
                     // Render parallel segments by shifting the position of the 3 ControlPoint
-                    NetToolReversePatch.RenderOverlay(netTool,
-                        cameraInfo, selectedNetInfo, newColor,
+                    NetToolReversePatch.RenderOverlay(
+                        netTool,
+                        cameraInfo, 
+                        selectedNetInfo, 
+                        newColor,
                         new NetTool.ControlPoint
                         {
                             m_direction = startPoint.m_direction,
@@ -178,7 +183,7 @@ namespace ParallelRoadTool.Patches
             catch (Exception e)
             {
                 // Log the exception
-                Log._DebugOnlyError($"[{nameof(NetToolNodePatch)}.{nameof(Postfix)}] CreateSegment failed.");
+                Log._DebugOnlyError($"[{nameof(NetToolCameraPatch)}.{nameof(Postfix)}] CreateSegment failed.");
                 Log.Exception(e);
             }
             finally
