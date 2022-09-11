@@ -22,7 +22,7 @@ namespace ParallelRoadTool.Patches
             typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
         }
     )]
-    public class NetToolPatch
+    internal class NetToolNodePatch
     {
         #region Detour
 
@@ -38,7 +38,7 @@ namespace ParallelRoadTool.Patches
                                                                             null);
 
         private static readonly MethodInfo To =
-            typeof(NetToolPatch).GetMethod("RenderOverlay", BindingFlags.NonPublic | BindingFlags.Instance);
+            typeof(NetToolNodePatch).GetMethod("RenderOverlay", BindingFlags.NonPublic | BindingFlags.Instance);
 
         //private static RedirectCallsState _state;
         //private static bool _deployed;
@@ -177,7 +177,7 @@ namespace ParallelRoadTool.Patches
             catch (Exception e)
             {
                 // Log the exception
-                Log._DebugOnlyError($"[{nameof(NetToolPatch)}.{nameof(Postfix)}] CreateSegment failed.");
+                Log._DebugOnlyError($"[{nameof(NetToolNodePatch)}.{nameof(Postfix)}] CreateSegment failed.");
                 Log.Exception(e);
             }
             finally

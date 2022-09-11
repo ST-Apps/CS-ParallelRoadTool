@@ -31,6 +31,15 @@ namespace ParallelRoadTool
 
         private UIController UIController => Singleton<UIController>.instance;
 
+        private void UIController_ClosedButtonEventClicked(object sender, EventArgs e)
+        {
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ClosedButtonEventClicked)}] Received click on close button.");
+            modStatuses &= ~ModStatuses.Active;
+
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ClosedButtonEventClicked)}] New mod status is: {modStatuses:g}.");
+            UIController.UpdateVisibility(modStatuses);
+        }
+
         private void ToolControllerPatch_CurrentToolChanged(object sender, CurrentToolChangedEventArgs e)
         {
             Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] Changed tool to {e.Tool.GetType().Name}.");
@@ -64,6 +73,10 @@ namespace ParallelRoadTool
             UIController.UpdateVisibility(modStatuses);
         }
 
+        private void NetToolsPrefabPatch_CurrentNetInfoChanged(object sender, CurrentNetInfoPrefabChangedEventArgs e)
+        {
+            UIController.UpdateCurrentNetwork(e.Prefab);
+        }
         #endregion
 
         #region Properties
@@ -370,7 +383,9 @@ namespace ParallelRoadTool
         private void DetachFromEvents()
         {
             ToolControllerPatch.CurrentToolChanged -= ToolControllerPatch_CurrentToolChanged;
+            NetToolsPrefabPatch.CurrentNetInfoChanged -= NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged -= UIController_ToolToggleButtonEventCheckChanged;
+            UIController.ClosedButtonEventClicked -= UIController_ClosedButtonEventClicked;
 
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -387,7 +402,9 @@ namespace ParallelRoadTool
         private void AttachToEvents()
         {
             ToolControllerPatch.CurrentToolChanged += ToolControllerPatch_CurrentToolChanged;
+            NetToolsPrefabPatch.CurrentNetInfoChanged += NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged += UIController_ToolToggleButtonEventCheckChanged;
+            UIController.ClosedButtonEventClicked += UIController_ClosedButtonEventClicked;
 
             // Subscribe to milestones updated, but only if we're not in map editor
             if (IsInGameMode)

@@ -25,12 +25,19 @@ namespace ParallelRoadTool.UI
 
         #endregion
 
-        #region Events
+        #region Events/Callbacks
+
+        public event EventHandler ClosedButtonEventClicked;
 
         public event PropertyChangedEventHandler<bool> ToolToggleButtonEventCheckChanged
         {
             add { _toolToggleButton.eventCheckChanged += value; }
             remove { _toolToggleButton.eventCheckChanged -= value; }
+        }
+
+        private void MainWindow_CloseButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            ClosedButtonEventClicked?.Invoke(null, null);
         }
 
         #endregion
@@ -89,12 +96,12 @@ namespace ParallelRoadTool.UI
 
         private void AttachToEvents()
         {
-
+            _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
         }
 
         private void DetachFromEvents()
         {
-
+            _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
         }
 
         #endregion
@@ -120,8 +127,15 @@ namespace ParallelRoadTool.UI
 
             // Window is visible button is visible and mod is active
             _mainWindow.isVisible = _toolToggleButton.isVisible && modStatuses.IsFlagSet(ModStatuses.Active);
+            if (!modStatuses.IsFlagSet(ModStatuses.Active))
+                _toolToggleButton.isChecked = false;
 
             Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Visibility set for main components: [{nameof(_toolToggleButton)} = {_toolToggleButton.isVisible}, {nameof(_mainWindow)} = {_mainWindow.isVisible}].");
+        }
+
+        public void UpdateCurrentNetwork(NetInfo netInfo)
+        {
+            _mainWindow.UpdateCurrentNetwork(netInfo);
         }
 
         #endregion

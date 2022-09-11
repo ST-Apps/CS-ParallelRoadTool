@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Interfaces;
 using ParallelRoadTool.UI.Utils;
@@ -16,6 +17,9 @@ namespace ParallelRoadTool.UI
 {
     internal class UINetSetupPanel : UIPanel, IUIListabeItem<ExtendedNetInfo>
     {
+        // Taken from vanilla rpad building's overlay color
+        private readonly Color ReadOnlyColor = new Color(0, 0.710f, 1, 0.5f);
+
         #region Events
 
         #region Events
@@ -40,7 +44,10 @@ namespace ParallelRoadTool.UI
         private UICheckBox _reverseCheckbox;
         private UIButton _deleteButton;
 
+        private bool _isReadOnly;
+
         public string Id { get; set; }
+        public bool IsReadOnly { set { _isReadOnly = value; color = ReadOnlyColor; HideTools(); } }
 
         #endregion
 
@@ -135,7 +142,7 @@ namespace ParallelRoadTool.UI
         public override void Start()
         {
             // Make NetInfoPanel wide enough to fill the empty space
-            _netInfoPanel.width = width - _offsetsPanel.width -_buttonsPanel.width;
+            _netInfoPanel.width = width - _offsetsPanel.width - _buttonsPanel.width;
 
             // TODO: improve with subscribe/unsubscribe
             _netInfoPanel.eventClicked += (s, e) =>
@@ -155,8 +162,8 @@ namespace ParallelRoadTool.UI
         }
 
         public void Render(ExtendedNetInfo netInfo)
-        {
-            color = netInfo.Color;
+        {            
+            color = _isReadOnly ? ReadOnlyColor : netInfo.Color;
             _netInfoPanel.Render(netInfo);
         }
 

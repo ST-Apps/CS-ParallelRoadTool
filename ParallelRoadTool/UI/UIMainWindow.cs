@@ -32,7 +32,7 @@ namespace ParallelRoadTool.UI
         private UINetworkListPanel _networkListPanel;
         private UICheckBox _toggleSnappingButton;
         private UIButton _addNetworkButton;
-        private UINetInfoPanel _currentNetworkInfoPanel;
+        private UINetSetupPanel _currentNetworkSetupPanel;
 
         #endregion
 
@@ -190,10 +190,11 @@ namespace ParallelRoadTool.UI
             BuildToolbar();
 
             // Main/CurrentNetwork
-            _currentNetworkInfoPanel = AddUIComponent<UINetInfoPanel>();
-            _currentNetworkInfoPanel.padding = padding;
-            _currentNetworkInfoPanel.FitWidth(this, UIConstants.Padding);
-            _currentNetworkInfoPanel.MakeReadOnly();
+            _currentNetworkSetupPanel = AddUIComponent<UINetSetupPanel>();
+            _currentNetworkSetupPanel.relativePosition = Vector2.zero;
+            _currentNetworkSetupPanel.padding = padding;
+            _currentNetworkSetupPanel.FitWidth(this, UIConstants.Padding);
+            _currentNetworkSetupPanel.IsReadOnly = true;
 
             // Main/NetworkList
             _networkListPanel = AddUIComponent<UINetworkListPanel>();
@@ -209,11 +210,11 @@ namespace ParallelRoadTool.UI
             AttachUIEvents();
             //// TODO: remove
             //_networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(4).First(), true);
-            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(13).First()));
-            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(25).First()));
-            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(72).First()));
-            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(155).First()));
-            _networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(200).First()));
+            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(13).First()));
+            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(25).First()));
+            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(72).First()));
+            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(155).First()));
+            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(200).First()));
 
             ////networkListPanel.UINetSetupPanelClicked += (s) =>
             ////{
@@ -241,6 +242,15 @@ namespace ParallelRoadTool.UI
         }
 
         #endregion
+
+        #endregion
+
+        #region Control
+
+        public void UpdateCurrentNetwork(NetInfo netInfo)
+        {
+            _currentNetworkSetupPanel.Render(new ExtendedNetInfo(netInfo));
+        }
 
         #endregion
     }
