@@ -169,6 +169,9 @@ namespace ParallelRoadTool.UI
         public void Render(NetInfoItem netInfo)
         {            
             color = _isReadOnly ? ReadOnlyColor : netInfo.Color;
+            _horizontalOffsetField.text = $"{netInfo.HorizontalOffset}";
+            _verticalOffsetField.text = $"{netInfo.VerticalOffset}";
+
             _netInfoPanel.Render(netInfo);
         }
 

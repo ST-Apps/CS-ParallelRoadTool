@@ -134,6 +134,9 @@ namespace ParallelRoadTool
         /// </summary>
         public static bool IsInGameMode { get; set; }
 
+        /// <summary>
+        /// Flags for the current statuses for the mod. For more details see: <see cref="Models.ModStatuses"/>.
+        /// </summary>
         public static ModStatuses ModStatuses { get; private set; } = ModStatuses.Disabled;
 
         /// <summary>
@@ -143,18 +146,11 @@ namespace ParallelRoadTool
 
         #endregion
 
-        #region UI
-
-        /// <summary>
-        ///     Main UI panel.
-        /// </summary>
-        // private UIMainWindow _mainWindow_OLD;
-
-        #endregion
-
         #endregion
 
         #region Unity
+
+        #region Lifecycle
 
         public void Awake()
         {
@@ -272,39 +268,9 @@ namespace ParallelRoadTool
 
         #endregion
 
+        #endregion
+
         #region Utils
-
-        ///// <summary>
-        /////     Deploys/un-deploys the mod by toggling the custom detours.
-        ///// </summary>
-        ///// <param name="toolEnabled"></param>
-        //private static void ToggleDetours(bool toolEnabled)
-        //{
-        //    if (toolEnabled)
-        //    {
-        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabling detours...");
-
-        //        NetManagerDetour.Deploy();
-        //        NetToolDetour.Deploy();
-
-        //        if (IsInGameMode)
-        //            NetAIDetour.Deploy();
-
-        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Enabled detours");
-        //    }
-        //    else
-        //    {
-        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabling detours...");
-
-        //        NetManagerDetour.Revert();
-        //        NetToolDetour.Revert();
-
-        //        if (IsInGameMode)
-        //            NetAIDetour.Revert();
-
-        //        Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(ToggleDetours)}] Disabled detours");
-        //    }
-        //}
 
         /// <summary>
         ///     We load all the available networks, based on the currently unlocked milestones (only if <see cref="IsInGameMode" />
@@ -421,41 +387,6 @@ namespace ParallelRoadTool
             //_mainWindow_OLD.OnItemChanged += MainWindowOnOnItemChanged;
             //_mainWindow_OLD.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
         }
-
-        ///// <summary>
-        ///// We need to react to changes in current tool.
-        ///// If current tool is NOT <see cref="NetTool"/> then we must disable everything, while still remembering if the tool was enabled or not (so that we can restore this state once the tool becomes <see cref="NetTool"/> again).
-        ///// </summary>
-        ///// <param name="component"></param>
-        ///// <param name="value"></param>
-        //private void ToolBaseDetour_OnToolChanged(UIComponent component, ToolBase value)
-        //{
-        //    if (value is NetTool)
-        //    {
-        //        // If we're in NetTool, we must restore our previous state + make the button visible
-        //        // TODO: decide what to do with it
-        //        // _mainWindow_OLD.ToggleToolButton(true);
-        //        _isToolActive = true;
-
-        //        if (_isToolEnabled)
-        //        {
-        //            // This means we also need to restore detours and show our main window again
-        //            //ToggleDetours(true);
-        //            _mainWindow.isVisible = true;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // We're not anymore in NetTool, so we must hide all of our UI and disable detours
-        //        // TODO: decide what to do with it
-        //        // _mainWindow_OLD.ToggleToolButton(false);
-        //        _mainWindow.isVisible = false;
-        //        _isToolActive = false;
-        //        //ToggleDetours(false);
-        //    }
-
-        //    Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolBaseDetour_OnToolChanged)}] Changed tool to {value.GetType().Name} [{nameof(_isToolActive)}: {_isToolActive}, {nameof(_isToolEnabled)}: {_isToolEnabled}]");
-        //}
 
         private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
         {
