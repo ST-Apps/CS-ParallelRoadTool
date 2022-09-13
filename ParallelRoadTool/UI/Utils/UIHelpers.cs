@@ -28,7 +28,7 @@ namespace ParallelRoadTool.UI.Utils
         public static Color ColorFromString(string str)
         {
             var hash = str.GetHashCode();
-            var hue = Mathf.Abs(hash % 360) / 360f;
+            var hue = Mathf.Clamp(Mathf.Abs(hash % 360), 20, 340) / 360f;
 
             return Color.HSVToRGB(hue, 0.5f, 0.85f);
         }

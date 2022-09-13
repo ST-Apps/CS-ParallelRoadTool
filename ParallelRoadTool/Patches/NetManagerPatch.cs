@@ -48,54 +48,6 @@ namespace ParallelRoadTool.Patches
     )]
     public class NetManagerPatch
     {
-        #region Detour
-
-        //private static readonly MethodInfo From = typeof(NetManager).GetMethod("CreateSegment",
-        //                                                                       BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
-        //                                                                       null,
-        //                                                                       new[]
-        //                                                                       {
-        //                                                                           typeof(ushort).MakeByRefType(),
-        //                                                                           typeof(Randomizer).MakeByRefType(),
-        //                                                                           typeof(NetInfo),
-        //                                                                           typeof(TreeInfo),
-        //                                                                           typeof(ushort),
-        //                                                                           typeof(ushort),
-        //                                                                           typeof(Vector3),
-        //                                                                           typeof(Vector3),
-        //                                                                           typeof(uint),
-        //                                                                           typeof(uint),
-        //                                                                           typeof(bool)
-        //                                                                       },
-        //                                                                       null);
-
-        //private static readonly MethodInfo To =
-        //    typeof(NetManagerPatch).GetMethod("CreateSegment", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        //private static RedirectCallsState _state;
-        //private static bool _deployed;
-
-        //public static void Deploy()
-        //{
-        //    if (_deployed) return;
-        //    _state = RedirectionHelper.RedirectCalls(From, To);
-
-        //    // Initialize helper structures
-        //    if (_endNodeId == null || _clonedEndNodeId == null || _startNodeId == null ||
-        //        _clonedStartNodeId == null)
-        //        NetworksCount = 1;
-
-        //    _deployed = true;
-        //}
-
-        //public static void Revert()
-        //{
-        //    if (!_deployed) return;
-        //    RedirectionHelper.RevertRedirect(From, _state);
-        //    _deployed = false;
-        //}
-
-        #endregion
 
         // We store nodes from previous iteration so that we know which node to connect to
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
