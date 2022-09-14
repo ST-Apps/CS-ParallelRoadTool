@@ -62,46 +62,13 @@ namespace ParallelRoadTool.UI
             }
         }
 
-        //private void DeleteNetwork(UIComponent component, int index)
-        //{
-        //    lock (_lock)
-        //    {
-        //        var children = new List<GameObject>();
-        //        for (int i = 0; i < childCount; i++)
-        //        {
-        //            if (i == index) continue;
-        //            children.Add(transform.GetChild(i).gameObject);
-        //        }
-        //        transform.DetachChildren();
-        //        DestroyImmediate(component);
-        //        SortNetworks(children);
-        //    }
-        //}
-
-        //private void SortNetworks(List<GameObject> children)
-        //{
-        //    // TODO: non funziona
-        //    // TODO: spostare Destroy fuori da DeleteNetwork e rendere DeleteNetwork un sor
-        //    // TODO: childPanels non serve generarlo così, basta fare children.Add(transform.GetChild.GetComponent alla 47)
-        //    var childPanels = children.Select(c => c.GetComponent<UINetSetupPanel>()).OrderBy(p => p.HorizontalOffset).ToArray();
-        //    //foreach (var child in childPanels)
-        //    //{
-        //    //    //child.transform.parent = transform;
-        //    //    this.AttachUIComponent(child.gameObject);
-        //    //}
-        //    this.AttachUIComponent(childPanels[3].gameObject);
-        //    this.AttachUIComponent(childPanels[1].gameObject);
-        //    this.AttachUIComponent(childPanels[0].gameObject);
-        //    this.AttachUIComponent(childPanels[2].gameObject);
-        //}
-
         #endregion
 
         #region Unity
 
         #region Components
 
-        private readonly UIList<UINetSetupPanel> _netSetupPanels = new UIList<UINetSetupPanel>();
+        private UILabel _tutorialText;
 
         #endregion
 
@@ -131,7 +98,6 @@ namespace ParallelRoadTool.UI
             netSetupPanel.FitWidth(this, 0);
             netSetupPanel.DeleteNetworkButtonEventClicked += NetSetupPanel_DeleteNetworkButtonEventClicked;
             netSetupPanel.NetTypeEventChanged += NetSetupPanel_NetTypeEventChanged;
-            _netSetupPanels.Add(netSetupPanel);
 
             // Finally render the panel
             netSetupPanel.Render(netInfo);
