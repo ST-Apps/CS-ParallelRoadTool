@@ -25,9 +25,16 @@ namespace ParallelRoadTool
     {
         #region NEW
 
-        private readonly Harmony _harmony = new Harmony(ModInfo.HarmonyId);        
+        private readonly Harmony _harmony = new Harmony(ModInfo.HarmonyId);
 
         private UIController UIController => Singleton<UIController>.instance;
+
+        public void ToggleModStatus()
+        {
+            ModStatuses ^= ModStatuses.Active;
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToggleModStatus)}] New mod status is: {ModStatuses:g}.");
+            UIController.UpdateVisibility(ModStatuses);
+        }
 
         private void UIController_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
         {
@@ -92,7 +99,7 @@ namespace ParallelRoadTool
 
             SelectedRoadTypes.Add(item);
             UIController.AddNetwork(item);
-            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;            
+            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
         }
 
         private void UIController_DeleteNetworkButtonEventClicked(UIComponent component, int index)
@@ -135,7 +142,8 @@ namespace ParallelRoadTool
             if (value)
             {
                 ModStatuses |= ModStatuses.Active;
-            } else
+            }
+            else
             {
                 ModStatuses &= ~ModStatuses.Active;
             }

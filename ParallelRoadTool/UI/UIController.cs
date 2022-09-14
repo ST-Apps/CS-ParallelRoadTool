@@ -96,7 +96,7 @@ namespace ParallelRoadTool.UI
             }
 
             // Checking key presses
-            //if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
+            if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleModStatus();
 
             if (OptionsKeymapping.DecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
 
@@ -105,6 +105,11 @@ namespace ParallelRoadTool.UI
             if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
 
             if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+        }
+
+        private void ToggleModStatus()
+        {
+            Singleton<ParallelRoadTool>.instance.ToggleModStatus();
         }
 
         private void AdjustNetOffset(float step, bool isHorizontal = true)
@@ -204,6 +209,8 @@ namespace ParallelRoadTool.UI
             _mainWindow.isVisible = _toolToggleButton.isVisible && modStatuses.IsFlagSet(ModStatuses.Active);
             if (!modStatuses.IsFlagSet(ModStatuses.Active))
                 _toolToggleButton.isChecked = false;
+            else
+                _toolToggleButton.isChecked = true;
 
             Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Visibility set for main components: [{nameof(_toolToggleButton)} = {_toolToggleButton.isVisible}, {nameof(_mainWindow)} = {_mainWindow.isVisible}].");
         }
