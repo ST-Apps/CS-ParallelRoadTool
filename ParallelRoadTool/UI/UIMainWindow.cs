@@ -225,68 +225,7 @@ namespace ParallelRoadTool.UI
         public override void Start()
         {
             AttachUIEvents();
-            //// TODO: remove
-            //_networkListPanel.AddNetwork(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(4).First(), true);
-            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(13).First()));
-            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(25).First()));
-            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(72).First()));
-            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(155).First()));
-            //_networkListPanel.AddNetwork(new ExtendedNetInfo(Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.Skip(200).First()));
-
-            ////networkListPanel.UINetSetupPanelClicked += (s) =>
-            ////{
-            ////    var uiObject = new GameObject();
-            ////    uiObject.transform.parent = UIView.GetAView().transform;
-            ////    var messageBox = uiObject.AddComponent<UIPanel>();
-            ////    messageBox.size = new Vector2(300, 300);
-            ////    messageBox.color = s.color;
-            ////    messageBox.absolutePosition = new Vector2(100, 100);
-
-            ////    UIView.PushModal(messageBox);
-            ////    messageBox.Show(true);
-            ////    messageBox.Focus();
-
-            ////    // TODO: not working
-            ////    // TODO: modal with search box and a scrollable panel of UINetInfoPanel
-
-            ////    Log._Debug($"[{nameof(UIMainWindow)}.{nameof(Start)}] Pushed modal to position {messageBox.absolutePosition}");
-            ////};
-        }
-
-        public void OnGUI()
-        {
-            if (UIView.HasModalInput()
-                || UIView.HasInputFocus()
-                || !Singleton<ParallelRoadTool>.exists
-                || !(ToolsModifierControl.toolController.CurrentTool is NetTool))
-                return;
-
-            var e = Event.current;
-
-            if (e.isMouse)
-            {
-                // HACK - [ISSUE-84] Report if we're currently having a long mouse press
-                Singleton<ParallelRoadTool>.instance.IsMouseLongPress = e.type switch
-                {
-                    EventType.MouseDown => true,
-                    EventType.MouseUp => false,
-                    _ => Singleton<ParallelRoadTool>.instance.IsMouseLongPress
-                };
-
-                Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Setting {nameof(Singleton<ParallelRoadTool>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadTool>.instance.IsMouseLongPress}");
-            }
-
-            // Checking key presses
-            // if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
-
-            if (OptionsKeymapping.DecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
-
-            if (OptionsKeymapping.IncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
-
-            if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
-
-            if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
-        }
+        }        
 
         public override void OnDestroy()
         {
@@ -305,16 +244,7 @@ namespace ParallelRoadTool.UI
         //        _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
         //        OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
         //    }
-        //}
-
-        private void AdjustNetOffset(float step, bool isHorizontal = true)
-        {
-            // Adjust all offsets on keypress
-            if (isHorizontal)
-                OnHorizontalOffsetKeypress?.Invoke(this, step);
-            else
-                OnVerticalOffsetKeypress?.Invoke(this, step);
-        }
+        //}        
 
         #endregion
 

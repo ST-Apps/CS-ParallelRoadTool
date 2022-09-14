@@ -37,23 +37,20 @@ namespace ParallelRoadTool.UI
             remove { _toolToggleButton.eventCheckChanged -= value; }
         }
 
+        public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
+        {
+            add { _mainWindow.ToggleSnappingButtonEventCheckChanged += value; }
+            remove { _mainWindow.ToggleSnappingButtonEventCheckChanged -= value; }
+        }
+
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
         {
             add { _mainWindow.DeleteNetworkButtonEventClicked += value; }
             remove { _mainWindow.DeleteNetworkButtonEventClicked += value; }
         }
 
-        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress
-        {
-            add { _mainWindow.OnHorizontalOffsetKeypress += value; }
-            remove { _mainWindow.OnHorizontalOffsetKeypress -= value; }
-        }
-
-        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress
-        {
-            add { _mainWindow.OnVerticalOffsetKeypress += value; }
-            remove { _mainWindow.OnVerticalOffsetKeypress -= value; }
-        }
+        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
+        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
 
         private void MainWindow_CloseButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
@@ -68,6 +65,50 @@ namespace ParallelRoadTool.UI
         #endregion
 
         #region Lifecycle
+
+        public void OnGUI()
+        {
+            if (UIView.HasModalInput()
+                || UIView.HasInputFocus()
+                || !Singleton<ParallelRoadTool>.exists
+                || !(ToolsModifierControl.toolController.CurrentTool is NetTool))
+                return;
+
+            var e = Event.current;
+
+            if (e.isMouse)
+            {
+                // HACK - [ISSUE-84] Report if we're currently having a long mouse press
+                Singleton<ParallelRoadTool>.instance.IsMouseLongPress = e.type switch
+                {
+                    EventType.MouseDown => true,
+                    EventType.MouseUp => false,
+                    _ => Singleton<ParallelRoadTool>.instance.IsMouseLongPress
+                };
+
+                Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Setting {nameof(Singleton<ParallelRoadTool>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadTool>.instance.IsMouseLongPress}");
+            }
+
+            // Checking key presses
+            //if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
+
+            if (OptionsKeymapping.DecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
+
+            if (OptionsKeymapping.IncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
+
+            if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
+
+            if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+        }
+
+        private void AdjustNetOffset(float step, bool isHorizontal = true)
+        {
+            // Adjust all offsets on keypress
+            if (isHorizontal)
+                OnHorizontalOffsetKeypress?.Invoke(null, step);
+            else
+                OnVerticalOffsetKeypress?.Invoke(null, step);
+        }
 
         /// <summary>
         /// Builds the main UI for the mod.

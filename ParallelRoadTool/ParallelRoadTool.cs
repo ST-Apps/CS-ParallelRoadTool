@@ -29,6 +29,12 @@ namespace ParallelRoadTool
 
         private UIController UIController => Singleton<UIController>.instance;
 
+
+        private void UIController_ToggleSnappingButtonEventCheckChanged(UIComponent component, bool value)
+        {
+            IsSnappingEnabled = true;
+        }
+
         private void UIController_OnHorizontalOffsetKeypress(UIComponent component, float step)
         {
             for (var i = 0; i < SelectedRoadTypes.Count; i++)
@@ -394,6 +400,7 @@ namespace ParallelRoadTool
             ToolControllerPatch.CurrentToolChanged -= ToolControllerPatch_CurrentToolChanged;
             NetToolsPrefabPatch.CurrentNetInfoChanged -= NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged -= UIController_ToolToggleButtonEventCheckChanged;
+            UIController.ToggleSnappingButtonEventCheckChanged -= UIController_ToggleSnappingButtonEventCheckChanged;
             UIController.CloseButtonEventClicked -= UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked -= UIController_AddNetworkButtonEventClicked;
             UIController.DeleteNetworkButtonEventClicked -= UIController_DeleteNetworkButtonEventClicked;
@@ -417,6 +424,7 @@ namespace ParallelRoadTool
             ToolControllerPatch.CurrentToolChanged += ToolControllerPatch_CurrentToolChanged;
             NetToolsPrefabPatch.CurrentNetInfoChanged += NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged += UIController_ToolToggleButtonEventCheckChanged;
+            UIController.ToggleSnappingButtonEventCheckChanged += UIController_ToggleSnappingButtonEventCheckChanged;
             UIController.CloseButtonEventClicked += UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked += UIController_AddNetworkButtonEventClicked;
             UIController.DeleteNetworkButtonEventClicked += UIController_DeleteNetworkButtonEventClicked;
@@ -437,61 +445,9 @@ namespace ParallelRoadTool
             //_mainWindow_OLD.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
         }        
 
-        private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
-        {
-            for (var i = 0; i < SelectedRoadTypes.Count; i++)
-            {
-                var item = SelectedRoadTypes[i];
-                item.VerticalOffset += (1 + i) * step;
-                // TODO: decide what to do with it
-                // _mainWindow.UpdateItem(item, i);
-            }
-        }
-
-        private void MainWindowOnOnHorizontalOffsetKeypress(UIComponent component, float step)
-        {
-            for (var i = 0; i < SelectedRoadTypes.Count; i++)
-            {
-                var item = SelectedRoadTypes[i];
-                item.HorizontalOffset += (1 + i) * step;
-                // TODO: decide what to do with it
-                // // TODO: decide what to do with it_mainWindow.UpdateItem(item, i);
-            }
-        }
-
         private void MainWindowOnOnSnappingToggled(UIComponent component, bool value)
         {
             IsSnappingEnabled = value;
-        }
-
-        ///// <summary>
-        ///// When the main button is toggled we must update <see cref="_isToolEnabled"/> but NOT <see cref="_isToolActive"/>.
-        ///// This means that we're not controlling button's visibility here.
-        ///// </summary>
-        ///// <param name="component"></param>
-        ///// <param name="value"></param>
-        //private void MainWindowOnOnParallelToolToggled(UIComponent component, bool value)
-        //{
-        //    _isToolEnabled = value;
-        //    //ToggleDetours(value);
-        //    _mainWindow.isVisible = value;
-
-        //    var netInfo = AvailableRoadTypes.Skip(2).First();
-        //    Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading {netInfo} in info panel");
-        //    // _netInfoPanel.Refresh(netInfo);
-        //}
-
-        private void MainWindowOnNetworkItemAdded(object sender, EventArgs e)
-        {
-            // Previous item's offset so that we can try to separate this one from previous one without overlapping
-            var prevOffset = SelectedRoadTypes.Any() ? SelectedRoadTypes.Last().HorizontalOffset : 0;
-            var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
-            var item = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
-            SelectedRoadTypes.Add(item);
-
-            // TODO: decide what to do with it
-            // _mainWindow.AddItem(item);
-            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
         }
 
         private void MainWindowOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
@@ -512,15 +468,6 @@ namespace ParallelRoadTool
             item.HorizontalOffset = value.HorizontalOffset;
             item.VerticalOffset = value.VerticalOffset;
             item.IsReversed = value.IsReversedNetwork;
-        }
-
-        private void MainWindowOnOnNetworkItemDeleted(UIComponent component, int index)
-        {
-            SelectedRoadTypes.RemoveAt(index);
-            // TODO: decide what to do with it
-            // _mainWindow.DeleteItem(index);
-
-            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
         }
 
         private void OnMilestoneUpdate()
