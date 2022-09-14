@@ -37,12 +37,11 @@ namespace ParallelRoadTool
             targetItem.IsReversed = value.IsReversedNetwork;
 
             RefreshNetworks();
-            //targetItem.NetInfo = AvailableRoadTypes.First(n => n.name == value.)
         }
 
         private void UIController_ToggleSnappingButtonEventCheckChanged(UIComponent component, bool value)
         {
-            IsSnappingEnabled = true;
+            IsSnappingEnabled = value;
         }
 
         private void UIController_OnHorizontalOffsetKeypress(UIComponent component, float step)
