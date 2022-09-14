@@ -31,6 +31,12 @@ namespace ParallelRoadTool.UI
         public event EventHandler CloseButtonEventClicked;
         public event EventHandler AddNetworkButtonEventClicked;
 
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged
+        {
+            add { _mainWindow.NetTypeEventChanged += value; }
+            remove { _mainWindow.NetTypeEventChanged -= value; }
+        }
+
         public event PropertyChangedEventHandler<bool> ToolToggleButtonEventCheckChanged
         {
             add { _toolToggleButton.eventCheckChanged += value; }

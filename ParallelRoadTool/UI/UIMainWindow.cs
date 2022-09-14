@@ -4,6 +4,7 @@ using ColossalFramework.UI;
 using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
+using ParallelRoadTool.UI_LEGACY;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -46,8 +47,11 @@ namespace ParallelRoadTool.UI
 
         #region Events
 
-        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
-        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged
+        {
+            add { _networkListPanel.NetTypeEventChanged += value; }
+            remove { _networkListPanel.NetTypeEventChanged -= value; }
+        }
 
         public event MouseEventHandler CloseButtonEventClicked
         {

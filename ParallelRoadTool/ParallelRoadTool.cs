@@ -29,6 +29,16 @@ namespace ParallelRoadTool
 
         private UIController UIController => Singleton<UIController>.instance;
 
+        private void UIController_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
+        {
+            var targetItem = SelectedRoadTypes[value.ItemIndex];
+            targetItem.HorizontalOffset = value.HorizontalOffset;
+            targetItem.VerticalOffset = value.VerticalOffset;
+            targetItem.IsReversed = value.IsReversedNetwork;
+
+            RefreshNetworks();
+            //targetItem.NetInfo = AvailableRoadTypes.First(n => n.name == value.)
+        }
 
         private void UIController_ToggleSnappingButtonEventCheckChanged(UIComponent component, bool value)
         {
@@ -406,6 +416,7 @@ namespace ParallelRoadTool
             UIController.DeleteNetworkButtonEventClicked -= UIController_DeleteNetworkButtonEventClicked;
             UIController.OnHorizontalOffsetKeypress -= UIController_OnHorizontalOffsetKeypress;
             UIController.OnVerticalOffsetKeypress -= UIController_OnVerticalOffsetKeypress;
+            UIController.NetTypeEventChanged -= UIController_NetTypeEventChanged;
 
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -430,6 +441,7 @@ namespace ParallelRoadTool
             UIController.DeleteNetworkButtonEventClicked += UIController_DeleteNetworkButtonEventClicked;
             UIController.OnHorizontalOffsetKeypress += UIController_OnHorizontalOffsetKeypress;
             UIController.OnVerticalOffsetKeypress += UIController_OnVerticalOffsetKeypress;
+            UIController.NetTypeEventChanged += UIController_NetTypeEventChanged;
 
             // Subscribe to milestones updated, but only if we're not in map editor
             if (IsInGameMode)
@@ -443,7 +455,7 @@ namespace ParallelRoadTool
             //_mainWindow_OLD.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
             //_mainWindow_OLD.OnItemChanged += MainWindowOnOnItemChanged;
             //_mainWindow_OLD.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
-        }        
+        }
 
         private void MainWindowOnOnSnappingToggled(UIComponent component, bool value)
         {

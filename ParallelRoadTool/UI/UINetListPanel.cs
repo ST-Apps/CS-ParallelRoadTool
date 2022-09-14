@@ -25,16 +25,18 @@ namespace ParallelRoadTool.UI
         #region Events
 
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
-        
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged;
+
         private void NetSetupPanel_DeleteNetworkButtonEventClicked(UIComponent component, int index)
         {
             Log._Debug($"[{nameof(UINetListPanel)}.{nameof(NetSetupPanel_DeleteNetworkButtonEventClicked)}] Deleting item with index {index}");
 
             DeleteNetworkButtonEventClicked?.Invoke(component, index);
+        }
 
-            // To avoid moving back and forth between UI and data we just delete the panel here
-            // DeleteNetwork(component, index);
-            // RemoveUIComponent(component);
+        private void NetSetupPanel_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
+        {
+            NetTypeEventChanged?.Invoke(null, value);
         }
 
         public void RefreshNetworks(List<NetInfoItem> networks)
@@ -128,6 +130,7 @@ namespace ParallelRoadTool.UI
             var netSetupPanel = AddUIComponent<UINetSetupPanel>();
             netSetupPanel.FitWidth(this, 0);
             netSetupPanel.DeleteNetworkButtonEventClicked += NetSetupPanel_DeleteNetworkButtonEventClicked;
+            netSetupPanel.NetTypeEventChanged += NetSetupPanel_NetTypeEventChanged;
             _netSetupPanels.Add(netSetupPanel);
 
             // Finally render the panel

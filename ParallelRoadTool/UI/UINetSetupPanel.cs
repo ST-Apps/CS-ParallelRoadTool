@@ -23,11 +23,7 @@ namespace ParallelRoadTool.UI
 
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
 
-        public event PropertyChangedEventHandler<bool> ReverseDirectionButtonEventCheckChanged
-        {
-            add { _reverseCheckbox.eventCheckChanged += value; }
-            remove { _reverseCheckbox.eventCheckChanged -= value; }
-        }
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged;
 
         private void DeleteButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
@@ -165,11 +161,23 @@ namespace ParallelRoadTool.UI
         private void AttachToEvents()
         {
             _deleteButton.eventClicked += DeleteButton_eventClicked;
+            _reverseCheckbox.eventCheckChanged += NetInfo_EventChanged;
+            _horizontalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
+            _verticalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
+        }
+
+        private void NetInfo_EventChanged<T>(UIComponent component, T value)
+        {
+            var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text), -1, _reverseCheckbox.isChecked, true, null);
+            NetTypeEventChanged?.Invoke(null, netTypeArgs);
         }
 
         private void DetachFromEvents()
         {
             _deleteButton.eventClicked -= DeleteButton_eventClicked;
+            _reverseCheckbox.eventCheckChanged -= NetInfo_EventChanged;
+            _horizontalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
+            _verticalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
         }
 
         #endregion
