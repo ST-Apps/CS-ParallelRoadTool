@@ -31,17 +31,31 @@ namespace ParallelRoadTool
 
         private void UIController_AddNetworkButtonEventClicked(object sender, EventArgs e)
         {
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network.");
+            var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
+
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network [{netInfo.GenerateBeautifiedNetName()}]");
 
             // Previous item's offset so that we can try to separate this one from previous one without overlapping
             var prevOffset = SelectedRoadTypes.Any() ? SelectedRoadTypes.Last().HorizontalOffset : 0;
-            var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
             var item = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
-            SelectedRoadTypes.Add(item);
 
+            SelectedRoadTypes.Add(item);
             UIController.AddNetwork(item);
+            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;            
+        }
+
+        private void UIController_DeleteNetworkButtonEventClicked(UIComponent component, int index)
+        {
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_DeleteNetworkButtonEventClicked)}] Removing network at index {index}.");
+
+            SelectedRoadTypes.RemoveAt(index);
+
+            var sorted = SelectedRoadTypes.OrderBy(r => r.HorizontalOffset).ToList();
+            SelectedRoadTypes.Clear();
+            SelectedRoadTypes.AddRange(sorted);
+            UIController.RefreshNetworks(SelectedRoadTypes);
+
             NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
-            
         }
 
         private void UIController_ClosedButtonEventClicked(object sender, EventArgs e)
@@ -353,6 +367,7 @@ namespace ParallelRoadTool
             UIController.ToolToggleButtonEventCheckChanged -= UIController_ToolToggleButtonEventCheckChanged;
             UIController.CloseButtonEventClicked -= UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked -= UIController_AddNetworkButtonEventClicked;
+            UIController.DeleteNetworkButtonEventClicked -= UIController_DeleteNetworkButtonEventClicked;
 
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -373,6 +388,7 @@ namespace ParallelRoadTool
             UIController.ToolToggleButtonEventCheckChanged += UIController_ToolToggleButtonEventCheckChanged;
             UIController.CloseButtonEventClicked += UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked += UIController_AddNetworkButtonEventClicked;
+            UIController.DeleteNetworkButtonEventClicked += UIController_DeleteNetworkButtonEventClicked;
 
             // Subscribe to milestones updated, but only if we're not in map editor
             if (IsInGameMode)

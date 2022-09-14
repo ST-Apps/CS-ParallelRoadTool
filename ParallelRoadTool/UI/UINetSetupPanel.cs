@@ -1,5 +1,6 @@
 ﻿using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Interfaces;
 using ParallelRoadTool.UI.Utils;
@@ -10,20 +11,17 @@ namespace ParallelRoadTool.UI
 {
     internal class UINetSetupPanel : UIPanel, IUIListabeItem<NetInfoItem>
     {
-        // Taken from vanilla rpad building's overlay color
+
+        #region Properties/Fields
+        
+        // Taken from vanilla road building's overlay color
         private readonly Color ReadOnlyColor = new Color(0, 0.710f, 1, 0.5f);
 
-        #region Events
+        #endregion
 
-        #region Events
+        #region Events/Callbacks
 
-        public event Action<UINetInfoPanel> UINetInfoPanelClicked;
-
-        public event MouseEventHandler DeleteNetworkButtonEventClicked
-        {
-            add { _deleteButton.eventClicked += value; }
-            remove { _deleteButton.eventClicked -= value; }
-        }
+        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
 
         public event PropertyChangedEventHandler<bool> ReverseDirectionButtonEventCheckChanged
         {
@@ -31,7 +29,10 @@ namespace ParallelRoadTool.UI
             remove { _reverseCheckbox.eventCheckChanged -= value; }
         }
 
-        #endregion
+        private void DeleteButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            DeleteNetworkButtonEventClicked?.Invoke(this, CurrentIndex);
+        }
 
         #endregion
 
@@ -50,6 +51,8 @@ namespace ParallelRoadTool.UI
         private UIButton _deleteButton;
 
         private bool _isReadOnly;
+
+        public int CurrentIndex { get; set; }
 
         public string Id { get; set; }
         public bool IsReadOnly { set { _isReadOnly = value; color = ReadOnlyColor; HideTools(); } }
@@ -149,11 +152,24 @@ namespace ParallelRoadTool.UI
             // Make NetInfoPanel wide enough to fill the empty space
             _netInfoPanel.width = width - _offsetsPanel.width - _buttonsPanel.width;
 
-            // TODO: improve with subscribe/unsubscribe
-            _netInfoPanel.eventClicked += (s, e) =>
-            {
-                UINetInfoPanelClicked?.Invoke(_netInfoPanel);
-            };
+            AttachToEvents();
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            DetachFromEvents();
+        }
+
+        private void AttachToEvents()
+        {
+            _deleteButton.eventClicked += DeleteButton_eventClicked;
+        }
+
+        private void DetachFromEvents()
+        {
+            _deleteButton.eventClicked -= DeleteButton_eventClicked;
         }
 
         #endregion

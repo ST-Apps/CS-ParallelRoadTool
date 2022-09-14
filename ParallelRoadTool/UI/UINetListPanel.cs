@@ -1,12 +1,12 @@
 ﻿using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Interfaces;
 using ParallelRoadTool.UI.Utils;
-using ParallelRoadTool.Utils;
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -22,7 +22,73 @@ namespace ParallelRoadTool.UI
 
         #region Events
 
-        public event Action<UINetSetupPanel> UINetSetupPanelClicked;
+        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
+        
+        private void NetSetupPanel_DeleteNetworkButtonEventClicked(UIComponent component, int index)
+        {
+            Log._Debug($"[{nameof(UINetListPanel)}.{nameof(NetSetupPanel_DeleteNetworkButtonEventClicked)}] Deleting item with index {index}");
+
+            DeleteNetworkButtonEventClicked?.Invoke(component, index);
+
+            // To avoid moving back and forth between UI and data we just delete the panel here
+            // DeleteNetwork(component, index);
+            // RemoveUIComponent(component);
+        }
+
+        public void RefreshNetworks(List<NetInfoItem> networks)
+        {
+            var children = GetComponentsInChildren<UINetSetupPanel>();
+
+            Log._Debug($"[{nameof(UINetListPanel)}.{nameof(RefreshNetworks)}] Received {networks.Count} networks with {children.Length} children");
+
+            for (int i = 0; i < children.Length; i++)
+            {
+                if (i >= networks.Count)
+                {
+                    DestroyImmediate(children[i]);
+                }
+                else
+                {
+                    children[i].Render(networks[i]);
+                    children[i].CurrentIndex = i;
+                }
+            }
+        }
+
+        //private static readonly object _lock = new object();
+
+        //private void DeleteNetwork(UIComponent component, int index)
+        //{
+        //    lock (_lock)
+        //    {
+        //        var children = new List<GameObject>();
+        //        for (int i = 0; i < childCount; i++)
+        //        {
+        //            if (i == index) continue;
+        //            children.Add(transform.GetChild(i).gameObject);
+        //        }
+        //        transform.DetachChildren();
+        //        DestroyImmediate(component);
+        //        SortNetworks(children);
+        //    }
+        //}
+
+        //private void SortNetworks(List<GameObject> children)
+        //{
+        //    // TODO: non funziona
+        //    // TODO: spostare Destroy fuori da DeleteNetwork e rendere DeleteNetwork un sor
+        //    // TODO: childPanels non serve generarlo così, basta fare children.Add(transform.GetChild.GetComponent alla 47)
+        //    var childPanels = children.Select(c => c.GetComponent<UINetSetupPanel>()).OrderBy(p => p.HorizontalOffset).ToArray();
+        //    //foreach (var child in childPanels)
+        //    //{
+        //    //    //child.transform.parent = transform;
+        //    //    this.AttachUIComponent(child.gameObject);
+        //    //}
+        //    this.AttachUIComponent(childPanels[3].gameObject);
+        //    this.AttachUIComponent(childPanels[1].gameObject);
+        //    this.AttachUIComponent(childPanels[0].gameObject);
+        //    this.AttachUIComponent(childPanels[2].gameObject);
+        //}
 
         #endregion
 
@@ -63,11 +129,7 @@ namespace ParallelRoadTool.UI
 
             // Finally render the panel
             netSetupPanel.Render(netInfo);
-        }
-
-        private void NetSetupPanel_DeleteNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            throw new NotImplementedException();
+            netSetupPanel.CurrentIndex = childCount - 1;
         }
 
         #endregion

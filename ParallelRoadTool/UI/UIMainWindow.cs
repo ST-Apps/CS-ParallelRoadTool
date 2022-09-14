@@ -3,6 +3,7 @@ using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -17,6 +18,12 @@ namespace ParallelRoadTool.UI
     /// </summary>
     public class UIMainWindow : UIPanel
     {
+
+        public void RefreshNetworks(List<NetInfoItem> networks)
+        {
+            _networkListPanel.RefreshNetworks(networks);
+        }
+
         #region Constants
 
         // We don't use padding for top side
@@ -48,6 +55,12 @@ namespace ParallelRoadTool.UI
         {
             add { _addNetworkButton.eventClicked += value; }
             remove { _addNetworkButton.eventClicked -= value; }
+        }
+
+        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
+        {
+            add { _networkListPanel.DeleteNetworkButtonEventClicked += value; }
+            remove { _networkListPanel.DeleteNetworkButtonEventClicked += value; }
         }
 
         public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged

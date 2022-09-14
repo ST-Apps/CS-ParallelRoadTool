@@ -4,6 +4,7 @@ using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Utils;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -34,6 +35,12 @@ namespace ParallelRoadTool.UI
         {
             add { _toolToggleButton.eventCheckChanged += value; }
             remove { _toolToggleButton.eventCheckChanged -= value; }
+        }
+
+        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
+        {
+            add { _mainWindow.DeleteNetworkButtonEventClicked += value; }
+            remove { _mainWindow.DeleteNetworkButtonEventClicked += value; }
         }
 
         private void MainWindow_CloseButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
@@ -150,6 +157,11 @@ namespace ParallelRoadTool.UI
         public void AddNetwork(NetInfoItem netInfo)
         {
             _mainWindow.AddNetwork(netInfo);
+        }
+
+        public void RefreshNetworks(List<NetInfoItem> networks)
+        {
+            _mainWindow.RefreshNetworks(networks);
         }
 
         #endregion
