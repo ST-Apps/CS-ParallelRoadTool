@@ -161,7 +161,7 @@ namespace ParallelRoadTool.UI
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's main button created.");
         }
-        
+
         public void Cleanup()
         {
             // Destroy UI
@@ -207,10 +207,7 @@ namespace ParallelRoadTool.UI
 
             // Window is visible button is visible and mod is active
             _mainWindow.isVisible = _toolToggleButton.isVisible && modStatuses.IsFlagSet(ModStatuses.Active);
-            if (!modStatuses.IsFlagSet(ModStatuses.Active))
-                _toolToggleButton.isChecked = false;
-            else
-                _toolToggleButton.isChecked = true;
+            _toolToggleButton.isChecked = modStatuses.IsFlagSet(ModStatuses.Active);
 
             Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Visibility set for main components: [{nameof(_toolToggleButton)} = {_toolToggleButton.isVisible}, {nameof(_mainWindow)} = {_mainWindow.isVisible}].");
         }
