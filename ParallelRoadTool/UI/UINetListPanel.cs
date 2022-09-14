@@ -18,6 +18,8 @@ namespace ParallelRoadTool.UI
         // We only have padding for bottom side to separate multiple elements
         private readonly RectOffset LayoutPadding = new RectOffset(0, 0, 0, UIConstants.Padding);
 
+        private static readonly object _lock = new object();
+
         #endregion
 
         #region Events
@@ -37,25 +39,26 @@ namespace ParallelRoadTool.UI
 
         public void RefreshNetworks(List<NetInfoItem> networks)
         {
-            var children = GetComponentsInChildren<UINetSetupPanel>();
-
-            Log._Debug($"[{nameof(UINetListPanel)}.{nameof(RefreshNetworks)}] Received {networks.Count} networks with {children.Length} children");
-
-            for (int i = 0; i < children.Length; i++)
+            lock(_lock)
             {
-                if (i >= networks.Count)
+                var children = GetComponentsInChildren<UINetSetupPanel>();
+
+                Log._Debug($"[{nameof(UINetListPanel)}.{nameof(RefreshNetworks)}] Received {networks.Count} networks with {children.Length} children");
+
+                for (int i = 0; i < children.Length; i++)
                 {
-                    DestroyImmediate(children[i]);
-                }
-                else
-                {
-                    children[i].Render(networks[i]);
-                    children[i].CurrentIndex = i;
+                    if (i >= networks.Count)
+                    {
+                        DestroyImmediate(children[i]);
+                    }
+                    else
+                    {
+                        children[i].Render(networks[i]);
+                        children[i].CurrentIndex = i;
+                    }
                 }
             }
         }
-
-        //private static readonly object _lock = new object();
 
         //private void DeleteNetwork(UIComponent component, int index)
         //{

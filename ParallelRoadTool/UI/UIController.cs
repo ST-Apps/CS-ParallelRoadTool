@@ -43,6 +43,18 @@ namespace ParallelRoadTool.UI
             remove { _mainWindow.DeleteNetworkButtonEventClicked += value; }
         }
 
+        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress
+        {
+            add { _mainWindow.OnHorizontalOffsetKeypress += value; }
+            remove { _mainWindow.OnHorizontalOffsetKeypress -= value; }
+        }
+
+        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress
+        {
+            add { _mainWindow.OnVerticalOffsetKeypress += value; }
+            remove { _mainWindow.OnVerticalOffsetKeypress -= value; }
+        }
+
         private void MainWindow_CloseButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             CloseButtonEventClicked?.Invoke(null, null);

@@ -29,6 +29,42 @@ namespace ParallelRoadTool
 
         private UIController UIController => Singleton<UIController>.instance;
 
+        private void UIController_OnHorizontalOffsetKeypress(UIComponent component, float step)
+        {
+            for (var i = 0; i < SelectedRoadTypes.Count; i++)
+            {
+                var item = SelectedRoadTypes[i];
+                item.HorizontalOffset += (1 + i) * step;
+            }
+            RefreshNetworks();
+        }
+
+        private void UIController_OnVerticalOffsetKeypress(UIComponent component, float step)
+        {
+            for (var i = 0; i < SelectedRoadTypes.Count; i++)
+            {
+                var item = SelectedRoadTypes[i];
+                item.VerticalOffset += (1 + i) * step;
+            }
+            RefreshNetworks();
+        }
+
+        private void RefreshNetworks()
+        {
+            var sorted = SelectedRoadTypes.OrderBy(r => r.HorizontalOffset).ToList();
+            SelectedRoadTypes.Clear();
+            SelectedRoadTypes.AddRange(sorted);
+            UIController.RefreshNetworks(SelectedRoadTypes);
+
+            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
+        }
+
+        private void RemoveNetwork(int index)
+        {
+            SelectedRoadTypes.RemoveAt(index);
+            RefreshNetworks();
+        }
+
         private void UIController_AddNetworkButtonEventClicked(object sender, EventArgs e)
         {
             var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
@@ -48,14 +84,7 @@ namespace ParallelRoadTool
         {
             Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_DeleteNetworkButtonEventClicked)}] Removing network at index {index}.");
 
-            SelectedRoadTypes.RemoveAt(index);
-
-            var sorted = SelectedRoadTypes.OrderBy(r => r.HorizontalOffset).ToList();
-            SelectedRoadTypes.Clear();
-            SelectedRoadTypes.AddRange(sorted);
-            UIController.RefreshNetworks(SelectedRoadTypes);
-
-            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
+            RemoveNetwork(index);
         }
 
         private void UIController_ClosedButtonEventClicked(object sender, EventArgs e)
@@ -368,6 +397,8 @@ namespace ParallelRoadTool
             UIController.CloseButtonEventClicked -= UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked -= UIController_AddNetworkButtonEventClicked;
             UIController.DeleteNetworkButtonEventClicked -= UIController_DeleteNetworkButtonEventClicked;
+            UIController.OnHorizontalOffsetKeypress -= UIController_OnHorizontalOffsetKeypress;
+            UIController.OnVerticalOffsetKeypress -= UIController_OnVerticalOffsetKeypress;
 
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -389,6 +420,8 @@ namespace ParallelRoadTool
             UIController.CloseButtonEventClicked += UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked += UIController_AddNetworkButtonEventClicked;
             UIController.DeleteNetworkButtonEventClicked += UIController_DeleteNetworkButtonEventClicked;
+            UIController.OnHorizontalOffsetKeypress += UIController_OnHorizontalOffsetKeypress;
+            UIController.OnVerticalOffsetKeypress += UIController_OnVerticalOffsetKeypress;
 
             // Subscribe to milestones updated, but only if we're not in map editor
             if (IsInGameMode)
@@ -402,7 +435,7 @@ namespace ParallelRoadTool
             //_mainWindow_OLD.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
             //_mainWindow_OLD.OnItemChanged += MainWindowOnOnItemChanged;
             //_mainWindow_OLD.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
-        }
+        }        
 
         private void MainWindowOnOnVerticalOffsetKeypress(UIComponent component, float step)
         {

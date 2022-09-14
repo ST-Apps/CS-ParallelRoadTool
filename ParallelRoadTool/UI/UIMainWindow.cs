@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using System.Collections.Generic;
@@ -44,6 +45,9 @@ namespace ParallelRoadTool.UI
         #endregion
 
         #region Events
+
+        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
+        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
 
         public event MouseEventHandler CloseButtonEventClicked
         {
@@ -249,9 +253,67 @@ namespace ParallelRoadTool.UI
             ////};
         }
 
+        public void OnGUI()
+        {
+            if (UIView.HasModalInput()
+                || UIView.HasInputFocus()
+                || !Singleton<ParallelRoadTool>.exists
+                || !(ToolsModifierControl.toolController.CurrentTool is NetTool))
+                return;
+
+            var e = Event.current;
+
+            if (e.isMouse)
+            {
+                // HACK - [ISSUE-84] Report if we're currently having a long mouse press
+                Singleton<ParallelRoadTool>.instance.IsMouseLongPress = e.type switch
+                {
+                    EventType.MouseDown => true,
+                    EventType.MouseUp => false,
+                    _ => Singleton<ParallelRoadTool>.instance.IsMouseLongPress
+                };
+
+                Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Setting {nameof(Singleton<ParallelRoadTool>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadTool>.instance.IsMouseLongPress}");
+            }
+
+            // Checking key presses
+            // if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleToolCheckbox();
+
+            if (OptionsKeymapping.DecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
+
+            if (OptionsKeymapping.IncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
+
+            if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
+
+            if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+        }
+
         public override void OnDestroy()
         {
             DetachUIEvents();
+        }
+
+        //private void ToggleToolCheckbox(bool forceClose = false)
+        //{
+        //    if (forceClose)
+        //    {
+        //        _toolToggleButton.isChecked = false;
+        //        OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
+        //    }
+        //    else
+        //    {
+        //        _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
+        //        OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
+        //    }
+        //}
+
+        private void AdjustNetOffset(float step, bool isHorizontal = true)
+        {
+            // Adjust all offsets on keypress
+            if (isHorizontal)
+                OnHorizontalOffsetKeypress?.Invoke(this, step);
+            else
+                OnVerticalOffsetKeypress?.Invoke(this, step);
         }
 
         #endregion
