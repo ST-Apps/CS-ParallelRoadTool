@@ -146,18 +146,18 @@ namespace ParallelRoadTool.Patches
             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
             if (Singleton<ParallelRoadTool>.instance.IsSnappingEnabled &&
-                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, info.m_class.m_service,
-                                              NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleType.All, true, false,
+                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service,
+                                              NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleCategory.All, true, false,
                                               maxDistance, out var posA, out var posB, out _, out _) ||
                  PathManager.FindPathPosition(
                                               new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z),
-                                              info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                                              VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out _,
+                                              info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
+                                              VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _,
                                               out _) ||
                  PathManager.FindPathPosition(
                                               new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z),
-                                              info.m_class.m_service, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                                              VehicleInfo.VehicleType.All, true, false, maxDistance, out posA, out posB, out _,
+                                              info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
+                                              VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _,
                                               out _)
                 )
                )
