@@ -75,6 +75,7 @@
     <Compile Include="Models\PresetNetItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
+    <Compile Include="UI\Base\UIModalWindow.cs" />
     <Compile Include="UI\Interfaces\IUIList.cs" />
     <Compile Include="UI\Interfaces\IUIListabeItem.cs" />
     <Compile Include="UI\UIConstants.cs" />
