@@ -4,7 +4,7 @@ using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Utils
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class OptionsKeymapping : UICustomControl
@@ -147,7 +147,7 @@ namespace ParallelRoadTool.UI
             if (_mEditingBinding == null)
             {
                 p.Use();
-                _mEditingBinding = (SavedInputKey) p.source.objectUserData;
+                _mEditingBinding = (SavedInputKey)p.source.objectUserData;
                 _mEditingBindingCategory = p.source.stringUserData;
                 var uIButton = p.source as UIButton;
                 uIButton.buttonsMask = UIMouseButton.Left | UIMouseButton.Right | UIMouseButton.Middle |
@@ -203,7 +203,7 @@ namespace ParallelRoadTool.UI
             foreach (var current in component.GetComponentsInChildren<UIComponent>())
             {
                 var uITextComponent = current.Find<UITextComponent>("Binding");
-                var savedInputKey = (SavedInputKey) uITextComponent.objectUserData;
+                var savedInputKey = (SavedInputKey)uITextComponent.objectUserData;
                 if (_mEditingBinding != savedInputKey)
                     uITextComponent.text = savedInputKey.ToLocalizedString("KEYNAME");
             }
