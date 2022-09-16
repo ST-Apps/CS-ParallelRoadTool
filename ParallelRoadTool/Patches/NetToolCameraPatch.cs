@@ -60,8 +60,8 @@ namespace ParallelRoadTool.Patches
                     // We only run if the mod is set as Active
                     return;
                 }
-                //if (startPoint.m_direction == Vector3.zero || middlePoint.m_direction == Vector3.zero || endPoint.m_direction == Vector3.zero)
-                //    return;
+                if (endPoint.m_direction == Vector3.zero)
+                    return;
 
                 var netTool = ToolsModifierControl.GetTool<NetTool>();
 
@@ -129,6 +129,8 @@ namespace ParallelRoadTool.Patches
                         currentMidPoint,
                         currentEndPoint
                     );
+
+                    // TODO: only on one-way roads
 
                     // Draw direction arrow
                     var bezier = new Bezier3()
