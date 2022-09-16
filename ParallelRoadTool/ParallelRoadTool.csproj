@@ -10,6 +10,7 @@
     <RootNamespace>ParallelRoadTool</RootNamespace>
     <AssemblyName>ParallelRoadTool</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <LangVersion>9.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -22,7 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,7 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -78,10 +79,15 @@
     <Compile Include="UI\Base\UIModalWindow.cs" />
     <Compile Include="UI\Interfaces\IUIList.cs" />
     <Compile Include="UI\Interfaces\IUIListabeItem.cs" />
+    <Compile Include="UI\TMP.cs" />
     <Compile Include="UI\UIConstants.cs" />
     <Compile Include="UI\UIController.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
+    <Compile Include="UI\UINetDropdown.cs" />
+    <Compile Include="UI\UINetInfoButton.cs" />
+    <Compile Include="UI\UINetInfoDropdown.cs" />
     <Compile Include="UI\UINetInfoPanel.cs" />
+    <Compile Include="UI\UINetListPopup.cs" />
     <Compile Include="UI\UINetSetupPanel.cs" />
     <Compile Include="UI\UINetListPanel.cs" />
     <Compile Include="UI\UIToolToggleButton.cs" />
@@ -150,20 +156,21 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
-del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\*.dll"
+    <PostBuildEvent>
+			mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
+			del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\*.dll"
 
-xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
-xcopy /y "$(TargetDir)RedirectionFramework.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
-xcopy /y "$(SolutionDir)\packages\Lib.Harmony.2.2.2\lib\net35\0Harmony.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
+			xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
+			xcopy /y "$(TargetDir)RedirectionFramework.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
+			xcopy /y "$(SolutionDir)\packages\Lib.Harmony.2.2.2\lib\net35\0Harmony.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
 
-cd "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
+			cd "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
 
-ren RedirectionFramework.dll 0RedirectionFramework.dll
-ren $(TargetFileName) 1$(TargetFileName)</PostBuildEvent>
+			ren RedirectionFramework.dll 0RedirectionFramework.dll
+			ren $(TargetFileName) 1$(TargetFileName)
+		</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

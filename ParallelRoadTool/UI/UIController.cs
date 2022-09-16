@@ -25,6 +25,8 @@ namespace ParallelRoadTool.UI
         /// </summary>
         private UIToolToggleButton _toolToggleButton;
 
+        private UINetPopup _netPopup;
+
         #endregion
 
         #region Events/Callbacks
@@ -161,6 +163,16 @@ namespace ParallelRoadTool.UI
             _toolToggleButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's main button created.");
+
+            Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Creating mod's dropdown popup...");
+
+            //_netPopup ??= view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
+            //if (_netPopup != null)
+            //    DestroyImmediate(_netPopup);
+            //_netPopup = view.AddUIComponent(typeof(UINetPopup)) as UINetPopup;
+            //_netPopup.absolutePosition = new Vector2(-1000, -1000);
+
+            Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's dropdown popup.");
         }
 
         public void Cleanup()

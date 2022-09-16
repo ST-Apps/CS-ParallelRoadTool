@@ -9,40 +9,6 @@ using UnityEngine;
 namespace ParallelRoadTool.UI
 {
 
-    public class UINetInfoItemDropdown : UIPanel
-    {
-
-        private bool _isReadOnly;
-
-        private UINetInfoPanel _netInfoPanel;
-        private UIButton button;
-
-        public bool IsReadOnly { set { _isReadOnly = value; button.isEnabled = false; } }
-
-        public override void Awake()
-        {
-            size = new Vector2(400, 48 + UIConstants.Padding + UIConstants.Padding);
-
-            _netInfoPanel = AddUIComponent<UINetInfoPanel>();
-            _netInfoPanel.anchor = UIAnchorStyle.CenterVertical;
-
-            button = AddUIComponent<UIButton>();
-            button.size = _netInfoPanel.size;
-            button.relativePosition = Vector3.zero;
-            button.enabled = true;
-            button.hoveredBgSprite = "ButtonWhite";
-            button.opacity = 0.25f;
-
-            button.FitWidth(_netInfoPanel, UIConstants.Padding);
-            _netInfoPanel.relativePosition = Vector3.zero;
-        }
-
-        public void Render(NetInfoItem netInfo)
-        {
-            _netInfoPanel.Render(netInfo);
-        }
-    }
-
     public class UINetInfoPanel : UIPanel, IUIListabeItem<NetInfoItem>
     {
         private UISprite _thumbnail;

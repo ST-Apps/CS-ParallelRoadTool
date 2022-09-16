@@ -33,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stable", "Stable", "{AFD518
 		..\Docs\Workshop\Stable\PreviewImage.png = ..\Docs\Workshop\Stable\PreviewImage.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{B84BB1A9-0CF6-4CA5-AD32-09F06584DC33}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AlgernonCommonsShared", "..\Submodules\AlgernonCommons\AlgernonCommonsShared.shproj", "{25AEF446-6F0D-43A8-BB84-D1306789B68C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,8 +55,12 @@ Global
 		{CAE3D1D4-1372-4B86-8D26-9E1CA25064D5} = {EF309BA7-0A77-486A-BC80-1DC2A0D2F0A9}
 		{C19406E2-E4CB-45C3-B671-7C53985BBA3C} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}
 		{AFD5188A-5909-4890-B949-0C4CDDE5B0CC} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}
+		{25AEF446-6F0D-43A8-BB84-D1306789B68C} = {B84BB1A9-0CF6-4CA5-AD32-09F06584DC33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19E91299-91FF-47EA-8505-215462D86A23}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\Submodules\AlgernonCommons\AlgernonCommonsShared.projitems*{25aef446-6f0d-43a8-bb84-d1306789b68c}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

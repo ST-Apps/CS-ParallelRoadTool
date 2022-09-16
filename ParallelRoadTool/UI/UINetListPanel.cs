@@ -76,9 +76,9 @@ namespace ParallelRoadTool.UI
         {
             // NetworkList
             name = $"{Configuration.ResourcePrefix}NetworkList";
+            autoFitChildrenVertically = true;
             autoLayout = true;
             autoLayoutPadding = LayoutPadding;
-            autoFitChildrenVertically = true;
             autoLayoutDirection = LayoutDirection.Vertical;
         }
 

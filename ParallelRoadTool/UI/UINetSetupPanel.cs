@@ -36,7 +36,7 @@ namespace ParallelRoadTool.UI
 
         #region Components
 
-        private UINetInfoItemDropdown _netInfoPanel;
+        private UINetInfoDropdown _netInfoPanel;
 
         private UIPanel _offsetsPanel;
         private UITextField _horizontalOffsetField;
@@ -65,7 +65,7 @@ namespace ParallelRoadTool.UI
             autoLayoutDirection = LayoutDirection.Horizontal;
 
             // NetSetup/NetInfo
-            _netInfoPanel = AddUIComponent<UINetInfoItemDropdown>();
+            _netInfoPanel = AddUIComponent<UINetInfoDropdown>();
             _netInfoPanel.anchor = UIAnchorStyle.CenterVertical;
 
             // NetSetup/Offsets
