@@ -36,7 +36,7 @@ namespace ParallelRoadTool.UI
 
         #region Components
 
-        private UINetInfoPanel _netInfoPanel;
+        private UINetInfoItemDropdown _netInfoPanel;
 
         private UIPanel _offsetsPanel;
         private UITextField _horizontalOffsetField;
@@ -51,7 +51,7 @@ namespace ParallelRoadTool.UI
         public int CurrentIndex { get; set; }
 
         public string Id { get; set; }
-        public bool IsReadOnly { set { _isReadOnly = value; color = ReadOnlyColor; HideTools(); } }
+        public bool IsReadOnly { set { _isReadOnly = value; color = ReadOnlyColor; _netInfoPanel.IsReadOnly = value; HideTools(); } }
 
         #endregion
 
@@ -65,7 +65,7 @@ namespace ParallelRoadTool.UI
             autoLayoutDirection = LayoutDirection.Horizontal;
 
             // NetSetup/NetInfo
-            _netInfoPanel = AddUIComponent<UINetInfoPanel>();
+            _netInfoPanel = AddUIComponent<UINetInfoItemDropdown>();
             _netInfoPanel.anchor = UIAnchorStyle.CenterVertical;
 
             // NetSetup/Offsets
