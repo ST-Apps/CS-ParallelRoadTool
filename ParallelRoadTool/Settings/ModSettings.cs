@@ -29,7 +29,7 @@ namespace ParallelRoadTool.Settings
         /// Tool toggle key.
         /// </summary>
         [XmlElement]
-        public static readonly Keybinding KeyPaste = new(KeyCode.P, true, false, false);
+        public static readonly Keybinding KeyToggleTool = new(KeyCode.P, true, false, false);
 
         /// <summary>
         /// Increase horizontal offset key.

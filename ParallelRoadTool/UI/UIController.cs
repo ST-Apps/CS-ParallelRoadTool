@@ -6,6 +6,7 @@ using ParallelRoadTool.UI.Utils;
 using ParallelRoadTool.Utils;
 using System;
 using System.Collections.Generic;
+using ParallelRoadTool.Settings;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -107,13 +108,12 @@ namespace ParallelRoadTool.UI
 
                 Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Setting {nameof(Singleton<ParallelRoadTool>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadTool>.instance.IsMouseLongPress}");
             }
-
             // Checking key presses
-            if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleModStatus();
-            if (OptionsKeymapping.DecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
-            if (OptionsKeymapping.IncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
-            if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
-            if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+            if (ModSettings.KeyToggleTool.IsPressed(e)) ToggleModStatus();
+            if (ModSettings.KeyIncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
+            if (ModSettings.KeyDecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
+            if (ModSettings.KeyIncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+            if (ModSettings.KeyDecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
         }
 
         #endregion

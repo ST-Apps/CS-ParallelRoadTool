@@ -17,8 +17,8 @@ namespace ParallelRoadTool.Settings
 
         protected override InputKey KeySetting
         {
-            get => ModSettings.KeyPaste.Encode();
-            set => ModSettings.KeyPaste.SetKey(value);
+            get => ModSettings.KeyToggleTool.Encode();
+            set => ModSettings.KeyToggleTool.SetKey(value);
         }
     }
 }
