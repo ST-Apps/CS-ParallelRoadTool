@@ -1,5 +1,4 @@
-﻿using ColossalFramework.Math;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using ParallelRoadTool.Utils;
 using System.Linq;
 using UnityEngine;
@@ -90,7 +89,7 @@ namespace ParallelRoadTool.UI.Utils
             var uiButton = parent.AddUIComponent<UIButton>();
             uiButton.atlas = Atlas;
             uiButton.tooltip = tooltip;
-            if (size == null)
+            if (size == Vector2.zero)
             {
                 size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
             }

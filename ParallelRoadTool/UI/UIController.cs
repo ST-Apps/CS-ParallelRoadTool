@@ -25,7 +25,7 @@ namespace ParallelRoadTool.UI
         /// </summary>
         private UIToolToggleButton _toolToggleButton;
 
-        private UINetListPopup _netPopup;
+        //private UINetListPopup _netPopup;
 
         #endregion
 
@@ -73,7 +73,7 @@ namespace ParallelRoadTool.UI
 
         private void MainWindowOnToggleDropdownButtonEventClick(UIComponent component, UIMouseEventParameter eventParam)
         {
-            _netPopup.Toggle(component);
+            //_netPopup.Toggle(component);
         }
 
         #endregion
@@ -233,7 +233,7 @@ namespace ParallelRoadTool.UI
 
         public void UpdateCurrentNetwork(NetInfo netInfo)
         {
-            _mainWindow.UpdateCurrentNetwork(netInfo);
+            _mainWindow.UpdateCurrentNetwork(new NetInfoItem(netInfo));
         }
 
         public void AddNetwork(NetInfoItem netInfo)

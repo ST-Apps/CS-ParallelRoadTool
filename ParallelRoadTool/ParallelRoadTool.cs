@@ -477,25 +477,25 @@ namespace ParallelRoadTool
             IsSnappingEnabled = value;
         }
 
-        private void MainWindowOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
-        {
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(MainWindowOnOnItemChanged)}] Dropdown selection changed, new selection is {value.ItemIndex} (total elements: {SelectedRoadTypes.Count})");
+        //private void MainWindowOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
+        //{
+        //    Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(MainWindowOnOnItemChanged)}] Dropdown selection changed, new selection is {value.ItemIndex} (total elements: {SelectedRoadTypes.Count})");
 
-            var item = SelectedRoadTypes[value.ItemIndex];
+        //    var item = SelectedRoadTypes[value.ItemIndex];
 
-            var netInfo = value.IsFiltered
-                              ? Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FirstOrDefault(n => n.GenerateBeautifiedNetName() ==
-                                                                                                            value.SelectedNetworkName)
-                              : value.SelectedNetworkIndex == 0
-                                  ? null
-                                  : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
+        //    var netInfo = value.IsFiltered
+        //                      ? Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FirstOrDefault(n => n.GenerateBeautifiedNetName() ==
+        //                                                                                                    value.SelectedNetworkName)
+        //                      : value.SelectedNetworkIndex == 0
+        //                          ? null
+        //                          : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
 
-            // TODO: decide what to do with it
-            // item.NetInfo = netInfo;
-            item.HorizontalOffset = value.HorizontalOffset;
-            item.VerticalOffset = value.VerticalOffset;
-            item.IsReversed = value.IsReversedNetwork;
-        }
+        //    // TODO: decide what to do with it
+        //    // item.NetInfo = netInfo;
+        //    item.HorizontalOffset = value.HorizontalOffset;
+        //    item.VerticalOffset = value.VerticalOffset;
+        //    item.IsReversed = value.IsReversedNetwork;
+        //}
 
         private void OnMilestoneUpdate()
         {

@@ -1,10 +1,7 @@
 ﻿using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using CSUtil.Commons;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.UI.Interfaces;
 using ParallelRoadTool.UI.Utils;
-using System;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -94,9 +91,15 @@ namespace ParallelRoadTool.UI
             DeleteNetworkButtonEventClicked?.Invoke(this, CurrentIndex);
         }
 
+        /// <summary>
+        /// If any of the properties for a <see cref="NetInfoItem"/> changes we trigger the event sending back all the up to date properties.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         private void NetInfo_EventChanged<T>(UIComponent component, T value)
         {
-            var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text), -1, _reverseCheckbox.isChecked, true, null);
+            var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text), _reverseCheckbox.isChecked);
             NetTypeEventChanged?.Invoke(null, netTypeArgs);
         }
 
@@ -145,7 +148,7 @@ namespace ParallelRoadTool.UI
             _offsetsPanel.autoFitChildrenVertically = true;
 
             // NetSetup/Offsets/Spacer
-            _offsetsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2);
+            _offsetsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2f);
 
             // NetSetup/Offsets/Horizontal
             var horizontalOffsetPanel = _offsetsPanel.AddUIComponent<UIPanel>();
@@ -155,7 +158,7 @@ namespace ParallelRoadTool.UI
             horizontalOffsetPanel.autoLayoutDirection = LayoutDirection.Horizontal;
 
             // NetSetup/Offsets/Horizontal/Icon
-            UIHelpers.CreateUISprite(horizontalOffsetPanel, "HorizontalOffset");
+            var horizontalOffsetIcon = UIHelpers.CreateUISprite(horizontalOffsetPanel, "HorizontalOffset");
 
             // NetSetup/Offsets/Horizontal/Text
             _horizontalOffsetField = UIHelpers.CreateTextField(horizontalOffsetPanel);
@@ -173,7 +176,7 @@ namespace ParallelRoadTool.UI
             verticalOffsetPanel.autoLayoutDirection = LayoutDirection.Horizontal;
 
             // NetSetup/Offsets/Vertical/Icon
-            UIHelpers.CreateUISprite(verticalOffsetPanel, "VerticalOffset");
+            var verticalOffsetIcon = UIHelpers.CreateUISprite(verticalOffsetPanel, "VerticalOffset");
 
             // NetSetup/Offsets/Vertical/Text
             _verticalOffsetField = UIHelpers.CreateTextField(verticalOffsetPanel);
@@ -182,6 +185,12 @@ namespace ParallelRoadTool.UI
                     _verticalOffsetField.allowNegative =
                         _verticalOffsetField.submitOnFocusLost = true;
             _verticalOffsetField.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "VerticalOffset");
+
+            // Manually align icons on offsets panel
+            horizontalOffsetPanel.autoLayout = false;
+            horizontalOffsetIcon.relativePosition += new Vector3(0, 2);
+            verticalOffsetPanel.autoLayout = false;
+            verticalOffsetIcon.relativePosition += new Vector3(0, 2);
 
             // NetSetup/Buttons
             _buttonsPanel = AddUIComponent<UIPanel>();
@@ -192,10 +201,13 @@ namespace ParallelRoadTool.UI
             _buttonsPanel.autoFitChildrenHorizontally = true;
             _buttonsPanel.autoFitChildrenVertically = true;
 
+            // NetSetup/Buttons/Spacer
+            _buttonsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2f);
+
             // NetSetup/Buttons/Delete
             _deleteButton = UIHelpers.CreateUiButton(
                 _buttonsPanel,
-                new Vector2(UIConstants.SmallSize, UIConstants.SmallSize),
+                new Vector2(UIConstants.TinySize, UIConstants.TinySize),
                 string.Empty,
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"),
                 "Remove"
@@ -204,7 +216,7 @@ namespace ParallelRoadTool.UI
             // NetSetup/Buttons/Reverse
             _reverseCheckbox = UIHelpers.CreateCheckbox(
                 _buttonsPanel,
-                new Vector2(UIConstants.SmallSize, UIConstants.SmallSize),
+                new Vector2(UIConstants.TinySize, UIConstants.TinySize),
                 "Reverse",
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton")
             );
@@ -214,10 +226,15 @@ namespace ParallelRoadTool.UI
         {
             base.Start();
 
+            AttachToEvents();
+
             // Make NetInfoPanel wide enough to fill the empty space
             _netInfoPanel.width = width - _offsetsPanel.width - _buttonsPanel.width;
 
-            AttachToEvents();
+            // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
+            autoLayout = false;
+            _offsetsPanel.autoLayout = false;
+            _buttonsPanel.autoLayout = false;
         }
 
         public override void OnDestroy()

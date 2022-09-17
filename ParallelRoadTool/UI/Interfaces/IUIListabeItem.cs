@@ -1,10 +1,4 @@
-﻿using ColossalFramework.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ParallelRoadTool.UI.Interfaces
+﻿namespace ParallelRoadTool.UI.Interfaces
 {
 
     /// <summary>

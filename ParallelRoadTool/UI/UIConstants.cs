@@ -15,6 +15,11 @@ namespace ParallelRoadTool.UI
         /// <summary>
         /// Size for small items (e.g. close button).
         /// </summary>
+        internal const int TinySize = 28;
+
+        /// <summary>
+        /// Size for small items (e.g. close button).
+        /// </summary>
         internal const int SmallSize = 32;
 
         /// <summary>
@@ -30,7 +35,7 @@ namespace ParallelRoadTool.UI
         /// <summary>
         /// Fixed size for a <see cref="NetInfo"/> thumbnail
         /// </summary>
-        internal static readonly Vector2 ThumbnailSize = new Vector2(LargeSize, LargeSize);
+        internal static readonly Vector2 ThumbnailSize = new(LargeSize, LargeSize);
 
         /// <summary>
         /// Fixed width for a generic <see cref="UINetInfoPanel"/>
@@ -45,9 +50,9 @@ namespace ParallelRoadTool.UI
         /// <summary>
         /// Fixed size for a generic <see cref="UINetInfoPanel"/>
         /// </summary>
-        internal static readonly Vector2 NetInfoPanelSize = new Vector2(NetInfoPanelWidth, NetInfoPanelHeight);
+        internal static readonly Vector2 NetInfoPanelSize = new(NetInfoPanelWidth, NetInfoPanelHeight);
 
         // Taken from vanilla road building's overlay color
-        internal static readonly Color ReadOnlyColor = new Color(0, 0.710f, 1, 0.5f);
+        internal static readonly Color ReadOnlyColor = new(0, 0.710f, 1, 0.5f);
     }
 }

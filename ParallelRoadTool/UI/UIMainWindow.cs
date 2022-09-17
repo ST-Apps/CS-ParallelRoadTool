@@ -1,11 +1,8 @@
-﻿using ColossalFramework;
-using ColossalFramework.Globalization;
+﻿using ColossalFramework.Globalization;
 using ColossalFramework.UI;
-using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -20,21 +17,67 @@ namespace ParallelRoadTool.UI
     public class UIMainWindow : UIPanel
     {
 
-        public void RefreshNetworks(List<NetInfoItem> networks)
+        #region Fields
+
+
+
+        #endregion
+
+        #region Properties
+
+
+
+        #endregion
+
+        #region Events
+
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged
         {
-            _networkListPanel.RefreshNetworks(networks);
+            add => _networkListPanel.NetTypeEventChanged += value;
+            remove => _networkListPanel.NetTypeEventChanged -= value;
         }
 
-        #region Constants
+        public event MouseEventHandler CloseButtonEventClicked
+        {
+            add => _closeButton.eventClicked += value;
+            remove => _closeButton.eventClicked -= value;
+        }
 
-        // We don't use padding for top side
-        private readonly RectOffset LayoutPadding = new RectOffset(UIConstants.Padding, UIConstants.Padding, 0, UIConstants.Padding);
+        public event MouseEventHandler AddNetworkButtonEventClicked
+        {
+            add => _addNetworkButton.eventClicked += value;
+            remove => _addNetworkButton.eventClicked -= value;
+        }
+
+        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
+        {
+            add => _networkListPanel.DeleteNetworkButtonEventClicked += value;
+            remove => _networkListPanel.DeleteNetworkButtonEventClicked += value;
+        }
+
+        public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
+        {
+            add => _toggleSnappingButton.eventCheckChanged += value;
+            remove => _toggleSnappingButton.eventCheckChanged -= value;
+        }
+
+        public event MouseEventHandler ToggleDropdownButtonEventClick
+        {
+            add => _networkListPanel.ToggleDropdownButtonEventClick += value;
+            remove => _networkListPanel.ToggleDropdownButtonEventClick -= value;
+        }
+
+        #endregion
+
+        #region Callbacks
+
+
 
         #endregion
 
         #region Unity
 
-        #region Components
+        #region Controls
 
         private UIButton _closeButton;
         private UINetListPanel _networkListPanel;
@@ -44,45 +87,70 @@ namespace ParallelRoadTool.UI
 
         #endregion
 
-        #region Events
+        #region Lifecycle
 
-        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged
+        public override void Awake()
         {
-            add { _networkListPanel.NetTypeEventChanged += value; }
-            remove { _networkListPanel.NetTypeEventChanged -= value; }
+            base.Awake();
+
+            // Main
+            name = $"{Configuration.ResourcePrefix}MainWindow";
+            backgroundSprite = "SubcategoriesPanel";
+            size = new Vector2(512, 256);
+            absolutePosition = new Vector2(100, 100);
+            autoFitChildrenVertically = true;
+            autoLayout = true;
+            autoLayoutDirection = LayoutDirection.Vertical;
+            autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+            autoLayoutPadding.top = 0;
+
+            BuildHeader();
+            BuildToolbar();
+
+            // Main/CurrentNetwork
+            _currentNetworkSetupPanel = AddUIComponent<UINetSetupPanel>();
+            _currentNetworkSetupPanel.relativePosition = Vector2.zero;
+            _currentNetworkSetupPanel.padding = padding;
+            _currentNetworkSetupPanel.FitWidth(this, UIConstants.Padding);
+            _currentNetworkSetupPanel.IsReadOnly = true;
+
+            // Main/NetworkList
+            _networkListPanel = AddUIComponent<UINetListPanel>();
+            _networkListPanel.padding = padding;
+            _networkListPanel.FitWidth(this, UIConstants.Padding);
+
+            // Main/Spacer
+            AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2f);
         }
 
-        public event MouseEventHandler CloseButtonEventClicked
+        public override void Start()
         {
-            add { _closeButton.eventClicked += value; }
-            remove { _closeButton.eventClicked -= value; }
+            base.Start();
+
+            // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
+            autoLayout = false;
         }
 
-        public event MouseEventHandler AddNetworkButtonEventClicked
+        public override void OnDestroy()
         {
-            add { _addNetworkButton.eventClicked += value; }
-            remove { _addNetworkButton.eventClicked -= value; }
-        }
+            base.OnDestroy();
 
-        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
-        {
-            add { _networkListPanel.DeleteNetworkButtonEventClicked += value; }
-            remove { _networkListPanel.DeleteNetworkButtonEventClicked += value; }
-        }
 
-        public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
-        {
-            add { _toggleSnappingButton.eventCheckChanged += value; }
-            remove { _toggleSnappingButton.eventCheckChanged -= value; }
-        }
-
-        public event MouseEventHandler ToggleDropdownButtonEventClick
-        {
-            add => _networkListPanel.ToggleDropdownButtonEventClick += value; 
-            remove => _networkListPanel.ToggleDropdownButtonEventClick -= value;
+            // Forcefully destroy all children
+            Destroy(_closeButton);
+            Destroy(_networkListPanel);
+            Destroy(_toggleSnappingButton);
+            Destroy(_addNetworkButton);
+            Destroy(_currentNetworkSetupPanel);
         }
 
         #endregion
+
+        #endregion
+
+        #region Control
+
+        #region Internals
 
         private void BuildHeader()
         {
@@ -188,89 +256,53 @@ namespace ParallelRoadTool.UI
                 "Add"
             );
             _addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";
+
+            // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
+            optionsPanel.autoLayout = false;
+            toolsPanel.autoLayout = false;
         }
-
-        #region Lifecycle
-
-        private void AttachUIEvents()
-        {
-        }
-
-        private void DetachUIEvents()
-        {
-        }
-
-        public override void Awake()
-        {
-            // Main
-            name = $"{Configuration.ResourcePrefix}MainWindow";
-            backgroundSprite = "SubcategoriesPanel";
-            size = new Vector2(512, 256);
-            absolutePosition = new Vector2(100, 100);
-            autoFitChildrenVertically = true;
-            autoLayout = true;
-            autoLayoutDirection = LayoutDirection.Vertical;
-            autoLayoutPadding = LayoutPadding;
-
-            BuildHeader();
-            BuildToolbar();
-
-            // Main/CurrentNetwork
-            _currentNetworkSetupPanel = AddUIComponent<UINetSetupPanel>();
-            _currentNetworkSetupPanel.relativePosition = Vector2.zero;
-            _currentNetworkSetupPanel.padding = padding;
-            _currentNetworkSetupPanel.FitWidth(this, UIConstants.Padding);
-            _currentNetworkSetupPanel.IsReadOnly = true;
-
-            // Main/NetworkList
-            _networkListPanel = AddUIComponent<UINetListPanel>();
-            _networkListPanel.padding = padding;
-            _networkListPanel.FitWidth(this, UIConstants.Padding);
-
-            // Main/Spacer
-            AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2);
-        }
-
-        public override void Start()
-        {
-            AttachUIEvents();
-        }        
-
-        public override void OnDestroy()
-        {
-            DetachUIEvents();
-        }
-
-        //private void ToggleToolCheckbox(bool forceClose = false)
-        //{
-        //    if (forceClose)
-        //    {
-        //        _toolToggleButton.isChecked = false;
-        //        OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
-        //    }
-        //    else
-        //    {
-        //        _toolToggleButton.isChecked = !_toolToggleButton.isChecked;
-        //        OnParallelToolToggled?.Invoke(_toolToggleButton, _toolToggleButton.isChecked);
-        //    }
-        //}        
 
         #endregion
 
-        #endregion
+        #region Public API
 
-        #region Control
-
-        public void UpdateCurrentNetwork(NetInfo netInfo)
+        /// <summary>
+        /// To refresh networks we just pass the new list to the <see cref="UINetListPanel"/> which will do the rendering.
+        /// This is called ONLY on deletions as adding a new network will trigger <see cref="AddNetwork"/>.
+        /// </summary>
+        /// <param name="networks"></param>
+        public void RefreshNetworks(List<NetInfoItem> networks)
         {
-            _currentNetworkSetupPanel.Render(new NetInfoItem(netInfo));
+            _networkListPanel.RefreshNetworks(networks);
         }
 
+        /// <summary>
+        /// Re-renders the current network panel with the newly provided <see cref="NetInfoItem"/>.
+        /// </summary>
+        /// <param name="netInfo"></param>
+        public void UpdateCurrentNetwork(NetInfoItem netInfo)
+        {
+            _currentNetworkSetupPanel.Render(netInfo);
+        }
+
+        /// <summary>
+        /// Adds the provided <see cref="NetInfoItem"/> to <see cref="UINetListPanel"/> and renders it.
+        /// </summary>
+        /// <param name="netInfo"></param>
         public void AddNetwork(NetInfoItem netInfo)
         {
+            // Before adding a new network we restore autolayout to make the panel react to the new element
+            autoLayout = true;
+
             _networkListPanel.AddNetwork(netInfo);
+
+            // Now that the item has been added we can disable autolayout again
+            autoLayout = false;
         }
 
         #endregion
+
+        #endregion
+
     }
 }

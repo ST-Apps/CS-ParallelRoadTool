@@ -33,6 +33,8 @@ namespace ParallelRoadTool.UI
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Horizontal;
             autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+            // We don't want padding on right side
+            autoLayoutPadding.right = 0;
 
             // Main/Thumbnail
             _thumbnail = AddUIComponent<UISprite>();
@@ -42,9 +44,11 @@ namespace ParallelRoadTool.UI
             _label = AddUIComponent<UILabel>();
             _label.textScale = .8f;
             _label.verticalAlignment = UIVerticalAlignment.Middle;
-            _label.minimumSize = new Vector2(UIConstants.NetInfoPanelWidth - UIConstants.NetInfoPanelHeight, UIConstants.LargeSize);
-            _label.autoSize = true;
+            _label.autoSize = false;
             _label.wordWrap = true;
+            // Label should fill up the remaining space
+            // x is 5 * padding because we have one at the beginning of the row, one between thumbnail and label, one at the end of the row, and we have also to consider that the entire panel is padded twice.
+            _label.size = UIConstants.NetInfoPanelSize - new Vector2(_thumbnail.width + 5 * UIConstants.Padding, 2 * UIConstants.Padding);
         }
 
         public override void OnDestroy()
@@ -62,6 +66,8 @@ namespace ParallelRoadTool.UI
 
         #region Control
 
+        #region Public API
+
         /// <summary>
         /// To render a <see cref="NetInfoItem"/> we just to set both atlas and spriteName for <see cref="_thumbnail"/>, as well as the provided network name.
         /// </summary>
@@ -76,6 +82,10 @@ namespace ParallelRoadTool.UI
 
             color = netInfo.Color;
         }
+
+        #endregion
+
+
 
         #endregion
     }

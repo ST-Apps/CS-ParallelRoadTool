@@ -2,12 +2,7 @@
 using ColossalFramework.UI;
 using CSUtil.Commons;
 using ParallelRoadTool.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using static RenderManager;
 
 namespace ParallelRoadTool.UI.Base
 {
