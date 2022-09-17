@@ -26,6 +26,7 @@ namespace ParallelRoadTool.UI
 
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged;
+        public event MouseEventHandler ToggleDropdownButtonEventClick;
 
         private void NetSetupPanel_DeleteNetworkButtonEventClicked(UIComponent component, int index)
         {
@@ -37,6 +38,12 @@ namespace ParallelRoadTool.UI
         private void NetSetupPanel_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
         {
             NetTypeEventChanged?.Invoke(null, value);
+        }
+
+        private void NetSetupPanelOnToggleDropdownButtonEventClick(UIComponent component, UIMouseEventParameter eventparam)
+        {
+            // We don't use this because we want to route the exact caller
+            ToggleDropdownButtonEventClick?.Invoke(component, null);
         }
 
         public void RefreshNetworks(List<NetInfoItem> networks)
@@ -90,7 +97,6 @@ namespace ParallelRoadTool.UI
         /// 
         /// </summary>
         /// <param name="netInfo"></param>
-        /// <param name="isCurrentNetwork">True if this is the info panel for the currently selected network in <see cref="NetTool"/>. Current network can't be customized.</param>
         internal void AddNetwork(NetInfoItem netInfo)
         {
             // Basic setup
@@ -98,6 +104,7 @@ namespace ParallelRoadTool.UI
             netSetupPanel.FitWidth(this, 0);
             netSetupPanel.DeleteNetworkButtonEventClicked += NetSetupPanel_DeleteNetworkButtonEventClicked;
             netSetupPanel.NetTypeEventChanged += NetSetupPanel_NetTypeEventChanged;
+            netSetupPanel.ToggleDropdownButtonEventClick += NetSetupPanelOnToggleDropdownButtonEventClick;
 
             // Finally render the panel
             netSetupPanel.Render(netInfo);

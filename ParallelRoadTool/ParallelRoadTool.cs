@@ -358,6 +358,14 @@ namespace ParallelRoadTool
                 if (prefab != null)
                 {
                     var networkName = prefab.GenerateBeautifiedNetName();
+                    var atlasName = prefab.m_Atlas?.name;
+
+                    // Skip items with no atlas set as they're not networks (e.g. train lines)
+                    if (string.IsNullOrEmpty(atlasName))
+                    {
+                        Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because it's not a real network (atlas is not set).");
+                        continue;
+                    }
 
                     // No need to skip stuff in map editor mode
                     if (!IsInGameMode || prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
@@ -365,7 +373,7 @@ namespace ParallelRoadTool
                     else
                         Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because ""{prefab.m_UnlockMilestone.m_name}"" is not passed yet.");
 
-                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{prefab.m_Atlas?.name}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
+                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{atlasName}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
                 }
             }
 

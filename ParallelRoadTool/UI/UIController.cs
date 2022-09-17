@@ -25,7 +25,7 @@ namespace ParallelRoadTool.UI
         /// </summary>
         private UIToolToggleButton _toolToggleButton;
 
-        private UINetPopup _netPopup;
+        private UINetListPopup _netPopup;
 
         #endregion
 
@@ -69,6 +69,11 @@ namespace ParallelRoadTool.UI
         private void MainWindow_AddNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             AddNetworkButtonEventClicked?.Invoke(null, null);
+        }
+
+        private void MainWindowOnToggleDropdownButtonEventClick(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            _netPopup.Toggle(component);
         }
 
         #endregion
@@ -166,11 +171,10 @@ namespace ParallelRoadTool.UI
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Creating mod's dropdown popup...");
 
-            //_netPopup ??= view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
+            //_netPopup ??= view.FindUIComponent<UINetListPopup>($"{Configuration.ResourcePrefix}NetworksPopup");
             //if (_netPopup != null)
             //    DestroyImmediate(_netPopup);
-            //_netPopup = view.AddUIComponent(typeof(UINetPopup)) as UINetPopup;
-            //_netPopup.absolutePosition = new Vector2(-1000, -1000);
+            //_netPopup = view.AddUIComponent(typeof(UINetListPopup)) as UINetListPopup;
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's dropdown popup.");
         }
@@ -189,12 +193,14 @@ namespace ParallelRoadTool.UI
         {
             _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.ToggleDropdownButtonEventClick += MainWindowOnToggleDropdownButtonEventClick;
         }
 
         private void DetachFromEvents()
         {
             _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.ToggleDropdownButtonEventClick -= MainWindowOnToggleDropdownButtonEventClick;
         }
 
         #endregion

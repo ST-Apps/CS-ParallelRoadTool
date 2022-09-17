@@ -76,6 +76,12 @@ namespace ParallelRoadTool.UI
             remove { _toggleSnappingButton.eventCheckChanged -= value; }
         }
 
+        public event MouseEventHandler ToggleDropdownButtonEventClick
+        {
+            add => _networkListPanel.ToggleDropdownButtonEventClick += value; 
+            remove => _networkListPanel.ToggleDropdownButtonEventClick -= value;
+        }
+
         #endregion
 
         private void BuildHeader()
@@ -85,7 +91,7 @@ namespace ParallelRoadTool.UI
             headerPanel.name = $"{name}_Header";
             headerPanel.padding = padding;
             headerPanel.FitWidth(this, UIConstants.Padding);
-            headerPanel.height = UIConstants.SmallBarHeight;
+            headerPanel.height = UIConstants.SmallSize;
 
             // Main/Header/TitleLabel
             var titleLabel = headerPanel.AddUIComponent<UILabel>();
@@ -109,7 +115,7 @@ namespace ParallelRoadTool.UI
             _closeButton.normalBgSprite = "buttonclose";
             _closeButton.hoveredBgSprite = "buttonclosehover";
             _closeButton.pressedBgSprite = "buttonclosepressed";
-            _closeButton.size = new Vector2(UIConstants.SmallButtonSize, UIConstants.SmallButtonSize);
+            _closeButton.size = new Vector2(UIConstants.SmallSize, UIConstants.SmallSize);
             _closeButton.anchor = UIAnchorStyle.CenterVertical;
             _closeButton.AlignTo(headerPanel, UIAlignAnchor.TopRight);
         }
@@ -120,7 +126,7 @@ namespace ParallelRoadTool.UI
             var toolbarPanel = AddUIComponent<UIPanel>();
             toolbarPanel.name = $"{name}_Toolbar";
             toolbarPanel.FitWidth(this, UIConstants.Padding);
-            toolbarPanel.height = UIConstants.MiddleBarHeight;
+            toolbarPanel.height = UIConstants.MiddleSize;
 
             // Main/Toolbar/Options
             var optionsPanel = toolbarPanel.AddUIComponent<UIPanel>();
@@ -136,7 +142,7 @@ namespace ParallelRoadTool.UI
             // Main/Toolbar/Options/SavePresetButton
             var savePresetButton = UIHelpers.CreateUiButton(
                 optionsPanel,
-                new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize),
+                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 string.Empty,
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SaveButton"),
                 "Save");
@@ -145,7 +151,7 @@ namespace ParallelRoadTool.UI
             // Main/Toolbar/Options/LoadPresetButton
             var loadPresetButton = UIHelpers.CreateUiButton(
                 optionsPanel,
-                new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize),
+                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 string.Empty,
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "LoadButton"),
                 "Load");
@@ -168,7 +174,7 @@ namespace ParallelRoadTool.UI
                 toolsPanel,
                 "Snapping",
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"),
-                new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize),
+                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 false
             );
             _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
@@ -176,7 +182,7 @@ namespace ParallelRoadTool.UI
             // Main/Toolbar/Tools/AddNetworkButton
             _addNetworkButton = UIHelpers.CreateUiButton(
                 toolsPanel,
-                new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize),
+                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 string.Empty,
                 Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"),
                 "Add"

@@ -79,11 +79,9 @@
     <Compile Include="UI\Base\UIModalWindow.cs" />
     <Compile Include="UI\Interfaces\IUIList.cs" />
     <Compile Include="UI\Interfaces\IUIListabeItem.cs" />
-    <Compile Include="UI\TMP.cs" />
     <Compile Include="UI\UIConstants.cs" />
     <Compile Include="UI\UIController.cs" />
     <Compile Include="UI\UIMainWindow.cs" />
-    <Compile Include="UI\UINetDropdown.cs" />
     <Compile Include="UI\UINetInfoButton.cs" />
     <Compile Include="UI\UINetInfoDropdown.cs" />
     <Compile Include="UI\UINetInfoPanel.cs" />

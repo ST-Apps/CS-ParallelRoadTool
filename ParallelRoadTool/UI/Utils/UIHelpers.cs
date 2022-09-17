@@ -21,6 +21,16 @@ namespace ParallelRoadTool.UI.Utils
         #region Helpers
 
         /// <summary>
+        /// Creates a <see cref="RectOffset"/> with the very same padding values for each side.
+        /// </summary>
+        /// <param name="padding"></param>
+        /// <returns></returns>
+        public static RectOffset RectOffsetFromPadding(int padding)
+        {
+            return new RectOffset(padding, padding, padding, padding);
+        }
+
+        /// <summary>
         /// Generates a random color starting from a string's hash.
         /// </summary>
         /// <param name="str"></param>
@@ -82,7 +92,7 @@ namespace ParallelRoadTool.UI.Utils
             uiButton.tooltip = tooltip;
             if (size == null)
             {
-                size = new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize);
+                size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
             }
             uiButton.size = size;
 
@@ -128,7 +138,7 @@ namespace ParallelRoadTool.UI.Utils
             var checkBox = parent.AddUIComponent<UICheckBox>();
             if (size == null)
             {
-                size = new Vector2(UIConstants.MiddleButtonSize, UIConstants.MiddleButtonSize);
+                size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
             }
             checkBox.size = size;
 

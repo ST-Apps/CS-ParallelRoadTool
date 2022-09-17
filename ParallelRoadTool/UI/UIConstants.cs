@@ -1,4 +1,6 @@
-﻿namespace ParallelRoadTool.UI
+﻿using UnityEngine;
+
+namespace ParallelRoadTool.UI
 {
     /// <summary>
     /// Some shared constants to better define UI's layout.
@@ -6,28 +8,46 @@
     internal static class UIConstants
     {
         /// <summary>
-        /// Padding amount for all the components in this mod.
+        /// Standard padding amount for all the components in this mod.
         /// </summary>
         internal const int Padding = 8;
 
         /// <summary>
-        /// Size for the small buttons (e.g. close button).
+        /// Size for small items (e.g. close button).
         /// </summary>
-        internal const int SmallButtonSize = 32;
+        internal const int SmallSize = 32;
 
         /// <summary>
-        /// Size for the middle buttons (e.g. checkboxes).
+        /// Size for middle items (e.g. checkboxes).
         /// </summary>
-        internal const int MiddleButtonSize = 36;
+        internal const int MiddleSize = 36;
 
         /// <summary>
-        /// Height for a small bar (e.g. header).
+        /// Size for large items (e.g. checkboxes).
         /// </summary>
-        internal const int SmallBarHeight = 32;
+        internal const int LargeSize = 48;
 
         /// <summary>
-        /// Height for a middle bar (e.g. options).
+        /// Fixed size for a <see cref="NetInfo"/> thumbnail
         /// </summary>
-        internal const int MiddleBarHeight = 36;
+        internal static readonly Vector2 ThumbnailSize = new Vector2(LargeSize, LargeSize);
+
+        /// <summary>
+        /// Fixed width for a generic <see cref="UINetInfoPanel"/>
+        /// </summary>
+        internal const int NetInfoPanelWidth = 400;
+
+        /// <summary>
+        /// Fixed height for a generic <see cref="UINetInfoPanel"/>
+        /// </summary>
+        internal const int NetInfoPanelHeight = LargeSize + Padding + Padding;
+
+        /// <summary>
+        /// Fixed size for a generic <see cref="UINetInfoPanel"/>
+        /// </summary>
+        internal static readonly Vector2 NetInfoPanelSize = new Vector2(NetInfoPanelWidth, NetInfoPanelHeight);
+
+        // Taken from vanilla road building's overlay color
+        internal static readonly Color ReadOnlyColor = new Color(0, 0.710f, 1, 0.5f);
     }
 }
