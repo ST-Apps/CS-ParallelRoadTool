@@ -273,7 +273,13 @@ namespace ParallelRoadTool.UI
         /// <param name="networks"></param>
         public void RefreshNetworks(List<NetInfoItem> networks)
         {
+            // Before refreshing networks we restore autolayout to make the panel react to the new element
+            autoLayout = true;
+
             _networkListPanel.RefreshNetworks(networks);
+
+            // Now that networks have been refreshed we can disable autolayout again
+            autoLayout = false;
         }
 
         /// <summary>
