@@ -23,8 +23,6 @@ namespace ParallelRoadTool
     {
         #region Fields
 
-        //private readonly Harmony _harmony = new(ModInfo.HarmonyId);
-
         /// <summary>
         /// Main controller for everything UI-related
         /// </summary>
@@ -224,11 +222,6 @@ namespace ParallelRoadTool
                 // Load available networks
                 LoadNetworks();
 
-                // Apply harmony patches
-                //Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patching with Harmony...");
-                //_harmony.PatchAll();
-                //Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patches applied.");
-
                 // Mod is now fully enabled
                 ModStatuses ^= ModStatuses.Disabled;
                 ModStatuses ^= ModStatuses.Deployed;
@@ -289,9 +282,6 @@ namespace ParallelRoadTool
 
                 // Save current networks 
                 //PresetsUtils.Export(Configuration.AutoSaveFileName);
-
-                //// Disable patches
-                //_harmony.UnpatchAll();
 
                 DetachFromEvents();
 
