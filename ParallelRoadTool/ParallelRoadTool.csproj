@@ -81,7 +81,9 @@
     <Compile Include="Models\PresetNetItem.cs" />
     <Compile Include="ParallelRoadTool.cs" />
     <Compile Include="ModInfo.cs" />
-    <Compile Include="Settings\XMLSettingsFile.cs" />
+    <Compile Include="Settings\OffsetOptionsKeymapping.cs" />
+    <Compile Include="Settings\ToggleButtonOptionsKeymapping.cs" />
+    <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="UI\Base\UIModalWindow.cs" />
     <Compile Include="UI\UIConstants.cs" />
     <Compile Include="UI\UIController.cs" />

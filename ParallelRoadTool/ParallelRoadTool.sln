@@ -37,6 +37,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", 
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AlgernonCommonsPatchingShared", "..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.shproj", "{60FBD1A6-5080-453C-A4C0-857E7CEE080F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Translations", "Translations", "{341A70A6-F99C-4CDC-BB0B-2574F336E9AF}"
+	ProjectSection(SolutionItems) = preProject
+		..\Translations\en-EN.csv = ..\Translations\en-EN.csv
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,15 +1,10 @@
 ﻿using AlgernonCommons.Patching;
 using ICities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ParallelRoadTool.UI;
 using AlgernonCommons.Translation;
 using AlgernonCommons;
 using ColossalFramework.UI;
 using AlgernonCommons.Notifications;
-using HarmonyLib;
 using ParallelRoadTool.Settings;
 
 namespace ParallelRoadTool
@@ -43,7 +38,8 @@ namespace ParallelRoadTool
         /// Gets the mod's base display name (name only).
         /// For DEBUG builds we also include the current branch name.
         /// </summary>
-        public override string BaseName => $"[BETA] Parallel Road Tool {Version}-{Branch}";
+        public override string BaseName => $"[BETA] Parallel Road Tool";
+     //    public override string BaseName => $"[BETA] Parallel Road Tool {Version}-{Branch}";
 #else
         /// <summary>
         /// Gets the mod's base display name (name only).
@@ -99,12 +95,12 @@ namespace ParallelRoadTool
         /// <summary>
         /// Saves settings file.
         /// </summary>
-        public override void SaveSettings() => XMLSettingsFile.Save();
+        public override void SaveSettings() => ModSettings.Save();
 
         /// <summary>
         /// Loads settings file.
         /// </summary>
-        public override void LoadSettings() => XMLSettingsFile.Load();
+        public override void LoadSettings() => ModSettings.Load();
 
         #endregion
 
