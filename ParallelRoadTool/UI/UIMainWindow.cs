@@ -202,7 +202,7 @@ namespace ParallelRoadTool.UI
             optionsPanel.backgroundSprite = "GenericPanel";
             optionsPanel.color = new Color32(206, 206, 206, 255);
             optionsPanel.size = toolbarPanel.size;
-            optionsPanel.width = (optionsPanel.width / 2) - (UIConstants.Padding / 2);
+            optionsPanel.width = optionsPanel.width / 2 - UIConstants.Padding / 2f;
             optionsPanel.AlignTo(toolbarPanel, UIAlignAnchor.TopLeft);
             optionsPanel.autoLayout = true;
             optionsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
@@ -231,7 +231,7 @@ namespace ParallelRoadTool.UI
             toolsPanel.backgroundSprite = "GenericPanel";
             toolsPanel.color = new Color32(206, 206, 206, 255);
             toolsPanel.size = toolbarPanel.size;
-            toolsPanel.width = (toolsPanel.width / 2) - (UIConstants.Padding / 2);
+            toolsPanel.width = toolsPanel.width / 2 - UIConstants.Padding / 2f;
             toolsPanel.AlignTo(toolbarPanel, UIAlignAnchor.TopRight);
             toolsPanel.autoLayout = true;
             toolsPanel.autoLayoutDirection = LayoutDirection.Horizontal;

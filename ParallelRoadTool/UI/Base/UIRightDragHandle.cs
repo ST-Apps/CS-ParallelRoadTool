@@ -11,22 +11,22 @@ namespace ParallelRoadTool.UI.Base
     {
         public UIRightDragHandle()
         {
-            base.eventDragStart += OnEventDragStart;
-            base.eventDragEnd += OnEventDragEnd;
+            eventDragStart += OnEventDragStart;
+            eventDragEnd += OnEventDragEnd;
         }
 
         // Original events are not working outside of this class, so we need to redefine them
-        public new event DragEventHandler eventDragStart;
-        public new event DragEventHandler eventDragEnd;
+        public event DragEventHandler EventDragStart;
+        public event DragEventHandler EventDragEnd;
 
-        private void OnEventDragEnd(UIComponent component, UIDragEventParameter eventparam)
+        private void OnEventDragEnd(UIComponent component, UIDragEventParameter eventParam)
         {
-            eventDragEnd?.Invoke(component, eventparam);
+            EventDragEnd?.Invoke(component, eventParam);
         }
 
-        private void OnEventDragStart(UIComponent component, UIDragEventParameter eventparam)
+        private void OnEventDragStart(UIComponent component, UIDragEventParameter eventParam)
         {
-            eventDragStart?.Invoke(component, eventparam);
+            EventDragStart?.Invoke(component, eventParam);
         }
 
         protected override void OnMouseDown(UIMouseEventParameter p)

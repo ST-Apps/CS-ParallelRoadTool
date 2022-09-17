@@ -78,7 +78,7 @@ namespace ParallelRoadTool.UI
             button.disabledFgSprite = SpriteName + "Disabled";
 
             isChecked = false;
-            eventCheckChanged += (c, s) =>
+            eventCheckChanged += (_, s) =>
             {
                 if (s)
                 {
@@ -129,12 +129,12 @@ namespace ParallelRoadTool.UI
 
         private void AttachToEvents()
         {
-            _buttonDragHandle.eventDragEnd += ButtonDragHandle_eventDragEnd;
+            _buttonDragHandle.EventDragEnd += ButtonDragHandle_eventDragEnd;
         }
 
         private void DetachFromEvents()
         {
-            _buttonDragHandle.eventDragEnd -= ButtonDragHandle_eventDragEnd;
+            _buttonDragHandle.EventDragEnd -= ButtonDragHandle_eventDragEnd;
         }
 
         private void UpdateSavedPosition()

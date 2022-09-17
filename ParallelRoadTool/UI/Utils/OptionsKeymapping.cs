@@ -11,34 +11,32 @@ namespace ParallelRoadTool.UI.Utils
     {
         private const string KKeyBindingTemplate = "KeyBindingTemplate";
 
-        public static readonly SavedInputKey ToggleParallelRoads = new SavedInputKey("toggleParallelRoads",
-                                                                                     Configuration.SettingsFileName,
-                                                                                     SavedInputKey.Encode(KeyCode.P, true, false, false), true);
+        public static readonly SavedInputKey ToggleParallelRoads = new("toggleParallelRoads",
+                                                                       Configuration.SettingsFileName,
+                                                                       SavedInputKey.Encode(KeyCode.P, true, false, false), true);
 
-        public static readonly SavedInputKey IncreaseHorizontalOffset = new SavedInputKey("increaseHorizontalOffset",
-                                                                                          Configuration.SettingsFileName,
-                                                                                          SavedInputKey.Encode(KeyCode.Equals, true, false, false),
-                                                                                          true);
+        public static readonly SavedInputKey IncreaseHorizontalOffset = new("increaseHorizontalOffset",
+                                                                            Configuration.SettingsFileName,
+                                                                            SavedInputKey.Encode(KeyCode.Equals, true, false, false),
+                                                                            true);
 
-        public static readonly SavedInputKey DecreaseHorizontalOffset = new SavedInputKey("decreaseHorizontalOffset",
-                                                                                          Configuration.SettingsFileName,
-                                                                                          SavedInputKey.Encode(KeyCode.Minus, true, false, false),
-                                                                                          true);
+        public static readonly SavedInputKey DecreaseHorizontalOffset = new("decreaseHorizontalOffset",
+                                                                            Configuration.SettingsFileName,
+                                                                            SavedInputKey.Encode(KeyCode.Minus, true, false, false),
+                                                                            true);
 
-        public static readonly SavedInputKey IncreaseVerticalOffset = new SavedInputKey("increaseVerticalOffset",
-                                                                                        Configuration.SettingsFileName,
-                                                                                        SavedInputKey.Encode(KeyCode.Equals, true, true, false),
-                                                                                        true);
+        public static readonly SavedInputKey IncreaseVerticalOffset = new("increaseVerticalOffset",
+                                                                          Configuration.SettingsFileName,
+                                                                          SavedInputKey.Encode(KeyCode.Equals, true, true, false),
+                                                                          true);
 
-        public static readonly SavedInputKey DecreaseVerticalOffset = new SavedInputKey("decreaseVerticalOffset",
-                                                                                        Configuration.SettingsFileName,
-                                                                                        SavedInputKey.Encode(KeyCode.Minus, true, true, false), true);
+        public static readonly SavedInputKey DecreaseVerticalOffset = new("decreaseVerticalOffset",
+                                                                          Configuration.SettingsFileName,
+                                                                          SavedInputKey.Encode(KeyCode.Minus, true, true, false), true);
 
         private int _count;
 
         private SavedInputKey _mEditingBinding;
-
-        private string _mEditingBindingCategory;
 
         private void Awake()
         {
@@ -138,7 +136,6 @@ namespace ParallelRoadTool.UI.Utils
                 var uITextComponent = p.source as UITextComponent;
                 uITextComponent.text = _mEditingBinding.ToLocalizedString("KEYNAME");
                 _mEditingBinding = null;
-                _mEditingBindingCategory = string.Empty;
             }
         }
 
@@ -148,7 +145,6 @@ namespace ParallelRoadTool.UI.Utils
             {
                 p.Use();
                 _mEditingBinding = (SavedInputKey)p.source.objectUserData;
-                _mEditingBindingCategory = p.source.stringUserData;
                 var uIButton = p.source as UIButton;
                 uIButton.buttonsMask = UIMouseButton.Left | UIMouseButton.Right | UIMouseButton.Middle |
                                        UIMouseButton.Special0 | UIMouseButton.Special1 | UIMouseButton.Special2 |
@@ -169,7 +165,6 @@ namespace ParallelRoadTool.UI.Utils
                 uIButton2.text = _mEditingBinding.ToLocalizedString("KEYNAME");
                 uIButton2.buttonsMask = UIMouseButton.Left;
                 _mEditingBinding = null;
-                _mEditingBindingCategory = string.Empty;
             }
         }
 

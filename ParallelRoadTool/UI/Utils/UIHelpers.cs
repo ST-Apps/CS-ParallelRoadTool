@@ -1,26 +1,42 @@
-﻿using ColossalFramework.UI;
+﻿using System.Linq;
+using ColossalFramework.UI;
 using ParallelRoadTool.Utils;
-using System.Linq;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI.Utils
 {
     /// <summary>
-    /// TODO: review!
+    ///     TODO: review!
     /// </summary>
     internal static class UIHelpers
     {
-
         #region Resources
 
         public static readonly UITextureAtlas Atlas = LoadResources();
 
         #endregion
 
+        #region Utils
+
+        private static UITextureAtlas LoadResources()
+        {
+            var textureAtlas =
+                ResourceLoader.CreateTextureAtlas(Configuration.CustomAtlasName, Configuration.CustomSpritesNames,
+                                                  Configuration.IconsNamespace);
+
+            var defaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
+            var textures = Configuration.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
+            ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
+
+            return textureAtlas;
+        }
+
+        #endregion
+
         #region Helpers
 
         /// <summary>
-        /// Creates a <see cref="RectOffset"/> with the very same padding values for each side.
+        ///     Creates a <see cref="RectOffset" /> with the very same padding values for each side.
         /// </summary>
         /// <param name="padding"></param>
         /// <returns></returns>
@@ -30,7 +46,7 @@ namespace ParallelRoadTool.UI.Utils
         }
 
         /// <summary>
-        /// Generates a random color starting from a string's hash.
+        ///     Generates a random color starting from a string's hash.
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -43,7 +59,7 @@ namespace ParallelRoadTool.UI.Utils
         }
 
         /// <summary>
-        /// Fits component's width to its parent while keeping margin on both left and right size
+        ///     Fits component's width to its parent while keeping margin on both left and right size
         /// </summary>
         /// <param name="component"></param>
         /// <param name="parent"></param>
@@ -54,7 +70,7 @@ namespace ParallelRoadTool.UI.Utils
         }
 
         /// <summary>
-        /// Fits component's height to its parent while keeping margin on both left and right size
+        ///     Fits component's height to its parent while keeping margin on both left and right size
         /// </summary>
         /// <param name="component"></param>
         /// <param name="parent"></param>
@@ -69,7 +85,7 @@ namespace ParallelRoadTool.UI.Utils
         #region Components
 
         /// <summary>
-        /// Creates an <see cref="UIButton"/> as child of parent <see cref="UIComponent"/>.
+        ///     Creates an <see cref="UIButton" /> as child of parent <see cref="UIComponent" />.
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="text"></param>
@@ -77,22 +93,18 @@ namespace ParallelRoadTool.UI.Utils
         /// <param name="size"></param>
         /// <param name="sprite"></param>
         /// <param name="isTextButton"></param>
-        /// <param name="atlas"></param>
         /// <returns></returns>
         internal static UIButton CreateUiButton(UIComponent parent,
-                                              Vector2 size,
-                                              string text,
-                                              string tooltip,
-                                              string sprite,
-                                              bool isTextButton = false)
+                                                Vector2 size,
+                                                string text,
+                                                string tooltip,
+                                                string sprite,
+                                                bool isTextButton = false)
         {
             var uiButton = parent.AddUIComponent<UIButton>();
             uiButton.atlas = Atlas;
             uiButton.tooltip = tooltip;
-            if (size == Vector2.zero)
-            {
-                size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
-            }
+            if (size == Vector2.zero) size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
             uiButton.size = size;
 
             if (!isTextButton)
@@ -135,10 +147,7 @@ namespace ParallelRoadTool.UI.Utils
                                                 bool isStatic = false)
         {
             var checkBox = parent.AddUIComponent<UICheckBox>();
-            if (size == null)
-            {
-                size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
-            }
+            if (size == Vector2.zero) size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
             checkBox.size = size;
 
             var button = checkBox.AddUIComponent<UIButton>();
@@ -168,21 +177,21 @@ namespace ParallelRoadTool.UI.Utils
                     button.normalFgSprite = spriteName + "Focused";
             }
 
-            checkBox.eventCheckChanged += (c, s) =>
-            {
-                if (s)
-                {
-                    button.normalBgSprite = "OptionBaseFocused";
-                    if (!isStatic)
-                        button.normalFgSprite = spriteName + "Focused";
-                }
-                else
-                {
-                    button.normalBgSprite = "OptionBase";
-                    if (!isStatic)
-                        button.normalFgSprite = spriteName;
-                }
-            };
+            checkBox.eventCheckChanged += (_, s) =>
+                                          {
+                                              if (s)
+                                              {
+                                                  button.normalBgSprite = "OptionBaseFocused";
+                                                  if (!isStatic)
+                                                      button.normalFgSprite = spriteName + "Focused";
+                                              }
+                                              else
+                                              {
+                                                  button.normalBgSprite = "OptionBase";
+                                                  if (!isStatic)
+                                                      button.normalFgSprite = spriteName;
+                                              }
+                                          };
 
             return checkBox;
         }
@@ -206,8 +215,8 @@ namespace ParallelRoadTool.UI.Utils
             textField.textColor = new Color32(0, 0, 0, 255);
             textField.disabledTextColor = new Color32(0, 0, 0, 128);
             textField.color = new Color32(255, 255, 255, 255);
-            textField.eventGotFocus += (component, param) => component.color = new Color32(253, 227, 144, 255);
-            textField.eventLostFocus += (component, param) => component.color = new Color32(255, 255, 255, 255);
+            textField.eventGotFocus += (component, _) => component.color = new Color32(253, 227, 144, 255);
+            textField.eventLostFocus += (component, _) => component.color = new Color32(255, 255, 255, 255);
             return textField;
         }
 
@@ -234,7 +243,7 @@ namespace ParallelRoadTool.UI.Utils
             checkBox.size = size;
 
             // Button
-            var button = checkBox.AddUIComponent<UIButton>();            
+            var button = checkBox.AddUIComponent<UIButton>();
             button.size = size;
             button.atlas = Atlas;
             button.tooltip = tooltip;
@@ -254,29 +263,29 @@ namespace ParallelRoadTool.UI.Utils
             button.disabledFgSprite = spriteName + "Disabled";
 
             // Change sprites on selection change
-            checkBox.eventCheckChanged += (c, v) =>
-            {
-                if (v)
-                {
-                    // Checkbox is selected
-                    button.normalBgSprite = "OptionBaseFocused";
-                    button.normalFgSprite = spriteName + "Pressed";
-                    button.focusedFgSprite = spriteName + "Pressed";
-                } else
-                {
-                    // Checkbox is NOT selected
-                    button.normalBgSprite = "OptionBase";
-                    button.normalFgSprite = spriteName;
-                    button.focusedFgSprite = spriteName;
-
-                }
-            };
+            checkBox.eventCheckChanged += (_, v) =>
+                                          {
+                                              if (v)
+                                              {
+                                                  // Checkbox is selected
+                                                  button.normalBgSprite = "OptionBaseFocused";
+                                                  button.normalFgSprite = spriteName + "Pressed";
+                                                  button.focusedFgSprite = spriteName + "Pressed";
+                                              }
+                                              else
+                                              {
+                                                  // Checkbox is NOT selected
+                                                  button.normalBgSprite = "OptionBase";
+                                                  button.normalFgSprite = spriteName;
+                                                  button.focusedFgSprite = spriteName;
+                                              }
+                                          };
 
             return checkBox;
         }
 
         public static UICheckBox CreateCheckBox(UIComponent parent,
-            Vector2 size,
+                                                Vector2 size,
                                                 string spriteName,
                                                 string toolTip,
                                                 bool value,
@@ -315,40 +324,23 @@ namespace ParallelRoadTool.UI.Utils
                     button.normalFgSprite = spriteName + "Pressed";
             }
 
-            checkBox.eventCheckChanged += (c, s) =>
-            {
-                if (s)
-                {
-                    button.normalBgSprite = "OptionBaseFocused";
-                    if (!isStatic)
-                        button.normalFgSprite = spriteName + "Pressed";
-                }
-                else
-                {
-                    button.normalBgSprite = "OptionBase";
-                    if (!isStatic)
-                        button.normalFgSprite = spriteName;
-                }
-            };
+            checkBox.eventCheckChanged += (_, s) =>
+                                          {
+                                              if (s)
+                                              {
+                                                  button.normalBgSprite = "OptionBaseFocused";
+                                                  if (!isStatic)
+                                                      button.normalFgSprite = spriteName + "Pressed";
+                                              }
+                                              else
+                                              {
+                                                  button.normalBgSprite = "OptionBase";
+                                                  if (!isStatic)
+                                                      button.normalFgSprite = spriteName;
+                                              }
+                                          };
 
             return checkBox;
-        }
-
-        #endregion
-
-        #region Utils
-
-        private static UITextureAtlas LoadResources()
-        {
-            var textureAtlas =
-                ResourceLoader.CreateTextureAtlas(Configuration.CustomAtlasName, Configuration.CustomSpritesNames,
-                                                  Configuration.IconsNamespace);
-
-            var defaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
-            var textures = Configuration.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
-            ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
-
-            return textureAtlas;
         }
 
         #endregion
