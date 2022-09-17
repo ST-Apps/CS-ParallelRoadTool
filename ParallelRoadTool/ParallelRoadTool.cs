@@ -23,69 +23,65 @@ namespace ParallelRoadTool
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadTool : MonoBehaviour
     {
-        #region NEW
+        #region Fields
 
-        private readonly Harmony _harmony = new Harmony(ModInfo.HarmonyId);
+        private readonly Harmony _harmony = new(ModInfo.HarmonyId);
 
-        private UIController UIController => Singleton<UIController>.instance;
+        /// <summary>
+        /// Main controller for everything UI-related
+        /// </summary>
+        private static UIController UIController => Singleton<UIController>.instance;
 
-        public void ToggleModStatus()
-        {
-            ModStatuses ^= ModStatuses.Active;
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToggleModStatus)}] New mod status is: {ModStatuses:g}.");
-            UIController.UpdateVisibility(ModStatuses);
-        }
+        /// <summary>
+        ///     <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
+        ///     A <see cref="NetInfo" /> can be any kind of network that the user can build.
+        /// </summary>
+        private List<NetInfo> _availableRoadTypes;
 
-        private void UIController_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
-        {
-            var targetItem = SelectedRoadTypes[value.ItemIndex];
-            targetItem.HorizontalOffset = value.HorizontalOffset;
-            targetItem.VerticalOffset = value.VerticalOffset;
-            targetItem.IsReversed = value.IsReversedNetwork;
+        #endregion
 
-            RefreshNetworks();
-        }
+        #region Properties
 
-        private void UIController_ToggleSnappingButtonEventCheckChanged(UIComponent component, bool value)
-        {
-            IsSnappingEnabled = value;
-        }
+        /// <summary>
+        ///     <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
+        ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
+        /// </summary>
+        public List<NetInfoItem> SelectedNetworkTypes { get; } = new();
 
-        private void UIController_OnHorizontalOffsetKeypress(UIComponent component, float step)
-        {
-            for (var i = 0; i < SelectedRoadTypes.Count; i++)
-            {
-                var item = SelectedRoadTypes[i];
-                item.HorizontalOffset += (1 + i) * step;
-            }
-            RefreshNetworks();
-        }
+        /// <summary>
+        ///     This tells if the user wants the parallel/stacked nodes to snap with already existing nodes.
+        /// </summary>
+        public bool IsSnappingEnabled { get; private set; }
 
-        private void UIController_OnVerticalOffsetKeypress(UIComponent component, float step)
-        {
-            for (var i = 0; i < SelectedRoadTypes.Count; i++)
-            {
-                var item = SelectedRoadTypes[i];
-                item.VerticalOffset += (1 + i) * step;
-            }
-            RefreshNetworks();
-        }
+        /// <summary>
+        ///     True if the current map is using left-hand traffic.
+        /// </summary>
+        public bool IsLeftHandTraffic { get; private set; }
 
-        private void RefreshNetworks()
-        {
-            var sorted = SelectedRoadTypes.OrderBy(r => r.HorizontalOffset).ToList();
-            SelectedRoadTypes.Clear();
-            SelectedRoadTypes.AddRange(sorted);
-            UIController.RefreshNetworks(SelectedRoadTypes);
+        /// <summary>
+        ///     True if we detect a mouse long press, needed to prevent multiple updates when Anarchy is on.
+        ///     HACK - [ISSUE-84]
+        /// </summary>
+        public bool IsMouseLongPress { get; set; }
 
-            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
-        }
+        /// <summary>
+        ///     True only if <see cref="AppMode" /> is <see cref="AppMode.Game" />.
+        /// </summary>
+        public static bool IsInGameMode { get; set; }
 
-        private void RemoveNetwork(int index)
-        {
-            SelectedRoadTypes.RemoveAt(index);
-            RefreshNetworks();
-        }
+        /// <summary>
+        /// Flags for the current statuses for the mod. For more details see: <see cref="Models.ModStatuses"/>.
+        /// </summary>
+        public static ModStatuses ModStatuses { get; private set; } = ModStatuses.Disabled;
+
+        /// <summary>
+        ///     Currently selected <see cref="NetInfo" /> within <see cref="NetTool" />.
+        /// </summary>
+        public static NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
+
+        #endregion
+
+        #region Callbacks
 
         private void UIController_AddNetworkButtonEventClicked(object sender, EventArgs e)
         {
@@ -94,12 +90,12 @@ namespace ParallelRoadTool
             Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network [{netInfo.GenerateBeautifiedNetName()}]");
 
             // Previous item's offset so that we can try to separate this one from previous one without overlapping
-            var prevOffset = SelectedRoadTypes.Any() ? SelectedRoadTypes.Last().HorizontalOffset : 0;
+            var prevOffset = SelectedNetworkTypes.Any() ? SelectedNetworkTypes.Last().HorizontalOffset : 0;
             var item = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
 
-            SelectedRoadTypes.Add(item);
+            SelectedNetworkTypes.Add(item);
             UIController.AddNetwork(item);
-            NetManagerPatch.NetworksCount = SelectedRoadTypes.Count;
+            NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
         }
 
         private void UIController_DeleteNetworkButtonEventClicked(UIComponent component, int index)
@@ -156,61 +152,48 @@ namespace ParallelRoadTool
         {
             UIController.UpdateCurrentNetwork(e.Prefab);
         }
-        #endregion
 
-        #region Properties
+        private void UIController_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
+        {
+            var targetItem = SelectedNetworkTypes[value.ItemIndex];
+            targetItem.HorizontalOffset = value.HorizontalOffset;
+            targetItem.VerticalOffset = value.VerticalOffset;
+            targetItem.IsReversed = value.IsReversedNetwork;
 
-        #region Data
+            RefreshNetworks();
+        }
 
-        /// <summary>
-        ///     <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
-        ///     A <see cref="NetInfo" /> can be any kind of network that the user can build.
-        /// </summary>
-        public List<NetInfo> AvailableRoadTypes { get; private set; }
+        private void UIController_ToggleSnappingButtonEventCheckChanged(UIComponent component, bool value)
+        {
+            IsSnappingEnabled = value;
+        }
 
-        /// <summary>
-        ///     <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
-        ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
-        /// </summary>
-        public List<NetInfoItem> SelectedRoadTypes { get; } = new List<NetInfoItem>();
+        private void UIController_OnHorizontalOffsetKeypress(UIComponent component, float step)
+        {
+            for (var i = 0; i < SelectedNetworkTypes.Count; i++)
+            {
+                var item = SelectedNetworkTypes[i];
+                item.HorizontalOffset += (1 + i) * step;
+            }
+            RefreshNetworks();
+        }
 
-        ///// <summary>
-        /////     Array containing the beautified names for the <see cref="AvailableRoadTypes" />.
-        ///// </summary>
-        //public string[] AvailableRoadNames { get; private set; }
+        private void UIController_OnVerticalOffsetKeypress(UIComponent component, float step)
+        {
+            for (var i = 0; i < SelectedNetworkTypes.Count; i++)
+            {
+                var item = SelectedNetworkTypes[i];
+                item.VerticalOffset += (1 + i) * step;
+            }
+            RefreshNetworks();
+        }
 
-        /// <summary>
-        ///     This tells if the user wants the parallel/stacked nodes to snap with already existing nodes.
-        /// </summary>
-        public bool IsSnappingEnabled { get; private set; }
+        private void OnMilestoneUpdate()
+        {
+            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnMilestoneUpdate)}] Milestones updated, reloading networks...");
 
-        /// <summary>
-        ///     True if the current map is using left-hand traffic.
-        /// </summary>
-        public bool IsLeftHandTraffic { get; private set; }
-
-        /// <summary>
-        ///     True if we detect a mouse long press, needed to prevent multiple updates when Anarchy is on.
-        ///     HACK - [ISSUE-84]
-        /// </summary>
-        public bool IsMouseLongPress { get; set; }
-
-        /// <summary>
-        ///     True only if <see cref="AppMode" /> is <see cref="AppMode.Game" />.
-        /// </summary>
-        public static bool IsInGameMode { get; set; }
-
-        /// <summary>
-        /// Flags for the current statuses for the mod. For more details see: <see cref="Models.ModStatuses"/>.
-        /// </summary>
-        public static ModStatuses ModStatuses { get; private set; } = ModStatuses.Disabled;
-
-        /// <summary>
-        ///     Currently selected <see cref="NetInfo" /> within <see cref="NetTool" />.
-        /// </summary>
-        public static NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
-
-        #endregion
+            LoadNetworks();
+        }
 
         #endregion
 
@@ -235,7 +218,7 @@ namespace ParallelRoadTool
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading version: {ModInfo.ModName} ({nameof(IsInGameMode)} is {IsInGameMode}).");
 
                 // Initialize support data
-                SelectedRoadTypes.Clear();
+                SelectedNetworkTypes.Clear();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic == SimulationMetaData.MetaBool.True;
 
@@ -284,6 +267,7 @@ namespace ParallelRoadTool
                 Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading failed");
                 Log.Exception(e);
 
+                // Fully disable mod's GameComponent
                 enabled = false;
             }
         }
@@ -305,21 +289,20 @@ namespace ParallelRoadTool
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Saving networks...");
 
                 // Save current networks 
-                PresetsUtils.Export(Configuration.AutoSaveFileName);
+                //PresetsUtils.Export(Configuration.AutoSaveFileName);
 
-                //ToggleDetours(false);
+                // Disable patches
+                _harmony.UnpatchAll();
+
                 DetachFromEvents();
 
                 // Reset data structures
-                AvailableRoadTypes.Clear();
-                SelectedRoadTypes.Clear();
-                //AvailableRoadNames = null;
+                _availableRoadTypes.Clear();
+                SelectedNetworkTypes.Clear();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
 
-                // Unsubscribe to milestones updated
-                Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
-
+                // Clean all the UI components
                 UIController.Cleanup();
 
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroyed");
@@ -329,6 +312,9 @@ namespace ParallelRoadTool
                 // HACK - [ISSUE 31]
                 Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroy failed");
                 Log.Exception(e);
+
+                // Fully disable mod's GameComponent
+                enabled = false;
             }
         }
 
@@ -336,89 +322,9 @@ namespace ParallelRoadTool
 
         #endregion
 
-        #region Utils
+        #region Control
 
-        /// <summary>
-        ///     We load all the available networks, based on the currently unlocked milestones (only if <see cref="IsInGameMode" />
-        ///     is true, otherwise we'll load them all).
-        ///     Once the networks are loaded, we can update the already displayed UI to show the newly loaded networks.
-        /// </summary>
-        /// <param name="updateDropdowns"></param>
-        private void LoadNetworks(bool updateDropdowns = false)
-        {
-            // Available networks loading
-            var count = PrefabCollection<NetInfo>.PrefabCount();
-            AvailableRoadTypes = new List<NetInfo>();
-
-            // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
-            var sortedNetworks = new SortedDictionary<string, NetInfo>();
-            for (uint i = 0; i < count; i++)
-            {
-                var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
-                if (prefab != null)
-                {
-                    var networkName = prefab.GenerateBeautifiedNetName();
-                    var atlasName = prefab.m_Atlas?.name;
-
-                    // Skip items with no atlas set as they're not networks (e.g. train lines)
-                    if (string.IsNullOrEmpty(atlasName))
-                    {
-                        Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because it's not a real network (atlas is not set).");
-                        continue;
-                    }
-
-                    // No need to skip stuff in map editor mode
-                    if (!IsInGameMode || prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
-                        sortedNetworks[networkName] = prefab;
-                    else
-                        Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because ""{prefab.m_UnlockMilestone.m_name}"" is not passed yet.");
-
-                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{atlasName}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
-                }
-            }
-
-            //AvailableRoadNames = sortedNetworks.Keys.ToArray();
-            AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
-
-            // TODO: decide what to do with it
-            // AvailableRoadNames = new string[sortedNetworks.Keys.Count + 1];
-
-            // Default item, creates a net with the same type as source
-            // TODO: decide what to do with it
-            // AddNetworkType(null);
-
-            // TODO: decide what to do with it
-            // Array.Copy(sortedNetworks.Keys.ToArray(), 0, AvailableRoadNames, 1, sortedNetworks.Count);
-            // TODO: decide what to do with it
-            // AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
-
-            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks.");
-
-            // TODO: decide what to do with it
-            // if (updateDropdowns) _mainWindow_OLD.UpdateDropdowns();
-        }
-
-        private void AddNetworkType(NetInfo net)
-        {
-            //AvailableRoadNames[AvailableRoadTypes.Count] = net.GenerateBeautifiedNetName();
-            AvailableRoadTypes.Add(net);
-        }
-
-        public void ClearItems()
-        {
-            // TODO: decide what to do with it
-            // _mainWindow.ClearItems();
-        }
-
-        public void AddItem(NetInfoItem item)
-        {
-            // TODO: decide what to do with it
-            // _mainWindow.AddItem(item);
-        }
-
-        #endregion
-
-        #region Handlers
+        #region Internals
 
         private void DetachFromEvents()
         {
@@ -435,14 +341,6 @@ namespace ParallelRoadTool
 
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
-
-            //_mainWindow_OLD.OnParallelToolToggled -= MainWindowOnOnParallelToolToggled;
-            //_mainWindow_OLD.OnSnappingToggled -= MainWindowOnOnSnappingToggled;
-            //_mainWindow_OLD.OnHorizontalOffsetKeypress -= MainWindowOnOnHorizontalOffsetKeypress;
-            //_mainWindow_OLD.OnVerticalOffsetKeypress -= MainWindowOnOnVerticalOffsetKeypress;
-
-            //_mainWindow_OLD.OnNetworkItemAdded -= MainWindowOnNetworkItemAdded;
-            //_mainWindow_OLD.OnItemChanged -= MainWindowOnOnItemChanged;
         }
 
         private void AttachToEvents()
@@ -461,48 +359,99 @@ namespace ParallelRoadTool
             // Subscribe to milestones updated, but only if we're not in map editor
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated += OnMilestoneUpdate;
-
-            //_mainWindow_OLD.OnParallelToolToggled += MainWindowOnOnParallelToolToggled;
-            //_mainWindow_OLD.OnSnappingToggled += MainWindowOnOnSnappingToggled;
-            //_mainWindow_OLD.OnHorizontalOffsetKeypress += MainWindowOnOnHorizontalOffsetKeypress;
-            //_mainWindow_OLD.OnVerticalOffsetKeypress += MainWindowOnOnVerticalOffsetKeypress;
-
-            //_mainWindow_OLD.OnNetworkItemAdded += MainWindowOnNetworkItemAdded;
-            //_mainWindow_OLD.OnItemChanged += MainWindowOnOnItemChanged;
-            //_mainWindow_OLD.OnNetworkItemDeleted += MainWindowOnOnNetworkItemDeleted;
         }
 
-        private void MainWindowOnOnSnappingToggled(UIComponent component, bool value)
+        /// <summary>
+        /// Sorts and refreshes <see cref="SelectedNetworkTypes"/>, updating the UI at the end.
+        /// </summary>
+        private void RefreshNetworks()
         {
-            IsSnappingEnabled = value;
+            // Sort networks based on ascending HorizontalOffset
+            var sorted = SelectedNetworkTypes.OrderBy(r => r.HorizontalOffset).ToList();
+
+            // Clear and rebuild the list with the currently selected networks
+            SelectedNetworkTypes.Clear();
+            SelectedNetworkTypes.AddRange(sorted);
+
+            // Update the UI
+            UIController.RefreshNetworks(SelectedNetworkTypes);
+
+            // Update networks count to patches
+            NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
         }
 
-        //private void MainWindowOnOnItemChanged(UIComponent component, NetTypeItemEventArgs value)
-        //{
-        //    Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(MainWindowOnOnItemChanged)}] Dropdown selection changed, new selection is {value.ItemIndex} (total elements: {SelectedRoadTypes.Count})");
-
-        //    var item = SelectedRoadTypes[value.ItemIndex];
-
-        //    var netInfo = value.IsFiltered
-        //                      ? Singleton<ParallelRoadTool>.instance.AvailableRoadTypes.FirstOrDefault(n => n.GenerateBeautifiedNetName() ==
-        //                                                                                                    value.SelectedNetworkName)
-        //                      : value.SelectedNetworkIndex == 0
-        //                          ? null
-        //                          : Singleton<ParallelRoadTool>.instance.AvailableRoadTypes[value.SelectedNetworkIndex];
-
-        //    // TODO: decide what to do with it
-        //    // item.NetInfo = netInfo;
-        //    item.HorizontalOffset = value.HorizontalOffset;
-        //    item.VerticalOffset = value.VerticalOffset;
-        //    item.IsReversed = value.IsReversedNetwork;
-        //}
-
-        private void OnMilestoneUpdate()
+        /// <summary>
+        /// Remove the network at index from the <see cref="SelectedNetworkTypes"/> and calls <see cref="RefreshNetworks"/>.
+        /// </summary>
+        /// <param name="index"></param>
+        private void RemoveNetwork(int index)
         {
-            Log.Info("Milestones updated, reloading networks...");
-
-            LoadNetworks(true);
+            SelectedNetworkTypes.RemoveAt(index);
+            RefreshNetworks();
         }
+
+        /// <summary>
+        ///     We load all the available networks, based on the currently unlocked milestones (only if <see cref="IsInGameMode" />
+        ///     is true, otherwise we'll load them all).
+        ///     Once the networks are loaded, we can update the already displayed UI to show the newly loaded networks.
+        /// </summary>
+        private void LoadNetworks()
+        {
+            // Available networks loading
+            var count = PrefabCollection<NetInfo>.PrefabCount();
+            _availableRoadTypes = new List<NetInfo>();
+
+            // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
+            var sortedNetworks = new SortedDictionary<string, NetInfo>();
+            for (uint i = 0; i < count; i++)
+            {
+                var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
+                if (prefab == null) continue;
+
+                var networkName = prefab.GenerateBeautifiedNetName();
+                var atlasName = prefab.m_Atlas?.name;
+
+                // Skip items with no atlas set as they're not networks (e.g. train lines)
+                if (string.IsNullOrEmpty(atlasName))
+                {
+                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because it's not a real network (atlas is not set).");
+                    continue;
+                }
+
+                // No need to skip stuff in map editor mode
+                if (!IsInGameMode || prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
+                    sortedNetworks[networkName] = prefab;
+                else
+                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because ""{prefab.m_UnlockMilestone.m_name}"" is not passed yet.");
+
+                Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{atlasName}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
+            }
+
+            _availableRoadTypes.AddRange(sortedNetworks.Values.ToList());
+
+            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {_availableRoadTypes.Count} networks.");
+        }
+
+        #endregion
+
+        #region Public API
+
+        /// <summary>
+        /// Flips the status for <see cref="ModStatuses"/> Active flag, effectively activating/disactivating the mod.
+        /// This change propagates to <see cref="UIController"/> to update the UI accordingly.
+        /// </summary>
+        public void ToggleModActiveStatus()
+        {
+            // Toggle active status flag
+            ModStatuses ^= ModStatuses.Active;
+
+            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToggleModActiveStatus)}] New mod status is: {ModStatuses:g}.");
+
+            // Update the UI status based on the new Active value
+            UIController.UpdateVisibility(ModStatuses);
+        }
+
+        #endregion
 
         #endregion
     }

@@ -10,8 +10,61 @@ using UnityEngine;
 
 namespace ParallelRoadTool.UI
 {
+    /// <summary>
+    /// Main controller for the UI-related components of the mod.
+    /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class UIController : MonoBehaviour
     {
+
+        #region Events
+
+        public event EventHandler CloseButtonEventClicked;
+        public event EventHandler AddNetworkButtonEventClicked;
+        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
+        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
+
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged
+        {
+            add => _mainWindow.NetTypeEventChanged += value;
+            remove => _mainWindow.NetTypeEventChanged -= value;
+        }
+
+        public event PropertyChangedEventHandler<bool> ToolToggleButtonEventCheckChanged
+        {
+            add => _toolToggleButton.eventCheckChanged += value;
+            remove => _toolToggleButton.eventCheckChanged -= value;
+        }
+
+        public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
+        {
+            add => _mainWindow.ToggleSnappingButtonEventCheckChanged += value;
+            remove => _mainWindow.ToggleSnappingButtonEventCheckChanged -= value;
+        }
+
+        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
+        {
+            add => _mainWindow.DeleteNetworkButtonEventClicked += value;
+            remove => _mainWindow.DeleteNetworkButtonEventClicked += value;
+        }
+
+        #endregion
+
+        #region Callbacks
+
+        private void MainWindow_CloseButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            CloseButtonEventClicked?.Invoke(null, null);
+        }
+
+        private void MainWindow_AddNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            AddNetworkButtonEventClicked?.Invoke(null, null);
+        }
+
+        #endregion
+
+        #region Unity
 
         #region Components
 
@@ -25,61 +78,13 @@ namespace ParallelRoadTool.UI
         /// </summary>
         private UIToolToggleButton _toolToggleButton;
 
-        //private UINetListPopup _netPopup;
-
-        #endregion
-
-        #region Events/Callbacks
-
-        public event EventHandler CloseButtonEventClicked;
-        public event EventHandler AddNetworkButtonEventClicked;
-
-        public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged
-        {
-            add { _mainWindow.NetTypeEventChanged += value; }
-            remove { _mainWindow.NetTypeEventChanged -= value; }
-        }
-
-        public event PropertyChangedEventHandler<bool> ToolToggleButtonEventCheckChanged
-        {
-            add { _toolToggleButton.eventCheckChanged += value; }
-            remove { _toolToggleButton.eventCheckChanged -= value; }
-        }
-
-        public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
-        {
-            add { _mainWindow.ToggleSnappingButtonEventCheckChanged += value; }
-            remove { _mainWindow.ToggleSnappingButtonEventCheckChanged -= value; }
-        }
-
-        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
-        {
-            add { _mainWindow.DeleteNetworkButtonEventClicked += value; }
-            remove { _mainWindow.DeleteNetworkButtonEventClicked += value; }
-        }
-
-        public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
-        public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
-
-        private void MainWindow_CloseButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            CloseButtonEventClicked?.Invoke(null, null);
-        }
-
-        private void MainWindow_AddNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            AddNetworkButtonEventClicked?.Invoke(null, null);
-        }
-
-        private void MainWindowOnToggleDropdownButtonEventClick(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            //_netPopup.Toggle(component);
-        }
-
         #endregion
 
         #region Lifecycle
 
+        /// <summary>
+        /// Check for key-bindings and activate their corresponding action.
+        /// </summary>
         public void OnGUI()
         {
             if (UIView.HasModalInput()
@@ -105,19 +110,26 @@ namespace ParallelRoadTool.UI
 
             // Checking key presses
             if (OptionsKeymapping.ToggleParallelRoads.IsPressed(e)) ToggleModStatus();
-
             if (OptionsKeymapping.DecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
-
             if (OptionsKeymapping.IncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
-
             if (OptionsKeymapping.DecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
-
             if (OptionsKeymapping.IncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
         }
 
-        private void ToggleModStatus()
+        #endregion
+
+        #endregion
+
+        #region Control
+
+        #region Internals
+
+        /// <summary>
+        /// Toggles the current mod status on <see cref="ParallelRoadTool"/>.
+        /// </summary>
+        private static void ToggleModStatus()
         {
-            Singleton<ParallelRoadTool>.instance.ToggleModStatus();
+            Singleton<ParallelRoadTool>.instance.ToggleModActiveStatus();
         }
 
         private void AdjustNetOffset(float step, bool isHorizontal = true)
@@ -130,24 +142,13 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Builds the main UI for the mod.
+        /// Builds mod top-level UI components and attaches them to the current view.
+        /// The components are:
+        /// <list type="bullet">
+        /// <item><see cref="UIMainWindow"/></item>
+        /// <item><see cref="UIToolToggleButton"/></item>
+        /// </list>
         /// </summary>
-        public void Initialize()
-        {
-            try
-            {
-                BuildUI();
-                AttachToEvents();
-            }
-            catch (Exception e)
-            {
-                Log._DebugOnlyError($"[{nameof(UIController)}.{nameof(Initialize)}] Loading failed.");
-                Log.Exception(e);
-
-                enabled = false;
-            }
-        }
-
         private void BuildUI()
         {
             var view = UIView.GetAView();
@@ -163,24 +164,59 @@ namespace ParallelRoadTool.UI
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Creating mod's main button...");
 
-            var button = UIUtil.FindComponent<UICheckBox>($"{Configuration.ResourcePrefix}Parallel");
+            var button = UIUtil.FindComponent<UIToolToggleButton>($"{Configuration.ResourcePrefix}Parallel");
             if (button != null) DestroyImmediate(button);
             _toolToggleButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's main button created.");
 
-            Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Creating mod's dropdown popup...");
-
-            //_netPopup ??= view.FindUIComponent<UINetListPopup>($"{Configuration.ResourcePrefix}NetworksPopup");
-            //if (_netPopup != null)
-            //    DestroyImmediate(_netPopup);
-            //_netPopup = view.AddUIComponent(typeof(UINetListPopup)) as UINetListPopup;
-
-            Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's dropdown popup.");
         }
 
+        private void AttachToEvents()
+        {
+            _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
+            _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
+        }
+
+        private void DetachFromEvents()
+        {
+            _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
+            _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
+        }
+
+        #endregion
+
+        #region Public API
+
+        /// <summary>
+        /// Builds the main UI for the mod.
+        /// This acts as the <see cref="UIComponent.Start"/> method for components.
+        /// </summary>
+        public void Initialize()
+        {
+            try
+            {
+                BuildUI();
+                AttachToEvents();
+            }
+            catch (Exception e)
+            {
+                Log._DebugOnlyError($"[{nameof(UIController)}.{nameof(Initialize)}] Loading failed.");
+                Log.Exception(e);
+
+                // Fully disable mod's GameComponent
+                enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Destroys the current UI.
+        /// This acts as the <see cref="UIComponent.OnDestroy"/> method for components.
+        /// </summary>
         public void Cleanup()
         {
+            DetachFromEvents();
+
             // Destroy UI
             Destroy(_mainWindow);
             _mainWindow = null;
@@ -189,27 +225,9 @@ namespace ParallelRoadTool.UI
             _toolToggleButton = null;
         }
 
-        private void AttachToEvents()
-        {
-            _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
-            _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
-            _mainWindow.ToggleDropdownButtonEventClick += MainWindowOnToggleDropdownButtonEventClick;
-        }
-
-        private void DetachFromEvents()
-        {
-            _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
-            _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
-            _mainWindow.ToggleDropdownButtonEventClick -= MainWindowOnToggleDropdownButtonEventClick;
-        }
-
-        #endregion
-
-        #region Control
-
         public void ResetToolWindowPosition()
         {
-            _mainWindow.absolutePosition = new Vector3(100, 100);
+            _mainWindow.CenterToParent();
         }
 
         public void ResetToolButtonPosition()
@@ -217,6 +235,10 @@ namespace ParallelRoadTool.UI
             _toolToggleButton.ResetPosition();
         }
 
+        /// <summary>
+        /// Sets components' visibility based on the current flags that we have on <see cref="ParallelRoadTool.ModStatuses"/>.
+        /// </summary>
+        /// <param name="modStatuses"></param>
         public void UpdateVisibility(ModStatuses modStatuses)
         {
             Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Updating visibility for status: {modStatuses:g}.");
@@ -245,6 +267,8 @@ namespace ParallelRoadTool.UI
         {
             _mainWindow.RefreshNetworks(networks);
         }
+
+        #endregion
 
         #endregion
     }

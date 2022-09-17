@@ -65,9 +65,9 @@ namespace ParallelRoadTool.Patches
 
                 var netTool = ToolsModifierControl.GetTool<NetTool>();
 
-                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
+                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Count; i++)
                 {
-                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
+                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes[i];
 
                     // Horizontal offset must be negated to appear on the correct side of the original segment
                     var horizontalOffset = currentRoadInfos.HorizontalOffset *

@@ -33,7 +33,7 @@ namespace ParallelRoadTool.Patches
                     return;
                 }
 
-                foreach (var currentRoadInfos in Singleton<ParallelRoadTool>.instance.SelectedRoadTypes)
+                foreach (var currentRoadInfos in Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes)
                 {
                     // Horizontal offset must be negated to appear on the correct side of the original segment                    
                     var verticalOffset = currentRoadInfos.VerticalOffset;

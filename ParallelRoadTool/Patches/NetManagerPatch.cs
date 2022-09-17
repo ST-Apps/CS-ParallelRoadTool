@@ -270,7 +270,7 @@ namespace ParallelRoadTool.Patches
                     return;
                 }
 
-                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Adding {Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count} parallel segments");
+                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Adding {Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Count} parallel segments");
 
                 if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
                     _isPreviousInvert = invert;
@@ -297,9 +297,9 @@ namespace ParallelRoadTool.Patches
                 var isEnteringSlope = NetManager.instance.m_nodes.m_buffer[invert ? startNode : endNode].m_elevation >
                                       NetManager.instance.m_nodes.m_buffer[invert ? endNode : startNode].m_elevation;
 
-                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedRoadTypes.Count; i++)
+                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Count; i++)
                 {
-                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedRoadTypes[i];
+                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes[i];
 
                     var horizontalOffset = currentRoadInfos.HorizontalOffset;
                     var verticalOffset = currentRoadInfos.VerticalOffset;
