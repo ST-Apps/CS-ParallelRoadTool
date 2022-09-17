@@ -5,7 +5,6 @@ using System.Linq;
 using ColossalFramework;
 using ColossalFramework.UI;
 using CSUtil.Commons;
-using HarmonyLib;
 using ICities;
 using ParallelRoadTool.Patches;
 using ParallelRoadTool.Models;
@@ -24,7 +23,7 @@ namespace ParallelRoadTool
     {
         #region Fields
 
-        private readonly Harmony _harmony = new(ModInfo.HarmonyId);
+        //private readonly Harmony _harmony = new(ModInfo.HarmonyId);
 
         /// <summary>
         /// Main controller for everything UI-related
@@ -214,7 +213,8 @@ namespace ParallelRoadTool
                     return;
                 }
 
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading version: {ModInfo.ModName} ({nameof(IsInGameMode)} is {IsInGameMode}).");
+                // TODO: fix ModInfo.ModName
+                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading version: {Mod.Instance.Name} ({nameof(IsInGameMode)} is {IsInGameMode}).");
 
                 // Initialize support data
                 SelectedNetworkTypes.Clear();
@@ -225,9 +225,9 @@ namespace ParallelRoadTool
                 LoadNetworks();
 
                 // Apply harmony patches
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patching with Harmony...");
-                _harmony.PatchAll();
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patches applied.");
+                //Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patching with Harmony...");
+                //_harmony.PatchAll();
+                //Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Patches applied.");
 
                 // Mod is now fully enabled
                 ModStatuses ^= ModStatuses.Disabled;
@@ -290,8 +290,8 @@ namespace ParallelRoadTool
                 // Save current networks 
                 //PresetsUtils.Export(Configuration.AutoSaveFileName);
 
-                // Disable patches
-                _harmony.UnpatchAll();
+                //// Disable patches
+                //_harmony.UnpatchAll();
 
                 DetachFromEvents();
 

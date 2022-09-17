@@ -164,7 +164,7 @@ namespace ParallelRoadTool.UI
             // Main/Header/TitleLabel
             var titleLabel = headerPanel.AddUIComponent<UILabel>();
             titleLabel.name = $"{headerPanel.name}_TitleLabel";
-            titleLabel.text = ModInfo.ModName;
+            titleLabel.text = Mod.Instance.Name;
             titleLabel.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
             titleLabel.anchor = UIAnchorStyle.CenterVertical;
 
