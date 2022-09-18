@@ -79,7 +79,7 @@
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="Models\NetTypeItem.cs" />
     <Compile Include="Models\NetTypeItemEventArgs.cs" />
-    <Compile Include="Models\PresetNetItem.cs" />
+    <Compile Include="Models\XMLNetItem.cs" />
     <Compile Include="Managers\ParallelRoadToolManager.cs" />
     <Compile Include="Settings\OffsetOptionsKeymapping.cs" />
     <Compile Include="Settings\ToggleButtonOptionsKeymapping.cs" />

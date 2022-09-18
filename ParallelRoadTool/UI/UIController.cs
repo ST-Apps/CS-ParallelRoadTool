@@ -4,6 +4,7 @@ using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using System;
 using System.Collections.Generic;
+using AlgernonCommons.Translation;
 using ParallelRoadTool.Settings;
 using ParallelRoadTool.UI.Main;
 using UnityEngine;
@@ -65,22 +66,40 @@ namespace ParallelRoadTool.UI
             AddNetworkButtonEventClicked?.Invoke(null, null);
         }
 
-        private void MainWindowOnSavePresetButtonEventClicked(UIComponent component, UIMouseEventParameter eventparam)
+        private void MainWindowOnSavePresetButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             // Prevent focus for main window
             _mainWindow.canFocus = false;
 
             StandalonePanelManager<UISavePresetWindow>.Create();
 
-            // Restore focus for main window on modal close
+            // Subscribe to events for the modal popup. We don't need to unsubscribe because this one will be destroyed on close
+            StandalonePanelManager<UISavePresetWindow>.Panel.SaveButtonEventClicked += PanelOnSaveButtonEventClicked;
             StandalonePanelManager<UISavePresetWindow>.Panel.EventClose += () =>
                                                                            {
+                                                                               // Restore focus for main window on modal close
                                                                                _mainWindow.canFocus = true;
                                                                                _mainWindow.Focus();
                                                                            };
 
             // Load data
             StandalonePanelManager<UISavePresetWindow>.Panel.RefreshItems(PresetsManager.ListSavedFiles());
+        }
+
+        private void PanelOnSaveButtonEventClicked(UIComponent component, string fileName)
+        {
+            // Save the current preset using PresetsManager
+            try
+            {
+                PresetsManager.SavePreset(fileName);
+            }
+            catch (Exception e)
+            {
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
+                      .SetMessage(Translations.Translate("LABEL_SAVE_PRESET_FAILED_TITLE"),
+                                  string.Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"), fileName, e),
+                                  true);
+            }
         }
 
         #endregion

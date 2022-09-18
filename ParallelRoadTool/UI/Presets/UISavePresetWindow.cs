@@ -2,6 +2,8 @@
 using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
+using CSUtil.Commons;
+using ParallelRoadTool.Managers;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
@@ -10,6 +12,12 @@ namespace ParallelRoadTool.UI.Presets
 {
     public sealed class UISavePresetWindow : UIModalWindow
     {
+        #region Events
+
+        public event PropertyChangedEventHandler<string> SaveButtonEventClicked;
+
+        #endregion
+
         #region Callbacks
 
         private void FileListOnEventSelectionChanged(UIComponent component, object value)
@@ -24,6 +32,37 @@ namespace ParallelRoadTool.UI.Presets
             _saveButton.isEnabled = !string.IsNullOrEmpty(value);
         }
 
+        private void SaveButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            // Check if file is going to be overwritten
+            if (!PresetsManager.CanSavePreset(_fileNameInput.text))
+            {
+                Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] File ""{_fileNameInput.text}"" already exists, asking for confirmation...");
+
+                // Show a confirmation popup asking to overwrite the file
+                UIView.library.ShowModal<ConfirmPanel>("ConfirmPanel", (_, ret) =>
+                                                                       {
+                                                                           if (ret == 0)
+                                                                           {
+                                                                               // No action to do, user decided to not overwrite the file
+                                                                               Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User refused to overwrite ""{_fileNameInput.text}"".");
+                                                                               return;
+                                                                           }
+
+                                                                           // We can overwrite and thus save the file
+                                                                           Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User accepted to overwrite ""{_fileNameInput.text}"", saving...");
+                                                                           SaveButtonEventClicked?.Invoke(this, _fileNameInput.text);
+                                                                       })
+                      .SetMessage(Translations.Translate("LABEL_OVERWRITE_PRESET_TITLE"), string.Format(Translations.Translate("LABEL_OVERWRITE_PRESET_MESSAGE"), _fileNameInput.text));
+            }
+            else
+            {
+                // We can just save the file without asking for confirmation
+                Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] File ""{_fileNameInput.text}"" doesn't exists, saving...");
+                SaveButtonEventClicked?.Invoke(this, _fileNameInput.text);
+            }
+        }
+
         #endregion
 
         #region Control
@@ -34,11 +73,14 @@ namespace ParallelRoadTool.UI.Presets
         {
             _fileList.EventSelectionChanged += FileListOnEventSelectionChanged;
             _fileNameInput.eventTextChanged += FileNameInput_eventTextChanged;
+            _saveButton.eventClicked += SaveButtonOnEventClicked;
         }
 
         private void DetachFromEvents()
         {
             _fileList.EventSelectionChanged -= FileListOnEventSelectionChanged;
+            _fileNameInput.eventTextChanged -= FileNameInput_eventTextChanged;
+            _saveButton.eventClicked -= SaveButtonOnEventClicked;
         }
 
         #endregion

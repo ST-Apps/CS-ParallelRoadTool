@@ -40,3 +40,7 @@ Unless you want to test the new features, please move to the stable version on W
 "TOOLTIP_VERTICAL_OFFSET_TEXT","Vertical distance from previous segment"
 "LABEL_SAVE_PRESET_WINDOW_TITLE","Save preset"
 "LABEL_LOAD_PRESET_WINDOW_TITLE","Load preset"
+"LABEL_SAVE_PRESET_FAILED_TITLE","Save preset failed"
+"LABEL_SAVE_PRESET_FAILED_MESSAGE","Exception while saving preset to {0}:\r\n{1}"
+"LABEL_OVERWRITE_PRESET_TITLE","Overwrite"
+"LABEL_OVERWRITE_PRESET_MESSAGE","File '{0}.xml' already exists, do you want to overwrite it?"
