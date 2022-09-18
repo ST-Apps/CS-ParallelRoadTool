@@ -3,6 +3,7 @@ using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using System.Collections.Generic;
+using AlgernonCommons.Translation;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI
@@ -212,7 +213,7 @@ namespace ParallelRoadTool.UI
                 optionsPanel,
                 new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SaveButton"),
+                Translations.Translate("TOOLTIP_SAVE_BUTTON"),
                 "Save");
             savePresetButton.name = $"{optionsPanel.name}_SavePreset";
 
@@ -221,7 +222,7 @@ namespace ParallelRoadTool.UI
                 optionsPanel,
                 new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "LoadButton"),
+                Translations.Translate("TOOLTIP_LOAD_BUTTON"),
                 "Load");
             loadPresetButton.name = $"{optionsPanel.name}_LoadPreset";
 
@@ -241,7 +242,7 @@ namespace ParallelRoadTool.UI
             _toggleSnappingButton = UIHelpers.CreateCheckBox(
                 toolsPanel,
                 "Snapping",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "SnappingToggleButton"),
+                Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
                 new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 false
             );
@@ -252,7 +253,7 @@ namespace ParallelRoadTool.UI
                 toolsPanel,
                 new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
                 string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "AddNetworkButton"),
+                Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"),
                 "Add"
             );
             _addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";

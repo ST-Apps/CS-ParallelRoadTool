@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using AlgernonCommons.Translation;
+using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using CSUtil.Commons;
@@ -59,7 +60,7 @@ namespace ParallelRoadTool.UI
 
             size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
 
-            var toolTip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ToolToggleButton");
+            var toolTip = Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON");
 
             var button = AddUIComponent<UIButton>();
             button.name = $"{Configuration.ResourcePrefix}{SpriteName}";

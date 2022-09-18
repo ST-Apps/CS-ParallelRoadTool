@@ -1,4 +1,5 @@
-﻿using ColossalFramework.Globalization;
+﻿using AlgernonCommons.Translation;
+using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
@@ -166,7 +167,7 @@ namespace ParallelRoadTool.UI
                 _horizontalOffsetField.allowFloats =
                 _horizontalOffsetField.allowNegative =
                 _horizontalOffsetField.submitOnFocusLost = true;
-            _horizontalOffsetField.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "HorizontalOffset");
+            _horizontalOffsetField.tooltip = Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT");
 
             // NetSetup/Offsets/Vertical
             var verticalOffsetPanel = _offsetsPanel.AddUIComponent<UIPanel>();
@@ -184,7 +185,7 @@ namespace ParallelRoadTool.UI
                 _verticalOffsetField.allowFloats =
                     _verticalOffsetField.allowNegative =
                         _verticalOffsetField.submitOnFocusLost = true;
-            _verticalOffsetField.tooltip = Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "VerticalOffset");
+            _verticalOffsetField.tooltip = Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT");
 
             // Manually align icons on offsets panel
             horizontalOffsetPanel.autoLayout = false;
@@ -209,7 +210,7 @@ namespace ParallelRoadTool.UI
                 _buttonsPanel,
                 new Vector2(UIConstants.TinySize, UIConstants.TinySize),
                 string.Empty,
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "RemoveNetworkButton"),
+                Translations.Translate("TOOLTIP_REMOVE_NETWORK_BUTTON"),
                 "Remove"
             );
 
@@ -218,7 +219,7 @@ namespace ParallelRoadTool.UI
                 _buttonsPanel,
                 new Vector2(UIConstants.TinySize, UIConstants.TinySize),
                 "Reverse",
-                Locale.Get($"{Configuration.ResourcePrefix}TOOLTIPS", "ReverseToggleButton")
+                Translations.Translate("TOOLTIP_INVERT_DIRECTION_TOGGLE_BUTTON")
             );
         }
 

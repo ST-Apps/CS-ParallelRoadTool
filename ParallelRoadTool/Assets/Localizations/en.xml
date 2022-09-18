@@ -5,20 +5,16 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   name="PRT_en">
   <strings>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Toggle snapping for existing nodes</LocalizedString>
+    
     <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">Toggle Parallel Road Tool</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Toggle tutorial screen</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Toggle reverse direction for this road</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Remove network</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="AddNetworkButton">Add network</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="SaveButton">Save preset</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="LoadButton">Load preset</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="DeleteButton">Delete preset</LocalizedString>
+
+
+	  <LocalizedString identifier="PRT_TOOLTIPS" key="DeleteButton">Delete preset</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ExportButton">Export presets</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ImportButton">Import presets</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="OverwriteButton">Overwrite preset</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="HorizontalOffset">Horizontal distance from previous segment</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="VerticalOffset">Vertical distance from previous segment</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="SearchButton">Search networks</LocalizedString>
 
     <LocalizedString identifier="PRT_TEXTS" key="SameAsSelectedLabel">Same as selected</LocalizedString>
