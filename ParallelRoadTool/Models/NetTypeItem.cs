@@ -1,6 +1,6 @@
 ﻿using ColossalFramework.UI;
+using ParallelRoadTool.Extensions;
 using ParallelRoadTool.UI.Utils;
-using ParallelRoadTool.Utils;
 using UnityEngine;
 
 namespace ParallelRoadTool.Models

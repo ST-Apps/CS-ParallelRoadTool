@@ -202,30 +202,6 @@ namespace ParallelRoadTool.Utils
             return dropDown;
         }
 
-        public static string GenerateBeautifiedNetName(this NetInfo prefab)
-        {
-            string itemName;
-
-            if (prefab == null)
-            {
-                itemName = Locale.Get($"{Configuration.ResourcePrefix}TEXTS", "SameAsSelectedLabel");
-            }
-            else
-            {
-                itemName = prefab.GetUncheckedLocalizedTitle();
-
-                // replace spaces at start and end
-                itemName = itemName.Trim();
-
-                // replace multiple spaces with one
-                itemName = Regex.Replace(itemName, " {2,}", " ");
-
-                //itemName = AddSpacesToSentence(itemName);
-            }
-
-            return itemName;
-        }
-
         public static UIButton CreateUiButton(UIComponent parent,
                                               string text,
                                               string tooltip,

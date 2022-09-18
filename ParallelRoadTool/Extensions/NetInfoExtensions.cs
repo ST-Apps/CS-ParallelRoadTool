@@ -1,4 +1,5 @@
-﻿using ParallelRoadTool.Wrappers;
+﻿using System.Text.RegularExpressions;
+using ParallelRoadTool.Wrappers;
 
 namespace ParallelRoadTool.Extensions
 {
@@ -44,9 +45,20 @@ namespace ParallelRoadTool.Extensions
             }
 
             // Sanity check, of them may be null
-            result = result ?? destination;
+            result ??= destination;
 
             return result;
+        }
+
+        /// <summary>
+        ///     Localizes, when possible, <see cref="NetInfo.name" /> and trims some spaces.
+        /// </summary>
+        /// <param name="prefab"></param>
+        /// <returns></returns>
+        public static string GenerateBeautifiedNetName(this NetInfo prefab)
+        {
+            // Trim string and then remove duplicate spaces
+            return Regex.Replace(prefab.GetUncheckedLocalizedTitle().Trim(), " {2,}", " ");
         }
     }
 }
