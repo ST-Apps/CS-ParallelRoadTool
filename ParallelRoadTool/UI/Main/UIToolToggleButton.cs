@@ -1,14 +1,11 @@
 ﻿using AlgernonCommons.Translation;
 using ColossalFramework;
-using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using CSUtil.Commons;
-using ParallelRoadTool.UI.Base;
 using ParallelRoadTool.UI.Utils;
-using ParallelRoadTool.Utils;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
     /// This is the main toggle button for the mod.

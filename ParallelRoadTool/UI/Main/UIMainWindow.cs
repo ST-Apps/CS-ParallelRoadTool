@@ -1,34 +1,37 @@
-﻿using ColossalFramework.Globalization;
+﻿using System.Collections.Generic;
+using AlgernonCommons.Translation;
+using AlgernonCommons.UI;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
-using System.Collections.Generic;
-using AlgernonCommons.Translation;
-using AlgernonCommons.UI;
 using UnityEngine;
-using ColossalFramework;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
-    /// Main UI for PRT.
-    /// This window contains:
-    /// - an header with the closing button
-    /// - a row with all the tools and features
-    /// - a list of panels used to display selected NetInfo instances
+    ///     Main UI for PRT.
+    ///     This window contains:
+    ///     - an header with the closing button
+    ///     - a row with all the tools and features
+    ///     - a list of panels used to display selected NetInfo instances
     /// </summary>
     public class UIMainWindow : UIPanel
     {
+        #region Callbacks
+
+        private void UIMainWindow_eventPositionChanged(UIComponent component, Vector2 value)
+        {
+            UpdateSavedPosition();
+        }
+
+        #endregion
 
         #region Fields
-
-
 
         #endregion
 
         #region Properties
-
-
 
         #endregion
 
@@ -78,13 +81,16 @@ namespace ParallelRoadTool.UI
             remove => _networkListPanel.ToggleDropdownButtonEventClick -= value;
         }
 
-        #endregion
-
-        #region Callbacks
-
-        private void UIMainWindow_eventPositionChanged(UIComponent component, Vector2 value)
+        public event MouseEventHandler SavePresetButtonEventClicked
         {
-            UpdateSavedPosition();
+            add => _savePresetButton.eventClicked += value;
+            remove => _savePresetButton.eventClicked -= value;
+        }
+
+        public event MouseEventHandler LoadPresetButtonEventClicked
+        {
+            add => _loadPresetButton.eventClicked += value;
+            remove => _loadPresetButton.eventClicked -= value;
         }
 
         #endregion
@@ -93,9 +99,10 @@ namespace ParallelRoadTool.UI
 
         #region Controls
 
-        private UIPanel _mainContainer;
         private UIButton _closeButton;
         private UIDragHandle _dragHandle;
+        private UIButton _savePresetButton;
+        private UIButton _loadPresetButton;
         private UINetListPanel _networkListPanel;
         private UICheckBox _toggleSnappingButton;
         private UIButton _addNetworkButton;
@@ -242,22 +249,22 @@ namespace ParallelRoadTool.UI
             optionsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
 
             // Main/Toolbar/Options/SavePresetButton
-            var savePresetButton = UIHelpers.CreateUiButton(
-                optionsPanel,
-                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
-                string.Empty,
-                Translations.Translate("TOOLTIP_SAVE_BUTTON"),
-                "Save");
-            savePresetButton.name = $"{optionsPanel.name}_SavePreset";
+            _savePresetButton = UIHelpers.CreateUiButton(
+                                                         optionsPanel,
+                                                         new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
+                                                         string.Empty,
+                                                         Translations.Translate("TOOLTIP_SAVE_BUTTON"),
+                                                         "Save");
+            _savePresetButton.name = $"{optionsPanel.name}_SavePreset";
 
             // Main/Toolbar/Options/LoadPresetButton
-            var loadPresetButton = UIHelpers.CreateUiButton(
-                optionsPanel,
-                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
-                string.Empty,
-                Translations.Translate("TOOLTIP_LOAD_BUTTON"),
-                "Load");
-            loadPresetButton.name = $"{optionsPanel.name}_LoadPreset";
+            _loadPresetButton = UIHelpers.CreateUiButton(
+                                                         optionsPanel,
+                                                         new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
+                                                         string.Empty,
+                                                         Translations.Translate("TOOLTIP_LOAD_BUTTON"),
+                                                         "Load");
+            _loadPresetButton.name = $"{optionsPanel.name}_LoadPreset";
 
             // Main/Toolbar/Tools
             var toolsPanel = toolbarPanel.AddUIComponent<UIPanel>();
@@ -272,17 +279,20 @@ namespace ParallelRoadTool.UI
             toolsPanel.autoLayoutStart = LayoutStart.TopRight;
 
             // Main/Toolbar/Tools/ToggleSnappingButton
-            _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UIHelpers.Atlas.name, "SnappingPressed", "Snapping", backgroundSprite: "OptionBase", tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"), height: UIConstants.MiddleSize, width: UIConstants.MiddleSize);
+            _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UIHelpers.Atlas.name, "SnappingPressed", "Snapping",
+                                                               backgroundSprite: "OptionBase",
+                                                               tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
+                                                               height: UIConstants.MiddleSize, width: UIConstants.MiddleSize);
             _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
 
             // Main/Toolbar/Tools/AddNetworkButton
             _addNetworkButton = UIHelpers.CreateUiButton(
-                toolsPanel,
-                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
-                string.Empty,
-                Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"),
-                "Add"
-            );
+                                                         toolsPanel,
+                                                         new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
+                                                         string.Empty,
+                                                         Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"),
+                                                         "Add"
+                                                        );
             _addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";
 
             // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
@@ -301,8 +311,8 @@ namespace ParallelRoadTool.UI
         #region Public API
 
         /// <summary>
-        /// To refresh networks we just pass the new list to the <see cref="UINetListPanel"/> which will do the rendering.
-        /// This is called ONLY on deletions as adding a new network will trigger <see cref="AddNetwork"/>.
+        ///     To refresh networks we just pass the new list to the <see cref="UINetListPanel" /> which will do the rendering.
+        ///     This is called ONLY on deletions as adding a new network will trigger <see cref="AddNetwork" />.
         /// </summary>
         /// <param name="networks"></param>
         public void RefreshNetworks(List<NetInfoItem> networks)
@@ -317,7 +327,7 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Re-renders the current network panel with the newly provided <see cref="NetInfoItem"/>.
+        ///     Re-renders the current network panel with the newly provided <see cref="NetInfoItem" />.
         /// </summary>
         /// <param name="netInfo"></param>
         public void UpdateCurrentNetwork(NetInfoItem netInfo)
@@ -326,7 +336,7 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Adds the provided <see cref="NetInfoItem"/> to <see cref="UINetListPanel"/> and renders it.
+        ///     Adds the provided <see cref="NetInfoItem" /> to <see cref="UINetListPanel" /> and renders it.
         /// </summary>
         /// <param name="netInfo"></param>
         public void AddNetwork(NetInfoItem netInfo)

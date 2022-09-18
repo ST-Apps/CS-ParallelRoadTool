@@ -1,6 +1,6 @@
 ﻿using ColossalFramework.UI;
 
-namespace ParallelRoadTool.UI.Base
+namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
     ///     Utility class that allows right-click to drag, disabling left-click one.

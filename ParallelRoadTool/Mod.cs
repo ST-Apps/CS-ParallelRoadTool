@@ -6,6 +6,7 @@ using AlgernonCommons;
 using ColossalFramework.UI;
 using AlgernonCommons.Notifications;
 using ParallelRoadTool.Settings;
+using ParallelRoadTool.UI.Settings;
 
 namespace ParallelRoadTool
 {

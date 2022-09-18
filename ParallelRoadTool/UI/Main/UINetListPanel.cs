@@ -1,11 +1,11 @@
-﻿using ColossalFramework.UI;
+﻿using System.Collections.Generic;
+using ColossalFramework.UI;
 using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Main
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class UINetListPanel : UIPanel

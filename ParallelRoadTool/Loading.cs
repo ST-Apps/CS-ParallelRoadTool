@@ -3,6 +3,7 @@ using ColossalFramework;
 using CSUtil.Commons;
 using ICities;
 using ParallelRoadTool.UI;
+using ParallelRoadTool.UI.Settings;
 using UnityEngine;
 
 namespace ParallelRoadTool

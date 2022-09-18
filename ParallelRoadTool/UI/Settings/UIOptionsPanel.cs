@@ -6,7 +6,7 @@ using ParallelRoadTool.Settings;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Settings
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class UIOptionsPanel : UIPanel

@@ -2,13 +2,13 @@
 using ColossalFramework.UI;
 using CSUtil.Commons;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.UI.Utils;
-using ParallelRoadTool.Utils;
 using System;
 using System.Collections.Generic;
 using ParallelRoadTool.Settings;
+using ParallelRoadTool.UI.Main;
 using UnityEngine;
 using AlgernonCommons.UI;
+using ParallelRoadTool.UI.Presets;
 
 namespace ParallelRoadTool.UI
 {
@@ -62,6 +62,11 @@ namespace ParallelRoadTool.UI
         private void MainWindow_AddNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             AddNetworkButtonEventClicked?.Invoke(null, null);
+        }
+
+        private void MainWindowOnSavePresetButtonEventClicked(UIComponent component, UIMouseEventParameter eventparam)
+        {
+            StandalonePanelManager<UISavePresetWindow>.Create();
         }
 
         #endregion
@@ -176,12 +181,14 @@ namespace ParallelRoadTool.UI
         {
             _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.SavePresetButtonEventClicked += MainWindowOnSavePresetButtonEventClicked;
         }
 
         private void DetachFromEvents()
         {
             _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.SavePresetButtonEventClicked -= MainWindowOnSavePresetButtonEventClicked;
         }
 
         #endregion

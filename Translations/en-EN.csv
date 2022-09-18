@@ -38,3 +38,5 @@ Unless you want to test the new features, please move to the stable version on W
 "TOOLTIP_INVERT_DIRECTION_TOGGLE_BUTTON","Invert direction"
 "TOOLTIP_HORIZONTAL_OFFSET_TEXT","Horizontal distance from previous segment"
 "TOOLTIP_VERTICAL_OFFSET_TEXT","Vertical distance from previous segment"
+"LABEL_SAVE_PRESET_WINDOW_TITLE","Save preset"
+"LABEL_LOAD_PRESET_WINDOW_TITLE","Load preset"

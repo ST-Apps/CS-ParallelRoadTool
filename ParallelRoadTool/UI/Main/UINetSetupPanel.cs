@@ -1,12 +1,11 @@
 ﻿using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
-using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
     /// This panel is meant as a complete way to setup a parallel/stacked network.

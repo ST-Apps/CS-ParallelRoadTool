@@ -3,7 +3,7 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
     /// This class is meant as a wrapper to <see cref="UINetInfoPanel"/> which adds an <see cref="UIButton"/> used to toggle the <see cref="UINetListPopup"/> instance.

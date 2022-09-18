@@ -5,6 +5,7 @@ namespace ParallelRoadTool
 {
     /// <summary>
     ///     Constants and data needed for the mod to work
+    /// TODO: review after completing the 3.0 rewrite
     /// </summary>
     public static class Configuration
     {

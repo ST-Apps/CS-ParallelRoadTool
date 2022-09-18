@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using ParallelRoadTool.UI.Main;
+using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Utils
 {
     /// <summary>
     /// Some shared constants to better define UI's layout.

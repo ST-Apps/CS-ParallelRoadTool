@@ -4,7 +4,7 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
-namespace ParallelRoadTool.UI
+namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
     /// This is the main panel used to render a <see cref="NetInfoItem"/> as both its thumbnail and its name.
