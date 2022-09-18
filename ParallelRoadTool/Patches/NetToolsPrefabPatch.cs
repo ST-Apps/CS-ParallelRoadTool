@@ -1,29 +1,27 @@
-﻿using ColossalFramework;
+﻿using System;
+using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+
+// ReSharper disable UnusedParameter.Local
+// ReSharper disable UnusedMember.Local
 
 namespace ParallelRoadTool.Patches
 {
-    [HarmonyPatch(
-        typeof(NetTool),
-        nameof(NetTool.Prefab),
-        MethodType.Setter
-    )]
+    [HarmonyPatch(typeof(NetTool),
+                  nameof(NetTool.Prefab),
+                  MethodType.Setter
+                 )]
     internal class NetToolsPrefabPatch
     {
         /// <summary>
-        /// Event raised to report changes on <see cref="NetTool.Prefab"/>.
+        ///     Event raised to report changes on <see cref="NetTool.Prefab" />.
         /// </summary>
         public static event EventHandler<CurrentNetInfoPrefabChangedEventArgs> CurrentNetInfoChanged;
 
         /// <summary>
-        /// Just retrieve <see cref="NetTool.Prefab"/> and raise <see cref="CurrentNetInfoChanged"/> event.
+        ///     Just retrieve <see cref="NetTool.Prefab" /> and raise <see cref="CurrentNetInfoChanged" /> event.
         /// </summary>
         private static void Postfix()
         {

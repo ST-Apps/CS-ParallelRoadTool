@@ -212,7 +212,6 @@ namespace ParallelRoadTool
                     return;
                 }
 
-                // TODO: fix ModInfo.ModName
                 Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading version: {Mod.Instance.Name} ({nameof(IsInGameMode)} is {IsInGameMode}).");
 
                 // Initialize support data

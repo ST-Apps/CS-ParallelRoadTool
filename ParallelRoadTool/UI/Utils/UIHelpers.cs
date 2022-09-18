@@ -86,6 +86,7 @@ namespace ParallelRoadTool.UI.Utils
 
         /// <summary>
         ///     Creates an <see cref="UIButton" /> as child of parent <see cref="UIComponent" />.
+        /// TODO: replace this with UIButtons from Commons
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="text"></param>

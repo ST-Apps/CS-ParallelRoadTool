@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using ColossalFramework;
 using ColossalFramework.Math;
 using CSUtil.Commons;
@@ -10,23 +7,18 @@ using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
-using static NetInfo;
+
+// ReSharper disable UnusedParameter.Local
+// ReSharper disable UnusedMember.Local
 
 namespace ParallelRoadTool.Patches
 {
     /// <summary>
     ///     Detour used to hook into the RenderOverlay method for segments.
     /// </summary>
-    [HarmonyPatch(
-        typeof(NetTool),
-        nameof(NetTool.RenderOverlay),
-        new[]
-        {
-            typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-            typeof(NetTool.ControlPoint),
-            typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
-        }
-    )]
+    [HarmonyPatch(typeof(NetTool),
+                  nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color), typeof(NetTool.ControlPoint),
+                  typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
     internal class NetToolCameraPatch
     {
         /// <summary>
@@ -44,22 +36,19 @@ namespace ParallelRoadTool.Patches
         /// <param name="endPoint"></param>
 
         // ReSharper disable once UnusedMember.Local
-        static void Postfix(RenderManager.CameraInfo cameraInfo,
-                                   NetInfo info,
-                                   Color color,
-                                   NetTool.ControlPoint startPoint,
-                                   NetTool.ControlPoint middlePoint,
-                                   NetTool.ControlPoint endPoint)
+        private static void Postfix(RenderManager.CameraInfo cameraInfo,
+                                    NetInfo info,
+                                    Color color,
+                                    NetTool.ControlPoint startPoint,
+                                    NetTool.ControlPoint middlePoint,
+                                    NetTool.ControlPoint endPoint)
         {
             try
             {
-
-
+                // We only run if the mod is set as Active
                 if (!ParallelRoadTool.ModStatuses.IsFlagSet(ModStatuses.Active))
-                {
-                    // We only run if the mod is set as Active
                     return;
-                }
+
                 if (endPoint.m_direction == Vector3.zero)
                     return;
 
@@ -91,11 +80,11 @@ namespace ParallelRoadTool.Patches
 
                         // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
                         m_position =
-                                startPoint.m_position.Offset(
-                                                             startPoint.m_direction == Vector3.zero
-                                                                 ? middlePoint.m_direction
-                                                                 : startPoint.m_direction,
-                                                             horizontalOffset, verticalOffset),
+                            startPoint.m_position.Offset(
+                                                         startPoint.m_direction == Vector3.zero
+                                                             ? middlePoint.m_direction
+                                                             : startPoint.m_direction,
+                                                         horizontalOffset, verticalOffset),
                         m_segment = 0
                     };
 
@@ -121,24 +110,25 @@ namespace ParallelRoadTool.Patches
 
                     // Render parallel segments by shifting the position of the 3 ControlPoint
                     NetToolReversePatch.RenderOverlay(
-                        netTool,
-                        cameraInfo, 
-                        selectedNetInfo,
-                        currentRoadInfos.Color,
-                        currentStartPoint,
-                        currentMidPoint,
-                        currentEndPoint
-                    );
+                                                      netTool,
+                                                      cameraInfo,
+                                                      selectedNetInfo,
+                                                      currentRoadInfos.Color,
+                                                      currentStartPoint,
+                                                      currentMidPoint,
+                                                      currentEndPoint
+                                                     );
 
                     // TODO: only on one-way roads
 
                     // Draw direction arrow
-                    var bezier = new Bezier3()
+                    var bezier = new Bezier3
                     {
                         a = currentStartPoint.m_position,
                         d = currentEndPoint.m_position
                     };
-                    NetSegment.CalculateMiddlePoints(bezier.a, currentMidPoint.m_direction, bezier.d, -currentEndPoint.m_direction, true, true, out bezier.b, out bezier.c);
+                    NetSegment.CalculateMiddlePoints(bezier.a, currentMidPoint.m_direction, bezier.d, -currentEndPoint.m_direction, true, true,
+                                                     out bezier.b, out bezier.c);
                     var position = bezier.Position(0.5f);
                     var direction = bezier.Tangent(0.5f);
                     direction.y = 0;
@@ -154,66 +144,62 @@ namespace ParallelRoadTool.Patches
             }
         }
 
+        // TODO: call this using reflection from NetTool
         protected static void RenderRoadAccessArrow(
-                          RenderManager.CameraInfo cameraInfo,
-                          Color color,
-                          Vector3 position,
-                          Vector3 xDir,
-                          bool flipped)
+            RenderManager.CameraInfo cameraInfo,
+            Color color,
+            Vector3 position,
+            Vector3 xDir,
+            bool flipped)
         {
-            GameAreaProperties properties = Singleton<GameAreaManager>.instance.m_properties;
-            if (!((UnityEngine.Object)properties != (UnityEngine.Object)null))
+            var properties = Singleton<GameAreaManager>.instance.m_properties;
+            if (!(properties != null))
                 return;
-            Vector3 vector3 = new Vector3(xDir.z, 0.0f, -xDir.x);
-            float num = 3f;
+            var vector3 = new Vector3(xDir.z, 0.0f, -xDir.x);
+            var num = 3f;
             Quad3 quad;
             if (!flipped)
             {
-                quad.a = position - 8f * xDir - (float)((double)num * 8.0 + 16.0) * vector3;
+                quad.a = position - 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
                 quad.b = position - 8f * xDir - num * 8f * vector3;
                 quad.c = position + 8f * xDir - num * 8f * vector3;
-                quad.d = position + 8f * xDir - (float)((double)num * 8.0 + 16.0) * vector3;
+                quad.d = position + 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
             }
             else
             {
-                quad.c = position - 8f * xDir - (float)((double)num * 8.0 + 16.0) * vector3;
+                quad.c = position - 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
                 quad.d = position - 8f * xDir - num * 8f * vector3;
                 quad.a = position + 8f * xDir - num * 8f * vector3;
-                quad.b = position + 8f * xDir - (float)((double)num * 8.0 + 16.0) * vector3;
+                quad.b = position + 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
             }
+
             ++Singleton<ToolManager>.instance.m_drawCallData.m_overlayCalls;
             Singleton<RenderManager>.instance.OverlayEffect.DrawQuad(cameraInfo, properties.m_directionArrow, color, quad, -10f, 1280f, false, true);
         }
 
-    }
-
-    /// <summary>
-    /// The reverse patch is meant as an easy way to access the original <see cref="PlayerNetAI.GetConstructionCost"/> method.
-    /// </summary>
-    [HarmonyPatch]
-    internal class NetToolReversePatch
-    {
-        [HarmonyReversePatch]
-        [HarmonyPatch(
-            typeof(NetTool),
-            nameof(NetTool.RenderOverlay),
-            new[]
-            {
-                typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-                typeof(NetTool.ControlPoint),
-                typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint)
-            }
-        )]
-        public static void RenderOverlay(object instance,
-            RenderManager.CameraInfo cameraInfo,
-                                   NetInfo info,
-                                   Color color,
-                                   NetTool.ControlPoint startPoint,
-                                   NetTool.ControlPoint middlePoint,
-                                   NetTool.ControlPoint endPoint)
+        /// <summary>
+        ///     The reverse patch is meant as an easy way to access the original <see cref="PlayerNetAI.GetConstructionCost" />
+        ///     method.
+        /// </summary>
+        [HarmonyPatch]
+        private class NetToolReversePatch
         {
-            // No implementation is required as this will call the original method
-            throw new NotImplementedException("It's a stub");
+            [HarmonyReversePatch]
+            [HarmonyPatch(
+                             typeof(NetTool),
+                             nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
+                             typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
+            public static void RenderOverlay(object instance,
+                                             RenderManager.CameraInfo cameraInfo,
+                                             NetInfo info,
+                                             Color color,
+                                             NetTool.ControlPoint startPoint,
+                                             NetTool.ControlPoint middlePoint,
+                                             NetTool.ControlPoint endPoint)
+            {
+                // No implementation is required as this will call the original method
+                throw new NotImplementedException("It's a stub");
+            }
         }
     }
 }
