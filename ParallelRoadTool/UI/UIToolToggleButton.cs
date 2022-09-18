@@ -154,14 +154,14 @@ namespace ParallelRoadTool.UI
         public void ResetPosition()
         {
             // We need to have both the following components to set our position
-            var tsBar = UIUtil.FindComponent<UIComponent>("TSBar", null, UIUtil.FindOptions.NameContains);
+            var tsBar = GetUIView()?.FindUIComponent("TSBar");
             if (tsBar == null)
             {
                 Log.Info(@$"[{nameof(UIToolToggleButton)}.{nameof(ResetPosition)}] Couldn't find ""TSBar"", aborting.");
                 return;
             }
 
-            var toolModeBar = UIUtil.FindComponent<UITabstrip>("ToolMode", tsBar, UIUtil.FindOptions.NameContains);
+            var toolModeBar = tsBar.Find<UITabstrip>("ToolMode");
             if (toolModeBar == null)
             {
                 Log.Info(@$"[{nameof(UIToolToggleButton)}.{nameof(ResetPosition)}] Couldn't find ""ToolMode"", aborting.");

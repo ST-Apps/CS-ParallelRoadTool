@@ -164,7 +164,7 @@ namespace ParallelRoadTool.UI
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Creating mod's main button...");
 
-            var button = UIUtil.FindComponent<UIToolToggleButton>($"{Configuration.ResourcePrefix}Parallel");
+            var button = view.FindUIComponent<UIToolToggleButton>($"{Configuration.ResourcePrefix}Parallel");
             if (button != null) DestroyImmediate(button);
             _toolToggleButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
 

@@ -105,7 +105,6 @@
     <Compile Include="Utils\ResourceLoader.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
-    <Compile Include="Utils\UIUtil.cs" />
     <Compile Include="UI\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>

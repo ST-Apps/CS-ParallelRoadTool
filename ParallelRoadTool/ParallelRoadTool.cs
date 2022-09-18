@@ -6,6 +6,7 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using CSUtil.Commons;
 using ICities;
+using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Patches;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI;
