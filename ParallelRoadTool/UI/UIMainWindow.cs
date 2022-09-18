@@ -4,6 +4,7 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using System.Collections.Generic;
 using AlgernonCommons.Translation;
+using AlgernonCommons.UI;
 using UnityEngine;
 using ColossalFramework;
 
@@ -92,6 +93,7 @@ namespace ParallelRoadTool.UI
 
         #region Controls
 
+        private UIPanel _mainContainer;
         private UIButton _closeButton;
         private UIDragHandle _dragHandle;
         private UINetListPanel _networkListPanel;
@@ -270,13 +272,7 @@ namespace ParallelRoadTool.UI
             toolsPanel.autoLayoutStart = LayoutStart.TopRight;
 
             // Main/Toolbar/Tools/ToggleSnappingButton
-            _toggleSnappingButton = UIHelpers.CreateCheckBox(
-                toolsPanel,
-                "Snapping",
-                Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
-                new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
-                false
-            );
+            _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UIHelpers.Atlas.name, "SnappingPressed", "Snapping", backgroundSprite: "OptionBase", tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"), height: UIConstants.MiddleSize, width: UIConstants.MiddleSize);
             _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
 
             // Main/Toolbar/Tools/AddNetworkButton
@@ -347,6 +343,5 @@ namespace ParallelRoadTool.UI
         #endregion
 
         #endregion
-
     }
 }

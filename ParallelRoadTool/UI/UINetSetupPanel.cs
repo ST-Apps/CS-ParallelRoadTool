@@ -1,4 +1,5 @@
 ﻿using AlgernonCommons.Translation;
+using AlgernonCommons.UI;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ParallelRoadTool.Models;
@@ -159,15 +160,17 @@ namespace ParallelRoadTool.UI
             horizontalOffsetPanel.autoLayoutDirection = LayoutDirection.Horizontal;
 
             // NetSetup/Offsets/Horizontal/Icon
-            var horizontalOffsetIcon = UIHelpers.CreateUISprite(horizontalOffsetPanel, "HorizontalOffset");
+            var horizontalOffsetIcon = horizontalOffsetPanel.AddUIComponent<UISprite>();
+            horizontalOffsetIcon.size = new Vector2(UIConstants.TinySize - 4, UIConstants.TinySize - 4);
+            horizontalOffsetIcon.atlas = UITextures.LoadSingleSpriteAtlas("HorizontalOffset");
+            horizontalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Horizontal/Text
-            _horizontalOffsetField = UIHelpers.CreateTextField(horizontalOffsetPanel);
+            _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.LargeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
             _horizontalOffsetField.numericalOnly =
                 _horizontalOffsetField.allowFloats =
                 _horizontalOffsetField.allowNegative =
                 _horizontalOffsetField.submitOnFocusLost = true;
-            _horizontalOffsetField.tooltip = Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT");
 
             // NetSetup/Offsets/Vertical
             var verticalOffsetPanel = _offsetsPanel.AddUIComponent<UIPanel>();
@@ -177,15 +180,18 @@ namespace ParallelRoadTool.UI
             verticalOffsetPanel.autoLayoutDirection = LayoutDirection.Horizontal;
 
             // NetSetup/Offsets/Vertical/Icon
-            var verticalOffsetIcon = UIHelpers.CreateUISprite(verticalOffsetPanel, "VerticalOffset");
+            var verticalOffsetIcon = verticalOffsetPanel.AddUIComponent<UISprite>();
+            verticalOffsetIcon.size = new Vector2(UIConstants.TinySize - 4, UIConstants.TinySize - 4);
+            verticalOffsetIcon.atlas = UITextures.LoadSingleSpriteAtlas("VerticalOffset");
+            verticalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Vertical/Text
-            _verticalOffsetField = UIHelpers.CreateTextField(verticalOffsetPanel);
+            _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.LargeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
+            _verticalOffsetField.maxLength = 3;
             _verticalOffsetField.numericalOnly =
                 _verticalOffsetField.allowFloats =
                     _verticalOffsetField.allowNegative =
                         _verticalOffsetField.submitOnFocusLost = true;
-            _verticalOffsetField.tooltip = Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT");
 
             // Manually align icons on offsets panel
             horizontalOffsetPanel.autoLayout = false;
@@ -215,12 +221,7 @@ namespace ParallelRoadTool.UI
             );
 
             // NetSetup/Buttons/Reverse
-            _reverseCheckbox = UIHelpers.CreateCheckbox(
-                _buttonsPanel,
-                new Vector2(UIConstants.TinySize, UIConstants.TinySize),
-                "Reverse",
-                Translations.Translate("TOOLTIP_INVERT_DIRECTION_TOGGLE_BUTTON")
-            );
+            _reverseCheckbox = UICheckBoxes.AddIconToggle(_buttonsPanel, 0, 0, UIHelpers.Atlas.name, "ReversePressed", "Reverse", backgroundSprite: "OptionBase", tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"), height: UIConstants.TinySize, width: UIConstants.TinySize);
         }
 
         public override void Start()

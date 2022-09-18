@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using ParallelRoadTool.Settings;
 using UnityEngine;
+using AlgernonCommons.UI;
 
 namespace ParallelRoadTool.UI
 {
@@ -169,7 +170,6 @@ namespace ParallelRoadTool.UI
             _mainButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's main button created.");
-
         }
 
         private void AttachToEvents()

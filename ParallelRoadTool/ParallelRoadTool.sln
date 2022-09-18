@@ -42,6 +42,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Translations", "Translation
 		..\Translations\en-EN.csv = ..\Translations\en-EN.csv
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{61E36DC6-1F0A-490F-B65D-1BD2116F6967}"
+	ProjectSection(SolutionItems) = preProject
+		..\Resources\HorizontalOffset.png = ..\Resources\HorizontalOffset.png
+		..\Resources\VerticalOffset.png = ..\Resources\VerticalOffset.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace ParallelRoadTool.Utils
 {
+    // TODO: replace with UITextures.LoadSpriteAtlas from commons, but this will require recreating all the images
     internal static class ResourceLoader
     {
         public static UITextureAtlas CreateTextureAtlas(string atlasName, string[] spriteNames, string assemblyPath)

@@ -28,7 +28,7 @@ namespace ParallelRoadTool.UI
         internal const int MiddleSize = 36;
 
         /// <summary>
-        /// Size for large items (e.g. checkboxes).
+        /// Size for large items (e.g. textfields).
         /// </summary>
         internal const int LargeSize = 48;
 
