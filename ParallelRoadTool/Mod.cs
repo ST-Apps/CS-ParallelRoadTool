@@ -38,8 +38,7 @@ namespace ParallelRoadTool
         /// Gets the mod's base display name (name only).
         /// For DEBUG builds we also include the current branch name.
         /// </summary>
-        public override string BaseName => $"[BETA] Parallel Road Tool";
-     //    public override string BaseName => $"[BETA] Parallel Road Tool {Version}-{Branch}";
+        public override string BaseName => $"[BETA] Parallel Road Tool {Version}-{Branch}";
 #else
         /// <summary>
         /// Gets the mod's base display name (name only).

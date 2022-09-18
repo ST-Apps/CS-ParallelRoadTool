@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using CSUtil.Commons;
 
 namespace ParallelRoadTool.UI.Base
 {
@@ -21,6 +22,7 @@ namespace ParallelRoadTool.UI.Base
 
         private void OnEventDragEnd(UIComponent component, UIDragEventParameter eventParam)
         {
+            Log._Debug($"EVENT DRAG END FOR COMPONENT!!!");
             EventDragEnd?.Invoke(component, eventParam);
         }
 

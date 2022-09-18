@@ -23,6 +23,12 @@ namespace ParallelRoadTool
         {
             // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
             ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;
+            
+            // Register settings file
+            GameSettings.AddSettingsFile(new SettingsFile
+            {
+                fileName = Configuration.SettingsFileName
+            });
         }
 
         /// <summary>

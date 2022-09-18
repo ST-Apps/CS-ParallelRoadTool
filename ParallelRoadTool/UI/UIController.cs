@@ -33,8 +33,8 @@ namespace ParallelRoadTool.UI
 
         public event PropertyChangedEventHandler<bool> ToolToggleButtonEventCheckChanged
         {
-            add => _toolToggleButton.eventCheckChanged += value;
-            remove => _toolToggleButton.eventCheckChanged -= value;
+            add => _mainButton.eventCheckChanged += value;
+            remove => _mainButton.eventCheckChanged -= value;
         }
 
         public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
@@ -72,12 +72,12 @@ namespace ParallelRoadTool.UI
         /// <summary>
         ///     Main UI panel.
         /// </summary>
-        private UIMainWindow _mainWindow;
+        private static UIMainWindow _mainWindow;
 
         /// <summary>
         /// Main UI button.
         /// </summary>
-        private UIToolToggleButton _toolToggleButton;
+        private static UIToolToggleButton _mainButton;
 
         #endregion
 
@@ -166,7 +166,7 @@ namespace ParallelRoadTool.UI
 
             var button = view.FindUIComponent<UIToolToggleButton>($"{Configuration.ResourcePrefix}Parallel");
             if (button != null) DestroyImmediate(button);
-            _toolToggleButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
+            _mainButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Mod's main button created.");
 
@@ -221,8 +221,8 @@ namespace ParallelRoadTool.UI
             Destroy(_mainWindow);
             _mainWindow = null;
 
-            Destroy(_toolToggleButton);
-            _toolToggleButton = null;
+            Destroy(_mainButton);
+            _mainButton = null;
         }
 
         public void ResetToolWindowPosition()
@@ -232,7 +232,7 @@ namespace ParallelRoadTool.UI
 
         public void ResetToolButtonPosition()
         {
-            _toolToggleButton.ResetPosition();
+            _mainButton.ResetPosition();
         }
 
         /// <summary>
@@ -244,13 +244,13 @@ namespace ParallelRoadTool.UI
             Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Updating visibility for status: {modStatuses:g}.");
 
             // Button is visible if mod is enabled
-            _toolToggleButton.isVisible = modStatuses.IsFlagSet(ModStatuses.Enabled);
+            _mainButton.isVisible = modStatuses.IsFlagSet(ModStatuses.Enabled);
 
             // Window is visible button is visible and mod is active
-            _mainWindow.isVisible = _toolToggleButton.isVisible && modStatuses.IsFlagSet(ModStatuses.Active);
-            _toolToggleButton.isChecked = modStatuses.IsFlagSet(ModStatuses.Active);
+            _mainWindow.isVisible = _mainButton.isVisible && modStatuses.IsFlagSet(ModStatuses.Active);
+            _mainButton.isChecked = modStatuses.IsFlagSet(ModStatuses.Active);
 
-            Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Visibility set for main components: [{nameof(_toolToggleButton)} = {_toolToggleButton.isVisible}, {nameof(_mainWindow)} = {_mainWindow.isVisible}].");
+            Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Visibility set for main components: [{nameof(_mainButton)} = {_mainButton.isVisible}, {nameof(_mainWindow)} = {_mainWindow.isVisible}].");
         }
 
         public void UpdateCurrentNetwork(NetInfo netInfo)

@@ -37,7 +37,7 @@ namespace ParallelRoadTool.UI
 
         #region Callbacks
 
-        private void ButtonDragHandle_eventDragEnd(UIComponent component, UIDragEventParameter eventParam)
+        private void UIToolToggleButton_eventPositionChanged(UIComponent component, Vector2 value)
         {
             UpdateSavedPosition();
         }
@@ -107,8 +107,8 @@ namespace ParallelRoadTool.UI
             AttachToEvents();
 
             // Restore saved position, if any, otherwise reset it to default
-            if (SavedToggleX.value != -1000 && SavedToggleY.value != -1000)
-                absolutePosition = new Vector3(SavedToggleX.value, SavedToggleY.value);
+            if (SavedToggleX != -1000 && SavedToggleY != -1000)
+                absolutePosition = new Vector3(SavedToggleX, SavedToggleY);
             else
                 ResetPosition();
         }
@@ -130,12 +130,12 @@ namespace ParallelRoadTool.UI
 
         private void AttachToEvents()
         {
-            _buttonDragHandle.EventDragEnd += ButtonDragHandle_eventDragEnd;
+            eventPositionChanged += UIToolToggleButton_eventPositionChanged;
         }
 
         private void DetachFromEvents()
         {
-            _buttonDragHandle.EventDragEnd -= ButtonDragHandle_eventDragEnd;
+            eventPositionChanged -= UIToolToggleButton_eventPositionChanged;
         }
 
         private void UpdateSavedPosition()

@@ -5,6 +5,7 @@ using ParallelRoadTool.UI.Utils;
 using System.Collections.Generic;
 using AlgernonCommons.Translation;
 using UnityEngine;
+using ColossalFramework;
 
 namespace ParallelRoadTool.UI
 {
@@ -27,6 +28,14 @@ namespace ParallelRoadTool.UI
         #region Properties
 
 
+
+        #endregion
+
+        #region Settings
+
+        private static readonly SavedInt SavedWindowX = new("windowX", Configuration.SettingsFileName, -1000, true);
+
+        private static readonly SavedInt SavedWindowY = new("windowY", Configuration.SettingsFileName, -1000, true);
 
         #endregion
 
@@ -72,7 +81,10 @@ namespace ParallelRoadTool.UI
 
         #region Callbacks
 
-
+        private void UIMainWindow_eventPositionChanged(UIComponent component, Vector2 value)
+        {
+            UpdateSavedPosition();
+        }
 
         #endregion
 
@@ -81,6 +93,7 @@ namespace ParallelRoadTool.UI
         #region Controls
 
         private UIButton _closeButton;
+        private UIDragHandle _dragHandle;
         private UINetListPanel _networkListPanel;
         private UICheckBox _toggleSnappingButton;
         private UIButton _addNetworkButton;
@@ -98,7 +111,6 @@ namespace ParallelRoadTool.UI
             name = $"{Configuration.ResourcePrefix}MainWindow";
             backgroundSprite = "SubcategoriesPanel";
             size = new Vector2(512, 256);
-            absolutePosition = new Vector2(100, 100);
             autoFitChildrenVertically = true;
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Vertical;
@@ -128,6 +140,14 @@ namespace ParallelRoadTool.UI
         {
             base.Start();
 
+            AttachToEvents();
+
+            // Restore saved position, if any, otherwise reset it to default
+            if (SavedWindowX.value != -1000 && SavedWindowY.value != -1000)
+                absolutePosition = new Vector3(SavedWindowX.value, SavedWindowY.value);
+            else
+                absolutePosition = new Vector3(300, 300);
+
             // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
             autoLayout = false;
         }
@@ -136,6 +156,7 @@ namespace ParallelRoadTool.UI
         {
             base.OnDestroy();
 
+            DetachFromEvents();
 
             // Forcefully destroy all children
             Destroy(_closeButton);
@@ -152,6 +173,16 @@ namespace ParallelRoadTool.UI
         #region Control
 
         #region Internals
+
+        private void AttachToEvents()
+        {
+            eventPositionChanged += UIMainWindow_eventPositionChanged;
+        }
+
+        private void DetachFromEvents()
+        {
+            eventPositionChanged += UIMainWindow_eventPositionChanged;
+        }
 
         private void BuildHeader()
         {
@@ -170,12 +201,12 @@ namespace ParallelRoadTool.UI
             titleLabel.anchor = UIAnchorStyle.CenterVertical;
 
             // Main/Header/DragHandle
-            var dragHandle = headerPanel.AddUIComponent<UIDragHandle>();
-            dragHandle.name = $"{headerPanel.name}_DragHandle";
-            dragHandle.target = this;
-            dragHandle.FitWidth(this, UIConstants.Padding);
-            dragHandle.height = headerPanel.height;
-            dragHandle.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
+            _dragHandle = headerPanel.AddUIComponent<UIDragHandle>();
+            _dragHandle.name = $"{headerPanel.name}_DragHandle";
+            _dragHandle.target = this;
+            _dragHandle.FitWidth(this, UIConstants.Padding);
+            _dragHandle.height = headerPanel.height;
+            _dragHandle.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
 
             // Main/Header/CloseButton
             _closeButton = headerPanel.AddUIComponent<UIButton>();
@@ -261,6 +292,12 @@ namespace ParallelRoadTool.UI
             // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
             optionsPanel.autoLayout = false;
             toolsPanel.autoLayout = false;
+        }
+
+        private void UpdateSavedPosition()
+        {
+            SavedWindowX.value = (int)absolutePosition.x;
+            SavedWindowY.value = (int)absolutePosition.y;
         }
 
         #endregion
