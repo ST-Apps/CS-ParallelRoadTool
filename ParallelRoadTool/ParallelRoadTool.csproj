@@ -107,7 +107,6 @@
     <Compile Include="UI\Base\UIRightDragHandle.cs" />
     <Compile Include="Utils\UIUtil.cs" />
     <Compile Include="UI\UIOptionsPanel.cs" />
-    <Compile Include="Utils\LocalizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Localizations\ru.xml" />

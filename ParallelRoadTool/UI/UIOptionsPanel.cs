@@ -56,13 +56,13 @@ namespace ParallelRoadTool.UI
             buttonsGroupAsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
             buttonsGroupAsPanel.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
 
-            var windowResetButton = buttonsGroup.AddButton(Translations.Translate("BUTTON_RESET_TOOL_WINDOW_POSITION_LABEL"), () =>
-                                                         {
-                                                             if (!Singleton<UIController>.exists) return;
-                                                             Singleton<UIController>.instance
-                                                                                    .ResetToolWindowPosition();
-                                                         });
-            var toolResetButton = buttonsGroup.AddButton(Translations.Translate("BUTTON_RESET_TOOL_BUTTON_POSITION_LABEL"),
+            buttonsGroup.AddButton(Translations.Translate("BUTTON_RESET_TOOL_WINDOW_POSITION_LABEL"), () =>
+                                   {
+                                       if (!Singleton<UIController>.exists) return;
+                                       Singleton<UIController>.instance
+                                                              .ResetToolWindowPosition();
+                                   });
+            buttonsGroup.AddButton(Translations.Translate("BUTTON_RESET_TOOL_BUTTON_POSITION_LABEL"),
                                    () =>
                                    {
                                        if (!Singleton<UIController>.exists) return;
