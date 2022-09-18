@@ -38,8 +38,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedMessage">Konnte Netze nicht aus {0} löschen. Grund:\r\n{1}</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DeleteConfirmationMessage">Bist du dir sicher, dass du '{0}.xml' löschen willst?</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (Wenn Du das obige Bild nicht siehst, schließe und öffne das Tutorial-Fenster erneut)
       1) Fügt das aktuell ausgewählte Netz deiner Liste hinzu.
       2) Ändert das ausgewählte Netz in ein anderes um.

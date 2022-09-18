@@ -18,8 +18,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Diminuer le décalage vertical des réseaux parallèles</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Augmenter le décalage vertical des réseaux parallèles</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Outil de route parallèle</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Outil de route parallèle</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (Si vous ne voyez pas l'image ci-dessus, veuillez fermer et rouvrir le tutoriel.)
       1) Ajoute le réseau actuellement sélectionné à votre liste.
       2) Vous permet de changer le réseau sélectionné en un autre.

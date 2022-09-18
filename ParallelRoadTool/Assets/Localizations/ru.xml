@@ -18,8 +18,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Уменьшение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Увеличение расстояния по вертикали между дорогами/конструкциями</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (если вы не видите изображение выше, пожалуйста, закройте и снова откройте руководство)
       1) Добавляет выбранное в ваш список
       2) Открывает список для выбора

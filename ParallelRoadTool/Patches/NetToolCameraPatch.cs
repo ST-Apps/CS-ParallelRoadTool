@@ -4,6 +4,7 @@ using ColossalFramework.Math;
 using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Managers;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
@@ -46,7 +47,7 @@ namespace ParallelRoadTool.Patches
             try
             {
                 // We only run if the mod is set as Active
-                if (!ParallelRoadTool.ModStatuses.IsFlagSet(ModStatuses.Active))
+                if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
                     return;
 
                 if (endPoint.m_direction == Vector3.zero)
@@ -54,13 +55,13 @@ namespace ParallelRoadTool.Patches
 
                 var netTool = ToolsModifierControl.GetTool<NetTool>();
 
-                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Count; i++)
+                for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
                 {
-                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes[i];
+                    var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
 
                     // Horizontal offset must be negated to appear on the correct side of the original segment
                     var horizontalOffset = currentRoadInfos.HorizontalOffset *
-                                           (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic ? 1 : -1);
+                                           (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic ? 1 : -1);
                     var verticalOffset = currentRoadInfos.VerticalOffset;
 
                     // If the user didn't select a NetInfo we'll use the one he's using for the main road                
@@ -144,7 +145,7 @@ namespace ParallelRoadTool.Patches
             }
         }
 
-        // TODO: call this using reflection from NetTool
+        // TODO: call this using another reverse patch from NetTool
         protected static void RenderRoadAccessArrow(
             RenderManager.CameraInfo cameraInfo,
             Color color,

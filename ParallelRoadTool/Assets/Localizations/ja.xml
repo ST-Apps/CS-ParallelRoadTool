@@ -18,8 +18,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">並行する道路の垂直方向の隙間を減らす</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">並行する道路の垂直方向の隙間を減らす</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (もし上に画像が表示されていなければ、いったんチュートリアルを 閉じて、再度開いて下さい)
       1) リストへ現在選択されている道路を追加します
       2) 選択した道路を別のものに変更することができます

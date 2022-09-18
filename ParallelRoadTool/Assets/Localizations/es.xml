@@ -18,8 +18,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Reducir el desplazamiento vertical de las carreteras</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Incrementar el desplazamiento vertical de las carreteras</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (si no ves la imagen de arriba, por favor cierra y abre el tutorial)
       1) Añade la carretera seleccionada actualmente a tu lista
       2) Te permite cambiar la carretera seleccionada por otra distinta

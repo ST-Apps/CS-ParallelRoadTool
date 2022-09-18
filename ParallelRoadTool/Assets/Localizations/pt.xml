@@ -18,8 +18,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Diminuir deslocamento vertical das vias paralelas</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Aumentar deslocamento vertical das vias paralelas</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Ferramenta de vias paralelas</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Ferramenta de vias paralelas</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (se você não ver a imagem acima, por favor re-abra o tutorial)
       1) Adiciona a via selecionada para sua lista
       2) Permite alterar a via selecionada para uma outra

@@ -7,10 +7,10 @@
 //using ColossalFramework.Globalization;
 //using ColossalFramework.UI;
 //using CSUtil.Commons;
-//using ParallelRoadTool.Patches;
-//using ParallelRoadTool.Models;
+//using ParallelRoadToolManager.Patches;
+//using ParallelRoadToolManager.Models;
 
-//namespace ParallelRoadTool.Utils
+//namespace ParallelRoadToolManager.Utils
 //{
 //    /// <summary>
 //    ///     Utility class used to allow presets saving, loading and deleting.
@@ -23,7 +23,7 @@
 //            try
 //            {
 //                Directory.CreateDirectory(Configuration.AutoSaveFolderPath);
-//                var presetItems = Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes
+//                var presetItems = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes
 //                                                             .Select(i => new PresetNetItem
 //                                                             {
 //                                                                 HorizontalOffset = i.HorizontalOffset,
@@ -76,8 +76,8 @@
 //                    presetItems = (List<PresetNetItem>) xmlSerializer.Deserialize(streamReader);
 //                }
 
-//                Singleton<ParallelRoadTool>.instance.ClearItems();
-//                Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Clear();
+//                Singleton<ParallelRoadToolManager>.instance.ClearItems();
+//                Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Clear();
 //                foreach (var preset in presetItems)
 //                {
 //                    var netInfo = PrefabCollection<NetInfo>.FindLoaded(preset.NetName);
@@ -92,9 +92,9 @@
 
 //                    var item = new NetInfoItem(netInfo, preset.HorizontalOffset, preset.VerticalOffset,
 //                                               preset.IsReversed);
-//                    Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Add(item);
-//                    Singleton<ParallelRoadTool>.instance.AddItem(item);
-//                    NetManagerPatch.NetworksCount = Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Count;
+//                    Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Add(item);
+//                    Singleton<ParallelRoadToolManager>.instance.AddItem(item);
+//                    NetManagerPatch.NetworksCount = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count;
 //                }
 //            }
 //            catch (Exception e)

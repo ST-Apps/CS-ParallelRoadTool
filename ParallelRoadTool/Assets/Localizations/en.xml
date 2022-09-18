@@ -34,8 +34,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DeleteFailedMessage">Failed deleting networks from {0} because:\r\n{1}</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="DeleteConfirmationMessage">Are you sure to delete '{0}.xml'?</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (if you don't see the image above, please close and reopen the tutorial)
       1) Adds the currently selected network to your list
       2) Allows you to change the selected network to another one

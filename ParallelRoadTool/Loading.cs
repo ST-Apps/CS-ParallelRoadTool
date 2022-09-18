@@ -2,6 +2,7 @@
 using ColossalFramework;
 using CSUtil.Commons;
 using ICities;
+using ParallelRoadTool.Managers;
 using ParallelRoadTool.UI;
 using ParallelRoadTool.UI.Settings;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace ParallelRoadTool
         protected override void CreatedActions(ILoading loading)
         {
             // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
-            ParallelRoadTool.IsInGameMode = loading.currentMode == AppMode.Game;
+            ParallelRoadToolManager.IsInGameMode = loading.currentMode == AppMode.Game;
             
             // Register settings file
             GameSettings.AddSettingsFile(new SettingsFile
@@ -40,17 +41,17 @@ namespace ParallelRoadTool
         {
             Log.Info($"[{nameof(Loading)}.{nameof(LoadedActions)}] Starting mod...");
 
-            if (!Singleton<ParallelRoadTool>.exists)
-                Singleton<ParallelRoadTool>.Ensure();
+            if (!Singleton<ParallelRoadToolManager>.exists)
+                Singleton<ParallelRoadToolManager>.Ensure();
             else
-                Singleton<ParallelRoadTool>.instance.Start();
+                Singleton<ParallelRoadToolManager>.instance.Start();
 
             Log.Info($"[{nameof(Loading)}.{nameof(LoadedActions)}] Mod started");
         }
 
         public override void OnReleased()
         {
-            Object.DestroyImmediate(Singleton<ParallelRoadTool>.instance);
+            Object.DestroyImmediate(Singleton<ParallelRoadToolManager>.instance);
         }
     }
 

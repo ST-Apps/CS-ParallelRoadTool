@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework;
@@ -256,6 +257,7 @@ namespace ParallelRoadTool.UI.Main
                                                          Translations.Translate("TOOLTIP_SAVE_BUTTON"),
                                                          "Save");
             _savePresetButton.name = $"{optionsPanel.name}_SavePreset";
+            _savePresetButton.isEnabled = false;
 
             // Main/Toolbar/Options/LoadPresetButton
             _loadPresetButton = UIHelpers.CreateUiButton(
@@ -322,6 +324,9 @@ namespace ParallelRoadTool.UI.Main
 
             _networkListPanel.RefreshNetworks(networks);
 
+            // Enable the save button only if we have at least one network
+            _savePresetButton.isEnabled = networks.Any();
+
             // Now that networks have been refreshed we can disable autolayout again
             autoLayout = false;
         }
@@ -345,6 +350,9 @@ namespace ParallelRoadTool.UI.Main
             autoLayout = true;
 
             _networkListPanel.AddNetwork(netInfo);
+
+            // We have at least one network so we can enable the save button
+            _savePresetButton.isEnabled = true;
 
             // Now that the item has been added we can disable autolayout again
             autoLayout = false;

@@ -7,22 +7,19 @@ using ColossalFramework.UI;
 using CSUtil.Commons;
 using ICities;
 using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Patches;
 using ParallelRoadTool.Models;
+using ParallelRoadTool.Patches;
 using ParallelRoadTool.UI;
-using ParallelRoadTool.Utils;
 using UnityEngine;
-using AlgernonCommons.UI;
-using ParallelRoadTool.UI.Presets;
 
-namespace ParallelRoadTool
+namespace ParallelRoadTool.Managers
 {
     /// <summary>
     ///     Mod's main controller and data storage.
     /// </summary>
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class ParallelRoadTool : MonoBehaviour
+    public class ParallelRoadToolManager : MonoBehaviour
     {
         #region Fields
 
@@ -86,7 +83,7 @@ namespace ParallelRoadTool
         {
             var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network [{netInfo.GenerateBeautifiedNetName()}]");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network [{netInfo.GenerateBeautifiedNetName()}]");
 
             // Previous item's offset so that we can try to separate this one from previous one without overlapping
             var prevOffset = SelectedNetworkTypes.Any() ? SelectedNetworkTypes.Last().HorizontalOffset : 0;
@@ -99,23 +96,23 @@ namespace ParallelRoadTool
 
         private void UIController_DeleteNetworkButtonEventClicked(UIComponent component, int index)
         {
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_DeleteNetworkButtonEventClicked)}] Removing network at index {index}.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_DeleteNetworkButtonEventClicked)}] Removing network at index {index}.");
 
             RemoveNetwork(index);
         }
 
         private void UIController_ClosedButtonEventClicked(object sender, EventArgs e)
         {
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ClosedButtonEventClicked)}] Received click on close button.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_ClosedButtonEventClicked)}] Received click on close button.");
             ModStatuses &= ~ModStatuses.Active;
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ClosedButtonEventClicked)}] New mod status is: {ModStatuses:g}.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_ClosedButtonEventClicked)}] New mod status is: {ModStatuses:g}.");
             UIController.UpdateVisibility(ModStatuses);
         }
 
         private void ToolControllerPatch_CurrentToolChanged(object sender, CurrentToolChangedEventArgs e)
         {
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] Changed tool to {e.Tool.GetType().Name}.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] Changed tool to {e.Tool.GetType().Name}.");
 
             if (e.Tool is NetTool)
             {
@@ -126,13 +123,13 @@ namespace ParallelRoadTool
                 ModStatuses &= ~ModStatuses.Enabled;
             }
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] New mod status is: {ModStatuses:g}.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] New mod status is: {ModStatuses:g}.");
             UIController.UpdateVisibility(ModStatuses);
         }
 
         private void UIController_ToolToggleButtonEventCheckChanged(UIComponent component, bool value)
         {
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] Changed tool button to {value}.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] Changed tool button to {value}.");
 
             if (value)
             {
@@ -143,7 +140,7 @@ namespace ParallelRoadTool
                 ModStatuses &= ~ModStatuses.Active;
             }
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] New mod status is: {ModStatuses:g}.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] New mod status is: {ModStatuses:g}.");
             UIController.UpdateVisibility(ModStatuses);
         }
 
@@ -189,7 +186,7 @@ namespace ParallelRoadTool
 
         private void OnMilestoneUpdate()
         {
-            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnMilestoneUpdate)}] Milestones updated, reloading networks...");
+            Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(OnMilestoneUpdate)}] Milestones updated, reloading networks...");
 
             LoadNetworks();
         }
@@ -207,14 +204,14 @@ namespace ParallelRoadTool
                 // If NetTool is not available we can't move further
                 if (ToolsModifierControl.GetTool<NetTool>() == null)
                 {
-                    Log.Warning($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Net Tool not found, can't deploy!");
+                    Log.Warning($"[{nameof(ParallelRoadToolManager)}.{nameof(Awake)}] Net Tool not found, can't deploy!");
 
                     // Fully disable mod's GameComponent
                     enabled = false;
                     return;
                 }
 
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading version: {Mod.Instance.Name} ({nameof(IsInGameMode)} is {IsInGameMode}).");
+                Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(Awake)}] Loading version: {Mod.Instance.Name} ({nameof(IsInGameMode)} is {IsInGameMode}).");
 
                 // Initialize support data
                 SelectedNetworkTypes.Clear();
@@ -227,11 +224,11 @@ namespace ParallelRoadTool
                 // Mod is now fully enabled
                 ModStatuses ^= ModStatuses.Disabled;
                 ModStatuses ^= ModStatuses.Deployed;
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Mod status is now {ModStatuses:g}.");
+                Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(Start)}] Mod status is now {ModStatuses:g}.");
             }
             catch (Exception e)
             {
-                Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(Awake)}] Loading failed.");
+                Log._DebugOnlyError($"[{nameof(ParallelRoadToolManager)}.{nameof(Awake)}] Loading failed.");
                 Log.Exception(e);
 
                 // Fully disable mod's GameComponent
@@ -248,17 +245,17 @@ namespace ParallelRoadTool
         {
             try
             {
-                Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Adding UI components");
+                Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(Start)}] Adding UI components");
                 UIController.Initialize();
                 UIController.UpdateVisibility(ModStatuses);
 
                 AttachToEvents();
 
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loaded");
+                Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(Start)}] Loaded");
             }
             catch (Exception e)
             {
-                Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(Start)}] Loading failed");
+                Log._DebugOnlyError($"[{nameof(ParallelRoadToolManager)}.{nameof(Start)}] Loading failed");
                 Log.Exception(e);
 
                 // Fully disable mod's GameComponent
@@ -274,13 +271,13 @@ namespace ParallelRoadTool
         {
             try
             {
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroying...");
+                Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(OnDestroy)}] Destroying...");
 
                 // Remove existing auto-save 
                 if (File.Exists(Configuration.AutoSaveFilePath))
                     File.Delete(Configuration.AutoSaveFilePath);
 
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Saving networks...");
+                Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(OnDestroy)}] Saving networks...");
 
                 // Save current networks 
                 //PresetsUtils.Export(Configuration.AutoSaveFileName);
@@ -296,12 +293,12 @@ namespace ParallelRoadTool
                 // Clean all the UI components
                 UIController.Cleanup();
 
-                Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroyed");
+                Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(OnDestroy)}] Destroyed");
             }
             catch (Exception e)
             {
                 // HACK - [ISSUE 31]
-                Log._DebugOnlyError($"[{nameof(ParallelRoadTool)}.{nameof(OnDestroy)}] Destroy failed");
+                Log._DebugOnlyError($"[{nameof(ParallelRoadToolManager)}.{nameof(OnDestroy)}] Destroy failed");
                 Log.Exception(e);
 
                 // Fully disable mod's GameComponent
@@ -405,7 +402,7 @@ namespace ParallelRoadTool
                 // Skip items with no atlas set as they're not networks (e.g. train lines)
                 if (string.IsNullOrEmpty(atlasName))
                 {
-                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because it's not a real network (atlas is not set).");
+                    Log._Debug(@$"[{nameof(ParallelRoadToolManager)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because it's not a real network (atlas is not set).");
                     continue;
                 }
 
@@ -413,14 +410,14 @@ namespace ParallelRoadTool
                 if (!IsInGameMode || prefab.m_UnlockMilestone == null || prefab.m_UnlockMilestone.IsPassed())
                     sortedNetworks[networkName] = prefab;
                 else
-                    Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because ""{prefab.m_UnlockMilestone.m_name}"" is not passed yet.");
+                    Log._Debug(@$"[{nameof(ParallelRoadToolManager)}.{nameof(LoadNetworks)}] Skipping ""{networkName}"" because ""{prefab.m_UnlockMilestone.m_name}"" is not passed yet.");
 
-                Log._Debug(@$"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{atlasName}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
+                Log._Debug(@$"[{nameof(ParallelRoadToolManager)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{atlasName}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
             }
 
             _availableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
-            Log.Info($"[{nameof(ParallelRoadTool)}.{nameof(LoadNetworks)}] Loaded {_availableRoadTypes.Count} networks.");
+            Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadNetworks)}] Loaded {_availableRoadTypes.Count} networks.");
         }
 
         #endregion
@@ -436,7 +433,7 @@ namespace ParallelRoadTool
             // Toggle active status flag
             ModStatuses ^= ModStatuses.Active;
 
-            Log._Debug($"[{nameof(ParallelRoadTool)}.{nameof(ToggleModActiveStatus)}] New mod status is: {ModStatuses:g}.");
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToggleModActiveStatus)}] New mod status is: {ModStatuses:g}.");
 
             // Update the UI status based on the new Active value
             UIController.UpdateVisibility(ModStatuses);

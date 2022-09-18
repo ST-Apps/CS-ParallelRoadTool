@@ -6,7 +6,7 @@
   name="PRT_de">
   <strings>
     <LocalizedString identifier="PRT_TOOLTIPS" key="SnappingToggleButton">Inschakelen-/uitschakelen springen naar bestaande knooppunten</LocalizedString>
-    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">ParallelRoadTool aan-/uit</LocalizedString>
+    <LocalizedString identifier="PRT_TOOLTIPS" key="ToolToggleButton">ParallelRoadToolManager aan-/uit</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="TutorialToggleButton">Handleiding openen</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="ReverseToggleButton">Weg richting omkeren</LocalizedString>
     <LocalizedString identifier="PRT_TOOLTIPS" key="RemoveNetworkButton">Verwijder weg</LocalizedString>
@@ -18,8 +18,8 @@
     <LocalizedString identifier="PRT_TEXTS" key="DecreaseVerticalOffsetOption">Verminder verticale afwijking</LocalizedString>
     <LocalizedString identifier="PRT_TEXTS" key="IncreaseVerticalOffsetOption">Vergroot verticale afwijking</LocalizedString>
 
-    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadTool">Parallel Road Tool</LocalizedString>
-    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadTool">
+    <LocalizedString identifier="TUTORIAL_ADVISER_TITLE" key="ParallelRoadToolManager">Parallel Road Tool</LocalizedString>
+    <LocalizedString identifier="TUTORIAL_ADVISER" key="ParallelRoadToolManager">
       (Als je de bovenstaande afbeelding niet kunt zien, sluit en her-open het venster)
       1) Voegt de geselecteerde weg aan uw lijst toe.
       2) Verandert de geselecteerde weg.

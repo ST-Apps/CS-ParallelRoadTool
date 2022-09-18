@@ -24,9 +24,11 @@ namespace ParallelRoadTool.UI.Shared
 
             // Main/ContainerPanel
             Container = AddUIComponent<UIPanel>();
+            Container.name = nameof(Container);
             Container.backgroundSprite = "GenericPanel";
             Container.autoLayoutDirection = LayoutDirection.Vertical;
             Container.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+            Container.autoLayoutPadding.bottom = 0;
             Container.autoLayout = true;
             Container.relativePosition = new Vector2(UIConstants.Padding, spriteAtlas["normal"].height + UIConstants.Padding);
             Container.FitWidth(this, UIConstants.Padding);

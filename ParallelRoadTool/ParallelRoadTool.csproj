@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="Loading.cs" />
+    <Compile Include="Managers\PresetsManager.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Models\CurrentNetInfoPrefabChangedEventArgs.cs" />
     <Compile Include="Models\CurrentToolChangedEventArgs.cs" />
@@ -79,10 +80,11 @@
     <Compile Include="Models\NetTypeItem.cs" />
     <Compile Include="Models\NetTypeItemEventArgs.cs" />
     <Compile Include="Models\PresetNetItem.cs" />
-    <Compile Include="ParallelRoadTool.cs" />
+    <Compile Include="Managers\ParallelRoadToolManager.cs" />
     <Compile Include="Settings\OffsetOptionsKeymapping.cs" />
     <Compile Include="Settings\ToggleButtonOptionsKeymapping.cs" />
     <Compile Include="Settings\ModSettings.cs" />
+    <Compile Include="UI\Presets\UIFileListRow.cs" />
     <Compile Include="UI\Presets\UISavePresetWindow.cs" />
     <Compile Include="UI\Shared\UIModalWindow.cs" />
     <Compile Include="UI\Shared\UIWindow.cs" />

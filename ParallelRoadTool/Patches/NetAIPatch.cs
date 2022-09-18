@@ -3,6 +3,7 @@ using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Managers;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
@@ -22,10 +23,10 @@ namespace ParallelRoadTool.Patches
             try
             {
                 // We only run if the mod is set as Active
-                if (!ParallelRoadTool.ModStatuses.IsFlagSet(ModStatuses.Active))
+                if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
                     return;
 
-                foreach (var currentRoadInfos in Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes)
+                foreach (var currentRoadInfos in Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes)
                 {
                     // Horizontal offset must be negated to appear on the correct side of the original segment                    
                     var verticalOffset = currentRoadInfos.VerticalOffset;

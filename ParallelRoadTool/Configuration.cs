@@ -13,7 +13,7 @@ namespace ParallelRoadTool
         public const string AutoSaveFileName = "_PRTAutoSave";
 
         public static readonly string AutoSaveFolderPath =
-            Path.Combine(DataLocation.localApplicationData, $"{AssemblyName}Exports");
+            Path.Combine(Path.Combine(DataLocation.localApplicationData, AssemblyName), "Presets");
 
         public static readonly string AutoSaveFilePath = Path.Combine(AutoSaveFolderPath, AutoSaveFileName + ".xml");
 

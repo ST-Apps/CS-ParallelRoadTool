@@ -2,9 +2,9 @@
 //using System.Reflection;
 //using ColossalFramework.Globalization;
 //using CSUtil.Commons;
-//using ParallelRoadTool.Models;
+//using ParallelRoadToolManager.Models;
 
-//namespace ParallelRoadTool.Extensions
+//namespace ParallelRoadToolManager.Extensions
 //{
 //    /// <summary>
 //    ///     <see

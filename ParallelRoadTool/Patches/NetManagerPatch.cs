@@ -5,6 +5,7 @@ using ColossalFramework.Math;
 using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Managers;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
@@ -144,13 +145,13 @@ namespace ParallelRoadTool.Patches
             {
                 segment = (ushort)__args[0];
 
-                if (!ParallelRoadTool.ModStatuses.IsFlagSet(ModStatuses.Active))
+                if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
                 {
                     Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Skipping because mod is not currently active.");
                     return;
                 }
 
-                if (Singleton<ParallelRoadTool>.instance.IsMouseLongPress
+                if (Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress
                     && ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade
                     && startNode == _startNodeId[0]
                     && endNode == _endNodeId[0])
@@ -169,9 +170,9 @@ namespace ParallelRoadTool.Patches
                     return;
                 }
 
-                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Adding {Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Count} parallel segments");
+                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Adding {Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count} parallel segments");
 
-                if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
+                if (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic)
                     _isPreviousInvert = invert;
 
                 // If we're in upgrade mode we must stop here
@@ -196,9 +197,9 @@ namespace ParallelRoadTool.Patches
                 var isEnteringSlope = NetManager.instance.m_nodes.m_buffer[invert ? startNode : endNode].m_elevation >
                                       NetManager.instance.m_nodes.m_buffer[invert ? endNode : startNode].m_elevation;
 
-                for (var i = 0; i < Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes.Count; i++)
+                for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
                 {
-                    var currentRoadInfos = Singleton<ParallelRoadTool>.instance.SelectedNetworkTypes[i];
+                    var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
 
                     var horizontalOffset = currentRoadInfos.HorizontalOffset;
                     var verticalOffset = currentRoadInfos.VerticalOffset;
@@ -216,7 +217,7 @@ namespace ParallelRoadTool.Patches
                     var isReversed = currentRoadInfos.IsReversed;
 
                     // Left-hand drive means that any condition must be reversed
-                    if (Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic)
+                    if (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic)
                     {
                         invert = !invert;
                         isReversed = !isReversed;
@@ -254,7 +255,7 @@ namespace ParallelRoadTool.Patches
                         var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
                                                                               verticalOffset, invert);
 
-                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
 
                         newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
                     }
@@ -320,7 +321,7 @@ namespace ParallelRoadTool.Patches
                     }
 
                     // Left-hand drive revert conditions back
-                    if (!Singleton<ParallelRoadTool>.instance.IsLeftHandTraffic) continue;
+                    if (!Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic) continue;
                     invert = !invert;
 
                     // isReversed = !isReversed;
@@ -437,7 +438,7 @@ namespace ParallelRoadTool.Patches
 
             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
-            if (Singleton<ParallelRoadTool>.instance.IsSnappingEnabled &&
+            if (Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled &&
                 (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service,
                                               NetInfo.LaneType.All, VehicleInfo.VehicleType.All, VehicleInfo.VehicleCategory.All, true, false,
                                               maxDistance, out var posA, out var posB, out _, out _) ||

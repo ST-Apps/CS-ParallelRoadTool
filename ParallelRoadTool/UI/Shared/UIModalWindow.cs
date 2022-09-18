@@ -26,6 +26,7 @@ namespace ParallelRoadTool.UI.Shared
             }
 
             UIView.PushModal(this);
+            Focus();
         }
 
         protected override bool PreClose()
@@ -36,7 +37,7 @@ namespace ParallelRoadTool.UI.Shared
             if (modalEffect != null && modalEffect.isVisible)
                 ValueAnimator.Animate("ModalEffect", delegate(float val) { modalEffect.opacity = val; },
                                       new AnimatedFloat(1f, 0f, 0.7f, EasingType.CubicEaseOut), delegate { modalEffect.Hide(); });
-
+            Unfocus();
             return base.PreClose();
         }
 

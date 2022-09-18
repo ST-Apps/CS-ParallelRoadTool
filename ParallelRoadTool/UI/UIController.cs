@@ -8,6 +8,7 @@ using ParallelRoadTool.Settings;
 using ParallelRoadTool.UI.Main;
 using UnityEngine;
 using AlgernonCommons.UI;
+using ParallelRoadTool.Managers;
 using ParallelRoadTool.UI.Presets;
 
 namespace ParallelRoadTool.UI
@@ -66,7 +67,20 @@ namespace ParallelRoadTool.UI
 
         private void MainWindowOnSavePresetButtonEventClicked(UIComponent component, UIMouseEventParameter eventparam)
         {
+            // Prevent focus for main window
+            _mainWindow.canFocus = false;
+
             StandalonePanelManager<UISavePresetWindow>.Create();
+
+            // Restore focus for main window on modal close
+            StandalonePanelManager<UISavePresetWindow>.Panel.EventClose += () =>
+                                                                           {
+                                                                               _mainWindow.canFocus = true;
+                                                                               _mainWindow.Focus();
+                                                                           };
+
+            // Load data
+            StandalonePanelManager<UISavePresetWindow>.Panel.RefreshItems(PresetsManager.ListSavedFiles());
         }
 
         #endregion
@@ -96,7 +110,7 @@ namespace ParallelRoadTool.UI
         {
             if (UIView.HasModalInput()
                 || UIView.HasInputFocus()
-                || !Singleton<ParallelRoadTool>.exists
+                || !Singleton<ParallelRoadToolManager>.exists
                 || !(ToolsModifierControl.toolController.CurrentTool is NetTool))
                 return;
 
@@ -105,14 +119,14 @@ namespace ParallelRoadTool.UI
             if (e.isMouse)
             {
                 // HACK - [ISSUE-84] Report if we're currently having a long mouse press
-                Singleton<ParallelRoadTool>.instance.IsMouseLongPress = e.type switch
+                Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress = e.type switch
                 {
                     EventType.MouseDown => true,
                     EventType.MouseUp => false,
-                    _ => Singleton<ParallelRoadTool>.instance.IsMouseLongPress
+                    _ => Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress
                 };
 
-                Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Setting {nameof(Singleton<ParallelRoadTool>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadTool>.instance.IsMouseLongPress}");
+                Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Setting {nameof(Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress}");
             }
             // Checking key presses
             if (ModSettings.KeyToggleTool.IsPressed(e)) ToggleModStatus();
@@ -131,11 +145,11 @@ namespace ParallelRoadTool.UI
         #region Internals
 
         /// <summary>
-        /// Toggles the current mod status on <see cref="ParallelRoadTool"/>.
+        /// Toggles the current mod status on <see cref="ParallelRoadToolManager"/>.
         /// </summary>
         private static void ToggleModStatus()
         {
-            Singleton<ParallelRoadTool>.instance.ToggleModActiveStatus();
+            Singleton<ParallelRoadToolManager>.instance.ToggleModActiveStatus();
         }
 
         private void AdjustNetOffset(float step, bool isHorizontal = true)
@@ -243,7 +257,7 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Sets components' visibility based on the current flags that we have on <see cref="ParallelRoadTool.ModStatuses"/>.
+        /// Sets components' visibility based on the current flags that we have on <see cref="ParallelRoadToolManager.ModStatuses"/>.
         /// </summary>
         /// <param name="modStatuses"></param>
         public void UpdateVisibility(ModStatuses modStatuses)
