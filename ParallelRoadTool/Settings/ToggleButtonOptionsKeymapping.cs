@@ -12,10 +12,10 @@ namespace ParallelRoadTool.Settings
         public ToggleButtonOptionsKeymapping()
         {
             Label = Translations.Translate("SELECT_KEYMAPPING_TOGGLEBUTTON_LABEL");
-            ButtonLabel = Translations.Translate("PRESS_ANY_KEY");
+            ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
 
-        protected override InputKey KeySetting
+        protected sealed override InputKey KeySetting
         {
             get => ModSettings.KeyToggleTool.Encode();
             set => ModSettings.KeyToggleTool.SetKey(value);

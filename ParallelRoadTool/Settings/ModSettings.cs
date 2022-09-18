@@ -16,7 +16,6 @@ namespace ParallelRoadTool.Settings
     [XmlRoot("SettingsFile")]
     public class ModSettings : SettingsXMLBase
     {
-        // TODO: keybindings get reset everytime I open the panel
         #region Fields
 
         private const string SettingsFileName = "PRT_Settings.xml";
@@ -28,32 +27,86 @@ namespace ParallelRoadTool.Settings
         /// <summary>
         /// Tool toggle key.
         /// </summary>
-        [XmlElement]
+        [XmlIgnore]
         public static readonly Keybinding KeyToggleTool = new(KeyCode.P, true, false, false);
 
         /// <summary>
         /// Increase horizontal offset key.
         /// </summary>
-        [XmlElement]
-        public static readonly Keybinding KeyIncreaseHorizontalOffset = new(KeyCode.Plus, true, false, false);
+        [XmlIgnore]
+        public static readonly Keybinding KeyIncreaseHorizontalOffset = new(KeyCode.Equals, true, false, false);
 
         /// <summary>
         /// Decrease horizontal offset key.
         /// </summary>
-        [XmlElement]
+        [XmlIgnore]
         public static readonly Keybinding KeyDecreaseHorizontalOffset = new(KeyCode.Minus, true, false, false);
 
         /// <summary>
         /// Increase horizontal offset key.
         /// </summary>
-        [XmlElement]
-        public static readonly Keybinding KeyIncreaseVerticalOffset = new(KeyCode.Plus, true, true, false);
+        [XmlIgnore]
+        public static readonly Keybinding KeyIncreaseVerticalOffset = new(KeyCode.Equals, true, true, false);
 
         /// <summary>
         /// Decrease horizontal offset key.
         /// </summary>
-        [XmlElement]
+        [XmlIgnore]
         public static readonly Keybinding KeyDecreaseVerticalOffset = new(KeyCode.Minus, true, true, false);
+
+        #region Serializable
+
+        /// <summary>
+        /// Tool toggle key.
+        /// </summary>
+        [XmlElement(nameof(KeyToggleTool))]
+        public Keybinding XMLKeyToggleTool
+        {
+            get => KeyToggleTool;
+            set => KeyToggleTool.SetKey(value.Encode());
+        }
+
+        /// <summary>
+        /// Increase horizontal offset key.
+        /// </summary>
+        [XmlElement(nameof(KeyIncreaseHorizontalOffset))]
+        public Keybinding XMLKeyIncreaseHorizontalOffset
+        {
+            get => KeyIncreaseHorizontalOffset;
+            set => KeyIncreaseHorizontalOffset.SetKey(value.Encode());
+        }
+
+        /// <summary>
+        /// Decrease horizontal offset key.
+        /// </summary>
+        [XmlElement(nameof(KeyDecreaseHorizontalOffset))]
+        public Keybinding XMLKeyDecreaseHorizontalOffset
+        {
+            get => KeyDecreaseHorizontalOffset;
+            set => KeyDecreaseHorizontalOffset.SetKey(value.Encode());
+        }
+
+        /// <summary>
+        /// Increase horizontal offset key.
+        /// </summary>
+        [XmlElement(nameof(KeyIncreaseVerticalOffset))]
+        public Keybinding XMLKeyIncreaseVerticalOffset
+        {
+            get => KeyIncreaseVerticalOffset;
+            set => KeyIncreaseVerticalOffset.SetKey(value.Encode());
+        }
+
+        /// <summary>
+        /// Decrease horizontal offset key.
+        /// </summary>
+        [XmlElement(nameof(KeyDecreaseVerticalOffset))]
+        public Keybinding XMLKeyDecreaseVerticalOffset
+        {
+            get => KeyDecreaseVerticalOffset;
+            set => KeyDecreaseVerticalOffset.SetKey(value.Encode());
+        }
+
+        #endregion
 
         #endregion
 

@@ -12,10 +12,10 @@ namespace ParallelRoadTool.Settings
         public IncreaseHorizontalOffsetOptionsKeymapping()
         {
             Label = Translations.Translate("SELECT_KEYMAPPING_INCREASE_HORIZONTAL_OFFSET_LABEL");
-            ButtonLabel = Translations.Translate("PRESS_ANY_KEY");
+            ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
 
-        protected override InputKey KeySetting
+        protected sealed override InputKey KeySetting
         {
             get => ModSettings.KeyIncreaseHorizontalOffset.Encode();
             set => ModSettings.KeyIncreaseHorizontalOffset.SetKey(value);
@@ -30,10 +30,10 @@ namespace ParallelRoadTool.Settings
         public DecreaseHorizontalOffsetOptionsKeymapping()
         {
             Label = Translations.Translate("SELECT_KEYMAPPING_DECREASE_HORIZONTAL_OFFSET_LABEL");
-            ButtonLabel = Translations.Translate("PRESS_ANY_KEY");
+            ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
 
-        protected override InputKey KeySetting
+        protected sealed override InputKey KeySetting
         {
             get => ModSettings.KeyDecreaseHorizontalOffset.Encode();
             set => ModSettings.KeyDecreaseHorizontalOffset.SetKey(value);
@@ -48,10 +48,10 @@ namespace ParallelRoadTool.Settings
         public IncreaseVerticalOffsetOptionsKeymapping()
         {
             Label = Translations.Translate("SELECT_KEYMAPPING_INCREASE_VERTICAL_OFFSET_LABEL");
-            ButtonLabel = Translations.Translate("PRESS_ANY_KEY");
+            ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
 
-        protected override InputKey KeySetting
+        protected sealed override InputKey KeySetting
         {
             get => ModSettings.KeyIncreaseVerticalOffset.Encode();
             set => ModSettings.KeyIncreaseVerticalOffset.SetKey(value);
@@ -66,10 +66,10 @@ namespace ParallelRoadTool.Settings
         public DecreaseVerticalOffsetOptionsKeymapping()
         {
             Label = Translations.Translate("SELECT_KEYMAPPING_DECREASE_VERTICAL_OFFSET_LABEL");
-            ButtonLabel = Translations.Translate("PRESS_ANY_KEY");
+            ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
 
-        protected override InputKey KeySetting
+        protected sealed override InputKey KeySetting
         {
             get => ModSettings.KeyDecreaseVerticalOffset.Encode();
             set => ModSettings.KeyDecreaseVerticalOffset.SetKey(value);
