@@ -236,7 +236,7 @@ namespace ParallelRoadTool.UI.Main
             var toolbarPanel = AddUIComponent<UIPanel>();
             toolbarPanel.name = $"{name}_Toolbar";
             toolbarPanel.FitWidth(this, UIConstants.Padding);
-            toolbarPanel.height = UIConstants.MiddleSize;
+            toolbarPanel.height = UIConstants.MediumSize;
 
             // Main/Toolbar/Options
             var optionsPanel = toolbarPanel.AddUIComponent<UIPanel>();
@@ -252,7 +252,7 @@ namespace ParallelRoadTool.UI.Main
             // Main/Toolbar/Options/SavePresetButton
             _savePresetButton = UIHelpers.CreateUiButton(
                                                          optionsPanel,
-                                                         new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
+                                                         new Vector2(UIConstants.MediumSize, UIConstants.MediumSize),
                                                          string.Empty,
                                                          Translations.Translate("TOOLTIP_SAVE_BUTTON"),
                                                          "Save");
@@ -262,7 +262,7 @@ namespace ParallelRoadTool.UI.Main
             // Main/Toolbar/Options/LoadPresetButton
             _loadPresetButton = UIHelpers.CreateUiButton(
                                                          optionsPanel,
-                                                         new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
+                                                         new Vector2(UIConstants.MediumSize, UIConstants.MediumSize),
                                                          string.Empty,
                                                          Translations.Translate("TOOLTIP_LOAD_BUTTON"),
                                                          "Load");
@@ -284,13 +284,13 @@ namespace ParallelRoadTool.UI.Main
             _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UIHelpers.Atlas.name, "SnappingPressed", "Snapping",
                                                                backgroundSprite: "OptionBase",
                                                                tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
-                                                               height: UIConstants.MiddleSize, width: UIConstants.MiddleSize);
+                                                               height: UIConstants.MediumSize, width: UIConstants.MediumSize);
             _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
 
             // Main/Toolbar/Tools/AddNetworkButton
             _addNetworkButton = UIHelpers.CreateUiButton(
                                                          toolsPanel,
-                                                         new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize),
+                                                         new Vector2(UIConstants.MediumSize, UIConstants.MediumSize),
                                                          string.Empty,
                                                          Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"),
                                                          "Add"

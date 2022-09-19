@@ -105,7 +105,7 @@ namespace ParallelRoadTool.UI.Utils
             var uiButton = parent.AddUIComponent<UIButton>();
             uiButton.atlas = Atlas;
             uiButton.tooltip = tooltip;
-            if (size == Vector2.zero) size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
+            if (size == Vector2.zero) size = new Vector2(UIConstants.MediumSize, UIConstants.MediumSize);
             uiButton.size = size;
 
             if (!isTextButton)

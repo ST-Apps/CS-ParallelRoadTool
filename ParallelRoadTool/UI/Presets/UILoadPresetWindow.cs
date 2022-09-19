@@ -76,8 +76,6 @@ namespace ParallelRoadTool.UI.Presets
 
         #region Components
 
-        //private readonly UITextField _fileNameInput;
-        //private readonly UIButton _saveButton;
         private readonly UIList _fileList;
         private readonly UIPresetDetailsPanel _presetDetails;
 
@@ -95,26 +93,19 @@ namespace ParallelRoadTool.UI.Presets
                                                         Container.height - 2 * UIConstants.Padding, UIConstants.TinySize);
             _fileList.RowHeight -= 4;
 
-            _presetDetails = Container.AddUIComponent<UIPresetDetailsPanel>();
-            _presetDetails.size = _fileList.size;
+            // Main/DetailsContainer
+            var detailsContainer = Container.AddUIComponent<UIPanel>();
+            detailsContainer.autoLayoutDirection = LayoutDirection.Vertical;
+            detailsContainer.autoLayoutPadding.bottom = UIConstants.Padding;
+            detailsContainer.autoLayout = true;
+            detailsContainer.size = _fileList.size;
 
-            //var bottomPanel = Container.AddUIComponent<UIPanel>();
-            //bottomPanel.relativePosition = new Vector2(0, UIConstants.Padding);
-            //bottomPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            //bottomPanel.autoLayout = true;
-            //bottomPanel.autoFitChildrenVertically = true;
-            //bottomPanel.FitWidth(Container, UIConstants.Padding);
+            // Main/DetailsContainer/PresetDetails
+            _presetDetails = detailsContainer.AddUIComponent<UIPresetDetailsPanel>();
+            _presetDetails.size = detailsContainer.size - new Vector2(0, UIConstants.SmallSize + UIConstants.Padding);
 
-            //// Main/FileName
-            //_fileNameInput = UITextFields.AddBigTextField(bottomPanel, 0, 0);
-            //_fileNameInput.FitWidth(bottomPanel, 0);
-
-            //// Main/Save
-            //var saveButtonAtlas = UITextures.LoadSingleSpriteAtlas("Save");
-            //_saveButton = UIButtons.AddIconButton(bottomPanel, 0, 0, saveButtonAtlas["normal"].height, saveButtonAtlas);
-            //_saveButton.isEnabled = false; //Disabled at start
-            //_fileNameInput.height = saveButtonAtlas["normal"].height;
-            //_fileNameInput.width -= _saveButton.width - UIConstants.Padding;
+            // Main/DetailsContainer/LoadButton
+            UIButtons.AddButton(detailsContainer, 0, 0, "LOAD", detailsContainer.width);
 
             // Events
             AttachToEvents();

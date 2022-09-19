@@ -55,7 +55,7 @@ namespace ParallelRoadTool.UI.Main
         {
             base.Awake();
 
-            size = new Vector2(UIConstants.MiddleSize, UIConstants.MiddleSize);
+            size = new Vector2(UIConstants.MediumSize, UIConstants.MediumSize);
 
             var toolTip = Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON");
 
