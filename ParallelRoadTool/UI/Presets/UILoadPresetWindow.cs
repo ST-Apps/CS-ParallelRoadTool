@@ -105,7 +105,7 @@ namespace ParallelRoadTool.UI.Presets
             _presetDetails.size = detailsContainer.size - new Vector2(0, UIConstants.SmallSize + UIConstants.Padding);
 
             // Main/DetailsContainer/LoadButton
-            UIButtons.AddButton(detailsContainer, 0, 0, "LOAD", detailsContainer.width);
+            UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"), detailsContainer.width);
 
             // Events
             AttachToEvents();
