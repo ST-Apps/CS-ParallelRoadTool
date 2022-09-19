@@ -119,7 +119,7 @@ namespace ParallelRoadTool.UI.Main
 
             // Main
             name = $"{Configuration.ResourcePrefix}MainWindow";
-            backgroundSprite = "SubcategoriesPanel";
+            backgroundSprite = "UnlockingPanel2";
             size = new Vector2(512, 256);
             autoFitChildrenVertically = true;
             autoLayout = true;
@@ -201,14 +201,13 @@ namespace ParallelRoadTool.UI.Main
             headerPanel.name = $"{name}_Header";
             headerPanel.padding = padding;
             headerPanel.FitWidth(this, UIConstants.Padding);
-            headerPanel.height = UIConstants.SmallSize;
+            headerPanel.height = UIConstants.LargeSize;
 
             // Main/Header/TitleLabel
-            var titleLabel = headerPanel.AddUIComponent<UILabel>();
+            var titleLabel = UILabels.AddLabel(headerPanel, 0f, 13f, Mod.Instance.Name, width, alignment: UIHorizontalAlignment.Center);
             titleLabel.name = $"{headerPanel.name}_TitleLabel";
-            titleLabel.text = Mod.Instance.Name;
-            titleLabel.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
-            titleLabel.anchor = UIAnchorStyle.CenterVertical;
+            titleLabel.height = UIConstants.SmallSize;
+            titleLabel.anchor = UIAnchorStyle.CenterVertical | UIAnchorStyle.CenterHorizontal;
 
             // Main/Header/DragHandle
             _dragHandle = headerPanel.AddUIComponent<UIDragHandle>();
@@ -228,6 +227,17 @@ namespace ParallelRoadTool.UI.Main
             _closeButton.size = new Vector2(UIConstants.SmallSize, UIConstants.SmallSize);
             _closeButton.anchor = UIAnchorStyle.CenterVertical;
             _closeButton.AlignTo(headerPanel, UIAlignAnchor.TopRight);
+            _closeButton.relativePosition = new Vector2(_closeButton.relativePosition.x, 4);
+
+            // Main/Header/Icon
+            var iconSprite = AddUIComponent<UISprite>();
+            iconSprite.height = UIConstants.SmallSize;
+            iconSprite.width = UIConstants.SmallSize;
+            iconSprite.atlas = UITextures.LoadSingleSpriteAtlas("Parallel");
+            iconSprite.spriteName = "normal";
+            iconSprite.anchor = UIAnchorStyle.CenterVertical;
+            iconSprite.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
+            iconSprite.relativePosition = new Vector2(0, 8);
         }
 
         private void BuildToolbar()
