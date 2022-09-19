@@ -143,6 +143,7 @@ namespace ParallelRoadTool.UI.Presets
             _fileList = UIList.AddUIList<UIFileListRow>(Container, 0, 0,
                                                         Container.width - 2 * UIConstants.Padding,
                                                         Container.height - topPanel.height - 3 * UIConstants.Padding, UIConstants.TinySize);
+            _fileList.RowHeight -= 4;
 
             // Events
             AttachToEvents();
