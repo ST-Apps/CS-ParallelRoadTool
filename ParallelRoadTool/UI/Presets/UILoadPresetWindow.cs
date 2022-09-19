@@ -3,11 +3,7 @@ using AlgernonCommons.UI;
 using ColossalFramework.UI;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CSUtil.Commons;
 using ParallelRoadTool.Managers;
 using UnityEngine;
 
@@ -30,6 +26,11 @@ namespace ParallelRoadTool.UI.Presets
             _presetDetails.LoadPreset(presetItems);
         }
 
+        private void LoadPresetButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            LoadButtonEventClicked?.Invoke(this, (string) _fileList.SelectedItem);
+        }
+
         #endregion
 
         #region Properties
@@ -49,11 +50,13 @@ namespace ParallelRoadTool.UI.Presets
         private void AttachToEvents()
         {
             _fileList.EventSelectionChanged += FileListOnEventSelectionChanged;
+            _loadPresetButton.eventClicked += LoadPresetButtonOnEventClicked;
         }
 
         private void DetachFromEvents()
         {
             _fileList.EventSelectionChanged -= FileListOnEventSelectionChanged;
+            _loadPresetButton.eventClicked -= LoadPresetButtonOnEventClicked;
         }
 
         #endregion
@@ -78,6 +81,7 @@ namespace ParallelRoadTool.UI.Presets
 
         private readonly UIList _fileList;
         private readonly UIPresetDetailsPanel _presetDetails;
+        private readonly UIButton _loadPresetButton;
 
         #endregion
 
@@ -105,7 +109,7 @@ namespace ParallelRoadTool.UI.Presets
             _presetDetails.size = detailsContainer.size - new Vector2(0, UIConstants.SmallSize + UIConstants.Padding);
 
             // Main/DetailsContainer/LoadButton
-            UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"), detailsContainer.width);
+            _loadPresetButton = UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"), detailsContainer.width);
 
             // Events
             AttachToEvents();

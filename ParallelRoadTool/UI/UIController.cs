@@ -91,7 +91,7 @@ namespace ParallelRoadTool.UI
             // Save the current preset using PresetsManager
             try
             {
-                PresetsManager.SavePreset(fileName);
+                Singleton<ParallelRoadToolManager>.instance.SavePreset(fileName);
 
                 // We can now close the save modal
                 StandalonePanelManager<UISavePresetWindow>.Panel.Close();
@@ -127,19 +127,21 @@ namespace ParallelRoadTool.UI
 
         private void PanelOnLoadButtonEventClicked(UIComponent component, string fileName)
         {
-            //// Save the current preset using PresetsManager
-            //try
-            //{
-            //    PresetsManager.SavePreset(fileName);
-            //}
-            //catch (Exception e)
-            //{
-            //    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
-            //          .SetMessage(Translations.Translate("LABEL_SAVE_PRESET_FAILED_TITLE"),
-            //                      string.Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"), fileName, e),
-            //                      true);
-            //}
-        }
+            try
+            {
+                Singleton<ParallelRoadToolManager>.instance.LoadPreset(fileName);
+
+                // We can now close the load modal
+                StandalonePanelManager<UILoadPresetWindow>.Panel.Close();
+            }
+            catch (Exception e)
+            {
+                UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
+                      .SetMessage(Translations.Translate("LABEL_LOAD_PRESET_FAILED_TITLE"),
+                                  string.Format(Translations.Translate("LABEL_LOAD_PRESET_FAILED_MESSAGE"), fileName, e),
+                                  true);
+            }
+}
 
         #endregion
 

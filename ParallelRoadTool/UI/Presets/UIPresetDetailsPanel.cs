@@ -19,9 +19,8 @@ namespace ParallelRoadTool.UI.Presets
         public void LoadPreset(IEnumerable<XMLNetItem> networks)
         {
             var items = new FastList<object>();
-            foreach (var xmlNetItem in networks)
-                items.Add(new NetInfoItem(Singleton<ParallelRoadToolManager>.instance.FromName(xmlNetItem.Name), xmlNetItem.HorizontalOffset,
-                                          xmlNetItem.VerticalOffset, xmlNetItem.IsReversed));
+            foreach (var netItem in PresetsManager.ToNetInfoItems(networks))
+                items.Add(netItem);
 
             _netItemsList.Data = items;
         }

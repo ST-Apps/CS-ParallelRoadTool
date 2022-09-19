@@ -11,6 +11,7 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.Patches;
 using ParallelRoadTool.UI;
 using UnityEngine;
+using static VehicleSelector;
 
 namespace ParallelRoadTool.Managers
 {
@@ -439,9 +440,36 @@ namespace ParallelRoadTool.Managers
             UIController.UpdateVisibility(ModStatuses);
         }
 
+        /// <summary>
+        /// Returns the <see cref="NetInfo"/> matching the provided name
+        /// </summary>
+        /// <param name="networkName"></param>
+        /// <returns></returns>
         public NetInfo FromName(string networkName)
         {
             return _availableRoadTypes.FirstOrDefault(n => n.name == networkName);
+        }
+
+        public void SavePreset(string fileName)
+        {
+            PresetsManager.SavePreset(fileName);
+        }
+
+        public void LoadPreset(string fileName)
+        {
+            var preset = PresetsManager.LoadPreset(fileName);
+
+            SelectedNetworkTypes.Clear();
+            foreach (var netInfoItem in PresetsManager.ToNetInfoItems(preset))
+            {
+                SelectedNetworkTypes.Add(netInfoItem);
+                UIController.AddNetwork(netInfoItem);
+            }
+
+            NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
+            RefreshNetworks();
+
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadPreset)}] {nameof(SelectedNetworkTypes)} now contains: ({string.Join(", ", SelectedNetworkTypes.Select(n => n.BeautifiedName).ToArray())}).");
         }
 
         #endregion

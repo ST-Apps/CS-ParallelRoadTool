@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 using ColossalFramework;
 using CSUtil.Commons;
@@ -15,7 +14,7 @@ namespace ParallelRoadTool.Managers
         #region Properties
 
         // TODO: make it constant and move out of Configuration
-        private static string AutoSaveFolderName = Configuration.AutoSaveFolderPath;
+        private static readonly string AutoSaveFolderName = Configuration.AutoSaveFolderPath;
         private static string AutoSaveDefaultFileName = Configuration.AutoSaveFileName;
 
         #endregion
@@ -36,9 +35,9 @@ namespace ParallelRoadTool.Managers
 
             // Get all files matching *.xml besides the auto-save one that can't be overwritten
             var files = Directory.GetFiles(AutoSaveFolderName, "*.xml")
-                            .Where(f => Path.GetFileNameWithoutExtension(f) != AutoSaveFolderName)
-                            .Select(Path.GetFileNameWithoutExtension)
-                            .ToArray();
+                                 .Where(f => Path.GetFileNameWithoutExtension(f) != AutoSaveFolderName)
+                                 .Select(Path.GetFileNameWithoutExtension)
+                                 .ToArray();
 
             Log.Info($"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Found {files.Length} presets");
             Log._Debug($"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Files: [{string.Join(", ", files)}]");
@@ -92,9 +91,11 @@ namespace ParallelRoadTool.Managers
             {
                 var xmlSerializer = new XmlSerializer(typeof(XMLNetItem[]));
                 using var streamReader = new StreamReader(path);
-                var data = xmlSerializer.Deserialize(streamReader);
+                var data = (XMLNetItem[]) xmlSerializer.Deserialize(streamReader);
 
-                return (XMLNetItem[])data;
+                Log._Debug($"[{nameof(PresetsManager)}.{nameof(LoadPreset)}] Loaded {data.Length} networks.");
+
+                return data;
             }
             catch (Exception e)
             {
@@ -103,6 +104,12 @@ namespace ParallelRoadTool.Managers
 
                 throw;
             }
+        }
+
+        public static IEnumerable<NetInfoItem> ToNetInfoItems(IEnumerable<XMLNetItem> networks)
+        {
+            return networks.Select(n => new NetInfoItem(Singleton<ParallelRoadToolManager>.instance.FromName(n.Name), n.HorizontalOffset,
+                                                        n.VerticalOffset, n.IsReversed));
         }
 
         #endregion

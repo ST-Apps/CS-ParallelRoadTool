@@ -45,3 +45,5 @@ Unless you want to test the new features, please move to the stable version on W
 "LABEL_OVERWRITE_PRESET_TITLE","Overwrite"
 "LABEL_OVERWRITE_PRESET_MESSAGE","File '{0}.xml' already exists, do you want to overwrite it?"
 "LABEL_LOAD_PRESET_BUTTON_TITLE","Load preset"
+"LABEL_LOAD_PRESET_FAILED_TITLE","Save preset failed"
+"LABEL_LOAD_PRESET_FAILED_MESSAGE","Exception while saving preset to {0}:\r\n{1}"
