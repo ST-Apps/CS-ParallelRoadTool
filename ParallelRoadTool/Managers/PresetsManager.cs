@@ -75,7 +75,30 @@ namespace ParallelRoadTool.Managers
             }
             catch (Exception e)
             {
-                Log.Info(@$"[{nameof(PresetsManager)}.{nameof(SavePreset)}] Failed exporting ""{fileName}"" to {path}");
+                Log.Info(@$"[{nameof(PresetsManager)}.{nameof(SavePreset)}] Failed saving ""{fileName}"" to {path}");
+                Log.Exception(e);
+
+                throw;
+            }
+        }
+
+        public static IEnumerable<XMLNetItem> LoadPreset(string fileName)
+        {
+            var path = Path.Combine(AutoSaveFolderName, $"{fileName}.xml");
+
+            Log.Info(@$"[{nameof(PresetsManager)}.{nameof(LoadPreset)}] Loading preset from ""{path}""");
+
+            try
+            {
+                var xmlSerializer = new XmlSerializer(typeof(XMLNetItem[]));
+                using var streamReader = new StreamReader(path);
+                var data = xmlSerializer.Deserialize(streamReader);
+
+                return (XMLNetItem[])data;
+            }
+            catch (Exception e)
+            {
+                Log.Info(@$"[{nameof(PresetsManager)}.{nameof(SavePreset)}] Failed reading ""{fileName}"" from {path}");
                 Log.Exception(e);
 
                 throw;

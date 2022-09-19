@@ -1,4 +1,5 @@
 ﻿using ParallelRoadTool.UI.Main;
+using ParallelRoadTool.UI.Shared;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI.Utils
@@ -34,24 +35,44 @@ namespace ParallelRoadTool.UI.Utils
         internal const int LargeSize = 48;
 
         /// <summary>
-        /// Fixed size for a <see cref="NetInfo"/> thumbnail
+        /// Fixed size for a tiny <see cref="NetInfo"/> thumbnail
         /// </summary>
-        internal static readonly Vector2 ThumbnailSize = new(LargeSize, LargeSize);
+        internal static readonly Vector2 ThumbnailTinySize = new(TinySize, TinySize);
+
+        /// <summary>
+        /// Fixed size for a large <see cref="NetInfo"/> thumbnail
+        /// </summary>
+        internal static readonly Vector2 ThumbnailLargeSize = new(LargeSize, LargeSize);
 
         /// <summary>
         /// Fixed width for a generic <see cref="UINetInfoPanel"/>
         /// </summary>
-        internal const int NetInfoPanelWidth = 400;
+        internal const int NetInfoPanelLargeWidth = 400;
 
         /// <summary>
         /// Fixed height for a generic <see cref="UINetInfoPanel"/>
         /// </summary>
-        internal const int NetInfoPanelHeight = LargeSize + Padding + Padding;
+        internal const int NetInfoPanelLargeHeight = LargeSize + Padding + Padding;
 
         /// <summary>
         /// Fixed size for a generic <see cref="UINetInfoPanel"/>
         /// </summary>
-        internal static readonly Vector2 NetInfoPanelSize = new(NetInfoPanelWidth, NetInfoPanelHeight);
+        internal static readonly Vector2 NetInfoPanelLargeSize = new(NetInfoPanelLargeWidth, NetInfoPanelLargeHeight);
+
+        /// <summary>
+        /// Fixed width for a generic <see cref="UINetInfoPanel"/>
+        /// </summary>
+        internal const int NetInfoPanelTinyWidth = 220;
+
+        /// <summary>
+        /// Fixed height for a generic <see cref="UINetInfoPanel"/>
+        /// </summary>
+        internal const int NetInfoPanelTinyHeight = TinySize + Padding + Padding;
+
+        /// <summary>
+        /// Fixed size for a generic <see cref="UINetInfoPanel"/>
+        /// </summary>
+        internal static readonly Vector2 NetInfoPanelTinySize = new(NetInfoPanelTinyWidth, NetInfoPanelTinyHeight);
 
         // Taken from vanilla road building's overlay color
         internal static readonly Color ReadOnlyColor = new(0, 0.710f, 1, 0.5f);

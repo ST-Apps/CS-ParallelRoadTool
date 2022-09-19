@@ -85,6 +85,8 @@
     <Compile Include="Settings\ToggleButtonOptionsKeymapping.cs" />
     <Compile Include="Settings\ModSettings.cs" />
     <Compile Include="UI\Presets\UIFileListRow.cs" />
+    <Compile Include="UI\Presets\UILoadPresetWindow.cs" />
+    <Compile Include="UI\Presets\UIPresetDetailsPanel.cs" />
     <Compile Include="UI\Presets\UISavePresetWindow.cs" />
     <Compile Include="UI\Shared\UIModalWindow.cs" />
     <Compile Include="UI\Shared\UIWindow.cs" />
@@ -92,7 +94,7 @@
     <Compile Include="UI\UIController.cs" />
     <Compile Include="UI\Main\UIMainWindow.cs" />
     <Compile Include="UI\Main\UINetInfoButton.cs" />
-    <Compile Include="UI\Main\UINetInfoPanel.cs" />
+    <Compile Include="UI\Shared\UINetInfoPanel.cs" />
     <Compile Include="UI\Main\UINetSetupPanel.cs" />
     <Compile Include="UI\Main\UINetListPanel.cs" />
     <Compile Include="UI\Main\UIToolToggleButton.cs" />

@@ -92,6 +92,9 @@ namespace ParallelRoadTool.UI
             try
             {
                 PresetsManager.SavePreset(fileName);
+
+                // We can now close the save modal
+                StandalonePanelManager<UISavePresetWindow>.Panel.Close();
             }
             catch (Exception e)
             {
@@ -100,6 +103,42 @@ namespace ParallelRoadTool.UI
                                   string.Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"), fileName, e),
                                   true);
             }
+        }
+
+        private void MainWindowOnLoadPresetButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            // Prevent focus for main window
+            _mainWindow.canFocus = false;
+
+            StandalonePanelManager<UILoadPresetWindow>.Create();
+
+            // Subscribe to events for the modal popup. We don't need to unsubscribe because this one will be destroyed on close
+            StandalonePanelManager<UILoadPresetWindow>.Panel.LoadButtonEventClicked += PanelOnLoadButtonEventClicked;
+            StandalonePanelManager<UILoadPresetWindow>.Panel.EventClose += () =>
+                                                                           {
+                                                                               // Restore focus for main window on modal close
+                                                                               _mainWindow.canFocus = true;
+                                                                               _mainWindow.Focus();
+                                                                           };
+
+            // Load data
+            StandalonePanelManager<UILoadPresetWindow>.Panel.RefreshItems(PresetsManager.ListSavedFiles());
+        }
+
+        private void PanelOnLoadButtonEventClicked(UIComponent component, string fileName)
+        {
+            //// Save the current preset using PresetsManager
+            //try
+            //{
+            //    PresetsManager.SavePreset(fileName);
+            //}
+            //catch (Exception e)
+            //{
+            //    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
+            //          .SetMessage(Translations.Translate("LABEL_SAVE_PRESET_FAILED_TITLE"),
+            //                      string.Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"), fileName, e),
+            //                      true);
+            //}
         }
 
         #endregion
@@ -215,6 +254,7 @@ namespace ParallelRoadTool.UI
             _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
             _mainWindow.SavePresetButtonEventClicked += MainWindowOnSavePresetButtonEventClicked;
+            _mainWindow.LoadPresetButtonEventClicked += MainWindowOnLoadPresetButtonEventClicked;
         }
 
         private void DetachFromEvents()
@@ -222,6 +262,7 @@ namespace ParallelRoadTool.UI
             _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
             _mainWindow.SavePresetButtonEventClicked -= MainWindowOnSavePresetButtonEventClicked;
+            _mainWindow.LoadPresetButtonEventClicked -= MainWindowOnLoadPresetButtonEventClicked;
         }
 
         #endregion

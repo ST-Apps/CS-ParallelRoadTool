@@ -439,6 +439,11 @@ namespace ParallelRoadTool.Managers
             UIController.UpdateVisibility(ModStatuses);
         }
 
+        public NetInfo FromName(string networkName)
+        {
+            return _availableRoadTypes.FirstOrDefault(n => n.name == networkName);
+        }
+
         #endregion
 
         #endregion
