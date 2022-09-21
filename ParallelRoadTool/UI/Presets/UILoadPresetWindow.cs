@@ -24,6 +24,8 @@ namespace ParallelRoadTool.UI.Presets
         {
             var presetItems = PresetsManager.LoadPreset((string)fileName);
             _presetDetails.LoadPreset(presetItems);
+
+            _loadPresetButton.isEnabled = true;
         }
 
         private void LoadPresetButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventParam)
@@ -110,6 +112,7 @@ namespace ParallelRoadTool.UI.Presets
 
             // Main/DetailsContainer/LoadButton
             _loadPresetButton = UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"), detailsContainer.width);
+            _loadPresetButton.isEnabled = false;
 
             // Events
             AttachToEvents();
