@@ -394,8 +394,8 @@ namespace ParallelRoadTool.Patches
                                              uint modifiedIndex,
                                              bool invert)
             {
-                // its a stub so it has no initial content
-                throw new NotImplementedException("It's a stub");
+                // No implementation is required as this will call the original method
+                throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
             }
         }
 

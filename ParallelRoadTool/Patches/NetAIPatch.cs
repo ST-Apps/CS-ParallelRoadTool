@@ -65,7 +65,7 @@ namespace ParallelRoadTool.Patches
             public static int GetConstructionCost(object instance, Vector3 startPos, Vector3 endPos, float startHeight, float endHeight)
             {
                 // No implementation is required as this will call the original method
-                throw new NotImplementedException("It's a stub");
+                throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
             }
         }
     }

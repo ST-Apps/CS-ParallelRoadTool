@@ -26,8 +26,6 @@ namespace ParallelRoadTool.Patches
         ///     Overlay's core method.
         ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
         ///     correct offsets.
-        ///     TODO: Probably RenderHelperLines is what we need to fix the look with curves, but detouring it makes Unity crash so
-        ///     we have to live with this little issue.
         /// </summary>
         /// <param name="cameraInfo"></param>
         /// <param name="info"></param>
@@ -81,8 +79,7 @@ namespace ParallelRoadTool.Patches
 
                         // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
                         m_position =
-                            startPoint.m_position.Offset(
-                                                         startPoint.m_direction == Vector3.zero
+                            startPoint.m_position.Offset(startPoint.m_direction == Vector3.zero
                                                              ? middlePoint.m_direction
                                                              : startPoint.m_direction,
                                                          horizontalOffset, verticalOffset),
@@ -110,8 +107,7 @@ namespace ParallelRoadTool.Patches
                     };
 
                     // Render parallel segments by shifting the position of the 3 ControlPoint
-                    NetToolReversePatch.RenderOverlay(
-                                                      netTool,
+                    NetToolReversePatch.RenderOverlay(netTool,
                                                       cameraInfo,
                                                       selectedNetInfo,
                                                       currentRoadInfos.Color,
@@ -134,7 +130,7 @@ namespace ParallelRoadTool.Patches
                     var direction = bezier.Tangent(0.5f);
                     direction.y = 0;
                     direction = Quaternion.Euler(0, -90, 0) * direction.normalized;
-                    RenderRoadAccessArrow(cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
+                    NetToolReversePatch.RenderRoadAccessArrow(netTool,cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
                 }
             }
             catch (Exception e)
@@ -145,39 +141,6 @@ namespace ParallelRoadTool.Patches
             }
         }
 
-        // TODO: call this using another reverse patch from NetTool
-        protected static void RenderRoadAccessArrow(
-            RenderManager.CameraInfo cameraInfo,
-            Color color,
-            Vector3 position,
-            Vector3 xDir,
-            bool flipped)
-        {
-            var properties = Singleton<GameAreaManager>.instance.m_properties;
-            if (!(properties != null))
-                return;
-            var vector3 = new Vector3(xDir.z, 0.0f, -xDir.x);
-            var num = 3f;
-            Quad3 quad;
-            if (!flipped)
-            {
-                quad.a = position - 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
-                quad.b = position - 8f * xDir - num * 8f * vector3;
-                quad.c = position + 8f * xDir - num * 8f * vector3;
-                quad.d = position + 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
-            }
-            else
-            {
-                quad.c = position - 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
-                quad.d = position - 8f * xDir - num * 8f * vector3;
-                quad.a = position + 8f * xDir - num * 8f * vector3;
-                quad.b = position + 8f * xDir - (float)(num * 8.0 + 16.0) * vector3;
-            }
-
-            ++Singleton<ToolManager>.instance.m_drawCallData.m_overlayCalls;
-            Singleton<RenderManager>.instance.OverlayEffect.DrawQuad(cameraInfo, properties.m_directionArrow, color, quad, -10f, 1280f, false, true);
-        }
-
         /// <summary>
         ///     The reverse patch is meant as an easy way to access the original <see cref="PlayerNetAI.GetConstructionCost" />
         ///     method.
@@ -186,10 +149,9 @@ namespace ParallelRoadTool.Patches
         private class NetToolReversePatch
         {
             [HarmonyReversePatch]
-            [HarmonyPatch(
-                             typeof(NetTool),
-                             nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-                             typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
+            [HarmonyPatch(typeof(NetTool),
+                          nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
+                          typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
             public static void RenderOverlay(object instance,
                                              RenderManager.CameraInfo cameraInfo,
                                              NetInfo info,
@@ -199,7 +161,22 @@ namespace ParallelRoadTool.Patches
                                              NetTool.ControlPoint endPoint)
             {
                 // No implementation is required as this will call the original method
-                throw new NotImplementedException("It's a stub");
+                throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
+            }
+
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(NetTool),
+                          "RenderRoadAccessArrow", typeof(RenderManager.CameraInfo), typeof(Color), typeof(Vector3),
+                          typeof(Vector3), typeof(bool))]
+            public static void RenderRoadAccessArrow(object instance,
+                                                     RenderManager.CameraInfo cameraInfo,
+                                                     Color color,
+                                                     Vector3 position,
+                                                     Vector3 xDir,
+                                                     bool flipped)
+            {
+                // No implementation is required as this will call the original method
+                throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
             }
         }
     }
