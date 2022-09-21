@@ -103,7 +103,6 @@ namespace ParallelRoadTool.UI.Main
         {
             var ray = GetCamera().ScreenPointToRay(Input.mousePosition);
 
-            // TODO: add condition on children
             if (!Input.GetMouseButtonDown(0) || Raycast(ray) || _owner.Raycast(ray) || _netItemsList.Raycast(ray))
                 return;
             Close();

@@ -9,6 +9,9 @@ using ParallelRoadTool.Models;
 
 namespace ParallelRoadTool.Managers
 {
+    /// <summary>
+    /// This manager is responsible for everything related to presets handling, such as listing presets and loading/saving them.
+    /// </summary>
     public class PresetsManager
     {
         #region Properties

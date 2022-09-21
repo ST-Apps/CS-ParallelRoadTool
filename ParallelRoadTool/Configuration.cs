@@ -25,8 +25,6 @@ namespace ParallelRoadTool
         public const string AssetsFolder = "Assets";
         public const string IconsFolder = "Icons";
         public static readonly string IconsNamespace = $"{AssemblyName}.{AssetsFolder}.{IconsFolder}";
-        public const string LocalizationFolder = "Localizations";
-        public static readonly string LocalizationNamespace = $"{AssemblyName}.{AssetsFolder}.{LocalizationFolder}";
 
         public static readonly string CustomAtlasName = $"{ResourcePrefix}Atlas";
         public const string DefaultAtlasName = "Ingame";
