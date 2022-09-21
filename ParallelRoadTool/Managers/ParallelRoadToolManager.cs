@@ -155,16 +155,26 @@ namespace ParallelRoadTool.Managers
             // Check if we need to replace the selected network before updating other properties
             if (value.SelectedNetworkName != null)
             {
-                var target = AvailableRoadTypes.First(n => n.name == value.SelectedNetworkName);
-                SelectedNetworkTypes[value.ItemIndex] = new NetInfoItem(target);
+                SelectedNetworkTypes[value.ItemIndex] = new NetInfoItem(AvailableRoadTypes.First(n => n.name == value.SelectedNetworkName))
+                {
+                    HorizontalOffset = SelectedNetworkTypes[value.ItemIndex].HorizontalOffset,
+                    VerticalOffset = SelectedNetworkTypes[value.ItemIndex].VerticalOffset,
+                    IsReversed = SelectedNetworkTypes[value.ItemIndex].IsReversed
+                };
+                
+            }
+            else
+            {
+
+                // Update customizable properties
+                var targetItem = SelectedNetworkTypes[value.ItemIndex];
+                targetItem.HorizontalOffset = value.HorizontalOffset;
+                targetItem.VerticalOffset = value.VerticalOffset;
+                targetItem.IsReversed = value.IsReversedNetwork;
             }
 
-            // Update customizable properties
-            var targetItem = SelectedNetworkTypes[value.ItemIndex];
-            targetItem.HorizontalOffset = value.HorizontalOffset;
-            targetItem.VerticalOffset = value.VerticalOffset;
-            targetItem.IsReversed = value.IsReversedNetwork;
 
+            // In both cases we need to refresh networks
             RefreshNetworks();
         }
 

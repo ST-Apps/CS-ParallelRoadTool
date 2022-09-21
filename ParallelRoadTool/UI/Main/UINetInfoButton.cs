@@ -51,6 +51,9 @@ namespace ParallelRoadTool.UI.Main
                 // Register events
                 _netSelectionPopup.OnPopupSelectionChanged += (_, value) =>
                                                               {
+                                                                  if (value.SelectedNetworkName == _netInfoPanel.NetInfoItem.Name)
+                                                                      return;
+
                                                                   OnPopupSelectionChanged?.Invoke(_netSelectionPopup, value);
                                                                   _netSelectionPopup.Close();
                                                               };
@@ -176,6 +179,9 @@ namespace ParallelRoadTool.UI.Main
             }
 
             _netInfoPanel.NetInfoItem = netInfo;
+
+            // Close any open popup since we're updating networks
+            // if (_netSelectionPopup != null) _netSelectionPopup.Close();
         }
 
         #endregion
