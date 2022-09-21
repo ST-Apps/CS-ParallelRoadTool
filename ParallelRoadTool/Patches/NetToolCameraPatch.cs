@@ -116,21 +116,27 @@ namespace ParallelRoadTool.Patches
                                                       currentEndPoint
                                                      );
 
-                    // TODO: only on one-way roads
+                    // We draw arrows only for one-way networks, just as in game
+                    if (!selectedNetInfo.IsOneWayOnly()) continue;
 
-                    // Draw direction arrow
+                    // Draw direction arrow by getting the tangent between starting and ending point
                     var bezier = new Bezier3
                     {
                         a = currentStartPoint.m_position,
                         d = currentEndPoint.m_position
                     };
-                    NetSegment.CalculateMiddlePoints(bezier.a, currentMidPoint.m_direction, bezier.d, -currentEndPoint.m_direction, true, true,
-                                                     out bezier.b, out bezier.c);
+                    NetSegment.CalculateMiddlePoints(bezier.a, currentMidPoint.m_direction, bezier.d, -currentEndPoint.m_direction, true, true, out bezier.b, out bezier.c);
+
+                    // we can now extract both position and direction from the tangent
                     var position = bezier.Position(0.5f);
                     var direction = bezier.Tangent(0.5f);
+
+                    // Direction however will be oriented towards the middle point, so we need to rotate it by -90°
                     direction.y = 0;
                     direction = Quaternion.Euler(0, -90, 0) * direction.normalized;
-                    NetToolReversePatch.RenderRoadAccessArrow(netTool,cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
+
+                    // We can finally draw the arrow
+                    NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
                 }
             }
             catch (Exception e)

@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
+using CSUtil.Commons;
 using ParallelRoadTool.Wrappers;
 
 namespace ParallelRoadTool.Extensions
@@ -53,12 +55,18 @@ namespace ParallelRoadTool.Extensions
         /// <summary>
         ///     Localizes, when possible, <see cref="NetInfo.name" /> and trims some spaces.
         /// </summary>
-        /// <param name="prefab"></param>
+        /// <param name="netInfo"></param>
         /// <returns></returns>
-        public static string GenerateBeautifiedNetName(this NetInfo prefab)
+        public static string GenerateBeautifiedNetName(this NetInfo netInfo)
         {
             // Trim string and then remove duplicate spaces
-            return Regex.Replace(prefab.GetUncheckedLocalizedTitle().Trim(), " {2,}", " ");
+            return Regex.Replace(netInfo.GetUncheckedLocalizedTitle().Trim(), " {2,}", " ");
+        }
+
+        public static bool IsOneWayOnly(this NetInfo netInfo)
+        {
+            // One-way roads only have forward lanes
+            return !netInfo.m_hasBackwardVehicleLanes;
         }
     }
 }
