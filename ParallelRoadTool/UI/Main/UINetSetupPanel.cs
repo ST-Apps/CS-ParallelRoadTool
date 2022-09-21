@@ -1,6 +1,7 @@
 ﻿using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
@@ -74,6 +75,8 @@ namespace ParallelRoadTool.UI.Main
             remove => _netInfoPanel.OnPopupOpened -= value;
         }
 
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnPopupSelectionChanged;
+
         #endregion
 
         #region Callbacks
@@ -98,6 +101,12 @@ namespace ParallelRoadTool.UI.Main
         {
             var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text), _reverseCheckbox.isChecked);
             NetTypeEventChanged?.Invoke(null, netTypeArgs);
+        }
+
+        private void NetInfoPanelOnOnPopupSelectionChanged(UIComponent component, NetTypeItemEventArgs value)
+        {
+            value.ItemIndex = CurrentIndex;
+            OnPopupSelectionChanged?.Invoke(component, value);
         }
 
         #endregion
@@ -264,6 +273,7 @@ namespace ParallelRoadTool.UI.Main
             _reverseCheckbox.eventCheckChanged += NetInfo_EventChanged;
             _horizontalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
             _verticalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
+            _netInfoPanel.OnPopupSelectionChanged += NetInfoPanelOnOnPopupSelectionChanged;
         }
 
         private void DetachFromEvents()
@@ -272,6 +282,7 @@ namespace ParallelRoadTool.UI.Main
             _reverseCheckbox.eventCheckChanged -= NetInfo_EventChanged;
             _horizontalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
             _verticalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
+            _netInfoPanel.OnPopupSelectionChanged -= NetInfoPanelOnOnPopupSelectionChanged;
         }
 
         /// <summary>

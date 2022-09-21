@@ -79,13 +79,21 @@ namespace ParallelRoadTool.UI.Main
             // Basic setup
             var netSetupPanel = AddUIComponent<UINetSetupPanel>();
             netSetupPanel.FitWidth(this, 0);
+
+            // Events
             netSetupPanel.DeleteNetworkButtonEventClicked += NetSetupPanel_DeleteNetworkButtonEventClicked;
             netSetupPanel.NetTypeEventChanged += NetSetupPanel_NetTypeEventChanged;
             netSetupPanel.OnPopupOpened += NetSetupPanelOnOnPopupOpened;
+            netSetupPanel.OnPopupSelectionChanged += NetSetupPanelOnOnPopupSelectionChanged;
 
             // Finally render the panel
             netSetupPanel.Render(netInfo);
             netSetupPanel.CurrentIndex = childCount - 1;
+        }
+
+        private void NetSetupPanelOnOnPopupSelectionChanged(UIComponent component, NetTypeItemEventArgs value)
+        {
+            NetTypeEventChanged?.Invoke(component, value);
         }
 
         #endregion

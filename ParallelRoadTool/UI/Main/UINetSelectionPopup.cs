@@ -62,6 +62,12 @@ namespace ParallelRoadTool.UI.Main
 
         private NetInfoItem _ownerItem;
 
+        #region Events
+
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnPopupSelectionChanged;
+
+        #endregion
+
         #region Unity
 
         #region Components
@@ -145,6 +151,12 @@ namespace ParallelRoadTool.UI.Main
                                                  };
         }
 
+        private void NetItemsListOnEventSelectionChanged(UIComponent component, object value)
+        {
+            var netInfoItem = (NetInfoItem)value;
+            OnPopupSelectionChanged?.Invoke(null, new NetTypeItemEventArgs(-1, netInfoItem.Name));
+        }
+
         #endregion
 
         #region Public API
@@ -189,6 +201,7 @@ namespace ParallelRoadTool.UI.Main
                                                                   width - 2 * UIConstants.Padding,
                                                                   4 * UIConstants.LargeSize - UIConstants.Padding, UIConstants.LargeSize);
                 _netItemsList.BackgroundSprite = null;
+                _netItemsList.EventSelectionChanged += NetItemsListOnEventSelectionChanged;
             }
 
             _netItemsList.Data = items;

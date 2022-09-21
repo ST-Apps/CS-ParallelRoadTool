@@ -152,6 +152,14 @@ namespace ParallelRoadTool.Managers
 
         private void UIController_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
         {
+            // Check if we need to replace the selected network before updating other properties
+            if (value.SelectedNetworkName != null)
+            {
+                var target = AvailableRoadTypes.First(n => n.name == value.SelectedNetworkName);
+                SelectedNetworkTypes[value.ItemIndex] = new NetInfoItem(target);
+            }
+
+            // Update customizable properties
             var targetItem = SelectedNetworkTypes[value.ItemIndex];
             targetItem.HorizontalOffset = value.HorizontalOffset;
             targetItem.VerticalOffset = value.VerticalOffset;

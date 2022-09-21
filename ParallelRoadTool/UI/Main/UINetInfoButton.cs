@@ -1,5 +1,4 @@
 ﻿using ColossalFramework.UI;
-using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
@@ -17,9 +16,10 @@ namespace ParallelRoadTool.UI.Main
     {
         #region Fields
 
-        private static readonly object Lock = new ();
+        private static readonly object Lock = new();
 
         #endregion
+
         #region Properties
 
         /// <summary>
@@ -47,6 +47,15 @@ namespace ParallelRoadTool.UI.Main
 
                 _netSelectionPopup = UIView.GetAView().AddUIComponent(typeof(UINetSelectionPopup)) as UINetSelectionPopup;
                 if (_netSelectionPopup == null) return;
+
+                // Register events
+                _netSelectionPopup.OnPopupSelectionChanged += (_, value) =>
+                                                              {
+                                                                  OnPopupSelectionChanged?.Invoke(_netSelectionPopup, value);
+                                                                  _netSelectionPopup.Close();
+                                                              };
+
+                // Open the popup
                 _netSelectionPopup.Open(this, _netInfoPanel.NetInfoItem);
                 OnPopupOpened?.Invoke(this, _netSelectionPopup);
             }
@@ -57,6 +66,13 @@ namespace ParallelRoadTool.UI.Main
         #region Events
 
         public event ChildComponentEventHandler OnPopupOpened;
+
+        public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnPopupSelectionChanged;
+
+        //{
+        //    add => _netSelectionPopup.OnPopupSelectionChanged += value;
+        //    remove => _netSelectionPopup.OnPopupSelectionChanged -= value;
+        //}
 
         #endregion
 

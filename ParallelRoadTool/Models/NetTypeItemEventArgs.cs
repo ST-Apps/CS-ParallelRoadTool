@@ -2,29 +2,24 @@
 {
     public class NetTypeItemEventArgs
     {
-        public NetTypeItemEventArgs(int itemIndex,
-                                    float horizontalOffset,
-                                    float verticalOffset,
-                                    bool isReversedNetwork)
-                                    //int selectedNetworkIndex,
-                                    //bool isFiltered,
-                                    //string selectedNetworkName)
+        public NetTypeItemEventArgs(int itemIndex, float horizontalOffset, float verticalOffset, bool isReversedNetwork)
         {
             ItemIndex = itemIndex;
             HorizontalOffset = horizontalOffset;
             VerticalOffset = verticalOffset;
             IsReversedNetwork = isReversedNetwork;
-            //SelectedNetworkIndex = selectedNetworkIndex;
-            //IsFiltered = isFiltered;
-            //SelectedNetworkName = selectedNetworkName;
         }
 
-        public int ItemIndex { get; }
+        public NetTypeItemEventArgs(int itemIndex, string selectedNetworkName)
+        {
+            ItemIndex = itemIndex;
+            SelectedNetworkName = selectedNetworkName;
+        }
+
+        public int ItemIndex { get; set; }
         public float HorizontalOffset { get; }
         public float VerticalOffset { get; }
-        //public int SelectedNetworkIndex { get; }
         public bool IsReversedNetwork { get; }
-        //public bool IsFiltered { get; }
-        //public string SelectedNetworkName { get; }
+        public string SelectedNetworkName { get; }
     }
 }
