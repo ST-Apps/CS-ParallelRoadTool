@@ -16,6 +16,8 @@ namespace ParallelRoadTool.UI.Main
         {
             private UINetInfoTinyPanel _netInfoRow;
 
+            public override float RowHeight => UIConstants.LargeSize;
+
             public override void Display(object data, int rowIndex)
             {
                 Log._Debug($"RENDERING {data}");
@@ -35,7 +37,27 @@ namespace ParallelRoadTool.UI.Main
                 var netData = data as NetInfo;
                 _netInfoRow.Render(new NetInfoItem(netData));
 
-                // Deselect(rowIndex);
+                Deselect(rowIndex);
+            }
+
+            /// <summary>
+            /// Sets the row display to the selected state (highlighted).
+            /// </summary>
+            public override void Select()
+            {
+                // Background.spriteName = null; //"ListItemHighlight";
+                Background.opacity = 1f;
+            }
+
+            /// <summary>
+            /// Sets the row display to the deselected state.
+            /// </summary>
+            /// <param name="rowIndex">Row index number (for background banding).</param>
+            public override void Deselect(int rowIndex)
+            {
+                Background.spriteName = "GenericPanel";
+                Background.color = _netInfoRow.color;
+                Background.opacity = 0.5f;
             }
         }
 
@@ -117,6 +139,7 @@ namespace ParallelRoadTool.UI.Main
                                                          }
 
                                                          _netItemsList.Data = filteredData;
+                                                         _netItemsList.CurrentPosition = 0;
                                                      }
                                                  };
         }
@@ -156,11 +179,15 @@ namespace ParallelRoadTool.UI.Main
                 items.Add(netItem);
 
             if (_netItemsList == null)
+            {
 
                 // We need to create this here because this panel's size is set by its container and is not know during ctor
                 _netItemsList = UIList.AddUIList<UIPresetListRow>(this, 0, 0,
                                                                   width - 2 * UIConstants.Padding,
                                                                   4 * UIConstants.LargeSize - UIConstants.Padding, UIConstants.LargeSize);
+                _netItemsList.BackgroundSprite = null;
+            }
+
             _netItemsList.Data = items;
             _netItems = items;
 

@@ -33,6 +33,8 @@ namespace ParallelRoadTool.UI.Presets
         {
             private UINetInfoTinyPanel _netInfoRow;
 
+            public override float RowHeight => UIConstants.MediumSize;
+
             public override void Display(object data, int rowIndex)
             {
                 if (_netInfoRow == null)
@@ -49,7 +51,27 @@ namespace ParallelRoadTool.UI.Presets
                 }
 
                 _netInfoRow.Render((NetInfoItem)data);
-                // Deselect(rowIndex);
+                Deselect(rowIndex);
+            }
+
+            /// <summary>
+            /// Sets the row display to the selected state (highlighted).
+            /// </summary>
+            public override void Select()
+            {
+                // Background.spriteName = null; //"ListItemHighlight";
+                Background.opacity = 1f;
+            }
+
+            /// <summary>
+            /// Sets the row display to the deselected state.
+            /// </summary>
+            /// <param name="rowIndex">Row index number (for background banding).</param>
+            public override void Deselect(int rowIndex)
+            {
+                Background.spriteName = "GenericPanel";
+                Background.color = _netInfoRow.color;
+                Background.opacity = 0.5f;
             }
         }
 
@@ -77,7 +99,7 @@ namespace ParallelRoadTool.UI.Presets
             // We need to create this here because this panel's size is set by its container and is not know during ctor
             _netItemsList = UIList.AddUIList<UIPresetListRow>(this, 0, 0,
                                                               width,
-                                                              height, UIConstants.MediumSize + 2 * UIConstants.Padding);
+                                                              height, UIConstants.MediumSize);
 
             // Force disable selection
             _netItemsList.EventSelectionChanged += (_, _) =>
