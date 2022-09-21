@@ -2,6 +2,7 @@
 using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
+using System.Globalization;
 using UnityEngine;
 
 namespace ParallelRoadTool.UI.Shared
@@ -12,6 +13,32 @@ namespace ParallelRoadTool.UI.Shared
     // ReSharper disable once ClassNeverInstantiated.Global
     public class UINetInfoPanel : UIPanel
     {
+        #region Fields
+
+        private NetInfoItem _netInfoItem;
+
+        #endregion
+
+        #region Properties
+
+        public NetInfoItem NetInfoItem
+        {
+            get => _netInfoItem;
+            set
+            {
+                if (_netInfoItem != null && _netInfoItem.BeautifiedName == value.BeautifiedName)
+                    return;
+
+                _netInfoItem = value;
+
+                Thumbnail.atlas = _netInfoItem.Atlas;
+                Thumbnail.spriteName = _netInfoItem.Thumbnail;
+                Label.text = _netInfoItem.BeautifiedName;
+            }
+        }
+
+        #endregion
+
         #region Unity
 
         #region Components
@@ -66,20 +93,20 @@ namespace ParallelRoadTool.UI.Shared
 
         #region Public API
 
-        /// <summary>
-        /// To render a <see cref="NetInfoItem"/> we just to set both atlas and spriteName for <see cref="Thumbnail"/>, as well as the provided network name.
-        /// </summary>
-        /// <param name="netInfo"></param>
-        public void Render(NetInfoItem netInfo)
-        {
-            Log._Debug(@$"[{nameof(UINetInfoPanel)}.{nameof(Render)}] Received a new network ""{netInfo.Name}"".");
+        ///// <summary>
+        ///// To render a <see cref="NetInfoItem"/> we just to set both atlas and spriteName for <see cref="Thumbnail"/>, as well as the provided network name.
+        ///// </summary>
+        ///// <param name="netInfo"></param>
+        //public void Render(NetInfoItem netInfo)
+        //{
+        //    Log._Debug(@$"[{nameof(UINetInfoPanel)}.{nameof(Render)}] Received a new network ""{netInfo.Name}"".");
 
-            Thumbnail.atlas = netInfo.Atlas;
-            Thumbnail.spriteName = netInfo.Thumbnail;
-            Label.text = netInfo.BeautifiedName;
+        //    Thumbnail.atlas = netInfo.Atlas;
+        //    Thumbnail.spriteName = netInfo.Thumbnail;
+        //    Label.text = netInfo.BeautifiedName;
 
-            color = netInfo.Color;
-        }
+        //    color = netInfo.Color;
+        //}
 
         #endregion
 

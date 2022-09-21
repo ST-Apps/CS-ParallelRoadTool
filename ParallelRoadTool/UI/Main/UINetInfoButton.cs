@@ -47,7 +47,7 @@ namespace ParallelRoadTool.UI.Main
 
                 _netSelectionPopup = UIView.GetAView().AddUIComponent(typeof(UINetSelectionPopup)) as UINetSelectionPopup;
                 if (_netSelectionPopup == null) return;
-                _netSelectionPopup.Open(this);
+                _netSelectionPopup.Open(this, _netInfoPanel.NetInfoItem);
                 OnPopupOpened?.Invoke(this, _netSelectionPopup);
             }
         }
@@ -159,7 +159,7 @@ namespace ParallelRoadTool.UI.Main
                 _toggleButton.opacity = 0.25f;
             }
 
-            _netInfoPanel.Render(netInfo);
+            _netInfoPanel.NetInfoItem = netInfo;
         }
 
         #endregion

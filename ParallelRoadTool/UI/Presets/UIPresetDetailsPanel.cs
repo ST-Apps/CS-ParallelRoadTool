@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using AlgernonCommons.UI;
 using ColossalFramework;
 using ColossalFramework.UI;
@@ -50,7 +51,7 @@ namespace ParallelRoadTool.UI.Presets
                     _netInfoRow.isInteractive = false;
                 }
 
-                _netInfoRow.Render((NetInfoItem)data);
+                _netInfoRow.NetInfoItem =  (NetInfoItem)data;
                 Deselect(rowIndex);
             }
 

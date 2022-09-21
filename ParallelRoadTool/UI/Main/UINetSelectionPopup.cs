@@ -12,7 +12,7 @@ namespace ParallelRoadTool.UI.Main
 {
     internal class UINetSelectionPopup : UIPanel
     {
-        private class UIPresetListRow : UIListRow
+        private class UINetItemListRow : UIListRow
         {
             private UINetInfoTinyPanel _netInfoRow;
 
@@ -20,7 +20,6 @@ namespace ParallelRoadTool.UI.Main
 
             public override void Display(object data, int rowIndex)
             {
-                Log._Debug($"RENDERING {data}");
                 if (_netInfoRow == null)
                 {
                     // Init our row
@@ -34,8 +33,8 @@ namespace ParallelRoadTool.UI.Main
                     _netInfoRow.isInteractive = false;
                 }
 
-                var netData = data as NetInfo;
-                _netInfoRow.Render(new NetInfoItem(netData));
+                var netData = data as NetInfoItem;
+                _netInfoRow.NetInfoItem = netData;
 
                 Deselect(rowIndex);
             }
@@ -56,10 +55,12 @@ namespace ParallelRoadTool.UI.Main
             public override void Deselect(int rowIndex)
             {
                 Background.spriteName = "GenericPanel";
-                Background.color = _netInfoRow.color;
-                Background.opacity = 0.5f;
+                Background.color = _netInfoRow.NetInfoItem.Color;
+                Background.opacity = 0.25f;
             }
         }
+
+        private NetInfoItem _ownerItem;
 
         #region Unity
 
@@ -120,7 +121,7 @@ namespace ParallelRoadTool.UI.Main
 
         private void AttachToEvents()
         {
-            _searchTextField.eventTextChanged += (component, value) =>
+            _searchTextField.eventTextChanged += (_, value) =>
                                                  {
                                                      if (string.IsNullOrEmpty(value))
                                                      {
@@ -132,9 +133,9 @@ namespace ParallelRoadTool.UI.Main
 
                                                          foreach (var netObject in _netItems)
                                                          {
-                                                             var netInfo = (NetInfo)netObject;
-                                                             if (netInfo.name.ToLower().Contains(value) ||
-                                                                 netInfo.GenerateBeautifiedNetName().ToLower().Contains(value))
+                                                             var netInfo = (NetInfoItem)netObject;
+                                                             if (netInfo.Name.ToLower().Contains(value) ||
+                                                                 netInfo.BeautifiedName.ToLower().Contains(value))
                                                                  filteredData.Add(netInfo);
                                                          }
 
@@ -148,7 +149,7 @@ namespace ParallelRoadTool.UI.Main
 
         #region Public API
 
-        public void Open(UIComponent owner)
+        public void Open(UIComponent owner, NetInfoItem currentItem = null)
         {
             _owner = owner;
 
@@ -156,12 +157,14 @@ namespace ParallelRoadTool.UI.Main
             absolutePosition = owner.absolutePosition + new Vector3(0, owner.height);
 
             // Set width to match its owner
-            width = owner.width;
+            width = owner.width - 2 * UIConstants.Padding;
             _searchTextField.FitWidth(this, UIConstants.Padding);
 
             // Make it appear above all the other components
             BringToFront();
             _searchTextField.Focus();
+
+            _ownerItem = currentItem;
         }
 
         public void Close()
@@ -176,13 +179,13 @@ namespace ParallelRoadTool.UI.Main
         {
             var items = new FastList<object>();
             foreach (var netItem in networks)
-                items.Add(netItem);
+                items.Add(new NetInfoItem(netItem));
 
             if (_netItemsList == null)
             {
 
                 // We need to create this here because this panel's size is set by its container and is not know during ctor
-                _netItemsList = UIList.AddUIList<UIPresetListRow>(this, 0, 0,
+                _netItemsList = UIList.AddUIList<UINetItemListRow>(this, 0, 0,
                                                                   width - 2 * UIConstants.Padding,
                                                                   4 * UIConstants.LargeSize - UIConstants.Padding, UIConstants.LargeSize);
                 _netItemsList.BackgroundSprite = null;
@@ -192,7 +195,10 @@ namespace ParallelRoadTool.UI.Main
             _netItems = items;
 
             // Pre-select
-            // TODO
+            if (_ownerItem != null)
+            {
+                _netItemsList.FindItem<NetInfoItem>(i => i.BeautifiedName == _ownerItem.BeautifiedName);
+            }
         }
 
         #endregion
