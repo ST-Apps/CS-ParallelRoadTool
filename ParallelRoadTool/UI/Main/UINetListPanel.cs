@@ -20,7 +20,7 @@ namespace ParallelRoadTool.UI.Main
 
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged;
-        public event MouseEventHandler ToggleDropdownButtonEventClick;
+        public event ChildComponentEventHandler OnPopupOpened;
 
         #endregion
 
@@ -38,10 +38,9 @@ namespace ParallelRoadTool.UI.Main
             NetTypeEventChanged?.Invoke(null, value);
         }
 
-        private void NetSetupPanelOnToggleDropdownButtonEventClick(UIComponent component, UIMouseEventParameter eventparam)
+        private void NetSetupPanelOnOnPopupOpened(UIComponent container, UIComponent child)
         {
-            // We don't use this because we want to route the exact caller
-            ToggleDropdownButtonEventClick?.Invoke(component, null);
+            OnPopupOpened?.Invoke(container, child);
         }
 
         #endregion
@@ -82,7 +81,7 @@ namespace ParallelRoadTool.UI.Main
             netSetupPanel.FitWidth(this, 0);
             netSetupPanel.DeleteNetworkButtonEventClicked += NetSetupPanel_DeleteNetworkButtonEventClicked;
             netSetupPanel.NetTypeEventChanged += NetSetupPanel_NetTypeEventChanged;
-            netSetupPanel.ToggleDropdownButtonEventClick += NetSetupPanelOnToggleDropdownButtonEventClick;
+            netSetupPanel.OnPopupOpened += NetSetupPanelOnOnPopupOpened;
 
             // Finally render the panel
             netSetupPanel.Render(netInfo);

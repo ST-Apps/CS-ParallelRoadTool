@@ -29,15 +29,15 @@ namespace ParallelRoadTool.Managers
         /// </summary>
         private static UIController UIController => Singleton<UIController>.instance;
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
         ///     <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
         ///     A <see cref="NetInfo" /> can be any kind of network that the user can build.
         /// </summary>
-        private List<NetInfo> _availableRoadTypes;
-
-        #endregion
-
-        #region Properties
+        public List<NetInfo> AvailableRoadTypes { get; private set; }
 
         /// <summary>
         ///     <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
@@ -286,7 +286,7 @@ namespace ParallelRoadTool.Managers
                 DetachFromEvents();
 
                 // Reset data structures
-                _availableRoadTypes.Clear();
+                AvailableRoadTypes.Clear();
                 SelectedNetworkTypes.Clear();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
@@ -388,7 +388,7 @@ namespace ParallelRoadTool.Managers
         {
             // Available networks loading
             var count = PrefabCollection<NetInfo>.PrefabCount();
-            _availableRoadTypes = new List<NetInfo>();
+            AvailableRoadTypes = new List<NetInfo>();
 
             // HACK - [ISSUE-64] before being able to sort we need to generate names, so we use a SortedDictionary for the first pass
             var sortedNetworks = new SortedDictionary<string, NetInfo>();
@@ -416,9 +416,9 @@ namespace ParallelRoadTool.Managers
                 Log._Debug(@$"[{nameof(ParallelRoadToolManager)}.{nameof(LoadNetworks)}] Loaded ""{networkName}"" with atlas ""{atlasName}"" and thumbnail ""{prefab.m_Thumbnail}"" [{prefab.GetService():g}].");
             }
 
-            _availableRoadTypes.AddRange(sortedNetworks.Values.ToList());
+            AvailableRoadTypes.AddRange(sortedNetworks.Values.ToList());
 
-            Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadNetworks)}] Loaded {_availableRoadTypes.Count} networks.");
+            Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadNetworks)}] Loaded {AvailableRoadTypes.Count} networks.");
         }
 
         #endregion
@@ -447,7 +447,7 @@ namespace ParallelRoadTool.Managers
         /// <returns></returns>
         public NetInfo FromName(string networkName)
         {
-            return _availableRoadTypes.FirstOrDefault(n => n.name == networkName);
+            return AvailableRoadTypes.FirstOrDefault(n => n.name == networkName);
         }
 
         public void SavePreset(string fileName)

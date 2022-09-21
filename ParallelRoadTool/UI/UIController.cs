@@ -141,7 +141,14 @@ namespace ParallelRoadTool.UI
                                   string.Format(Translations.Translate("LABEL_LOAD_PRESET_FAILED_MESSAGE"), fileName, e),
                                   true);
             }
-}
+        }
+
+        private void MainWindowOnOnPopupOpened(UIComponent container, UIComponent child)
+        {
+            // Load data into the provided child popup
+            var popup = child as UINetSelectionPopup;
+            popup.LoadNetworks(Singleton<ParallelRoadToolManager>.instance.AvailableRoadTypes);
+        }
 
         #endregion
 
@@ -257,6 +264,7 @@ namespace ParallelRoadTool.UI
             _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
             _mainWindow.SavePresetButtonEventClicked += MainWindowOnSavePresetButtonEventClicked;
             _mainWindow.LoadPresetButtonEventClicked += MainWindowOnLoadPresetButtonEventClicked;
+            _mainWindow.OnPopupOpened += MainWindowOnOnPopupOpened;
         }
 
         private void DetachFromEvents()
@@ -265,6 +273,7 @@ namespace ParallelRoadTool.UI
             _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
             _mainWindow.SavePresetButtonEventClicked -= MainWindowOnSavePresetButtonEventClicked;
             _mainWindow.LoadPresetButtonEventClicked -= MainWindowOnLoadPresetButtonEventClicked;
+            _mainWindow.OnPopupOpened -= MainWindowOnOnPopupOpened;
         }
 
         #endregion

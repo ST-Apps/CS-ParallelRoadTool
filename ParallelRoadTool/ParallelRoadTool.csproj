@@ -84,6 +84,7 @@
     <Compile Include="Settings\OffsetOptionsKeymapping.cs" />
     <Compile Include="Settings\ToggleButtonOptionsKeymapping.cs" />
     <Compile Include="Settings\ModSettings.cs" />
+    <Compile Include="UI\Main\UINetSelectionPopup.cs" />
     <Compile Include="UI\Presets\UIFileListRow.cs" />
     <Compile Include="UI\Presets\UILoadPresetWindow.cs" />
     <Compile Include="UI\Presets\UIPresetDetailsPanel.cs" />

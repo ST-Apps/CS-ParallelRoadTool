@@ -68,15 +68,10 @@ namespace ParallelRoadTool.UI.Main
         /// </summary>
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged;
 
-        /// <summary>
-        /// Event triggered when the main button is pressed.
-        /// This is meant as a way to open the global popup for network selection.
-        /// The event is bubbled up as it is to preserve its caller.
-        /// </summary>
-        public event MouseEventHandler ToggleDropdownButtonEventClick
+        public event ChildComponentEventHandler OnPopupOpened
         {
-            add => _netInfoPanel.DropdownToggleButtonEventClick += value;
-            remove => _netInfoPanel.DropdownToggleButtonEventClick -= value;
+            add => _netInfoPanel.OnPopupOpened += value;
+            remove => _netInfoPanel.OnPopupOpened -= value;
         }
 
         #endregion

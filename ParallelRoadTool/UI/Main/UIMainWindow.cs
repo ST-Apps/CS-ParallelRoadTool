@@ -76,12 +76,6 @@ namespace ParallelRoadTool.UI.Main
             remove => _toggleSnappingButton.eventCheckChanged -= value;
         }
 
-        public event MouseEventHandler ToggleDropdownButtonEventClick
-        {
-            add => _networkListPanel.ToggleDropdownButtonEventClick += value;
-            remove => _networkListPanel.ToggleDropdownButtonEventClick -= value;
-        }
-
         public event MouseEventHandler SavePresetButtonEventClicked
         {
             add => _savePresetButton.eventClicked += value;
@@ -92,6 +86,12 @@ namespace ParallelRoadTool.UI.Main
         {
             add => _loadPresetButton.eventClicked += value;
             remove => _loadPresetButton.eventClicked -= value;
+        }
+
+        public event ChildComponentEventHandler OnPopupOpened
+        {
+            add => _networkListPanel.OnPopupOpened += value;
+            remove => _networkListPanel.OnPopupOpened -= value;
         }
 
         #endregion
