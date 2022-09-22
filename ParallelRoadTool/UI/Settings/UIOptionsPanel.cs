@@ -28,15 +28,15 @@ namespace ParallelRoadTool.UI.Settings
 
             // Main/Warning
 #if DEBUG
-            warningText = ((UIPanel)topGroup.self).AddUIComponent<UILabel>();
-            warningText.text = Translations.Translate("BETA_WARNING_TEXT");
-            warningText.textColor = Color.magenta;
-            warningText.textAlignment = UIHorizontalAlignment.Center;
-            warningText.verticalAlignment = UIVerticalAlignment.Middle;
+            _warningText = ((UIPanel)topGroup.self).AddUIComponent<UILabel>();
+            _warningText.text = Translations.Translate("BETA_WARNING_TEXT");
+            _warningText.textColor = Color.magenta;
+            _warningText.textAlignment = UIHorizontalAlignment.Center;
+            _warningText.verticalAlignment = UIVerticalAlignment.Middle;
 #endif
 
             // Main/Language
-            languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"), Translations.LanguageList,
+            _languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"), Translations.LanguageList,
                                                                 Translations.Index, index =>
                                                                                     {
                                                                                         Translations.Index = index;
@@ -53,9 +53,9 @@ namespace ParallelRoadTool.UI.Settings
 
             // Main/Buttons
             var buttonsGroupHelper = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_BUTTONS_NAME"));
-            buttonsGroup = (UIPanel)buttonsGroupHelper.self;
-            buttonsGroup.autoLayoutDirection = LayoutDirection.Horizontal;
-            buttonsGroup.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+            _buttonsGroup = (UIPanel)buttonsGroupHelper.self;
+            _buttonsGroup.autoLayoutDirection = LayoutDirection.Horizontal;
+            _buttonsGroup.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
 
             buttonsGroupHelper.AddButton(Translations.Translate("BUTTON_RESET_TOOL_WINDOW_POSITION_LABEL"), () =>
                                          {
@@ -78,10 +78,10 @@ namespace ParallelRoadTool.UI.Settings
             // Try to fit everything to our parent
             this.FitWidth(parent, UIConstants.Padding);
 #if DEBUG
-            warningText.FitWidth(this, 2 * UIConstants.Padding);
+            _warningText.FitWidth(this, 2 * UIConstants.Padding);
 #endif
-            languageDropdown.FitWidth(this, UIConstants.Padding);
-            buttonsGroup.FitWidth(this, UIConstants.Padding);
+            _languageDropdown.FitWidth(this, UIConstants.Padding);
+            _buttonsGroup.FitWidth(this, UIConstants.Padding);
         }
 
         #region Unity
@@ -89,11 +89,11 @@ namespace ParallelRoadTool.UI.Settings
         #region Components
 
 #if DEBUG
-        private readonly UILabel warningText;
+        private readonly UILabel _warningText;
 #endif
 
-        private readonly UIDropDown languageDropdown;
-        private readonly UIPanel buttonsGroup;
+        private readonly UIDropDown _languageDropdown;
+        private readonly UIPanel _buttonsGroup;
 
         #endregion
 
