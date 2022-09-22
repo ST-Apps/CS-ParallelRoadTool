@@ -24,10 +24,11 @@ namespace ParallelRoadTool.UI.Settings
 
             // Main group used just as header
             var topGroup = (UIHelper)helper.AddGroup(Mod.Instance.Name);
+            (topGroup.self as UIPanel).padding.left = 0;
 
             // Main/Warning
 #if DEBUG
-            var warningText = ((UIPanel)topGroup.self).AddUIComponent<UILabel>();
+            warningText = ((UIPanel)topGroup.self).AddUIComponent<UILabel>();
             warningText.text = Translations.Translate("BETA_WARNING_TEXT");
             warningText.textColor = Color.magenta;
             warningText.textAlignment = UIHorizontalAlignment.Center;
@@ -35,12 +36,12 @@ namespace ParallelRoadTool.UI.Settings
 #endif
 
             // Main/Language
-            var languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"), Translations.LanguageList,
-                                                                    Translations.Index, index =>
-                                                                                        {
-                                                                                            Translations.Index = index;
-                                                                                            OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
-                                                                                        });
+            languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"), Translations.LanguageList,
+                                                                Translations.Index, index =>
+                                                                                    {
+                                                                                        Translations.Index = index;
+                                                                                        OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
+                                                                                    });
 
             // Main/Keybindings
             var keyBindingsGroup = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_KEYBINDINGS_NAME"));
@@ -51,31 +52,55 @@ namespace ParallelRoadTool.UI.Settings
             ((UIPanel)keyBindingsGroup.self).gameObject.AddComponent<DecreaseVerticalOffsetOptionsKeymapping>();
 
             // Main/Buttons
-            var buttonsGroup = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_BUTTONS_NAME"));
-            var buttonsGroupAsPanel = (UIPanel)buttonsGroup.self;
-            buttonsGroupAsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            buttonsGroupAsPanel.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+            var buttonsGroupHelper = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_BUTTONS_NAME"));
+            buttonsGroup = (UIPanel)buttonsGroupHelper.self;
+            buttonsGroup.autoLayoutDirection = LayoutDirection.Horizontal;
+            buttonsGroup.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
 
-            buttonsGroup.AddButton(Translations.Translate("BUTTON_RESET_TOOL_WINDOW_POSITION_LABEL"), () =>
-                                   {
-                                       if (!Singleton<UIController>.exists) return;
-                                       Singleton<UIController>.instance
-                                                              .ResetToolWindowPosition();
-                                   });
-            buttonsGroup.AddButton(Translations.Translate("BUTTON_RESET_TOOL_BUTTON_POSITION_LABEL"),
-                                   () =>
-                                   {
-                                       if (!Singleton<UIController>.exists) return;
-                                       Singleton<UIController>.instance.ResetToolButtonPosition();
-                                   });
+            buttonsGroupHelper.AddButton(Translations.Translate("BUTTON_RESET_TOOL_WINDOW_POSITION_LABEL"), () =>
+                                         {
+                                             if (!Singleton<UIController>.exists) return;
+                                             Singleton<UIController>.instance
+                                                                    .ResetToolWindowPosition();
+                                         });
+            buttonsGroupHelper.AddButton(Translations.Translate("BUTTON_RESET_TOOL_BUTTON_POSITION_LABEL"),
+                                         () =>
+                                         {
+                                             if (!Singleton<UIController>.exists) return;
+                                             Singleton<UIController>.instance.ResetToolButtonPosition();
+                                         });
+        }
 
-            // Finally try to fit everything to our parent
+        public override void Start()
+        {
+            base.Start();
+
+            // Try to fit everything to our parent
             this.FitWidth(parent, UIConstants.Padding);
 #if DEBUG
-            warningText.FitWidth(this, UIConstants.Padding);
+            warningText.FitWidth(this, 2 * UIConstants.Padding);
 #endif
             languageDropdown.FitWidth(this, UIConstants.Padding);
-            buttonsGroupAsPanel.FitWidth(this, UIConstants.Padding);
+            buttonsGroup.FitWidth(this, UIConstants.Padding);
         }
+
+        #region Unity
+
+        #region Components
+
+#if DEBUG
+        private readonly UILabel warningText;
+#endif
+
+        private readonly UIDropDown languageDropdown;
+        private readonly UIPanel buttonsGroup;
+
+        #endregion
+
+        #region Lifecycle
+
+        #endregion
+
+        #endregion
     }
 }
