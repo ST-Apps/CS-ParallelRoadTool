@@ -72,11 +72,6 @@ namespace ParallelRoadTool.UI.Main
 
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnPopupSelectionChanged;
 
-        //{
-        //    add => _netSelectionPopup.OnPopupSelectionChanged += value;
-        //    remove => _netSelectionPopup.OnPopupSelectionChanged -= value;
-        //}
-
         #endregion
 
         #region Unity
@@ -113,15 +108,15 @@ namespace ParallelRoadTool.UI.Main
             _toggleButton.focusedBgSprite = "OptionsDropboxHovered";
             _toggleButton.pressedBgSprite = "OptionsDropboxHovered";
             _toggleButton.opacity = 0.25f;
-
-            // Manually fix some sizing and positioning to have the button overlap the net info panel
-            _toggleButton.FitWidth(_netInfoPanel, UIConstants.Padding);
-            _netInfoPanel.relativePosition = Vector3.zero;
         }
 
         public override void Start()
         {
             base.Start();
+
+            // Manually fix some sizing and positioning to have the button overlap the net info panel
+            _toggleButton.FitWidth(_netInfoPanel, UIConstants.Padding);
+            _netInfoPanel.relativePosition = Vector3.zero;
 
             AttachToEvents();
         }

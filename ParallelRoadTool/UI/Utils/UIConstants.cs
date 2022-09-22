@@ -35,6 +35,11 @@ namespace ParallelRoadTool.UI.Utils
         internal const int LargeSize = 48;
 
         /// <summary>
+        /// Size for very large items (e.g. textfields).
+        /// </summary>
+        internal const int HugeSize = 64;
+
+        /// <summary>
         /// Fixed size for a tiny <see cref="NetInfo"/> thumbnail
         /// </summary>
         internal static readonly Vector2 ThumbnailTinySize = new(TinySize, TinySize);
@@ -47,7 +52,7 @@ namespace ParallelRoadTool.UI.Utils
         /// <summary>
         /// Fixed width for a generic <see cref="UINetInfoPanel"/>
         /// </summary>
-        internal const int NetInfoPanelLargeWidth = 400;
+        internal const int NetInfoPanelLargeWidth = 380;
 
         /// <summary>
         /// Fixed height for a generic <see cref="UINetInfoPanel"/>

@@ -170,7 +170,7 @@ namespace ParallelRoadTool.UI.Main
             horizontalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Horizontal/Text
-            _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.LargeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
+            _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
             _horizontalOffsetField.numericalOnly =
                 _horizontalOffsetField.allowFloats =
                 _horizontalOffsetField.allowNegative =
@@ -190,7 +190,7 @@ namespace ParallelRoadTool.UI.Main
             verticalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Vertical/Text
-            _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.LargeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
+            _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
             _verticalOffsetField.maxLength = 3;
             _verticalOffsetField.numericalOnly =
                 _verticalOffsetField.allowFloats =
