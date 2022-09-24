@@ -1,70 +1,67 @@
 ﻿using System.Collections.Generic;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
-using CSUtil.Commons;
-using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
+// ReSharper disable ClassNeverInstantiated.Local
+
 namespace ParallelRoadTool.UI.Main
 {
+    /// <summary>
+    ///     A popup showing a list of <see cref="NetInfoItem" /> to be selected.
+    /// </summary>
     internal class UINetSelectionPopup : UIPanel
     {
-        private class UINetItemListRow : UIListRow
-        {
-            private UINetInfoTinyPanel _netInfoRow;
+        #region Fields
 
-            public override float RowHeight => UIConstants.LargeSize;
-
-            public override void Display(object data, int rowIndex)
-            {
-                if (_netInfoRow == null)
-                {
-                    // Init our row
-                    width = parent.width;
-                    height = RowHeight;
-                    isInteractive = false;
-
-                    // Set the item
-                    _netInfoRow = AddUIComponent<UINetInfoTinyPanel>();
-                    _netInfoRow.relativePosition = Vector2.zero;
-                    _netInfoRow.isInteractive = false;
-                }
-
-                var netData = data as NetInfoItem;
-                _netInfoRow.NetInfoItem = netData;
-
-                Deselect(rowIndex);
-            }
-
-            /// <summary>
-            /// Sets the row display to the selected state (highlighted).
-            /// </summary>
-            public override void Select()
-            {
-                // Background.spriteName = null; //"ListItemHighlight";
-                Background.opacity = 1f;
-            }
-
-            /// <summary>
-            /// Sets the row display to the deselected state.
-            /// </summary>
-            /// <param name="rowIndex">Row index number (for background banding).</param>
-            public override void Deselect(int rowIndex)
-            {
-                Background.spriteName = "GenericPanel";
-                Background.color = _netInfoRow.NetInfoItem.Color;
-                Background.opacity = 0.25f;
-            }
-        }
-
+        /// <summary>
+        ///     This is the <see cref="NetInfoItem" /> that was selected in popup's owner.
+        ///     Used to pre-select an item in the list.
+        /// </summary>
         private NetInfoItem _ownerItem;
+
+        #endregion
 
         #region Events
 
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> OnPopupSelectionChanged;
+
+        #endregion
+
+        #region Callbacks
+
+        /// <summary>
+        ///     Filters the current list using the provided query.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="searchQuery"></param>
+        private void SearchTextFieldOnEventTextChanged(UIComponent component, string searchQuery)
+        {
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                // Empty query means we need to show everything we have
+                _netItemsList.Data = _netItems;
+            }
+            else
+            {
+                var filteredData = new FastList<object>();
+
+                // We iterate over the available items and populate a list with all the matching items
+                foreach (var netObject in _netItems)
+                {
+                    var netInfo = (NetInfoItem)netObject;
+                    if (netInfo.Name.ToLower().Contains(searchQuery) || netInfo.BeautifiedName.ToLower().Contains(searchQuery))
+                        filteredData.Add(netInfo);
+                }
+
+                // We set filtered data as current data and reset our scroll position.
+                _netItemsList.Data = filteredData;
+                _netItemsList.CurrentPosition = 0;
+            }
+        }
 
         #endregion
 
@@ -99,21 +96,36 @@ namespace ParallelRoadTool.UI.Main
             AttachToEvents();
         }
 
+        /// <summary>
+        ///     Forces closing the popup if user click anywhere outside.
+        /// </summary>
         public override void LateUpdate()
         {
             var ray = GetCamera().ScreenPointToRay(Input.mousePosition);
 
             if (!Input.GetMouseButtonDown(0) || Raycast(ray) || _owner.Raycast(ray) || _netItemsList.Raycast(ray))
                 return;
+
             Close();
         }
 
+        /// <summary>
+        ///     Forces closing the popup if user presses the <see cref="KeyCode.Escape" /> key.
+        /// </summary>
+        /// <param name="p"></param>
         protected override void OnKeyDown(UIKeyEventParameter p)
         {
             if (!Input.GetKey(KeyCode.Escape)) return;
 
             p.Use();
             Close();
+        }
+
+        public override void OnDestroy()
+        {
+            DetachFromEvents();
+
+            base.OnDestroy();
         }
 
         #endregion
@@ -126,28 +138,12 @@ namespace ParallelRoadTool.UI.Main
 
         private void AttachToEvents()
         {
-            _searchTextField.eventTextChanged += (_, value) =>
-                                                 {
-                                                     if (string.IsNullOrEmpty(value))
-                                                     {
-                                                         _netItemsList.Data = _netItems;
-                                                     }
-                                                     else
-                                                     {
-                                                         var filteredData = new FastList<object>();
+            _searchTextField.eventTextChanged += SearchTextFieldOnEventTextChanged;
+        }
 
-                                                         foreach (var netObject in _netItems)
-                                                         {
-                                                             var netInfo = (NetInfoItem)netObject;
-                                                             if (netInfo.Name.ToLower().Contains(value) ||
-                                                                 netInfo.BeautifiedName.ToLower().Contains(value))
-                                                                 filteredData.Add(netInfo);
-                                                         }
-
-                                                         _netItemsList.Data = filteredData;
-                                                         _netItemsList.CurrentPosition = 0;
-                                                     }
-                                                 };
+        private void DetachFromEvents()
+        {
+            _searchTextField.eventTextChanged -= SearchTextFieldOnEventTextChanged;
         }
 
         private void NetItemsListOnEventSelectionChanged(UIComponent component, object value)
@@ -160,6 +156,11 @@ namespace ParallelRoadTool.UI.Main
 
         #region Public API
 
+        /// <summary>
+        ///     Opens the popup and registers both the caller and its <see cref="NetInfoItem" />.
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="currentItem"></param>
         public void Open(UIComponent owner, NetInfoItem currentItem = null)
         {
             _owner = owner;
@@ -178,6 +179,9 @@ namespace ParallelRoadTool.UI.Main
             _ownerItem = currentItem;
         }
 
+        /// <summary>
+        ///     Closed the popup and destroys all the resources
+        /// </summary>
         public void Close()
         {
             isVisible = false;
@@ -186,6 +190,10 @@ namespace ParallelRoadTool.UI.Main
             DestroyImmediate(this);
         }
 
+        /// <summary>
+        ///     Loads the provided collection of <see cref="NetInfo" /> into our <see cref="UIList" />.
+        /// </summary>
+        /// <param name="networks"></param>
         public void LoadNetworks(IEnumerable<NetInfo> networks)
         {
             var items = new FastList<object>();
@@ -194,12 +202,12 @@ namespace ParallelRoadTool.UI.Main
 
             if (_netItemsList == null)
             {
-
                 // We need to create this here because this panel's size is set by its container and is not know during ctor
-                _netItemsList = UIList.AddUIList<UINetItemListRow>(this, 0, 0,
-                                                                  width - 2 * UIConstants.Padding,
-                                                                  4 * UIConstants.LargeSize - UIConstants.Padding, UIConstants.LargeSize);
+                _netItemsList = UIList.AddUIList<UINetItemLargeListRow>(this, 0, 0, width - 2 * UIConstants.Padding,
+                                                                        4 * UIConstants.LargeSize - UIConstants.Padding, UIConstants.LargeSize);
                 _netItemsList.BackgroundSprite = null;
+
+                // We also register the selection changed event here
                 _netItemsList.EventSelectionChanged += NetItemsListOnEventSelectionChanged;
             }
 
@@ -207,10 +215,7 @@ namespace ParallelRoadTool.UI.Main
             _netItems = items;
 
             // Pre-select
-            if (_ownerItem != null)
-            {
-                _netItemsList.FindItem<NetInfoItem>(i => i.BeautifiedName == _ownerItem.BeautifiedName);
-            }
+            if (_ownerItem != null) _netItemsList.FindItem<NetInfoItem>(i => i.BeautifiedName == _ownerItem.BeautifiedName);
         }
 
         #endregion

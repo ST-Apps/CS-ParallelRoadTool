@@ -1,26 +1,26 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
-using CSUtil.Commons;
-using ParallelRoadTool.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using AlgernonCommons.Translation;
+using AlgernonCommons.UI;
+using ColossalFramework;
+using ColossalFramework.UI;
+using CSUtil.Commons;
+using ParallelRoadTool.Managers;
+using ParallelRoadTool.Models;
 using ParallelRoadTool.Settings;
 using ParallelRoadTool.UI.Main;
-using UnityEngine;
-using AlgernonCommons.UI;
-using ParallelRoadTool.Managers;
 using ParallelRoadTool.UI.Presets;
+using UnityEngine;
+
+// ReSharper disable once ClassNeverInstantiated.Global
 
 namespace ParallelRoadTool.UI
 {
     /// <summary>
-    /// Main controller for the UI-related components of the mod.
+    ///     Main controller for the UI-related components of the mod.
     /// </summary>
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class UIController : MonoBehaviour
     {
-
         #region Events
 
         public event EventHandler CloseButtonEventClicked;
@@ -146,7 +146,7 @@ namespace ParallelRoadTool.UI
         private void MainWindowOnOnPopupOpened(UIComponent container, UIComponent child)
         {
             // Load data into the provided child popup
-            var popup = child as UINetSelectionPopup;
+            var popup = (UINetSelectionPopup)child;
             popup.LoadNetworks(Singleton<ParallelRoadToolManager>.instance.AvailableRoadTypes);
         }
 
@@ -162,7 +162,7 @@ namespace ParallelRoadTool.UI
         private static UIMainWindow _mainWindow;
 
         /// <summary>
-        /// Main UI button.
+        ///     Main UI button.
         /// </summary>
         private static UIToolToggleButton _mainButton;
 
@@ -171,7 +171,7 @@ namespace ParallelRoadTool.UI
         #region Lifecycle
 
         /// <summary>
-        /// Check for key-bindings and activate their corresponding action.
+        ///     Check for key-bindings and activate their corresponding action.
         /// </summary>
         public void OnGUI()
         {
@@ -189,12 +189,13 @@ namespace ParallelRoadTool.UI
                 Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress = e.type switch
                 {
                     EventType.MouseDown => true,
-                    EventType.MouseUp => false,
-                    _ => Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress
+                    EventType.MouseUp   => false,
+                    _                   => Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress
                 };
 
                 Log._Debug($"[{nameof(UIMainWindow)}.{nameof(OnGUI)}] Setting {nameof(Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress)} to {Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress}");
             }
+
             // Checking key presses
             if (ModSettings.KeyToggleTool.IsPressed(e)) ToggleModStatus();
             if (ModSettings.KeyIncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
@@ -212,7 +213,7 @@ namespace ParallelRoadTool.UI
         #region Internals
 
         /// <summary>
-        /// Toggles the current mod status on <see cref="ParallelRoadToolManager"/>.
+        ///     Toggles the current mod status on <see cref="ParallelRoadToolManager" />.
         /// </summary>
         private static void ToggleModStatus()
         {
@@ -229,12 +230,16 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Builds mod top-level UI components and attaches them to the current view.
-        /// The components are:
-        /// <list type="bullet">
-        /// <item><see cref="UIMainWindow"/></item>
-        /// <item><see cref="UIToolToggleButton"/></item>
-        /// </list>
+        ///     Builds mod top-level UI components and attaches them to the current view.
+        ///     The components are:
+        ///     <list type="bullet">
+        ///         <item>
+        ///             <see cref="UIMainWindow" />
+        ///         </item>
+        ///         <item>
+        ///             <see cref="UIToolToggleButton" />
+        ///         </item>
+        ///     </list>
         /// </summary>
         private void BuildUI()
         {
@@ -281,8 +286,8 @@ namespace ParallelRoadTool.UI
         #region Public API
 
         /// <summary>
-        /// Builds the main UI for the mod.
-        /// This acts as the <see cref="UIComponent.Start"/> method for components.
+        ///     Builds the main UI for the mod.
+        ///     This acts as the <see cref="UIComponent.Start" /> method for components.
         /// </summary>
         public void Initialize()
         {
@@ -302,8 +307,8 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Destroys the current UI.
-        /// This acts as the <see cref="UIComponent.OnDestroy"/> method for components.
+        ///     Destroys the current UI.
+        ///     This acts as the <see cref="UIComponent.OnDestroy" /> method for components.
         /// </summary>
         public void Cleanup()
         {
@@ -328,7 +333,8 @@ namespace ParallelRoadTool.UI
         }
 
         /// <summary>
-        /// Sets components' visibility based on the current flags that we have on <see cref="ParallelRoadToolManager.ModStatuses"/>.
+        ///     Sets components' visibility based on the current flags that we have on
+        ///     <see cref="ParallelRoadToolManager.ModStatuses" />.
         /// </summary>
         /// <param name="modStatuses"></param>
         public void UpdateVisibility(ModStatuses modStatuses)

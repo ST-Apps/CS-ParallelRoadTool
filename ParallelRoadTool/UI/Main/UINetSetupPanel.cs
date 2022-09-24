@@ -1,26 +1,25 @@
 ﻿using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
-using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
+// ReSharper disable once ClassNeverInstantiated.Global
+
 namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
-    /// This panel is meant as a complete way to setup a parallel/stacked network.
-    /// It allows to set the network type, its offsets (both horizontal and vertical) and its direction.
+    ///     This panel is meant as a complete way to setup a parallel/stacked network.
+    ///     It allows to set the network type, its offsets (both horizontal and vertical) and its direction.
     /// </summary>
-    // ReSharper disable once ClassNeverInstantiated.Global
     internal class UINetSetupPanel : UIPanel
     {
-
         #region Fields
 
         /// <summary>
-        /// True means that all the editing tools must be disabled.
+        ///     True means that all the editing tools must be disabled.
         /// </summary>
         private bool _isReadOnly;
 
@@ -29,13 +28,14 @@ namespace ParallelRoadTool.UI.Main
         #region Properties
 
         /// <summary>
-        /// Current index for this item in a list.
-        /// While it's an ugly solution, this is more reliable than using <see cref="Transform.GetSiblingIndex"/> which sometimes returns the wrong index after removing a child.
+        ///     Current index for this item in a list.
+        ///     While it's an ugly solution, this is more reliable than using <see cref="Transform.GetSiblingIndex" /> which
+        ///     sometimes returns the wrong index after removing a child.
         /// </summary>
         public int CurrentIndex { get; set; }
 
         /// <summary>
-        /// True means that all the editing tools must be disabled.
+        ///     True means that all the editing tools must be disabled.
         /// </summary>
         public bool IsReadOnly
         {
@@ -44,6 +44,7 @@ namespace ParallelRoadTool.UI.Main
                 _isReadOnly = value;
                 _netInfoPanel.IsReadOnly = value;
                 color = UIConstants.ReadOnlyColor;
+
                 HideTools();
             }
         }
@@ -53,19 +54,19 @@ namespace ParallelRoadTool.UI.Main
         #region Events
 
         /// <summary>
-        /// Event triggered when the delete button is pressed.
+        ///     Event triggered when the delete button is pressed.
         /// </summary>
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
 
         /// <summary>
-        /// Event triggered when any of the properties are changed.
-        /// This applies to:
-        /// <list type="bullet">
-        /// <item>Selected network</item>
-        /// <item>Horizontal offset</item>
-        /// <item>Vertical offset</item>
-        /// <item>Network direction</item>
-        /// </list>
+        ///     Event triggered when any of the properties are changed.
+        ///     This applies to:
+        ///     <list type="bullet">
+        ///         <item>Selected network</item>
+        ///         <item>Horizontal offset</item>
+        ///         <item>Vertical offset</item>
+        ///         <item>Network direction</item>
+        ///     </list>
         /// </summary>
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged;
 
@@ -82,7 +83,8 @@ namespace ParallelRoadTool.UI.Main
         #region Callbacks
 
         /// <summary>
-        /// Pressing the delete button triggers another event which sends <see cref="CurrentIndex"/> as a reference to the panel that started it.
+        ///     Pressing the delete button triggers another event which sends <see cref="CurrentIndex" /> as a reference to the
+        ///     panel that started it.
         /// </summary>
         /// <param name="component"></param>
         /// <param name="eventParam"></param>
@@ -92,14 +94,16 @@ namespace ParallelRoadTool.UI.Main
         }
 
         /// <summary>
-        /// If any of the properties for a <see cref="NetInfoItem"/> changes we trigger the event sending back all the up to date properties.
+        ///     If any of the properties for a <see cref="NetInfoItem" /> changes we trigger the event sending back all the up to
+        ///     date properties.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="component"></param>
         /// <param name="value"></param>
         private void NetInfo_EventChanged<T>(UIComponent component, T value)
         {
-            var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text), _reverseCheckbox.isChecked);
+            var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text),
+                                                       _reverseCheckbox.isChecked);
             NetTypeEventChanged?.Invoke(null, netTypeArgs);
         }
 
@@ -170,11 +174,12 @@ namespace ParallelRoadTool.UI.Main
             horizontalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Horizontal/Text
-            _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
+            _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize,
+                                                               tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
             _horizontalOffsetField.numericalOnly =
                 _horizontalOffsetField.allowFloats =
-                _horizontalOffsetField.allowNegative =
-                _horizontalOffsetField.submitOnFocusLost = true;
+                    _horizontalOffsetField.allowNegative =
+                        _horizontalOffsetField.submitOnFocusLost = true;
 
             // NetSetup/Offsets/Vertical
             var verticalOffsetPanel = _offsetsPanel.AddUIComponent<UIPanel>();
@@ -190,7 +195,8 @@ namespace ParallelRoadTool.UI.Main
             verticalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Vertical/Text
-            _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize, tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
+            _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize,
+                                                             tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
             _verticalOffsetField.maxLength = 3;
             _verticalOffsetField.numericalOnly =
                 _verticalOffsetField.allowFloats =
@@ -217,15 +223,18 @@ namespace ParallelRoadTool.UI.Main
 
             // NetSetup/Buttons/Delete
             _deleteButton = UIHelpers.CreateUiButton(
-                _buttonsPanel,
-                new Vector2(UIConstants.TinySize, UIConstants.TinySize),
-                string.Empty,
-                Translations.Translate("TOOLTIP_REMOVE_NETWORK_BUTTON"),
-                "Remove"
-            );
+                                                     _buttonsPanel,
+                                                     new Vector2(UIConstants.TinySize, UIConstants.TinySize),
+                                                     string.Empty,
+                                                     Translations.Translate("TOOLTIP_REMOVE_NETWORK_BUTTON"),
+                                                     "Remove"
+                                                    );
 
             // NetSetup/Buttons/Reverse
-            _reverseCheckbox = UICheckBoxes.AddIconToggle(_buttonsPanel, 0, 0, UIHelpers.Atlas.name, "ReversePressed", "Reverse", backgroundSprite: "OptionBase", tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"), height: UIConstants.TinySize, width: UIConstants.TinySize);
+            _reverseCheckbox = UICheckBoxes.AddIconToggle(_buttonsPanel, 0, 0, UIHelpers.Atlas.name, "ReversePressed", "Reverse",
+                                                          backgroundSprite: "OptionBase",
+                                                          tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
+                                                          height: UIConstants.TinySize, width: UIConstants.TinySize);
         }
 
         public override void Start()
@@ -286,7 +295,8 @@ namespace ParallelRoadTool.UI.Main
         }
 
         /// <summary>
-        /// This will hide the main tools containers so that if <see cref="IsReadOnly"/> is true we don't allow any customization.
+        ///     This will hide the main tools containers so that if <see cref="IsReadOnly" /> is true we don't allow any
+        ///     customization.
         /// </summary>
         private void HideTools()
         {
@@ -299,8 +309,10 @@ namespace ParallelRoadTool.UI.Main
         #region Public API
 
         /// <summary>
-        /// To render a <see cref="UINetSetupPanel"/> we just set its parallel/stacked properties and then render the <see cref="UINetInfoPanel"/>.
-        /// If <see cref="IsReadOnly"/> is true we also set our color to <see cref="UIConstants.ReadOnlyColor"/> to match the same default color for a new network.
+        ///     To render a <see cref="UINetSetupPanel" /> we just set its parallel/stacked properties and then render the
+        ///     <see cref="UINetInfoPanel" />.
+        ///     If <see cref="IsReadOnly" /> is true we also set our color to <see cref="UIConstants.ReadOnlyColor" /> to match the
+        ///     same default color for a new network.
         /// </summary>
         /// <param name="netInfo"></param>
         public void Render(NetInfoItem netInfo)

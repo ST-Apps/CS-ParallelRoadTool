@@ -86,6 +86,7 @@
     <Compile Include="UI\Presets\UIPresetDetailsPanel.cs" />
     <Compile Include="UI\Presets\UISavePresetWindow.cs" />
     <Compile Include="UI\Shared\UIModalWindow.cs" />
+    <Compile Include="UI\Shared\UINetItemListRow.cs" />
     <Compile Include="UI\Shared\UIWindow.cs" />
     <Compile Include="UI\Utils\UIConstants.cs" />
     <Compile Include="UI\UIController.cs" />

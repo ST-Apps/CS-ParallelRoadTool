@@ -21,6 +21,11 @@ namespace ParallelRoadTool.UI.Main
     {
         #region Callbacks
 
+        /// <summary>
+        ///     Stores current position in mod's preferences
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         private void UIMainWindow_eventPositionChanged(UIComponent component, Vector2 value)
         {
             UpdateSavedPosition();
@@ -28,18 +33,18 @@ namespace ParallelRoadTool.UI.Main
 
         #endregion
 
-        #region Fields
-
-        #endregion
-
-        #region Properties
-
-        #endregion
-
         #region Settings
 
+        /// <summary>
+        ///     Saved X position for the current components. Defaults at -1000 and it's saved in
+        ///     <see cref="Constants.SettingsFileName" />
+        /// </summary>
         private static readonly SavedInt SavedWindowX = new("windowX", Constants.SettingsFileName, -1000, true);
 
+        /// <summary>
+        ///     Saved Y position for the current components. Defaults at -1000 and it's saved in
+        ///     <see cref="Constants.SettingsFileName" />
+        /// </summary>
         private static readonly SavedInt SavedWindowY = new("windowY", Constants.SettingsFileName, -1000, true);
 
         #endregion
@@ -127,6 +132,7 @@ namespace ParallelRoadTool.UI.Main
             autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
             autoLayoutPadding.top = 0;
 
+            // Build contents for this window
             BuildHeader();
             BuildToolbar();
 
@@ -329,7 +335,7 @@ namespace ParallelRoadTool.UI.Main
         /// <param name="networks"></param>
         public void RefreshNetworks(List<NetInfoItem> networks)
         {
-            // Before refreshing networks we restore autolayout to make the panel react to the new element
+            // Before refreshing networks we restore auto-layout to make the panel react to the new element
             autoLayout = true;
 
             _networkListPanel.RefreshNetworks(networks);
@@ -337,7 +343,7 @@ namespace ParallelRoadTool.UI.Main
             // Enable the save button only if we have at least one network
             _savePresetButton.isEnabled = networks.Any();
 
-            // Now that networks have been refreshed we can disable autolayout again
+            // Now that networks have been refreshed we can disable auto-layout again
             autoLayout = false;
         }
 
@@ -356,7 +362,7 @@ namespace ParallelRoadTool.UI.Main
         /// <param name="netInfo"></param>
         public void AddNetwork(NetInfoItem netInfo)
         {
-            // Before adding a new network we restore autolayout to make the panel react to the new element
+            // Before adding a new network we restore auto-layout to make the panel react to the new element
             autoLayout = true;
 
             _networkListPanel.AddNetwork(netInfo);
@@ -364,7 +370,7 @@ namespace ParallelRoadTool.UI.Main
             // We have at least one network so we can enable the save button
             _savePresetButton.isEnabled = true;
 
-            // Now that the item has been added we can disable autolayout again
+            // Now that the item has been added we can disable auto-layout again
             autoLayout = false;
         }
 

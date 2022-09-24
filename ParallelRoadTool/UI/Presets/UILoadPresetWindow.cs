@@ -1,16 +1,33 @@
-﻿using AlgernonCommons.Translation;
+﻿using System.Collections.Generic;
+using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
+using ParallelRoadTool.Managers;
+using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
-using System.Collections.Generic;
-using ParallelRoadTool.Managers;
 using UnityEngine;
+
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace ParallelRoadTool.UI.Presets
 {
+    /// <summary>
+    ///     This <see cref="UIModalWindow" /> is used to show the load dialog for a specific preset file.
+    ///     The dialog will show a <see cref="UIList" /> with all the saved presets, a <see cref="UIList" /> containing the
+    ///     <see cref="NetInfoItem" /> that we're about to load and a <see cref="UIButton" /> to load the preset.
+    /// </summary>
     public sealed class UILoadPresetWindow : UIModalWindow
     {
+        #region Properties
+
+        public override float PanelHeight => 256;
+
+        public override float PanelWidth => 512;
+
+        protected override string PanelTitle => Translations.Translate("LABEL_LOAD_PRESET_WINDOW_TITLE");
+
+        #endregion
 
         #region Events
 
@@ -30,18 +47,8 @@ namespace ParallelRoadTool.UI.Presets
 
         private void LoadPresetButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
-            LoadButtonEventClicked?.Invoke(this, (string) _fileList.SelectedItem);
+            LoadButtonEventClicked?.Invoke(this, (string)_fileList.SelectedItem);
         }
-
-        #endregion
-
-        #region Properties
-
-        public override float PanelHeight => 256;
-
-        public override float PanelWidth => 512;
-
-        protected override string PanelTitle => Translations.Translate("LABEL_LOAD_PRESET_WINDOW_TITLE");
 
         #endregion
 
@@ -65,6 +72,10 @@ namespace ParallelRoadTool.UI.Presets
 
         #region Public API
 
+        /// <summary>
+        ///     Reloads the list with the newly provided file names.
+        /// </summary>
+        /// <param name="items"></param>
         public void RefreshItems(IEnumerable<string> items)
         {
             var fileList = new FastList<object>();
@@ -111,7 +122,8 @@ namespace ParallelRoadTool.UI.Presets
             _presetDetails.size = detailsContainer.size - new Vector2(0, UIConstants.SmallSize + UIConstants.Padding);
 
             // Main/DetailsContainer/LoadButton
-            _loadPresetButton = UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"), detailsContainer.width);
+            _loadPresetButton = UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"),
+                                                    detailsContainer.width);
             _loadPresetButton.isEnabled = false;
 
             // Events

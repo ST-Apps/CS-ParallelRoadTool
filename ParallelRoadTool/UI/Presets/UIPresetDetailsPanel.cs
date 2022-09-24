@@ -4,10 +4,13 @@ using ColossalFramework.UI;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
-using UnityEngine;
 
 namespace ParallelRoadTool.UI.Presets
 {
+    /// <summary>
+    ///     This <see cref="UIPanel" /> shows a <see cref="UIList" /> with all the <see cref="NetInfoItem" /> contained in a
+    ///     given preset file.
+    /// </summary>
     internal class UIPresetDetailsPanel : UIPanel
     {
         #region Control
@@ -26,60 +29,6 @@ namespace ParallelRoadTool.UI.Presets
         #endregion
 
         #endregion
-
-        private class UIPresetListRow : UIListRow
-        {
-            #region Fields
-
-            private UINetInfoTinyPanel _netInfoRow;
-
-            #endregion
-
-            #region Properties
-
-            public override float RowHeight => UIConstants.MediumSize;
-
-            #endregion
-
-            public override void Display(object data, int rowIndex)
-            {
-                if (_netInfoRow == null)
-                {
-                    // Init our row
-                    width = parent.width;
-                    height = RowHeight;
-                    isInteractive = false;
-
-                    // Set the item
-                    _netInfoRow = AddUIComponent<UINetInfoTinyPanel>();
-                    _netInfoRow.relativePosition = Vector2.zero;
-                    _netInfoRow.isInteractive = false;
-                }
-
-                _netInfoRow.NetInfoItem = (NetInfoItem)data;
-                Deselect(rowIndex);
-            }
-
-            /// <summary>
-            ///     Sets the row display to the selected state (highlighted).
-            /// </summary>
-            public override void Select()
-            {
-                // Background.spriteName = null; //"ListItemHighlight";
-                Background.opacity = 1f;
-            }
-
-            /// <summary>
-            ///     Sets the row display to the deselected state.
-            /// </summary>
-            /// <param name="rowIndex">Row index number (for background banding).</param>
-            public override void Deselect(int rowIndex)
-            {
-                Background.spriteName = "GenericPanel";
-                Background.color = _netInfoRow.color;
-                Background.opacity = 0.5f;
-            }
-        }
 
         #region Unity
 
@@ -103,9 +52,7 @@ namespace ParallelRoadTool.UI.Presets
             base.Start();
 
             // We need to create this here because this panel's size is set by its container and is not know during ctor
-            _netItemsList = UIList.AddUIList<UIPresetListRow>(this, 0, 0,
-                                                              width,
-                                                              height, UIConstants.MediumSize);
+            _netItemsList = UIList.AddUIList<UINetItemMediumListRow>(this, 0, 0, width, height, UIConstants.MediumSize);
 
             // Force disable selection
             _netItemsList.EventSelectionChanged += (_, _) => { _netItemsList.SelectedIndex = -1; };

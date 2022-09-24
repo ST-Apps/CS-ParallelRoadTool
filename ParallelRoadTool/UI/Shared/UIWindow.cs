@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace ParallelRoadTool.UI.Shared
 {
+    /// <summary>
+    ///     Base class for a generic closable and draggable window.
+    /// </summary>
     public abstract class UIWindow : StandalonePanel
     {
         #region Unity
@@ -17,7 +20,7 @@ namespace ParallelRoadTool.UI.Shared
 
         #region Lifecycle
 
-        public UIWindow(string iconAtlasName)
+        protected UIWindow(string iconAtlasName)
         {
             var spriteAtlas = UITextures.LoadSingleSpriteAtlas(iconAtlasName);
             SetIcon(spriteAtlas, "normal");

@@ -6,9 +6,13 @@ using ParallelRoadTool.Settings;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
+// ReSharper disable once ClassNeverInstantiated.Global
+
 namespace ParallelRoadTool.UI.Settings
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
+    /// <summary>
+    ///     Container for all the user settings related to this mod.
+    /// </summary>
     public class UIOptionsPanel : UIPanel
     {
         public UIOptionsPanel()
@@ -24,7 +28,7 @@ namespace ParallelRoadTool.UI.Settings
 
             // Main group used just as header
             var topGroup = (UIHelper)helper.AddGroup(Mod.Instance.Name);
-            (topGroup.self as UIPanel).padding.left = 0;
+            ((UIPanel)topGroup.self).padding.left = 0;
 
             // Main/Warning
 #if DEBUG
@@ -37,14 +41,14 @@ namespace ParallelRoadTool.UI.Settings
 
             // Main/Language
             _languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"), Translations.LanguageList,
-                                                                Translations.Index, index =>
-                                                                                    {
-                                                                                        Translations.Index = index;
-                                                                                        OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
-                                                                                    });
+                                                                 Translations.Index, index =>
+                                                                                     {
+                                                                                         Translations.Index = index;
+                                                                                         OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
+                                                                                     });
 
             // Main/Keybindings
-            var keyBindingsGroup = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_KEYBINDINGS_NAME"));
+            var keyBindingsGroup = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_KEY_BINDINGS_NAME"));
             ((UIPanel)keyBindingsGroup.self).gameObject.AddComponent<ToggleButtonOptionsKeymapping>();
             ((UIPanel)keyBindingsGroup.self).gameObject.AddComponent<IncreaseHorizontalOffsetOptionsKeymapping>();
             ((UIPanel)keyBindingsGroup.self).gameObject.AddComponent<DecreaseHorizontalOffsetOptionsKeymapping>();

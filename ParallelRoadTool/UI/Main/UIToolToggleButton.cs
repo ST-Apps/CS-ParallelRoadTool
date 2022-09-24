@@ -8,27 +8,18 @@ using UnityEngine;
 namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
-    /// This is the main toggle button for the mod.
-    /// Its default position is just besides the upgrade road tool.
-    /// It's also draggable using the right mouse button.
+    ///     This is the main toggle button for the mod.
+    ///     Its default position is just besides the upgrade road tool.
+    ///     It's also draggable using the right mouse button.
     /// </summary>
     public class UIToolToggleButton : UICheckBox
     {
-
         #region Fields
 
         /// <summary>
-        /// Base name for all the sprites showing the PRT icon.
+        ///     Base name for all the sprites showing the PRT icon.
         /// </summary>
         private const string SpriteName = "Parallel";
-
-        #endregion
-
-        #region Settings
-
-        private static readonly SavedInt SavedToggleX = new("toggleX", Constants.SettingsFileName, -1000, true);
-
-        private static readonly SavedInt SavedToggleY = new("toggleY", Constants.SettingsFileName, -1000, true);
 
         #endregion
 
@@ -38,6 +29,14 @@ namespace ParallelRoadTool.UI.Main
         {
             UpdateSavedPosition();
         }
+
+        #endregion
+
+        #region Settings
+
+        private static readonly SavedInt SavedToggleX = new("toggleX", Constants.SettingsFileName, -1000, true);
+
+        private static readonly SavedInt SavedToggleY = new("toggleY", Constants.SettingsFileName, -1000, true);
 
         #endregion
 
@@ -77,18 +76,18 @@ namespace ParallelRoadTool.UI.Main
 
             isChecked = false;
             eventCheckChanged += (_, s) =>
-            {
-                if (s)
-                {
-                    button.normalBgSprite = "OptionBaseFocused";
-                    button.normalFgSprite = SpriteName + "Focused";
-                }
-                else
-                {
-                    button.normalBgSprite = "OptionBase";
-                    button.normalFgSprite = SpriteName;
-                }
-            };
+                                 {
+                                     if (s)
+                                     {
+                                         button.normalBgSprite = "OptionBaseFocused";
+                                         button.normalFgSprite = SpriteName + "Focused";
+                                     }
+                                     else
+                                     {
+                                         button.normalBgSprite = "OptionBase";
+                                         button.normalFgSprite = SpriteName;
+                                     }
+                                 };
 
             // HACK - [ISSUE-26] Tool's main button must be draggable to prevent overlapping other mods buttons.
             _buttonDragHandle = AddUIComponent<UIRightDragHandle>();
@@ -146,7 +145,8 @@ namespace ParallelRoadTool.UI.Main
         #region Public APi
 
         /// <summary>
-        /// Reset position by setting it as the latest button in tool mode <see cref="UITabstrip"/>, right after the upgrade tool.
+        ///     Reset position by setting it as the latest button in tool mode <see cref="UITabstrip" />, right after the upgrade
+        ///     tool.
         /// </summary>
         public void ResetPosition()
         {

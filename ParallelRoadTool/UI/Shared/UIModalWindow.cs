@@ -1,13 +1,22 @@
-﻿using AlgernonCommons.UI;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ColossalFramework.UI;
-using ParallelRoadTool.UI.Utils;
-using UnityEngine;
 
 namespace ParallelRoadTool.UI.Shared
 {
+    /// <summary>
+    ///     Base class for a specific modal window, containing the modal animation and the basic logic to push/pop a modal
+    ///     window.
+    /// </summary>
     public abstract class UIModalWindow : UIWindow
     {
+        #region Properties
+
+        public override float PanelWidth => 450;
+
+        public override float PanelHeight => 180;
+
+        #endregion
+
         #region Unity
 
         #region Lifecycle
@@ -42,14 +51,6 @@ namespace ParallelRoadTool.UI.Shared
         }
 
         #endregion
-
-        #endregion
-
-        #region Properties
-
-        public override float PanelWidth => 450;
-
-        public override float PanelHeight => 180;
 
         #endregion
     }

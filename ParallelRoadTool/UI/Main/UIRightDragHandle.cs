@@ -1,33 +1,31 @@
 ﻿using ColossalFramework.UI;
 
+// ReSharper disable once ClassNeverInstantiated.Global
+
 namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
     ///     Utility class that allows right-click to drag, disabling left-click one.
     /// </summary>
-
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class UIRightDragHandle : UIDragHandle
     {
-        public UIRightDragHandle()
+        #region Events
+
+        public event DragEventHandler EventDragStart
         {
-            eventDragStart += OnEventDragStart;
-            eventDragEnd += OnEventDragEnd;
+            add => eventDragStart += value;
+            remove => eventDragStart -= value;
         }
 
-        // Original events are not working outside of this class, so we need to redefine them
-        public event DragEventHandler EventDragStart;
-        public event DragEventHandler EventDragEnd;
-
-        private void OnEventDragEnd(UIComponent component, UIDragEventParameter eventParam)
+        public event DragEventHandler EventDragEnd
         {
-            EventDragEnd?.Invoke(component, eventParam);
+            add => eventDragEnd += value;
+            remove => eventDragEnd -= value;
         }
 
-        private void OnEventDragStart(UIComponent component, UIDragEventParameter eventParam)
-        {
-            EventDragStart?.Invoke(component, eventParam);
-        }
+        #endregion
+
+        #region Callbacks
 
         protected override void OnMouseDown(UIMouseEventParameter p)
         {
@@ -48,5 +46,7 @@ namespace ParallelRoadTool.UI.Main
 
             base.OnMouseMove(p);
         }
+
+        #endregion
     }
 }

@@ -20,7 +20,7 @@
 "BETA_WARNING_TEXT","!!! WARNING !!!
 You're using a BETA software which can contain some bugs.
 Unless you want to test the new features, please move to the stable version on Workshop."
-"GROUP_KEYBINDINGS_NAME","Keybindings"
+"GROUP_KEY_BINDINGS_NAME","Keybindings"
 "GROUP_BUTTONS_NAME","Need help?"
 "SELECT_KEYMAPPING_TOGGLE_BUTTON_LABEL","Open/close mod's window"
 "SELECT_KEYMAPPING_INCREASE_HORIZONTAL_OFFSET_LABEL","Increase horizontal offset"

@@ -8,8 +8,15 @@ using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace ParallelRoadTool.UI.Presets
 {
+    /// <summary>
+    ///     This <see cref="UIModalWindow" /> is used to show the save dialog for the current network configuration.
+    ///     The dialog will show a <see cref="UITextField" /> with the currently selected file name, a <see cref="UIButton" />
+    ///     to save the preset and a <see cref="UIList" /> containing all the files that we already have saved before.
+    /// </summary>
     public sealed class UISavePresetWindow : UIModalWindow
     {
         #region Events

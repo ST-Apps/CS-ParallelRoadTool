@@ -8,7 +8,7 @@ namespace ParallelRoadTool.UI.Main
 {
     /// <summary>
     ///     This class is meant as a wrapper to <see cref="UINetInfoPanel" /> which adds an <see cref="UIButton" /> used to
-    ///     toggle the <see cref="UINetListPopup" /> instance.
+    ///     toggle the <see cref="UINetSelectionPopup" /> instance.
     /// </summary>
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -16,6 +16,9 @@ namespace ParallelRoadTool.UI.Main
     {
         #region Fields
 
+        /// <summary>
+        ///     Used to prevent concurrent executions on <see cref="ToggleButtonOnEventClicked" />.
+        /// </summary>
         private static readonly object Lock = new();
 
         #endregion
@@ -38,6 +41,7 @@ namespace ParallelRoadTool.UI.Main
         {
             lock (Lock)
             {
+                // Close the selection popup if any
                 if (_netSelectionPopup != null)
                 {
                     _netSelectionPopup.Close();
@@ -45,6 +49,7 @@ namespace ParallelRoadTool.UI.Main
                     return;
                 }
 
+                // Get the popup
                 _netSelectionPopup = UIView.GetAView().AddUIComponent(typeof(UINetSelectionPopup)) as UINetSelectionPopup;
                 if (_netSelectionPopup == null) return;
 
@@ -174,9 +179,6 @@ namespace ParallelRoadTool.UI.Main
             }
 
             _netInfoPanel.NetInfoItem = netInfo;
-
-            // Close any open popup since we're updating networks
-            // if (_netSelectionPopup != null) _netSelectionPopup.Close();
         }
 
         #endregion
