@@ -7,15 +7,12 @@ namespace ParallelRoadTool
     ///     Constants and data needed for the mod to work
     /// TODO: review after completing the 3.0 rewrite
     /// </summary>
-    public static class Configuration
+    public static class Constants
     {
+        /// <summary>
+        /// Filename for C:S's default cgs settings file
+        /// </summary>
         public const string SettingsFileName = "ParallelRoadTool";
-        public const string AutoSaveFileName = "_PRTAutoSave";
-
-        public static readonly string AutoSaveFolderPath =
-            Path.Combine(Path.Combine(DataLocation.localApplicationData, AssemblyName), "Presets");
-
-        public static readonly string AutoSaveFilePath = Path.Combine(AutoSaveFolderPath, AutoSaveFileName + ".xml");
 
         #region UI
 

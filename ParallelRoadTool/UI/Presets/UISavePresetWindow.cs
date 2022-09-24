@@ -35,7 +35,7 @@ namespace ParallelRoadTool.UI.Presets
         private void SaveButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             // Check if file is going to be overwritten
-            if (!PresetsManager.CanSavePreset(_fileNameInput.text))
+            if (!PresetsManager.PresetExists(_fileNameInput.text))
             {
                 Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] File ""{_fileNameInput.text}"" already exists, asking for confirmation...");
 

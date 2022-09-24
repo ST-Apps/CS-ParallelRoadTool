@@ -4,21 +4,30 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using ColossalFramework;
+using ColossalFramework.IO;
 using CSUtil.Commons;
 using ParallelRoadTool.Models;
 
 namespace ParallelRoadTool.Managers
 {
     /// <summary>
-    /// This manager is responsible for everything related to presets handling, such as listing presets and loading/saving them.
+    ///     This manager is responsible for everything related to presets handling, such as listing presets and loading/saving
+    ///     them.
     /// </summary>
     public class PresetsManager
     {
-        #region Properties
+        #region Fields
 
-        // TODO: make it constant and move out of Configuration
-        private static readonly string AutoSaveFolderName = Configuration.AutoSaveFolderPath;
-        private static string AutoSaveDefaultFileName = Configuration.AutoSaveFileName;
+        /// <summary>
+        ///     Name for the auto-save file to be saved/loaded every-time we exit/launch the game.
+        /// </summary>
+        private const string AutoSaveDefaultFileName = ".autosave";
+
+        /// <summary>
+        ///     Path for the saved presets.
+        /// </summary>
+        private static readonly string PresetsFolderPath =
+            Path.Combine(Path.Combine(DataLocation.localApplicationData, Mod.Instance.BaseName), "Presets");
 
         #endregion
 
@@ -26,20 +35,46 @@ namespace ParallelRoadTool.Managers
 
         #region Internals
 
+        /// <summary>
+        ///     Generates the full path for a given file inside <see cref="PresetsFolderPath" />.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private static string GetFullPathFromFileName(string fileName)
+        {
+            return Path.Combine(PresetsFolderPath, $"{fileName}.xml");
+        }
+
+        /// <summary>
+        ///     Converts a collection of <see cref="XMLNetItem" /> to a collection of <see cref="NetInfoItem" />.
+        /// </summary>
+        /// <param name="networks"></param>
+        /// <returns></returns>
+        private static IEnumerable<NetInfoItem> ToNetInfoItems(IEnumerable<XMLNetItem> networks)
+        {
+            return networks.Select(n => new NetInfoItem(Singleton<ParallelRoadToolManager>.instance.FromName(n.Name), n.HorizontalOffset,
+                                                        n.VerticalOffset, n.IsReversed));
+        }
+
         #endregion
 
         #region Public API
 
+        /// <summary>
+        ///     Lists all the saved files, besides <see cref="AutoSaveDefaultFileName" />.
+        /// </summary>
+        /// <returns></returns>
         public static IEnumerable<string> ListSavedFiles()
         {
-            Log.Info(@$"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Loading saved presets from ""{AutoSaveFolderName}""");
+            Log.Info(@$"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Loading saved presets from ""{PresetsFolderPath}""");
 
-            if (!Directory.Exists(AutoSaveFolderName)) return new string[] { };
+            // Presets folder is missing, skip
+            if (!Directory.Exists(PresetsFolderPath)) return new string[] { };
 
             // Get all files matching *.xml besides the auto-save one that can't be overwritten
-            var files = Directory.GetFiles(AutoSaveFolderName, "*.xml")
-                                 .Where(f => Path.GetFileNameWithoutExtension(f) != AutoSaveFolderName)
+            var files = Directory.GetFiles(PresetsFolderPath, "*.xml")
                                  .Select(Path.GetFileNameWithoutExtension)
+                                 .Where(f => f != AutoSaveDefaultFileName)
                                  .ToArray();
 
             Log.Info($"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Found {files.Length} presets");
@@ -48,29 +83,49 @@ namespace ParallelRoadTool.Managers
             return files;
         }
 
-        public static bool CanSavePreset(string fileName)
+        /// <summary>
+        ///     Checks if the preset file exists.
+        ///     This is mostly used to show the overwrite modal during preset saving.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static bool PresetExists(string fileName)
         {
-            var path = Path.Combine(AutoSaveFolderName, $"{fileName}.xml");
+            var path = GetFullPathFromFileName(fileName);
             return !File.Exists(path);
         }
 
-        public static void SavePreset(string fileName)
+        /// <summary>
+        ///     Saves the provided networks to an XML preset.
+        /// </summary>
+        /// <param name="networks"></param>
+        /// <param name="fileName"></param>
+        public static void SavePreset(IEnumerable<NetInfoItem> networks, string fileName = null)
         {
-            var path = Path.Combine(AutoSaveFolderName, $"{fileName}.xml");
-            var xmlNetItems = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes
-                                                                .Select(n => new XMLNetItem
-                                                                {
-                                                                    Name = n.Name,
-                                                                    IsReversed = n.IsReversed,
-                                                                    HorizontalOffset = n.HorizontalOffset,
-                                                                    VerticalOffset = n.VerticalOffset
-                                                                })
-                                                                .ToArray();
+            // Default to auto-save if no filename is provided
+            fileName ??= AutoSaveDefaultFileName;
+            var path = GetFullPathFromFileName(fileName);
+
+            // If preset already exists we firstly delete it
+            if (File.Exists(path))
+                File.Delete(path);
+
+            // Generate the array of elements with the serializable items
+            var xmlNetItems = networks
+                              .Select(n => new XMLNetItem
+                              {
+                                  Name = n.Name,
+                                  IsReversed = n.IsReversed,
+                                  HorizontalOffset = n.HorizontalOffset,
+                                  VerticalOffset = n.VerticalOffset
+                              })
+                              .ToArray();
 
             Log.Info(@$"[{nameof(PresetsManager)}.{nameof(SavePreset)}] Saving preset to ""{path}"" with {xmlNetItems.Length} networks");
 
             try
             {
+                // Write the array for file
                 var xmlSerializer = new XmlSerializer(xmlNetItems.GetType());
                 using var streamWriter = new StreamWriter(path);
                 xmlSerializer.Serialize(streamWriter, xmlNetItems);
@@ -84,21 +139,39 @@ namespace ParallelRoadTool.Managers
             }
         }
 
-        public static IEnumerable<XMLNetItem> LoadPreset(string fileName)
+        /// <summary>
+        ///     Loads the provided XML file into a collection of <see cref="NetInfoItem" />.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static IEnumerable<NetInfoItem> LoadPreset(string fileName = null)
         {
-            var path = Path.Combine(AutoSaveFolderName, $"{fileName}.xml");
+            // Default to auto-save if no filename is provided
+            fileName ??= AutoSaveDefaultFileName;
+            var path = GetFullPathFromFileName(fileName);
+
+            // Provided file doesn't exist, abort
+            if (!File.Exists(path))
+            {
+                Log.Info(@$"[{nameof(PresetsManager)}.{nameof(LoadPreset)}] Provided preset file not found on path: ""{path}""");
+                return new NetInfoItem[] { };
+            }
 
             Log.Info(@$"[{nameof(PresetsManager)}.{nameof(LoadPreset)}] Loading preset from ""{path}""");
 
             try
             {
+                // Deserialize the provided file
                 var xmlSerializer = new XmlSerializer(typeof(XMLNetItem[]));
                 using var streamReader = new StreamReader(path);
-                var data = (XMLNetItem[]) xmlSerializer.Deserialize(streamReader);
+                var data = (XMLNetItem[])xmlSerializer.Deserialize(streamReader);
 
-                Log._Debug($"[{nameof(PresetsManager)}.{nameof(LoadPreset)}] Loaded {data.Length} networks.");
+                // Convert the deserialized results into our internal format
+                var result = ToNetInfoItems(data).ToArray();
 
-                return data;
+                Log._Debug($"[{nameof(PresetsManager)}.{nameof(LoadPreset)}] Loaded {result.Length} networks.");
+
+                return result;
             }
             catch (Exception e)
             {
@@ -107,12 +180,6 @@ namespace ParallelRoadTool.Managers
 
                 throw;
             }
-        }
-
-        public static IEnumerable<NetInfoItem> ToNetInfoItems(IEnumerable<XMLNetItem> networks)
-        {
-            return networks.Select(n => new NetInfoItem(Singleton<ParallelRoadToolManager>.instance.FromName(n.Name), n.HorizontalOffset,
-                                                        n.VerticalOffset, n.IsReversed));
         }
 
         #endregion

@@ -11,7 +11,6 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.Patches;
 using ParallelRoadTool.UI;
 using UnityEngine;
-using static VehicleSelector;
 
 namespace ParallelRoadTool.Managers
 {
@@ -22,16 +21,22 @@ namespace ParallelRoadTool.Managers
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadToolManager : MonoBehaviour
     {
+
         #region Fields
 
         /// <summary>
-        /// Main controller for everything UI-related
+        /// True if auto-save has been loaded already, false if not.
         /// </summary>
-        private static UIController UIController => Singleton<UIController>.instance;
+        private static bool _autoSaveLoaded;
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        ///     Main controller for everything UI-related
+        /// </summary>
+        private static UIController UIController => Singleton<UIController>.instance;
 
         /// <summary>
         ///     <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
@@ -67,19 +72,20 @@ namespace ParallelRoadTool.Managers
         public static bool IsInGameMode { get; set; }
 
         /// <summary>
-        /// Flags for the current statuses for the mod. For more details see: <see cref="Models.ModStatuses"/>.
+        ///     Flags for the current statuses for the mod. For more details see: <see cref="Models.ModStatuses" />.
         /// </summary>
         public static ModStatuses ModStatuses { get; private set; } = ModStatuses.Disabled;
-
-        /// <summary>
-        ///     Currently selected <see cref="NetInfo" /> within <see cref="NetTool" />.
-        /// </summary>
-        public static NetInfo CurrentNetwork => Singleton<NetTool>.instance.m_prefab;
 
         #endregion
 
         #region Callbacks
 
+        /// <summary>
+        ///     Adds another parallel/stacked segment to current configuration by using the currently selected
+        ///     <see cref="NetInfo" /> inside <see cref="NetTool" />.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UIController_AddNetworkButtonEventClicked(object sender, EventArgs e)
         {
             var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
@@ -90,11 +96,14 @@ namespace ParallelRoadTool.Managers
             var prevOffset = SelectedNetworkTypes.Any() ? SelectedNetworkTypes.Last().HorizontalOffset : 0;
             var item = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
 
-            SelectedNetworkTypes.Add(item);
-            UIController.AddNetwork(item);
-            NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
+            AddNetwork(item);
         }
 
+        /// <summary>
+        ///     Removes the <see cref="NetInfo" /> at provided index from the current configuration.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="index"></param>
         private void UIController_DeleteNetworkButtonEventClicked(UIComponent component, int index)
         {
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_DeleteNetworkButtonEventClicked)}] Removing network at index {index}.");
@@ -102,6 +111,11 @@ namespace ParallelRoadTool.Managers
             RemoveNetwork(index);
         }
 
+        /// <summary>
+        ///     Toggles mod off by setting <see cref="ModStatuses" /> to not have the <see cref="ModStatuses.Active" /> flag.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UIController_ClosedButtonEventClicked(object sender, EventArgs e)
         {
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_ClosedButtonEventClicked)}] Received click on close button.");
@@ -111,61 +125,68 @@ namespace ParallelRoadTool.Managers
             UIController.UpdateVisibility(ModStatuses);
         }
 
+        /// <summary>
+        ///     Handle changes in the current selected tool. Mod is only enabled if <see cref="NetTool" /> is currently enabled.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToolControllerPatch_CurrentToolChanged(object sender, CurrentToolChangedEventArgs e)
         {
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] Changed tool to {e.Tool.GetType().Name}.");
 
             if (e.Tool is NetTool)
-            {
                 ModStatuses |= ModStatuses.Enabled;
-            }
             else
-            {
                 ModStatuses &= ~ModStatuses.Enabled;
-            }
 
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] New mod status is: {ModStatuses:g}.");
             UIController.UpdateVisibility(ModStatuses);
         }
 
+        /// <summary>
+        ///     Toggles the mod on/off by flipping the <see cref="ModStatuses.Active" /> flag on <see cref="ModStatuses" />.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         private void UIController_ToolToggleButtonEventCheckChanged(UIComponent component, bool value)
         {
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] Changed tool button to {value}.");
 
-            if (value)
-            {
-                ModStatuses |= ModStatuses.Active;
-            }
-            else
-            {
-                ModStatuses &= ~ModStatuses.Active;
-            }
-
-            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_ToolToggleButtonEventCheckChanged)}] New mod status is: {ModStatuses:g}.");
-            UIController.UpdateVisibility(ModStatuses);
+            ToggleModActiveStatus(true, value);
         }
 
+        /// <summary>
+        ///     Updates the main <see cref="NetInfo" /> item which is always synced with the one selected in
+        ///     <see cref="NetTool.Prefab" />.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NetToolsPrefabPatch_CurrentNetInfoChanged(object sender, CurrentNetInfoPrefabChangedEventArgs e)
         {
             UIController.UpdateCurrentNetwork(e.Prefab);
         }
 
+        /// <summary>
+        ///     Handles changes in a single <see cref="NetInfoItem" /> configuration.
+        ///     If user changed the network type only we update it, otherwise we just update the custom properties.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         private void UIController_NetTypeEventChanged(UIComponent component, NetTypeItemEventArgs value)
         {
-            // Check if we need to replace the selected network before updating other properties
+            // Check if we need to just replace the selected network or if we are updating other properties
             if (value.SelectedNetworkName != null)
             {
+                // Network only, we change its type and copy over our custom properties
                 SelectedNetworkTypes[value.ItemIndex] = new NetInfoItem(AvailableRoadTypes.First(n => n.name == value.SelectedNetworkName))
                 {
                     HorizontalOffset = SelectedNetworkTypes[value.ItemIndex].HorizontalOffset,
                     VerticalOffset = SelectedNetworkTypes[value.ItemIndex].VerticalOffset,
                     IsReversed = SelectedNetworkTypes[value.ItemIndex].IsReversed
                 };
-                
             }
             else
             {
-
                 // Update customizable properties
                 var targetItem = SelectedNetworkTypes[value.ItemIndex];
                 targetItem.HorizontalOffset = value.HorizontalOffset;
@@ -178,11 +199,22 @@ namespace ParallelRoadTool.Managers
             RefreshNetworks();
         }
 
+        /// <summary>
+        ///     Toggles snapping on/off
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         private void UIController_ToggleSnappingButtonEventCheckChanged(UIComponent component, bool value)
         {
             IsSnappingEnabled = value;
         }
 
+        /// <summary>
+        ///     Handles keypress for horizontal increase/decrease key-binding.
+        ///     Horizontal offsets scale based on <see cref="NetInfoItem" />'s index too.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="step"></param>
         private void UIController_OnHorizontalOffsetKeypress(UIComponent component, float step)
         {
             for (var i = 0; i < SelectedNetworkTypes.Count; i++)
@@ -190,9 +222,15 @@ namespace ParallelRoadTool.Managers
                 var item = SelectedNetworkTypes[i];
                 item.HorizontalOffset += (1 + i) * step;
             }
+
             RefreshNetworks();
         }
 
+        /// <summary>
+        ///     Handles keypress for vertical increase/decrease key-binding.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="step"></param>
         private void UIController_OnVerticalOffsetKeypress(UIComponent component, float step)
         {
             for (var i = 0; i < SelectedNetworkTypes.Count; i++)
@@ -200,9 +238,14 @@ namespace ParallelRoadTool.Managers
                 var item = SelectedNetworkTypes[i];
                 item.VerticalOffset += (1 + i) * step;
             }
+
             RefreshNetworks();
         }
 
+        /// <summary>
+        ///     Handles changes on milestones by reloading <see cref="AvailableRoadTypes" /> to include the newly unlocked
+        ///     networks.
+        /// </summary>
         private void OnMilestoneUpdate()
         {
             Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(OnMilestoneUpdate)}] Milestones updated, reloading networks...");
@@ -216,6 +259,7 @@ namespace ParallelRoadTool.Managers
 
         #region Lifecycle
 
+        // TODO: Awake/Start or ctor??
         public void Awake()
         {
             try
@@ -243,6 +287,7 @@ namespace ParallelRoadTool.Managers
                 // Mod is now fully enabled
                 ModStatuses ^= ModStatuses.Disabled;
                 ModStatuses ^= ModStatuses.Deployed;
+
                 Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(Start)}] Mod status is now {ModStatuses:g}.");
             }
             catch (Exception e)
@@ -265,6 +310,7 @@ namespace ParallelRoadTool.Managers
             try
             {
                 Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(Start)}] Adding UI components");
+
                 UIController.Initialize();
                 UIController.UpdateVisibility(ModStatuses);
 
@@ -292,14 +338,8 @@ namespace ParallelRoadTool.Managers
             {
                 Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(OnDestroy)}] Destroying...");
 
-                // Remove existing auto-save 
-                if (File.Exists(Configuration.AutoSaveFilePath))
-                    File.Delete(Configuration.AutoSaveFilePath);
-
-                Log.Info($"[{nameof(ParallelRoadToolManager)}.{nameof(OnDestroy)}] Saving networks...");
-
-                // Save current networks 
-                //PresetsUtils.Export(Configuration.AutoSaveFileName);
+                // Save current networks
+                SavePreset();
 
                 DetachFromEvents();
 
@@ -308,6 +348,7 @@ namespace ParallelRoadTool.Managers
                 SelectedNetworkTypes.Clear();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
+                _autoSaveLoaded = false;
 
                 // Clean all the UI components
                 UIController.Cleanup();
@@ -333,6 +374,17 @@ namespace ParallelRoadTool.Managers
 
         #region Internals
 
+        private void AddNetwork(NetInfoItem item)
+        {
+            SelectedNetworkTypes.Add(item);
+            UIController.AddNetwork(item);
+
+            NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
+        }
+
+        /// <summary>
+        ///     Unsubscribe from all the events that we're handling
+        /// </summary>
         private void DetachFromEvents()
         {
             ToolControllerPatch.CurrentToolChanged -= ToolControllerPatch_CurrentToolChanged;
@@ -350,6 +402,9 @@ namespace ParallelRoadTool.Managers
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
         }
 
+        /// <summary>
+        ///     Subscribe to all the events that we're handling
+        /// </summary>
         private void AttachToEvents()
         {
             ToolControllerPatch.CurrentToolChanged += ToolControllerPatch_CurrentToolChanged;
@@ -369,7 +424,7 @@ namespace ParallelRoadTool.Managers
         }
 
         /// <summary>
-        /// Sorts and refreshes <see cref="SelectedNetworkTypes"/>, updating the UI at the end.
+        ///     Sorts and refreshes <see cref="SelectedNetworkTypes" />, updating the UI at the end.
         /// </summary>
         private void RefreshNetworks()
         {
@@ -388,7 +443,7 @@ namespace ParallelRoadTool.Managers
         }
 
         /// <summary>
-        /// Remove the network at index from the <see cref="SelectedNetworkTypes"/> and calls <see cref="RefreshNetworks"/>.
+        ///     Remove the network at index from the <see cref="SelectedNetworkTypes" /> and calls <see cref="RefreshNetworks" />.
         /// </summary>
         /// <param name="index"></param>
         private void RemoveNetwork(int index)
@@ -444,50 +499,73 @@ namespace ParallelRoadTool.Managers
         #region Public API
 
         /// <summary>
-        /// Flips the status for <see cref="ModStatuses"/> Active flag, effectively activating/disactivating the mod.
-        /// This change propagates to <see cref="UIController"/> to update the UI accordingly.
+        ///     Flips the status for <see cref="ModStatuses" /> Active flag, effectively activating/disactivating the mod.
+        ///     This change propagates to <see cref="UIController" /> to update the UI accordingly.
         /// </summary>
-        public void ToggleModActiveStatus()
+        public void ToggleModActiveStatus(bool force = false, bool value = false)
         {
-            // Toggle active status flag
-            ModStatuses ^= ModStatuses.Active;
+            if (!force)
+                // Toggle active status flag
+                ModStatuses ^= ModStatuses.Active;
+            else
+            {
+                // We're forcing a specific value so set/unset the relative flag
+                if (value)
+                    ModStatuses |= ModStatuses.Active;
+                else
+                    ModStatuses &= ~ModStatuses.Active;
+            }
 
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToggleModActiveStatus)}] New mod status is: {ModStatuses:g}.");
 
             // Update the UI status based on the new Active value
             UIController.UpdateVisibility(ModStatuses);
+
+            // Load auto-save from previous session, if any
+            if (_autoSaveLoaded) return;
+            LoadPreset();
+            _autoSaveLoaded = true;
         }
 
         /// <summary>
-        /// Returns the <see cref="NetInfo"/> matching the provided name
+        ///     Returns the <see cref="NetInfo" /> matching the provided name
         /// </summary>
         /// <param name="networkName"></param>
         /// <returns></returns>
         public NetInfo FromName(string networkName)
         {
-            return AvailableRoadTypes.FirstOrDefault(n => n.name == networkName);
+            return AvailableRoadTypes.FirstOrDefault(n => n.name == networkName || n.GenerateBeautifiedNetName() == networkName);
         }
 
-        public void SavePreset(string fileName)
+        /// <summary>
+        ///     Saves the current configuration as a preset
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void SavePreset(string fileName = null)
         {
-            PresetsManager.SavePreset(fileName);
+            PresetsManager.SavePreset(SelectedNetworkTypes, fileName);
         }
 
-        public void LoadPreset(string fileName)
+        /// <summary>
+        ///     Loads the current configuration from a preset and reloads
+        ///     <see cref="SelectedNetworkTypes" /> to reflect these new networks.
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void LoadPreset(string fileName = null)
         {
             var preset = PresetsManager.LoadPreset(fileName);
 
             SelectedNetworkTypes.Clear();
-            foreach (var netInfoItem in PresetsManager.ToNetInfoItems(preset))
+            foreach (var netInfoItem in preset)
             {
-                SelectedNetworkTypes.Add(netInfoItem);
-                UIController.AddNetwork(netInfoItem);
+                AddNetwork(netInfoItem);
             }
+
+            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadPreset)}] {nameof(SelectedNetworkTypes)} now contains: ({string.Join(", ", SelectedNetworkTypes.Select(n => n.BeautifiedName).ToArray())}).");
 
             NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
             RefreshNetworks();
 
-            Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadPreset)}] {nameof(SelectedNetworkTypes)} now contains: ({string.Join(", ", SelectedNetworkTypes.Select(n => n.BeautifiedName).ToArray())}).");
         }
 
         #endregion

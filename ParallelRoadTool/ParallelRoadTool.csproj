@@ -59,7 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="Managers\PresetsManager.cs" />
     <Compile Include="Mod.cs" />
@@ -71,7 +71,6 @@
     <Compile Include="Patches\NetToolCameraPatch.cs" />
     <Compile Include="Patches\NetToolsPrefabPatch.cs" />
     <Compile Include="Patches\ToolControllerPatch.cs" />
-    <Compile Include="Extensions\LocaleManagerExtensions.cs" />
     <Compile Include="Models\LocalizedString.cs" />
     <Compile Include="Models\LocalizedStringKey.cs" />
     <Compile Include="Models\NameList.cs" />

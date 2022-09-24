@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using AlgernonCommons.UI;
-using ColossalFramework;
 using ColossalFramework.UI;
-using ParallelRoadTool.Managers;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
@@ -17,10 +14,10 @@ namespace ParallelRoadTool.UI.Presets
 
         #region Public API
 
-        public void LoadPreset(IEnumerable<XMLNetItem> networks)
+        public void LoadPreset(IEnumerable<NetInfoItem> networks)
         {
             var items = new FastList<object>();
-            foreach (var netItem in PresetsManager.ToNetInfoItems(networks))
+            foreach (var netItem in networks)
                 items.Add(netItem);
 
             _netItemsList.Data = items;
@@ -32,9 +29,17 @@ namespace ParallelRoadTool.UI.Presets
 
         private class UIPresetListRow : UIListRow
         {
+            #region Fields
+
             private UINetInfoTinyPanel _netInfoRow;
 
+            #endregion
+
+            #region Properties
+
             public override float RowHeight => UIConstants.MediumSize;
+
+            #endregion
 
             public override void Display(object data, int rowIndex)
             {
@@ -51,12 +56,12 @@ namespace ParallelRoadTool.UI.Presets
                     _netInfoRow.isInteractive = false;
                 }
 
-                _netInfoRow.NetInfoItem =  (NetInfoItem)data;
+                _netInfoRow.NetInfoItem = (NetInfoItem)data;
                 Deselect(rowIndex);
             }
 
             /// <summary>
-            /// Sets the row display to the selected state (highlighted).
+            ///     Sets the row display to the selected state (highlighted).
             /// </summary>
             public override void Select()
             {
@@ -65,7 +70,7 @@ namespace ParallelRoadTool.UI.Presets
             }
 
             /// <summary>
-            /// Sets the row display to the deselected state.
+            ///     Sets the row display to the deselected state.
             /// </summary>
             /// <param name="rowIndex">Row index number (for background banding).</param>
             public override void Deselect(int rowIndex)
@@ -103,10 +108,7 @@ namespace ParallelRoadTool.UI.Presets
                                                               height, UIConstants.MediumSize);
 
             // Force disable selection
-            _netItemsList.EventSelectionChanged += (_, _) =>
-                                                   {
-                                                       _netItemsList.SelectedIndex = -1;
-                                                   };
+            _netItemsList.EventSelectionChanged += (_, _) => { _netItemsList.SelectedIndex = -1; };
         }
 
         #endregion

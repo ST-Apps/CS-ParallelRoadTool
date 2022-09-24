@@ -34,6 +34,8 @@ namespace ParallelRoadTool.UI.Shared
                 Thumbnail.atlas = _netInfoItem.Atlas;
                 Thumbnail.spriteName = _netInfoItem.Thumbnail;
                 Label.text = _netInfoItem.BeautifiedName;
+
+                color = _netInfoItem.Color;
             }
         }
 
@@ -53,7 +55,7 @@ namespace ParallelRoadTool.UI.Shared
         public UINetInfoPanel()
         {
             // Main
-            name = $"{Configuration.ResourcePrefix}NetInfo";
+            name = $"{Constants.ResourcePrefix}NetInfo";
             size = UIConstants.NetInfoPanelLargeSize;
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Horizontal;

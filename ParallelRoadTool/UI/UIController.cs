@@ -242,7 +242,7 @@ namespace ParallelRoadTool.UI
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Creating mod's main window...");
 
-            _mainWindow ??= view.FindUIComponent<UIMainWindow>($"{Configuration.ResourcePrefix}MainWindow");
+            _mainWindow ??= view.FindUIComponent<UIMainWindow>($"{Constants.ResourcePrefix}MainWindow");
             if (_mainWindow != null)
                 DestroyImmediate(_mainWindow);
             _mainWindow = view.AddUIComponent(typeof(UIMainWindow)) as UIMainWindow;
@@ -251,7 +251,7 @@ namespace ParallelRoadTool.UI
 
             Log._Debug($"[{nameof(UIController)}.{nameof(BuildUI)}] Creating mod's main button...");
 
-            var button = view.FindUIComponent<UIToolToggleButton>($"{Configuration.ResourcePrefix}Parallel");
+            var button = view.FindUIComponent<UIToolToggleButton>($"{Constants.ResourcePrefix}Parallel");
             if (button != null) DestroyImmediate(button);
             _mainButton = view.AddUIComponent(typeof(UIToolToggleButton)) as UIToolToggleButton;
 

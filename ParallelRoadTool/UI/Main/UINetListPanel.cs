@@ -54,7 +54,7 @@ namespace ParallelRoadTool.UI.Main
             base.Awake();
 
             // NetworkList
-            name = $"{Configuration.ResourcePrefix}NetworkList";
+            name = $"{Constants.ResourcePrefix}NetworkList";
             autoFitChildrenVertically = true;
             autoLayout = true;
             autoLayoutPadding = new RectOffset(0, 0, 0, UIConstants.Padding);

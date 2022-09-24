@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
-using CSUtil.Commons;
+﻿using System.Text.RegularExpressions;
 using ParallelRoadTool.Wrappers;
 
 namespace ParallelRoadTool.Extensions
@@ -63,6 +61,11 @@ namespace ParallelRoadTool.Extensions
             return Regex.Replace(netInfo.GetUncheckedLocalizedTitle().Trim(), " {2,}", " ");
         }
 
+        /// <summary>
+        ///     Returns true if the <see cref="NetInfo" /> doesn't have any backward facing lane.
+        /// </summary>
+        /// <param name="netInfo"></param>
+        /// <returns></returns>
         public static bool IsOneWayOnly(this NetInfo netInfo)
         {
             // One-way roads only have forward lanes

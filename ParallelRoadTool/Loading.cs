@@ -29,7 +29,7 @@ namespace ParallelRoadTool
             // Register settings file
             GameSettings.AddSettingsFile(new SettingsFile
             {
-                fileName = Configuration.SettingsFileName
+                fileName = Constants.SettingsFileName
             });
         }
 

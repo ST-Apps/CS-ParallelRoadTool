@@ -134,7 +134,7 @@ namespace ParallelRoadTool.UI.Main
             base.Awake();
 
             // NetSetup
-            name = $"{Configuration.ResourcePrefix}NetSetup";
+            name = $"{Constants.ResourcePrefix}NetSetup";
             backgroundSprite = "GenericPanel";
             autoFitChildrenVertically = true;
             autoLayout = true;

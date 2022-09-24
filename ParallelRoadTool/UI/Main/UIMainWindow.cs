@@ -38,9 +38,9 @@ namespace ParallelRoadTool.UI.Main
 
         #region Settings
 
-        private static readonly SavedInt SavedWindowX = new("windowX", Configuration.SettingsFileName, -1000, true);
+        private static readonly SavedInt SavedWindowX = new("windowX", Constants.SettingsFileName, -1000, true);
 
-        private static readonly SavedInt SavedWindowY = new("windowY", Configuration.SettingsFileName, -1000, true);
+        private static readonly SavedInt SavedWindowY = new("windowY", Constants.SettingsFileName, -1000, true);
 
         #endregion
 
@@ -118,7 +118,7 @@ namespace ParallelRoadTool.UI.Main
             base.Awake();
 
             // Main
-            name = $"{Configuration.ResourcePrefix}MainWindow";
+            name = $"{Constants.ResourcePrefix}MainWindow";
             backgroundSprite = "UnlockingPanel2";
             size = new Vector2(512, 256);
             autoFitChildrenVertically = true;

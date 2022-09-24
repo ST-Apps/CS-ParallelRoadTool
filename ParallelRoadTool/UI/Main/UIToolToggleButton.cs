@@ -26,9 +26,9 @@ namespace ParallelRoadTool.UI.Main
 
         #region Settings
 
-        private static readonly SavedInt SavedToggleX = new("toggleX", Configuration.SettingsFileName, -1000, true);
+        private static readonly SavedInt SavedToggleX = new("toggleX", Constants.SettingsFileName, -1000, true);
 
-        private static readonly SavedInt SavedToggleY = new("toggleY", Configuration.SettingsFileName, -1000, true);
+        private static readonly SavedInt SavedToggleY = new("toggleY", Constants.SettingsFileName, -1000, true);
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace ParallelRoadTool.UI.Main
             var toolTip = Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON");
 
             var button = AddUIComponent<UIButton>();
-            button.name = $"{Configuration.ResourcePrefix}{SpriteName}";
+            button.name = $"{Constants.ResourcePrefix}{SpriteName}";
             button.atlas = UIHelpers.Atlas;
             button.tooltip = toolTip;
             button.relativePosition = new Vector2(0, 0);

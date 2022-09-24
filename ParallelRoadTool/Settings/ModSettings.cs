@@ -19,6 +19,9 @@ namespace ParallelRoadTool.Settings
     {
         #region Fields
 
+        /// <summary>
+        /// Filename for our custom settings file
+        /// </summary>
         private const string SettingsFileName = "PRT_Settings.xml";
 
         #endregion

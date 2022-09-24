@@ -21,11 +21,11 @@ namespace ParallelRoadTool.UI.Utils
         private static UITextureAtlas LoadResources()
         {
             var textureAtlas =
-                ResourceLoader.CreateTextureAtlas(Configuration.CustomAtlasName, Configuration.CustomSpritesNames,
-                                                  Configuration.IconsNamespace);
+                ResourceLoader.CreateTextureAtlas(Constants.CustomAtlasName, Constants.CustomSpritesNames,
+                                                  Constants.IconsNamespace);
 
-            var defaultAtlas = ResourceLoader.GetAtlas(Configuration.DefaultAtlasName);
-            var textures = Configuration.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
+            var defaultAtlas = ResourceLoader.GetAtlas(Constants.DefaultAtlasName);
+            var textures = Constants.DefaultSpritesNames.Select(t => defaultAtlas[t].texture).ToArray();
             ResourceLoader.AddTexturesInAtlas(textureAtlas, textures);
 
             return textureAtlas;
