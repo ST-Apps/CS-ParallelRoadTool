@@ -1,6 +1,7 @@
 ﻿using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
@@ -111,6 +112,16 @@ namespace ParallelRoadTool.UI.Main
         {
             value.ItemIndex = CurrentIndex;
             OnPopupSelectionChanged?.Invoke(component, value);
+        }
+
+        private void HorizontalOffsetFieldOnEventMouseWheel(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            UpdateOffsetOnScrollWheel(eventParam.wheelDelta);
+        }
+
+        private void VerticalOffsetFieldOnEventMouseWheel(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            UpdateOffsetOnScrollWheel(eventParam.wheelDelta, true);
         }
 
         #endregion
@@ -281,7 +292,9 @@ namespace ParallelRoadTool.UI.Main
             _deleteButton.eventClicked += DeleteButton_eventClicked;
             _reverseCheckbox.eventCheckChanged += NetInfo_EventChanged;
             _horizontalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
+            _horizontalOffsetField.eventMouseWheel += HorizontalOffsetFieldOnEventMouseWheel;
             _verticalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
+            _verticalOffsetField.eventMouseWheel += VerticalOffsetFieldOnEventMouseWheel;
             _netInfoPanel.OnPopupSelectionChanged += NetInfoPanelOnOnPopupSelectionChanged;
         }
 
@@ -290,7 +303,9 @@ namespace ParallelRoadTool.UI.Main
             _deleteButton.eventClicked -= DeleteButton_eventClicked;
             _reverseCheckbox.eventCheckChanged -= NetInfo_EventChanged;
             _horizontalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
+            _horizontalOffsetField.eventMouseWheel -= HorizontalOffsetFieldOnEventMouseWheel;
             _verticalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
+            _verticalOffsetField.eventMouseWheel -= VerticalOffsetFieldOnEventMouseWheel;
             _netInfoPanel.OnPopupSelectionChanged -= NetInfoPanelOnOnPopupSelectionChanged;
         }
 
@@ -302,6 +317,28 @@ namespace ParallelRoadTool.UI.Main
         {
             _offsetsPanel.isVisible = false;
             _buttonsPanel.isVisible = false;
+        }
+
+        /// <summary>
+        ///     Changes either horizontal or vertical offset based on scroll wheel's delta.
+        /// </summary>
+        /// <param name="wheelDelta"></param>
+        /// <param name="isVertical"></param>
+        private void UpdateOffsetOnScrollWheel(float wheelDelta, bool isVertical = false)
+        {
+            var currentValue = float.Parse(isVertical ? _verticalOffsetField.text : _horizontalOffsetField.text);
+
+            // var multiplier = Input.GetKeyDown(KeyCode.LeftShift) ? 10f : Input.GetKeyDown(KeyCode.LeftControl) ? 0.1f : 1f;
+            var multiplier = UIController.IsShiftPressed ? 10f : UIController.IsCtrlPressed ? 0.1f : 1f;
+            currentValue += wheelDelta * multiplier;
+
+            if (isVertical)
+                _verticalOffsetField.text = $"{currentValue}";
+            else
+                _horizontalOffsetField.text = $"{currentValue}";
+
+            NetInfo_EventChanged<string>(this, null);
+
         }
 
         #endregion

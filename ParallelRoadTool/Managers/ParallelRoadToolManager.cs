@@ -100,6 +100,16 @@ namespace ParallelRoadTool.Managers
         }
 
         /// <summary>
+        /// Forces sorting and refreshing the current selected networks
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIControllerOnSortNetworksButtonEventClicked(object sender, EventArgs e)
+        {
+            RefreshNetworks(true);
+        }
+
+        /// <summary>
         ///     Removes the <see cref="NetInfo" /> at provided index from the current configuration.
         /// </summary>
         /// <param name="component"></param>
@@ -393,6 +403,7 @@ namespace ParallelRoadTool.Managers
             UIController.ToggleSnappingButtonEventCheckChanged -= UIController_ToggleSnappingButtonEventCheckChanged;
             UIController.CloseButtonEventClicked -= UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked -= UIController_AddNetworkButtonEventClicked;
+            UIController.SortNetworksButtonEventClicked -= UIControllerOnSortNetworksButtonEventClicked;
             UIController.DeleteNetworkButtonEventClicked -= UIController_DeleteNetworkButtonEventClicked;
             UIController.OnHorizontalOffsetKeypress -= UIController_OnHorizontalOffsetKeypress;
             UIController.OnVerticalOffsetKeypress -= UIController_OnVerticalOffsetKeypress;
@@ -413,6 +424,7 @@ namespace ParallelRoadTool.Managers
             UIController.ToggleSnappingButtonEventCheckChanged += UIController_ToggleSnappingButtonEventCheckChanged;
             UIController.CloseButtonEventClicked += UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked += UIController_AddNetworkButtonEventClicked;
+            UIController.SortNetworksButtonEventClicked += UIControllerOnSortNetworksButtonEventClicked;
             UIController.DeleteNetworkButtonEventClicked += UIController_DeleteNetworkButtonEventClicked;
             UIController.OnHorizontalOffsetKeypress += UIController_OnHorizontalOffsetKeypress;
             UIController.OnVerticalOffsetKeypress += UIController_OnVerticalOffsetKeypress;
@@ -426,14 +438,17 @@ namespace ParallelRoadTool.Managers
         /// <summary>
         ///     Sorts and refreshes <see cref="SelectedNetworkTypes" />, updating the UI at the end.
         /// </summary>
-        private void RefreshNetworks()
+        private void RefreshNetworks(bool sort = false)
         {
-            // Sort networks based on ascending HorizontalOffset
-            var sorted = SelectedNetworkTypes.OrderBy(r => r.HorizontalOffset).ToList();
+            if (sort)
+            {
+                // Sort networks based on ascending HorizontalOffset
+                var sorted = SelectedNetworkTypes.OrderBy(r => r.HorizontalOffset).ToList();
 
-            // Clear and rebuild the list with the currently selected networks
-            SelectedNetworkTypes.Clear();
-            SelectedNetworkTypes.AddRange(sorted);
+                // Clear and rebuild the list with the currently selected networks
+                SelectedNetworkTypes.Clear();
+                SelectedNetworkTypes.AddRange(sorted);
+            }
 
             // Update the UI
             UIController.RefreshNetworks(SelectedNetworkTypes);

@@ -69,6 +69,12 @@ namespace ParallelRoadTool.UI.Main
             remove => _addNetworkButton.eventClicked -= value;
         }
 
+        public event MouseEventHandler SortNetworksButtonEventClicked
+        {
+            add => _sortNetworksButton.eventClicked += value;
+            remove => _sortNetworksButton.eventClicked -= value;
+        }
+
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
         {
             add => _networkListPanel.DeleteNetworkButtonEventClicked += value;
@@ -112,6 +118,7 @@ namespace ParallelRoadTool.UI.Main
         private UINetListPanel _networkListPanel;
         private UICheckBox _toggleSnappingButton;
         private UIButton _addNetworkButton;
+        private UIButton _sortNetworksButton;
         private UINetSetupPanel _currentNetworkSetupPanel;
 
         #endregion
@@ -296,6 +303,11 @@ namespace ParallelRoadTool.UI.Main
             toolsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
             toolsPanel.autoLayoutStart = LayoutStart.TopRight;
 
+            // Main/Toolbar/Tools/SortNetworksButton
+            _sortNetworksButton = UIHelpers.CreateUiButton(toolsPanel, new Vector2(UIConstants.MediumSize, UIConstants.MediumSize), string.Empty,
+                                                           Translations.Translate("TOOLTIP_SORT_NETWORKS_BUTTON"), "Sort");
+            _sortNetworksButton.name = $"{toolsPanel.name}_SortNetworks";
+
             // Main/Toolbar/Tools/ToggleSnappingButton
             _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UIHelpers.Atlas.name, "SnappingPressed", "Snapping",
                                                                backgroundSprite: "OptionBase",
@@ -304,13 +316,8 @@ namespace ParallelRoadTool.UI.Main
             _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
 
             // Main/Toolbar/Tools/AddNetworkButton
-            _addNetworkButton = UIHelpers.CreateUiButton(
-                                                         toolsPanel,
-                                                         new Vector2(UIConstants.MediumSize, UIConstants.MediumSize),
-                                                         string.Empty,
-                                                         Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"),
-                                                         "Add"
-                                                        );
+            _addNetworkButton = UIHelpers.CreateUiButton(toolsPanel, new Vector2(UIConstants.MediumSize, UIConstants.MediumSize), string.Empty,
+                                                         Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"), "Add");
             _addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";
 
             // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle

@@ -25,6 +25,8 @@ namespace ParallelRoadTool.UI
 
         public event EventHandler CloseButtonEventClicked;
         public event EventHandler AddNetworkButtonEventClicked;
+        public event EventHandler SortNetworksButtonEventClicked;
+
         public event PropertyChangedEventHandler<float> OnHorizontalOffsetKeypress;
         public event PropertyChangedEventHandler<float> OnVerticalOffsetKeypress;
 
@@ -64,6 +66,11 @@ namespace ParallelRoadTool.UI
         private void MainWindow_AddNetworkButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             AddNetworkButtonEventClicked?.Invoke(null, null);
+        }
+
+        private void MainWindowOnSortNetworksButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            SortNetworksButtonEventClicked?.Invoke(null, null);
         }
 
         private void MainWindowOnSavePresetButtonEventClicked(UIComponent component, UIMouseEventParameter eventParam)
@@ -152,6 +159,14 @@ namespace ParallelRoadTool.UI
 
         #endregion
 
+        #region Properties
+
+        public static bool IsShiftPressed { get; private set; }
+
+        public static bool IsCtrlPressed { get; private set; }
+
+        #endregion
+
         #region Unity
 
         #region Components
@@ -202,6 +217,10 @@ namespace ParallelRoadTool.UI
             if (ModSettings.KeyDecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
             if (ModSettings.KeyIncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
             if (ModSettings.KeyDecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
+
+            // Check for modifiers too
+            IsShiftPressed = e.shift;
+            IsCtrlPressed = e.control;
         }
 
         #endregion
@@ -267,6 +286,7 @@ namespace ParallelRoadTool.UI
         {
             _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.SortNetworksButtonEventClicked += MainWindowOnSortNetworksButtonEventClicked;
             _mainWindow.SavePresetButtonEventClicked += MainWindowOnSavePresetButtonEventClicked;
             _mainWindow.LoadPresetButtonEventClicked += MainWindowOnLoadPresetButtonEventClicked;
             _mainWindow.OnPopupOpened += MainWindowOnOnPopupOpened;
@@ -276,6 +296,7 @@ namespace ParallelRoadTool.UI
         {
             _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
             _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.SortNetworksButtonEventClicked -= MainWindowOnSortNetworksButtonEventClicked;
             _mainWindow.SavePresetButtonEventClicked -= MainWindowOnSavePresetButtonEventClicked;
             _mainWindow.LoadPresetButtonEventClicked -= MainWindowOnLoadPresetButtonEventClicked;
             _mainWindow.OnPopupOpened -= MainWindowOnOnPopupOpened;

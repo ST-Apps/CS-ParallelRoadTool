@@ -46,6 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 	ProjectSection(SolutionItems) = preProject
 		..\Resources\HorizontalOffset.png = ..\Resources\HorizontalOffset.png
 		..\Resources\Parallel.png = ..\Resources\Parallel.png
+		..\Resources\Save.png = ..\Resources\Save.png
+		..\Resources\Sort.png = ..\Resources\Sort.png
 		..\Resources\VerticalOffset.png = ..\Resources\VerticalOffset.png
 	EndProjectSection
 EndProject

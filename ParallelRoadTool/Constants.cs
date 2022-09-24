@@ -48,7 +48,8 @@ namespace ParallelRoadTool
             "ReverseHovered",
             "ReversePressed",
             "VerticalOffset",
-            "Save"
+            "Save",
+            "Sort"
         };
 
         public static readonly string[] DefaultSpritesNames =

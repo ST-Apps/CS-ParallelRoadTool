@@ -33,11 +33,16 @@ Unless you want to test the new features, please move to the stable version on W
 "TOOLTIP_SAVE_BUTTON","Save preset"
 "TOOLTIP_LOAD_BUTTON","Load preset"
 "TOOLTIP_SNAPPING_TOGGLE_BUTTON","Snap to existing nodes"
+"TOOLTIP_SORT_NETWORKS_BUTTON","Sort networks by horizontal distance (ascending)"
 "TOOLTIP_ADD_NETWORK_BUTTON","Add network"
 "TOOLTIP_REMOVE_NETWORK_BUTTON","Remove network"
 "TOOLTIP_INVERT_DIRECTION_TOGGLE_BUTTON","Invert direction"
-"TOOLTIP_HORIZONTAL_OFFSET_TEXT","Horizontal distance from previous segment"
-"TOOLTIP_VERTICAL_OFFSET_TEXT","Vertical distance from previous segment"
+"TOOLTIP_HORIZONTAL_OFFSET_TEXT","Horizontal distance from previous segment
+CTRL: x0.1
+SHIFT: x10"
+"TOOLTIP_VERTICAL_OFFSET_TEXT","Vertical distance from previous segment
+CTRL: x0.1
+SHIFT: x10"
 "LABEL_SAVE_PRESET_WINDOW_TITLE","Save preset"
 "LABEL_LOAD_PRESET_WINDOW_TITLE","Load preset"
 "LABEL_SAVE_PRESET_FAILED_TITLE","Save preset failed"
