@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using ColossalFramework;
 using ColossalFramework.Math;
@@ -7,21 +8,18 @@ using HarmonyLib;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Managers;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
+// ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedType.Global
+// ReSharper disable InconsistentNaming
 
 namespace ParallelRoadTool.Patches
 {
-    /// <summary>
-    ///     Mod's core class, it executes the detour to intercept segment's creation.
-    /// </summary>
-    [HarmonyPatch(typeof(NetManager),
-                  nameof(NetManager.CreateSegment),
-                  new[]
+    [HarmonyPatch(typeof(NetManager), nameof(NetManager.CreateSegment), new[]
                   {
                       typeof(ushort),
                       typeof(Randomizer),
@@ -34,8 +32,7 @@ namespace ParallelRoadTool.Patches
                       typeof(uint),
                       typeof(uint),
                       typeof(bool)
-                  },
-                  new[]
+                  }, new[]
                   {
                       ArgumentType.Out,
                       ArgumentType.Ref,
@@ -50,11 +47,17 @@ namespace ParallelRoadTool.Patches
                       ArgumentType.Normal
                   }
                  )]
-    public class NetManagerPatch
+    internal static class NetManagerPatch
     {
+        #region Fields
+
         // We store nodes from previous iteration so that we know which node to connect to
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
         private static bool _isPreviousInvert;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         ///     Sets the number of enabled parallel networks
@@ -65,6 +68,7 @@ namespace ParallelRoadTool.Patches
             {
                 // We don't reset nodes arrays if size didn't change, this allows us to snap to previous nodes even after changing offsets.
                 if (_endNodeId != null && _endNodeId.Length == value) return;
+
                 _endNodeId = new ushort?[value];
                 _clonedEndNodeId = new ushort?[value];
                 _startNodeId = new ushort?[value];
@@ -72,11 +76,14 @@ namespace ParallelRoadTool.Patches
             }
         }
 
+        #endregion
+
         /// <summary>
         ///     Our detour should execute ONLY if the caller is explicitly allowed.
         ///     This prevents unexpected behaviors, but could require some changes in this method to allow compatibility with other
         ///     mods.
         ///     HACK - [ISSUE-10] [ISSUE-18]
+        ///     TODO: things changed with Harmony, is this still necessary?
         /// </summary>
         /// <param name="st"></param>
         /// <returns></returns>
@@ -84,29 +91,29 @@ namespace ParallelRoadTool.Patches
         {
             return true;
 
-            // Extract both type and method
-            var callerType = st.GetFrame(2)?.GetMethod()?.DeclaringType;
-            var callerMethod = st.GetFrame(1)?.GetMethod();
+            //// Extract both type and method
+            //var callerType = st.GetFrame(2)?.GetMethod()?.DeclaringType;
+            //var callerMethod = st.GetFrame(1)?.GetMethod();
 
-            // They should never be null because stack traces are usually longer than 3 lines, but let's add this check because you'll never know
-            if (callerType == null || callerMethod == null)
-            {
-                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] {nameof(callerType)} or {nameof(callerMethod)} is null.");
-                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] Stacktrace is\n{st}");
+            //// They should never be null because stack traces are usually longer than 3 lines, but let's add this check because you'll never know
+            //if (callerType == null || callerMethod == null)
+            //{
+            //    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] {nameof(callerType)} or {nameof(callerMethod)} is null.");
+            //    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] Stacktrace is\n{st}");
 
-                return false;
-            }
+            //    return false;
+            //}
 
-            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] Caller is {callerType.Name}.{callerMethod.Name}");
+            //Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(IsAllowedCaller)}] Caller is {callerType.Name}.{callerMethod.Name}");
 
-            // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (callerType == typeof(NetTool))
+            //// ReSharper disable once ConvertIfStatementToReturnStatement
+            //if (callerType == typeof(NetTool))
 
-                // We must allow only CreateNode (and eventually patched Harmony methods)
-                // This is the compatibility patch for Network Skins 2
-                return HarmonyUtils.IsNameMatching(callerMethod.Name, "CreateNode");
+            //    // We must allow only CreateNode (and eventually patched Harmony methods)
+            //    // This is the compatibility patch for Network Skins 2
+            //    return HarmonyUtils.IsNameMatching(callerMethod.Name, "CreateNode");
 
-            return false;
+            //return false;
         }
 
         /// <summary>
@@ -126,6 +133,8 @@ namespace ParallelRoadTool.Patches
         /// <param name="buildIndex"></param>
         /// <param name="modifiedIndex"></param>
         /// <param name="invert"></param>
+        /// <param name="__result"></param>
+        /// <param name="__args"></param>
         /// <returns></returns>
         private static void Postfix(out ushort segment,
                                     ref Randomizer randomizer,
@@ -139,10 +148,11 @@ namespace ParallelRoadTool.Patches
                                     uint modifiedIndex,
                                     bool invert,
                                     ref bool __result,
-                                    object[] __args)
+                                    IList<object> __args)
         {
             try
             {
+                // Dummy assignment in case we don't need to move further
                 segment = (ushort)__args[0];
 
                 if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
@@ -185,6 +195,7 @@ namespace ParallelRoadTool.Patches
                     upgradeInvert = invert;
 
                     // ReSharper disable CompareOfFloatsByEqualityOperator
+
                     if (startDirection.x == endDirection.x && startDirection.y == endDirection.y)
                         ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Straight;
                     else
@@ -235,29 +246,32 @@ namespace ParallelRoadTool.Patches
                     // If the previous segment was in "invert" mode and the current startNode is the same as the previous one, we need to connect them.
                     // If we don't have any previous node matching our starting one, we need to clone startNode as this may be a new segment.
                     ushort newStartNodeId;
-                    if (!invert && _endNodeId[i].HasValue && _endNodeId[i].Value == startNode)
+                    switch (invert)
                     {
-                        newStartNodeId = _clonedEndNodeId[i].Value;
+                        case false when _endNodeId[i].HasValue && _endNodeId[i].Value == startNode:
+                            // We start exactly on the previous ending node
+                            newStartNodeId = _clonedEndNodeId[i].Value;
 
-                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
-                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
-                    }
-                    else if (!invert && _isPreviousInvert && _startNodeId[i].HasValue &&
-                             _startNodeId[i].Value == startNode)
-                    {
-                        newStartNodeId = _clonedStartNodeId[i].Value;
+                            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
+                            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                            break;
+                        case false when _isPreviousInvert && _startNodeId[i].HasValue && _startNodeId[i].Value == startNode:
+                            // We start exactly on the previous starting node
+                            newStartNodeId = _clonedStartNodeId[i].Value;
 
-                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
-                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
-                    }
-                    else
-                    {
-                        var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset,
-                                                                              verticalOffset, invert);
+                            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedStartNodeId[i].Value} instead of the given one {startNode}");
+                            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+                            break;
+                        default:
+                        {
+                            // Not a special case, we offset our node and create a new one (or find one at that position)
+                            var newStartPosition = startNetNode.m_position.Offset(startDirection, horizontalOffset, verticalOffset, invert);
 
-                        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
 
-                        newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
+                            newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
+                            break;
+                        }
                     }
 
                     // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
@@ -399,7 +413,9 @@ namespace ParallelRoadTool.Patches
             }
         }
 
-        #region Utility
+        #region Control
+
+        #region Internals
 
         /// <summary>
         ///     Creates a new node and returns it.
@@ -409,10 +425,7 @@ namespace ParallelRoadTool.Patches
         /// <param name="info"></param>
         /// <param name="newNodePosition"></param>
         /// <returns></returns>
-        private static void CreateNode(out ushort newNodeId,
-                                       ref Randomizer randomizer,
-                                       NetInfo info,
-                                       Vector3 newNodePosition)
+        private static void CreateNode(out ushort newNodeId, ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
         {
             NetManager.instance.CreateNode(out newNodeId, ref randomizer, info, newNodePosition,
                                            Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
@@ -426,10 +439,7 @@ namespace ParallelRoadTool.Patches
         /// <param name="newNodePosition"></param>
         /// <param name="verticalOffset"></param>
         /// <returns></returns>
-        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer,
-                                                  NetInfo info,
-                                                  Vector3 newNodePosition,
-                                                  float verticalOffset)
+        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition, float verticalOffset)
         {
             var netManager = Singleton<NetManager>.instance;
 
@@ -488,6 +498,8 @@ namespace ParallelRoadTool.Patches
             CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
             return newNodeId;
         }
+
+        #endregion
 
         #endregion
     }

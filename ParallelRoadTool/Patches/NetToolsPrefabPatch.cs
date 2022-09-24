@@ -4,16 +4,16 @@ using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Models;
 
+// ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedType.Global
+// ReSharper disable InconsistentNaming
 
 namespace ParallelRoadTool.Patches
 {
-    [HarmonyPatch(typeof(NetTool),
-                  nameof(NetTool.Prefab),
-                  MethodType.Setter
-                 )]
-    internal class NetToolsPrefabPatch
+    [HarmonyPatch(typeof(NetTool), nameof(NetTool.Prefab), MethodType.Setter)]
+    internal static class NetToolsPrefabPatch
     {
         /// <summary>
         ///     Event raised to report changes on <see cref="NetTool.Prefab" />.

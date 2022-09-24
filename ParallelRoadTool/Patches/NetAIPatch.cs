@@ -8,16 +8,19 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
+// ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedType.Global
+// ReSharper disable InconsistentNaming
 
 namespace ParallelRoadTool.Patches
 {
-    [HarmonyPatch(typeof(PlayerNetAI),
-                  nameof(PlayerNetAI.GetConstructionCost), typeof(Vector3), typeof(Vector3), typeof(float), typeof(float))]
-    internal class NetAIPatch
+    [HarmonyPatch(typeof(PlayerNetAI), nameof(PlayerNetAI.GetConstructionCost), typeof(Vector3), typeof(Vector3), typeof(float), typeof(float))]
+    internal static class NetAIPatch
     {
-        // We compute the cost for each parallel/stacked ones to get to the final cost and then we add it to the one received as input for the original segment
+        // We compute the cost for each parallel/stacked network to get to the final cost.
+        // We then we add it to the one received as input for the original segment.
         private static void Postfix(Vector3 startPos, Vector3 endPos, float startHeight, float endHeight, ref int __result)
         {
             try
@@ -53,15 +56,16 @@ namespace ParallelRoadTool.Patches
         }
 
         /// <summary>
-        ///     The reverse patch is meant as an easy way to access the original <see cref="PlayerNetAI.GetConstructionCost" />
+        ///     The reverse patch is meant as an easy way to access the original
+        ///     <see cref="PlayerNetAI.GetConstructionCost(Vector3,Vector3,float,float)" />
         ///     method.
         /// </summary>
         [HarmonyPatch]
-        private class NetAIReversePatch
+        private static class NetAIReversePatch
         {
             [HarmonyReversePatch]
-            [HarmonyPatch(typeof(PlayerNetAI),
-                          nameof(PlayerNetAI.GetConstructionCost), typeof(Vector3), typeof(Vector3), typeof(float), typeof(float))]
+            [HarmonyPatch(typeof(PlayerNetAI), nameof(PlayerNetAI.GetConstructionCost), typeof(Vector3), typeof(Vector3), typeof(float),
+                          typeof(float))]
             public static int GetConstructionCost(object instance, Vector3 startPos, Vector3 endPos, float startHeight, float endHeight)
             {
                 // No implementation is required as this will call the original method

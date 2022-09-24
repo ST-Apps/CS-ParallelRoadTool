@@ -3,8 +3,11 @@ using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Models;
 
+// ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedType.Global
+// ReSharper disable InconsistentNaming
 
 namespace ParallelRoadTool.Patches
 {
@@ -12,11 +15,8 @@ namespace ParallelRoadTool.Patches
     ///     Used to patch <see cref="ToolController" /> since there's no event raised when
     ///     <see cref="ToolController.CurrentTool" /> is changed.
     /// </summary>
-    [HarmonyPatch(typeof(ToolController),
-                  nameof(ToolController.CurrentTool),
-                  MethodType.Setter
-                 )]
-    public class ToolControllerPatch
+    [HarmonyPatch(typeof(ToolController), nameof(ToolController.CurrentTool), MethodType.Setter)]
+    internal static class ToolControllerPatch
     {
         /// <summary>
         ///     Event raised to report changes on <see cref="ToolController.CurrentTool" />.
