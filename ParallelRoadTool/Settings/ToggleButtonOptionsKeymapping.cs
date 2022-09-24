@@ -2,6 +2,8 @@
 using AlgernonCommons.Translation;
 using ColossalFramework;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace ParallelRoadTool.Settings
 {
     /// <summary>
@@ -9,16 +11,20 @@ namespace ParallelRoadTool.Settings
     /// </summary>
     public class ToggleButtonOptionsKeymapping : OptionsKeymapping
     {
-        public ToggleButtonOptionsKeymapping()
-        {
-            Label = Translations.Translate("SELECT_KEYMAPPING_TOGGLEBUTTON_LABEL");
-            ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
-        }
+        #region Properties
 
         protected sealed override InputKey KeySetting
         {
             get => ModSettings.KeyToggleTool.Encode();
             set => ModSettings.KeyToggleTool.SetKey(value);
+        }
+
+        #endregion
+
+        public ToggleButtonOptionsKeymapping()
+        {
+            Label = Translations.Translate("SELECT_KEYMAPPING_TOGGLE_BUTTON_LABEL");
+            ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
     }
 }

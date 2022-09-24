@@ -1,18 +1,12 @@
-﻿using AlgernonCommons.Keybinding;
+﻿using System.Xml.Serialization;
+using AlgernonCommons.Keybinding;
 using AlgernonCommons.XML;
-using ColossalFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
-using ParallelRoadTool.UI;
 using UnityEngine;
 
 namespace ParallelRoadTool.Settings
 {
     /// <summary>
-    /// Defines the XML settings file.
+    ///     Defines the XML settings file.
     /// </summary>
     [XmlRoot("SettingsFile")]
     public class ModSettings : SettingsXMLBase
@@ -20,48 +14,41 @@ namespace ParallelRoadTool.Settings
         #region Fields
 
         /// <summary>
-        /// Filename for our custom settings file
+        ///     Filename for our custom settings file
         /// </summary>
         private const string SettingsFileName = "PRT_Settings.xml";
 
+        /// <summary>
+        ///     Tool toggle key.
+        /// </summary>
+        [XmlIgnore] public static readonly Keybinding KeyToggleTool = new(KeyCode.P, true, false, false);
+
+        /// <summary>
+        ///     Increase horizontal offset key.
+        /// </summary>
+        [XmlIgnore] public static readonly Keybinding KeyIncreaseHorizontalOffset = new(KeyCode.Equals, true, false, false);
+
+        /// <summary>
+        ///     Decrease horizontal offset key.
+        /// </summary>
+        [XmlIgnore] public static readonly Keybinding KeyDecreaseHorizontalOffset = new(KeyCode.Minus, true, false, false);
+
+        /// <summary>
+        ///     Increase horizontal offset key.
+        /// </summary>
+        [XmlIgnore] public static readonly Keybinding KeyIncreaseVerticalOffset = new(KeyCode.Equals, true, true, false);
+
+        /// <summary>
+        ///     Decrease horizontal offset key.
+        /// </summary>
+        [XmlIgnore] public static readonly Keybinding KeyDecreaseVerticalOffset = new(KeyCode.Minus, true, true, false);
+
         #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Tool toggle key.
-        /// </summary>
-        [XmlIgnore]
-        public static readonly Keybinding KeyToggleTool = new(KeyCode.P, true, false, false);
-
-        /// <summary>
-        /// Increase horizontal offset key.
-        /// </summary>
-        [XmlIgnore]
-        public static readonly Keybinding KeyIncreaseHorizontalOffset = new(KeyCode.Equals, true, false, false);
-
-        /// <summary>
-        /// Decrease horizontal offset key.
-        /// </summary>
-        [XmlIgnore]
-        public static readonly Keybinding KeyDecreaseHorizontalOffset = new(KeyCode.Minus, true, false, false);
-
-        /// <summary>
-        /// Increase horizontal offset key.
-        /// </summary>
-        [XmlIgnore]
-        public static readonly Keybinding KeyIncreaseVerticalOffset = new(KeyCode.Equals, true, true, false);
-
-        /// <summary>
-        /// Decrease horizontal offset key.
-        /// </summary>
-        [XmlIgnore]
-        public static readonly Keybinding KeyDecreaseVerticalOffset = new(KeyCode.Minus, true, true, false);
 
         #region Serializable
 
         /// <summary>
-        /// Tool toggle key.
+        ///     Tool toggle key.
         /// </summary>
         [XmlElement(nameof(KeyToggleTool))]
         public Keybinding XMLKeyToggleTool
@@ -71,7 +58,7 @@ namespace ParallelRoadTool.Settings
         }
 
         /// <summary>
-        /// Increase horizontal offset key.
+        ///     Increase horizontal offset key.
         /// </summary>
         [XmlElement(nameof(KeyIncreaseHorizontalOffset))]
         public Keybinding XMLKeyIncreaseHorizontalOffset
@@ -81,7 +68,7 @@ namespace ParallelRoadTool.Settings
         }
 
         /// <summary>
-        /// Decrease horizontal offset key.
+        ///     Decrease horizontal offset key.
         /// </summary>
         [XmlElement(nameof(KeyDecreaseHorizontalOffset))]
         public Keybinding XMLKeyDecreaseHorizontalOffset
@@ -91,7 +78,7 @@ namespace ParallelRoadTool.Settings
         }
 
         /// <summary>
-        /// Increase horizontal offset key.
+        ///     Increase horizontal offset key.
         /// </summary>
         [XmlElement(nameof(KeyIncreaseVerticalOffset))]
         public Keybinding XMLKeyIncreaseVerticalOffset
@@ -101,7 +88,7 @@ namespace ParallelRoadTool.Settings
         }
 
         /// <summary>
-        /// Decrease horizontal offset key.
+        ///     Decrease horizontal offset key.
         /// </summary>
         [XmlElement(nameof(KeyDecreaseVerticalOffset))]
         public Keybinding XMLKeyDecreaseVerticalOffset
@@ -112,25 +99,28 @@ namespace ParallelRoadTool.Settings
 
         #endregion
 
-        #endregion
-
         #region Control
 
         #region Internals
 
         /// <summary>
-        /// Load settings from XML file.
+        ///     Load settings from XML file.
         /// </summary>
-        internal static void Load() => XMLFileUtils.Load<ModSettings>(SettingsFileName);
+        internal static void Load()
+        {
+            XMLFileUtils.Load<ModSettings>(SettingsFileName);
+        }
 
         /// <summary>
-        /// Save settings to XML file.
+        ///     Save settings to XML file.
         /// </summary>
-        internal static void Save() => XMLFileUtils.Save<ModSettings>(SettingsFileName);
+        internal static void Save()
+        {
+            XMLFileUtils.Save<ModSettings>(SettingsFileName);
+        }
 
         #endregion
 
         #endregion
-
     }
 }

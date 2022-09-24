@@ -22,7 +22,7 @@ You're using a BETA software which can contain some bugs.
 Unless you want to test the new features, please move to the stable version on Workshop."
 "GROUP_KEYBINDINGS_NAME","Keybindings"
 "GROUP_BUTTONS_NAME","Need help?"
-"SELECT_KEYMAPPING_TOGGLEBUTTON_LABEL","Open/close mod's window"
+"SELECT_KEYMAPPING_TOGGLE_BUTTON_LABEL","Open/close mod's window"
 "SELECT_KEYMAPPING_INCREASE_HORIZONTAL_OFFSET_LABEL","Increase horizontal offset"
 "SELECT_KEYMAPPING_DECREASE_HORIZONTAL_OFFSET_LABEL","Decrease horizontal offset"
 "SELECT_KEYMAPPING_INCREASE_VERTICAL_OFFSET_LABEL","Increase vertical offset"
