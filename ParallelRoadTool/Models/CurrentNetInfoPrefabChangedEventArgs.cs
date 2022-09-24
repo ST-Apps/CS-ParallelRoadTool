@@ -1,13 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ParallelRoadTool.Models
 {
+    /// <summary>
+    ///     <see cref="EventArgs" /> be used when the currently selected <see cref="NetInfo" /> changes in-game (e.g. user
+    ///     clicked on a different network type in game's UI).
+    /// </summary>
     internal class CurrentNetInfoPrefabChangedEventArgs : EventArgs
     {
-        public NetInfo Prefab { get; private set; }
+        #region Properties
+
+        public NetInfo Prefab { get; }
+
+        #endregion
 
         public CurrentNetInfoPrefabChangedEventArgs(NetInfo prefab)
         {

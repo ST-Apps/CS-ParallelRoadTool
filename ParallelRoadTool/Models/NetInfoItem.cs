@@ -12,32 +12,6 @@ namespace ParallelRoadTool.Models
     /// </summary>
     public class NetInfoItem
     {
-        /// <summary>
-        ///     Special case in which we don't have any customizable property, used to render the currently selected network
-        /// </summary>
-        /// <param name="netInfo"></param>
-        public NetInfoItem(NetInfo netInfo)
-        {
-            NetInfo = netInfo;
-
-            BeautifiedName = netInfo.GenerateBeautifiedNetName();
-            Color = UIHelpers.ColorFromString(Name);
-        }
-
-        /// <summary>
-        ///     Set all the customizable properties alongside the wrapped object's ones
-        /// </summary>
-        /// <param name="netInfo"></param>
-        /// <param name="horizontalOffset"></param>
-        /// <param name="verticalOffset"></param>
-        /// <param name="isReversed"></param>
-        public NetInfoItem(NetInfo netInfo, float horizontalOffset, float verticalOffset, bool isReversed) : this(netInfo)
-        {
-            HorizontalOffset = horizontalOffset;
-            VerticalOffset = verticalOffset;
-            IsReversed = isReversed;
-        }
-
         #region Properties
 
         /// <summary>
@@ -88,5 +62,31 @@ namespace ParallelRoadTool.Models
         public bool IsReversed { get; set; }
 
         #endregion
+
+        /// <summary>
+        ///     Special case in which we don't have any customizable property, used to render the currently selected network
+        /// </summary>
+        /// <param name="netInfo"></param>
+        public NetInfoItem(NetInfo netInfo)
+        {
+            NetInfo = netInfo;
+
+            BeautifiedName = netInfo.GenerateBeautifiedNetName();
+            Color = UIHelpers.ColorFromString(Name);
+        }
+
+        /// <summary>
+        ///     Set all the customizable properties alongside the wrapped object's ones
+        /// </summary>
+        /// <param name="netInfo"></param>
+        /// <param name="horizontalOffset"></param>
+        /// <param name="verticalOffset"></param>
+        /// <param name="isReversed"></param>
+        public NetInfoItem(NetInfo netInfo, float horizontalOffset, float verticalOffset, bool isReversed) : this(netInfo)
+        {
+            HorizontalOffset = horizontalOffset;
+            VerticalOffset = verticalOffset;
+            IsReversed = isReversed;
+        }
     }
 }

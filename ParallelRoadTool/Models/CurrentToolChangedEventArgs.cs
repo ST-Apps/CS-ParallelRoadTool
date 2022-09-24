@@ -1,13 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ParallelRoadTool.Models
 {
+    /// <summary>
+    ///     <see cref="EventArgs" /> used when the current <see cref="ToolBase" /> changes in-game (e.g. user switched from
+    ///     roads to transport).
+    /// </summary>
     public class CurrentToolChangedEventArgs : EventArgs
     {
-        public ToolBase Tool { get; private set; }
+        #region Properties
+
+        public ToolBase Tool { get; }
+
+        #endregion
 
         public CurrentToolChangedEventArgs(ToolBase tool)
         {

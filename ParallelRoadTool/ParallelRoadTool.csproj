@@ -71,12 +71,9 @@
     <Compile Include="Patches\NetToolCameraPatch.cs" />
     <Compile Include="Patches\NetToolsPrefabPatch.cs" />
     <Compile Include="Patches\ToolControllerPatch.cs" />
-    <Compile Include="Models\LocalizedString.cs" />
-    <Compile Include="Models\LocalizedStringKey.cs" />
-    <Compile Include="Models\NameList.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
-    <Compile Include="Models\NetTypeItem.cs" />
+    <Compile Include="Models\NetInfoItem.cs" />
     <Compile Include="Models\NetTypeItemEventArgs.cs" />
     <Compile Include="Models\XMLNetItem.cs" />
     <Compile Include="Managers\ParallelRoadToolManager.cs" />

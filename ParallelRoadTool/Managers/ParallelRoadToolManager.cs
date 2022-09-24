@@ -191,7 +191,7 @@ namespace ParallelRoadTool.Managers
                 var targetItem = SelectedNetworkTypes[value.ItemIndex];
                 targetItem.HorizontalOffset = value.HorizontalOffset;
                 targetItem.VerticalOffset = value.VerticalOffset;
-                targetItem.IsReversed = value.IsReversedNetwork;
+                targetItem.IsReversed = value.IsReversed;
             }
 
 
