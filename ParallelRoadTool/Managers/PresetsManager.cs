@@ -27,9 +27,16 @@ namespace ParallelRoadTool.Managers
         ///     Path for the saved presets.
         /// </summary>
         private static readonly string PresetsFolderPath =
-            Path.Combine(Path.Combine(DataLocation.localApplicationData, Mod.Instance.BaseName), "Presets");
+            Path.Combine(Path.Combine(DataLocation.localApplicationData, Mod.SimplifiedName), "Presets");
 
         #endregion
+
+        static PresetsManager()
+        {
+            // Check, and eventually create, the presets folder
+            if (!Directory.Exists(PresetsFolderPath))
+                Directory.CreateDirectory(PresetsFolderPath);
+        }
 
         #region Methods
 
@@ -102,6 +109,10 @@ namespace ParallelRoadTool.Managers
         /// <param name="fileName"></param>
         public static void SavePreset(IEnumerable<NetInfoItem> networks, string fileName = null)
         {
+            // Presets folder is missing, skip
+            if (!Directory.Exists(PresetsFolderPath))
+                Directory.CreateDirectory(PresetsFolderPath);
+
             // Default to auto-save if no filename is provided
             fileName ??= AutoSaveDefaultFileName;
             var path = GetFullPathFromFileName(fileName);

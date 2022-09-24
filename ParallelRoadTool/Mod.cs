@@ -1,31 +1,33 @@
-﻿using AlgernonCommons.Patching;
-using ICities;
-using ParallelRoadTool.UI;
-using AlgernonCommons.Translation;
-using AlgernonCommons;
-using ColossalFramework.UI;
+﻿using AlgernonCommons;
 using AlgernonCommons.Notifications;
+using AlgernonCommons.Patching;
+using AlgernonCommons.Translation;
+using ColossalFramework.UI;
+using ICities;
 using ParallelRoadTool.Settings;
 using ParallelRoadTool.UI.Settings;
+
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace ParallelRoadTool
 {
     /// <summary>
-    /// The base mod class for instantiation by the game.
+    ///     The base mod class for instantiation by the game.
     /// </summary>
     public sealed class Mod : PatcherMod<UIOptionsPanel, PatcherBase>, IUserMod
     {
         #region Fields
 
         /// <summary>
-        /// Minimum minor version that is compatible with the mod.
+        ///     Minimum minor version that is compatible with the mod.
         /// </summary>
         private const string CompatibleVersion = "1.15";
 
         /// <summary>
-        /// Mod's current base version.
+        ///     Mod's current base version.
         /// </summary>
         private readonly string Version = BuildConfig.applicationVersion;
+
         // private const string Version = "3.0.0";
 
         #endregion
@@ -36,8 +38,8 @@ namespace ParallelRoadTool
         private const string Branch = "dev";
 
         /// <summary>
-        /// Gets the mod's base display name (name only).
-        /// For DEBUG builds we also include the current branch name.
+        ///     Gets the mod's base display name (name only).
+        ///     For DEBUG builds we also include the current branch name.
         /// </summary>
         public override string BaseName => $"[BETA] Parallel Road Tool {Version}-{Branch}";
 #else
@@ -48,12 +50,17 @@ namespace ParallelRoadTool
 #endif
 
         /// <summary>
-        /// Gets the mod's unique Harmony identifier.
+        ///     Simplified name, used for file-system operations
+        /// </summary>
+        public static string SimplifiedName => "Parallel Road Tool";
+
+        /// <summary>
+        ///     Gets the mod's unique Harmony identifier.
         /// </summary>
         public override string HarmonyID => "it.stapps.cities.parallelroadtool";
 
         /// <summary>
-        /// Gets the mod's description for display in the content manager.
+        ///     Gets the mod's description for display in the content manager.
         /// </summary>
         public string Description => Translations.Translate("MOD_DESCRIPTION");
 
@@ -62,7 +69,7 @@ namespace ParallelRoadTool
         #region Lifecycle
 
         /// <summary>
-        /// Called by the game when the mod is enabled.
+        ///     Called by the game when the mod is enabled.
         /// </summary>
         public override void OnEnabled()
         {
@@ -74,15 +81,13 @@ namespace ParallelRoadTool
                 // Display error message.
                 // First, check to see if UIView is ready.
                 if (UIView.GetAView() != null)
-                {
+
                     // It's ready - attach the hook now.
                     DisplayVersionError();
-                }
                 else
-                {
+
                     // Otherwise, queue the hook for when the intro's finished loading.
                     LoadingManager.instance.m_introLoaded += DisplayVersionError;
-                }
 
                 // Don't do anything else - no options panel hook, no Harmony patching.
                 return;
@@ -93,14 +98,20 @@ namespace ParallelRoadTool
         }
 
         /// <summary>
-        /// Saves settings file.
+        ///     Saves settings file.
         /// </summary>
-        public override void SaveSettings() => ModSettings.Save();
+        public override void SaveSettings()
+        {
+            ModSettings.Save();
+        }
 
         /// <summary>
-        /// Loads settings file.
+        ///     Loads settings file.
         /// </summary>
-        public override void LoadSettings() => ModSettings.Load();
+        public override void LoadSettings()
+        {
+            ModSettings.Load();
+        }
 
         #endregion
 
@@ -109,12 +120,13 @@ namespace ParallelRoadTool
         #region Internals
 
         /// <summary>
-        /// Displays a version incompatibility error.
+        ///     Displays a version incompatibility error.
         /// </summary>
         private static void DisplayVersionError()
         {
             var versionErrorNotification = NotificationBase.ShowNotification<ListNotification>();
-            versionErrorNotification.AddParas(Translations.Translate("WRONG_VERSION"), Translations.Translate("SHUT_DOWN"), BuildConfig.applicationVersion);
+            versionErrorNotification.AddParas(Translations.Translate("WRONG_VERSION"), Translations.Translate("SHUT_DOWN"),
+                                              BuildConfig.applicationVersion);
         }
 
         #endregion
