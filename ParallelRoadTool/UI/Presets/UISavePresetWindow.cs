@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
@@ -126,7 +127,7 @@ namespace ParallelRoadTool.UI.Presets
 
         #region Lifecycle
 
-        public UISavePresetWindow() : base("Parallel")
+        public UISavePresetWindow() : base("PRT-Logo-Small")
         {
             var topPanel = Container.AddUIComponent<UIPanel>();
             topPanel.relativePosition = new Vector2(0, UIConstants.Padding);
@@ -140,11 +141,10 @@ namespace ParallelRoadTool.UI.Presets
             _fileNameInput.FitWidth(topPanel, 0);
 
             // Main/Save
-            var saveButtonAtlas = UITextures.LoadSingleSpriteAtlas("Save");
-            _saveButton = UIButtons.AddIconButton(topPanel, 0, 0, saveButtonAtlas["normal"].height, saveButtonAtlas);
-            _saveButton.isEnabled = false; //Disabled at start
-            _fileNameInput.height = saveButtonAtlas["normal"].height;
-            _fileNameInput.width -= _saveButton.width - UIConstants.Padding;
+            _saveButton           =  UIButtons.AddIconButton(topPanel, 0, 0, UIConstants.SmallSize, UITextures.LoadQuadSpriteAtlas("PRT-Save"));
+            _saveButton.isEnabled =  false; //Disabled at start
+            _fileNameInput.height =  UIConstants.SmallSize;
+            _fileNameInput.width  -= _saveButton.width - UIConstants.Padding;
 
             // Main/FileList
             _fileList = UIList.AddUIList<UIFileListRow>(Container, 0, 0,

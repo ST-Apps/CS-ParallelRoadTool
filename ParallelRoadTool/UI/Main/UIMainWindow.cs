@@ -4,6 +4,7 @@ using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
@@ -111,14 +112,14 @@ namespace ParallelRoadTool.UI.Main
 
         #region Controls
 
-        private UIButton _closeButton;
-        private UIDragHandle _dragHandle;
-        private UIButton _savePresetButton;
-        private UIButton _loadPresetButton;
-        private UINetListPanel _networkListPanel;
-        private UICheckBox _toggleSnappingButton;
-        private UIButton _addNetworkButton;
-        private UIButton _sortNetworksButton;
+        private UIButton        _closeButton;
+        private UIDragHandle    _dragHandle;
+        private UIButton        _savePresetButton;
+        private UIButton        _loadPresetButton;
+        private UINetListPanel  _networkListPanel;
+        private UICheckBox      _toggleSnappingButton;
+        private UIButton        _addNetworkButton;
+        private UIButton        _sortNetworksButton;
         private UINetSetupPanel _currentNetworkSetupPanel;
 
         #endregion
@@ -130,28 +131,28 @@ namespace ParallelRoadTool.UI.Main
             base.Awake();
 
             // Main
-            name = $"{Constants.ResourcePrefix}MainWindow";
-            backgroundSprite = "UnlockingPanel2";
-            size = new Vector2(512, 256);
+            name                      = $"{Constants.ResourcePrefix}MainWindow";
+            backgroundSprite          = "UnlockingPanel2";
+            size                      = new Vector2(512, 256);
             autoFitChildrenVertically = true;
-            autoLayout = true;
-            autoLayoutDirection = LayoutDirection.Vertical;
-            autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
-            autoLayoutPadding.top = 0;
+            autoLayout                = true;
+            autoLayoutDirection       = LayoutDirection.Vertical;
+            autoLayoutPadding         = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+            autoLayoutPadding.top     = 0;
 
             // Build contents for this window
             BuildHeader();
             BuildToolbar();
 
             // Main/CurrentNetwork
-            _currentNetworkSetupPanel = AddUIComponent<UINetSetupPanel>();
+            _currentNetworkSetupPanel                  = AddUIComponent<UINetSetupPanel>();
             _currentNetworkSetupPanel.relativePosition = Vector2.zero;
-            _currentNetworkSetupPanel.padding = padding;
+            _currentNetworkSetupPanel.padding          = padding;
             _currentNetworkSetupPanel.FitWidth(this, UIConstants.Padding);
             _currentNetworkSetupPanel.IsReadOnly = true;
 
             // Main/NetworkList
-            _networkListPanel = AddUIComponent<UINetListPanel>();
+            _networkListPanel         = AddUIComponent<UINetListPanel>();
             _networkListPanel.padding = padding;
             _networkListPanel.FitWidth(this, UIConstants.Padding);
 
@@ -211,44 +212,45 @@ namespace ParallelRoadTool.UI.Main
         {
             // Main/Header
             var headerPanel = AddUIComponent<UIPanel>();
-            headerPanel.name = $"{name}_Header";
+            headerPanel.name    = $"{name}_Header";
             headerPanel.padding = padding;
             headerPanel.FitWidth(this, UIConstants.Padding);
             headerPanel.height = UIConstants.LargeSize;
 
             // Main/Header/TitleLabel
-            var titleLabel = UILabels.AddLabel(headerPanel, 0f, 13f, Mod.Instance.Name, width, alignment: UIHorizontalAlignment.Center);
-            titleLabel.name = $"{headerPanel.name}_TitleLabel";
+            var titleLabel = UILabels.AddLabel(headerPanel, 0f, 13f, Mod.Instance.Name, width,
+                                               alignment: UIHorizontalAlignment.Center);
+            titleLabel.name   = $"{headerPanel.name}_TitleLabel";
             titleLabel.height = UIConstants.SmallSize;
             titleLabel.anchor = UIAnchorStyle.CenterVertical | UIAnchorStyle.CenterHorizontal;
 
             // Main/Header/DragHandle
-            _dragHandle = headerPanel.AddUIComponent<UIDragHandle>();
-            _dragHandle.name = $"{headerPanel.name}_DragHandle";
+            _dragHandle        = headerPanel.AddUIComponent<UIDragHandle>();
+            _dragHandle.name   = $"{headerPanel.name}_DragHandle";
             _dragHandle.target = this;
             _dragHandle.FitWidth(this, UIConstants.Padding);
             _dragHandle.height = headerPanel.height;
             _dragHandle.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
 
             // Main/Header/CloseButton
-            _closeButton = headerPanel.AddUIComponent<UIButton>();
-            _closeButton.name = $"{headerPanel.name}_CloseButton";
-            _closeButton.text = "";
-            _closeButton.normalBgSprite = "buttonclose";
+            _closeButton                 = headerPanel.AddUIComponent<UIButton>();
+            _closeButton.name            = $"{headerPanel.name}_CloseButton";
+            _closeButton.text            = "";
+            _closeButton.normalBgSprite  = "buttonclose";
             _closeButton.hoveredBgSprite = "buttonclosehover";
             _closeButton.pressedBgSprite = "buttonclosepressed";
-            _closeButton.size = new Vector2(UIConstants.SmallSize, UIConstants.SmallSize);
-            _closeButton.anchor = UIAnchorStyle.CenterVertical;
+            _closeButton.size            = new Vector2(UIConstants.SmallSize, UIConstants.SmallSize);
+            _closeButton.anchor          = UIAnchorStyle.CenterVertical;
             _closeButton.AlignTo(headerPanel, UIAlignAnchor.TopRight);
             _closeButton.relativePosition = new Vector2(_closeButton.relativePosition.x, 4);
 
             // Main/Header/Icon
             var iconSprite = AddUIComponent<UISprite>();
-            iconSprite.height = UIConstants.SmallSize;
-            iconSprite.width = UIConstants.SmallSize;
-            iconSprite.atlas = UITextures.LoadSingleSpriteAtlas("Parallel");
+            iconSprite.height     = UIConstants.SmallSize;
+            iconSprite.width      = UIConstants.SmallSize;
+            iconSprite.atlas      = UITextures.LoadSingleSpriteAtlas("PRT-Logo-Small");
             iconSprite.spriteName = "normal";
-            iconSprite.anchor = UIAnchorStyle.CenterVertical;
+            iconSprite.anchor     = UIAnchorStyle.CenterVertical;
             iconSprite.AlignTo(headerPanel, UIAlignAnchor.TopLeft);
             iconSprite.relativePosition = new Vector2(0, 8);
         }
@@ -263,66 +265,69 @@ namespace ParallelRoadTool.UI.Main
 
             // Main/Toolbar/Options
             var optionsPanel = toolbarPanel.AddUIComponent<UIPanel>();
-            optionsPanel.name = $"{toolbarPanel.name}_Options";
+            optionsPanel.name             = $"{toolbarPanel.name}_Options";
             optionsPanel.backgroundSprite = "GenericPanel";
-            optionsPanel.color = new Color32(206, 206, 206, 255);
-            optionsPanel.size = toolbarPanel.size;
-            optionsPanel.width = optionsPanel.width / 2 - UIConstants.Padding / 2f;
+            optionsPanel.color            = new Color32(206, 206, 206, 255);
+            optionsPanel.size             = toolbarPanel.size;
+            optionsPanel.width            = optionsPanel.width / 2 - UIConstants.Padding / 2f;
             optionsPanel.AlignTo(toolbarPanel, UIAlignAnchor.TopLeft);
-            optionsPanel.autoLayout = true;
+            optionsPanel.autoLayout          = true;
             optionsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
 
             // Main/Toolbar/Options/SavePresetButton
-            _savePresetButton = UIHelpers.CreateUiButton(
-                                                         optionsPanel,
-                                                         new Vector2(UIConstants.MediumSize, UIConstants.MediumSize),
-                                                         string.Empty,
-                                                         Translations.Translate("TOOLTIP_SAVE_BUTTON"),
-                                                         "Save");
-            _savePresetButton.name = $"{optionsPanel.name}_SavePreset";
+            _savePresetButton = UIButtons.AddIconButton(optionsPanel, 0, 0, UIConstants.MediumSize,
+                                                        UITextures.LoadQuadSpriteAtlas("PRT-Save"),
+                                                        Translations.Translate("TOOLTIP_SAVE_BUTTON"));
+
+            _savePresetButton.name      = $"{optionsPanel.name}_SavePreset";
             _savePresetButton.isEnabled = false;
 
             // Main/Toolbar/Options/LoadPresetButton
-            _loadPresetButton = UIHelpers.CreateUiButton(
-                                                         optionsPanel,
-                                                         new Vector2(UIConstants.MediumSize, UIConstants.MediumSize),
-                                                         string.Empty,
-                                                         Translations.Translate("TOOLTIP_LOAD_BUTTON"),
-                                                         "Load");
+            _loadPresetButton = UIButtons.AddIconButton(optionsPanel, 0, 0, UIConstants.MediumSize,
+                                                        UITextures.LoadQuadSpriteAtlas("PRT-Load"),
+                                                        Translations.Translate("TOOLTIP_LOAD_BUTTON"));
             _loadPresetButton.name = $"{optionsPanel.name}_LoadPreset";
 
             // Main/Toolbar/Tools
             var toolsPanel = toolbarPanel.AddUIComponent<UIPanel>();
-            toolsPanel.name = $"{toolbarPanel.name}_Tools";
+            toolsPanel.name             = $"{toolbarPanel.name}_Tools";
             toolsPanel.backgroundSprite = "GenericPanel";
-            toolsPanel.color = new Color32(206, 206, 206, 255);
-            toolsPanel.size = toolbarPanel.size;
-            toolsPanel.width = toolsPanel.width / 2 - UIConstants.Padding / 2f;
+            toolsPanel.color            = new Color32(206, 206, 206, 255);
+            toolsPanel.size             = toolbarPanel.size;
+            toolsPanel.width            = toolsPanel.width / 2 - UIConstants.Padding / 2f;
             toolsPanel.AlignTo(toolbarPanel, UIAlignAnchor.TopRight);
-            toolsPanel.autoLayout = true;
+            toolsPanel.autoLayout          = true;
             toolsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            toolsPanel.autoLayoutStart = LayoutStart.TopRight;
+            toolsPanel.autoLayoutStart     = LayoutStart.TopRight;
 
             // Main/Toolbar/Tools/SortNetworksButton
-            _sortNetworksButton = UIHelpers.CreateUiButton(toolsPanel, new Vector2(UIConstants.MediumSize, UIConstants.MediumSize), string.Empty,
-                                                           Translations.Translate("TOOLTIP_SORT_NETWORKS_BUTTON"), "Sort");
+            _sortNetworksButton = UIButtons.AddIconButton(toolsPanel, 0, 0, UIConstants.MediumSize,
+                                                          UITextures.LoadQuadSpriteAtlas("PRT-Sort"),
+                                                          Translations.Translate("TOOLTIP_SORT_NETWORKS_BUTTON"));
             _sortNetworksButton.name = $"{toolsPanel.name}_SortNetworks";
 
             // Main/Toolbar/Tools/ToggleSnappingButton
-            _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UIHelpers.Atlas.name, "SnappingPressed", "Snapping",
-                                                               backgroundSprite: "OptionBase",
+            _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UITextures.InGameAtlas.name, "SnappingPressed",
+                                                               "Snapping", backgroundSprite: "OptionBase",
                                                                tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
                                                                height: UIConstants.MediumSize, width: UIConstants.MediumSize);
+
+            if (_toggleSnappingButton == null)
+            {
+                Log._Debug($">>>>> {UITextures.InGameAtlas.name}");
+            }
+
             _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
 
             // Main/Toolbar/Tools/AddNetworkButton
-            _addNetworkButton = UIHelpers.CreateUiButton(toolsPanel, new Vector2(UIConstants.MediumSize, UIConstants.MediumSize), string.Empty,
-                                                         Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"), "Add");
+            _addNetworkButton = UIButtons.AddIconButton(toolsPanel, 0, 0, UIConstants.MediumSize,
+                                                        UITextures.LoadQuadSpriteAtlas("PRT-Add"),
+                                                        Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"));
             _addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";
 
             // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
             optionsPanel.autoLayout = false;
-            toolsPanel.autoLayout = false;
+            toolsPanel.autoLayout   = false;
         }
 
         private void UpdateSavedPosition()

@@ -100,7 +100,7 @@ namespace ParallelRoadTool.UI.Presets
 
         #region Lifecycle
 
-        public UILoadPresetWindow() : base("Parallel")
+        public UILoadPresetWindow() : base("PRT-Logo-Small")
         {
             Container.autoLayoutDirection = LayoutDirection.Horizontal;
 

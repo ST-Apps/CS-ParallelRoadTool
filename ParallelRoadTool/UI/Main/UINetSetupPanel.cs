@@ -233,16 +233,13 @@ namespace ParallelRoadTool.UI.Main
             _buttonsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2f);
 
             // NetSetup/Buttons/Delete
-            _deleteButton = UIHelpers.CreateUiButton(
-                                                     _buttonsPanel,
-                                                     new Vector2(UIConstants.TinySize, UIConstants.TinySize),
-                                                     string.Empty,
-                                                     Translations.Translate("TOOLTIP_REMOVE_NETWORK_BUTTON"),
-                                                     "Remove"
-                                                    );
+            _deleteButton = UIButtons.AddIconButton(_buttonsPanel, 0, 0, UIConstants.TinySize,
+                                                    UITextures.LoadQuadSpriteAtlas("PRT-Remove"),
+                                                    Translations.Translate("TOOLTIP_REMOVE_NETWORK_BUTTON"));
 
             // NetSetup/Buttons/Reverse
-            _reverseCheckbox = UICheckBoxes.AddIconToggle(_buttonsPanel, 0, 0, UIHelpers.Atlas.name, "ReversePressed", "Reverse",
+            var reverseAtlas = UITextures.LoadSpriteAtlas("PRT-Reverse", new[] { "Reverse", "ReversePressed" });
+            _reverseCheckbox = UICheckBoxes.AddIconToggle(_buttonsPanel, 0, 0, reverseAtlas.name, "ReversePressed", "Reverse",
                                                           backgroundSprite: "OptionBase",
                                                           tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
                                                           height: UIConstants.TinySize, width: UIConstants.TinySize);

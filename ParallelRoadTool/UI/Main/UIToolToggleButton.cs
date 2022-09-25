@@ -1,4 +1,5 @@
 ﻿using AlgernonCommons.Translation;
+using AlgernonCommons.UI;
 using ColossalFramework;
 using ColossalFramework.UI;
 using CSUtil.Commons;
@@ -56,24 +57,26 @@ namespace ParallelRoadTool.UI.Main
 
             size = new Vector2(UIConstants.MediumSize, UIConstants.MediumSize);
 
-            var toolTip = Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON");
+            var button = UIButtons.AddIconButton(this, 0, 0, UIConstants.MediumSize,
+                                                          UITextures.LoadQuadSpriteAtlas("PRT-Toggle"),
+                                                          Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON"));
+            //var button = AddUIComponent<UIButton>();
+            //button.name = $"{Constants.ResourcePrefix}{SpriteName}";
+            //button.atlas = UIHelpers.Atlas;
+            //button.tooltip = toolTip;
+            //button.relativePosition = new Vector2(0, 0);
 
-            var button = AddUIComponent<UIButton>();
-            button.name = $"{Constants.ResourcePrefix}{SpriteName}";
-            button.atlas = UIHelpers.Atlas;
-            button.tooltip = toolTip;
-            button.relativePosition = new Vector2(0, 0);
+            //button.normalBgSprite = "OptionBase";
+            //button.hoveredBgSprite = "OptionBaseHovered";
+            //button.pressedBgSprite = "OptionBasePressed";
+            //button.disabledBgSprite = "OptionBaseDisabled";
 
-            button.normalBgSprite = "OptionBase";
-            button.hoveredBgSprite = "OptionBaseHovered";
-            button.pressedBgSprite = "OptionBasePressed";
-            button.disabledBgSprite = "OptionBaseDisabled";
+            //button.normalFgSprite = SpriteName;
+            //button.hoveredFgSprite = SpriteName + "Hovered";
+            //button.pressedFgSprite = SpriteName + "Pressed";
+            //button.disabledFgSprite = SpriteName + "Disabled";
 
-            button.normalFgSprite = SpriteName;
-            button.hoveredFgSprite = SpriteName + "Hovered";
-            button.pressedFgSprite = SpriteName + "Pressed";
-            button.disabledFgSprite = SpriteName + "Disabled";
-
+            // TODO: make this class extend right drag handle and add the checkbox using commons
             isChecked = false;
             eventCheckChanged += (_, s) =>
                                  {
