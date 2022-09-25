@@ -38,8 +38,8 @@ namespace ParallelRoadTool.UI
 
         public event PropertyChangedEventHandler<bool> ToolToggleButtonEventCheckChanged
         {
-            add => _mainButton.eventCheckChanged += value;
-            remove => _mainButton.eventCheckChanged -= value;
+            add => _mainButton.EventCheckChanged += value;
+            remove => _mainButton.EventCheckChanged -= value;
         }
 
         public event PropertyChangedEventHandler<bool> ToggleSnappingButtonEventCheckChanged
@@ -367,7 +367,7 @@ namespace ParallelRoadTool.UI
 
             // Window is visible button is visible and mod is active
             _mainWindow.isVisible = _mainButton.isVisible && modStatuses.IsFlagSet(ModStatuses.Active);
-            _mainButton.isChecked = modStatuses.IsFlagSet(ModStatuses.Active);
+            _mainButton.IsChecked = modStatuses.IsFlagSet(ModStatuses.Active);
 
             Log.Info($"[{nameof(UIController)}.{nameof(UpdateVisibility)}] Visibility set for main components: [{nameof(_mainButton)} = {_mainButton.isVisible}, {nameof(_mainWindow)} = {_mainWindow.isVisible}].");
         }

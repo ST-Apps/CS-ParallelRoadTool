@@ -105,54 +105,6 @@
     <Compile Include="UI\Settings\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\ru.xml" />
-    <EmbeddedResource Include="Assets\Localizations\zh.xml" />
-    <EmbeddedResource Include="Assets\Icons\Tutorial.png" />
-    <EmbeddedResource Include="Assets\Localizations\en.xml" />
-    <EmbeddedResource Include="Assets\Icons\Reverse.png" />
-    <EmbeddedResource Include="Assets\Icons\ReverseDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\ReverseFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\ReverseHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\ReversePressed.png" />
-    <EmbeddedResource Include="Assets\Icons\Parallel.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelPressed.png" />
-    <EmbeddedResource Include="Assets\Icons\Remove.png" />
-    <EmbeddedResource Include="Assets\Icons\Add.png" />
-    <EmbeddedResource Include="Assets\Icons\DragCursor.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\es.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\ja.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\de.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\fr.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\it.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Icons\FindIt.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItPressed.png" />
-    <EmbeddedResource Include="Assets\Icons\Load.png" />
-    <EmbeddedResource Include="Assets\Icons\Save.png" />
-    <EmbeddedResource Include="Assets\Icons\HorizontalOffset.png" />
-    <EmbeddedResource Include="Assets\Icons\VerticalOffset.png" />
-    <EmbeddedResource Include="Assets\Icons\Sort.png" />
-    <Content Include="Assets\Localizations\nl.xml" />
-    <Content Include="Assets\Localizations\pt.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

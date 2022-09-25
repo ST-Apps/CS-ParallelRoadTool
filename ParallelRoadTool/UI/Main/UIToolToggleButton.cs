@@ -13,14 +13,25 @@ namespace ParallelRoadTool.UI.Main
     ///     Its default position is just besides the upgrade road tool.
     ///     It's also draggable using the right mouse button.
     /// </summary>
-    public class UIToolToggleButton : UICheckBox
+    public class UIToolToggleButton : UIRightDragHandle
     {
-        #region Fields
+        #region Properties
 
-        /// <summary>
-        ///     Base name for all the sprites showing the PRT icon.
-        /// </summary>
-        private const string SpriteName = "Parallel";
+        public bool IsChecked
+        {
+            get => _toggleCheckBox.isChecked;
+            set => _toggleCheckBox.isChecked = value;
+        }
+
+        #endregion
+
+        #region Events
+
+        public event PropertyChangedEventHandler<bool> EventCheckChanged
+        {
+            add => _toggleCheckBox.eventCheckChanged += value;
+            remove => _toggleCheckBox.eventCheckChanged -= value;
+        }
 
         #endregion
 
@@ -45,58 +56,27 @@ namespace ParallelRoadTool.UI.Main
 
         #region Components
 
-        private UIRightDragHandle _buttonDragHandle;
+        private readonly UICheckBox _toggleCheckBox;
 
         #endregion
 
         #region Lifecycle
 
-        public override void Awake()
+        public UIToolToggleButton()
         {
-            base.Awake();
-
-            size = new Vector2(UIConstants.MediumSize, UIConstants.MediumSize);
-
-            var button = UIButtons.AddIconButton(this, 0, 0, UIConstants.MediumSize,
-                                                          UITextures.LoadQuadSpriteAtlas("PRT-Toggle"),
-                                                          Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON"));
-            //var button = AddUIComponent<UIButton>();
-            //button.name = $"{Constants.ResourcePrefix}{SpriteName}";
-            //button.atlas = UIHelpers.Atlas;
-            //button.tooltip = toolTip;
-            //button.relativePosition = new Vector2(0, 0);
-
-            //button.normalBgSprite = "OptionBase";
-            //button.hoveredBgSprite = "OptionBaseHovered";
-            //button.pressedBgSprite = "OptionBasePressed";
-            //button.disabledBgSprite = "OptionBaseDisabled";
-
-            //button.normalFgSprite = SpriteName;
-            //button.hoveredFgSprite = SpriteName + "Hovered";
-            //button.pressedFgSprite = SpriteName + "Pressed";
-            //button.disabledFgSprite = SpriteName + "Disabled";
-
-            // TODO: make this class extend right drag handle and add the checkbox using commons
-            isChecked = false;
-            eventCheckChanged += (_, s) =>
-                                 {
-                                     if (s)
-                                     {
-                                         button.normalBgSprite = "OptionBaseFocused";
-                                         button.normalFgSprite = SpriteName + "Focused";
-                                     }
-                                     else
-                                     {
-                                         button.normalBgSprite = "OptionBase";
-                                         button.normalFgSprite = SpriteName;
-                                     }
-                                 };
-
             // HACK - [ISSUE-26] Tool's main button must be draggable to prevent overlapping other mods buttons.
-            _buttonDragHandle = AddUIComponent<UIRightDragHandle>();
-            _buttonDragHandle.size = size;
-            _buttonDragHandle.relativePosition = Vector3.zero;
-            _buttonDragHandle.target = this;
+            // Main
+            size             = new Vector2(UIConstants.MediumSize, UIConstants.MediumSize);
+            relativePosition = Vector3.zero;
+
+            // Main/Checkbox
+            var toggleAtlas = UITextures.LoadQuadSpriteAtlas("PRT-Toggle");
+            _toggleCheckBox = UICheckBoxes.AddIconToggle(this, 0, 0, toggleAtlas.name, "pressed", "normal",
+                                                         backgroundSprite: null,
+                                                         tooltip: Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON"),
+                                                         height: UIConstants.MediumSize, width: UIConstants.MediumSize);
+
+            target = _toggleCheckBox;
         }
 
         public override void Start()
@@ -169,7 +149,8 @@ namespace ParallelRoadTool.UI.Main
             }
 
             // We can now set the absolute position at the right of the toolbar
-            absolutePosition = new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1, toolModeBar.absolutePosition.y);
+            absolutePosition = new Vector3(toolModeBar.absolutePosition.x + toolModeBar.size.x + 1,
+                                           toolModeBar.absolutePosition.y);
 
             // We also update the saved position
             UpdateSavedPosition();

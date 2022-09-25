@@ -311,12 +311,6 @@ namespace ParallelRoadTool.UI.Main
                                                                "Snapping", backgroundSprite: "OptionBase",
                                                                tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
                                                                height: UIConstants.MediumSize, width: UIConstants.MediumSize);
-
-            if (_toggleSnappingButton == null)
-            {
-                Log._Debug($">>>>> {UITextures.InGameAtlas.name}");
-            }
-
             _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
 
             // Main/Toolbar/Tools/AddNetworkButton
