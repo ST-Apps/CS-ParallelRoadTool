@@ -43,8 +43,8 @@ namespace ParallelRoadTool.UI.Presets
         public UIPresetDetailsPanel()
         {
             autoLayoutDirection = LayoutDirection.Vertical;
-            autoLayoutPadding = UIHelpers.RectOffsetFromPadding(0);
-            autoLayout = true;
+            autoLayoutPadding   = UIHelpers.RectOffsetFromPadding(0);
+            autoLayout          = true;
         }
 
         public override void Start()

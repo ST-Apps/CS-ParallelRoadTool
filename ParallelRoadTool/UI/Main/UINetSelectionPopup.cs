@@ -58,7 +58,7 @@ namespace ParallelRoadTool.UI.Main
                 }
 
                 // We set filtered data as current data and reset our scroll position.
-                _netItemsList.Data = filteredData;
+                _netItemsList.Data            = filteredData;
                 _netItemsList.CurrentPosition = 0;
             }
         }
@@ -69,10 +69,10 @@ namespace ParallelRoadTool.UI.Main
 
         #region Components
 
-        private UIComponent _owner;
-        private readonly UITextField _searchTextField;
-        private UIList _netItemsList;
-        private FastList<object> _netItems;
+        private          UIComponent      _owner;
+        private readonly UITextField      _searchTextField;
+        private          UIList           _netItemsList;
+        private          FastList<object> _netItems;
 
         #endregion
 
@@ -81,11 +81,11 @@ namespace ParallelRoadTool.UI.Main
         public UINetSelectionPopup()
         {
             // Main
-            backgroundSprite = "OptionsDropboxListbox";
-            zOrder = int.MaxValue;
-            clipChildren = true;
-            autoLayout = true;
-            autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+            backgroundSprite    = "OptionsDropboxListbox";
+            zOrder              = int.MaxValue;
+            clipChildren        = true;
+            autoLayout          = true;
+            autoLayoutPadding   = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
             autoLayoutDirection = LayoutDirection.Vertical;
 
             // Main/SearchText
@@ -204,7 +204,8 @@ namespace ParallelRoadTool.UI.Main
             {
                 // We need to create this here because this panel's size is set by its container and is not know during ctor
                 _netItemsList = UIList.AddUIList<UINetItemLargeListRow>(this, 0, 0, width - 2 * UIConstants.Padding,
-                                                                        4 * UIConstants.LargeSize - UIConstants.Padding, UIConstants.LargeSize);
+                                                                        4 * UIConstants.LargeSize - UIConstants.Padding,
+                                                                        UIConstants.LargeSize);
                 _netItemsList.BackgroundSprite = null;
 
                 // We also register the selection changed event here
@@ -212,7 +213,7 @@ namespace ParallelRoadTool.UI.Main
             }
 
             _netItemsList.Data = items;
-            _netItems = items;
+            _netItems          = items;
 
             // Pre-select
             if (_ownerItem != null) _netItemsList.FindItem<NetInfoItem>(i => i.BeautifiedName == _ownerItem.BeautifiedName);

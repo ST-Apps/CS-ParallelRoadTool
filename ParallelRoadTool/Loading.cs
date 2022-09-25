@@ -3,7 +3,6 @@ using ColossalFramework;
 using CSUtil.Commons;
 using ICities;
 using ParallelRoadTool.Managers;
-using ParallelRoadTool.UI;
 using ParallelRoadTool.UI.Settings;
 using UnityEngine;
 
@@ -25,7 +24,7 @@ namespace ParallelRoadTool
         {
             // Set current game mode, we can't load some stuff if we're not in game (e.g. Map Editor)
             ParallelRoadToolManager.IsInGameMode = loading.currentMode == AppMode.Game;
-            
+
             // Register settings file
             GameSettings.AddSettingsFile(new SettingsFile
             {

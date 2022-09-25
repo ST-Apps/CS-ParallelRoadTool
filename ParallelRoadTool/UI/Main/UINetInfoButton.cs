@@ -83,8 +83,8 @@ namespace ParallelRoadTool.UI.Main
 
         #region Components
 
-        private UINetInfoPanel _netInfoPanel;
-        private UIButton _toggleButton;
+        private UINetInfoPanel      _netInfoPanel;
+        private UIButton            _toggleButton;
         private UINetSelectionPopup _netSelectionPopup;
 
         #endregion
@@ -96,23 +96,23 @@ namespace ParallelRoadTool.UI.Main
             base.Awake();
 
             // Main
-            clipChildren = true;
-            size = new Vector2(400, 48 + UIConstants.Padding + UIConstants.Padding);
+            clipChildren     = true;
+            size             = new Vector2(400, 48 + UIConstants.Padding + UIConstants.Padding);
             relativePosition = Vector3.zero;
 
             // Main/NetInfo
-            _netInfoPanel = AddUIComponent<UINetInfoPanel>();
+            _netInfoPanel        = AddUIComponent<UINetInfoPanel>();
             _netInfoPanel.anchor = UIAnchorStyle.CenterVertical;
 
             // Main/ToggleButton
-            _toggleButton = AddUIComponent<UIButton>();
-            _toggleButton.size = _netInfoPanel.size;
+            _toggleButton                  = AddUIComponent<UIButton>();
+            _toggleButton.size             = _netInfoPanel.size;
             _toggleButton.relativePosition = Vector3.zero;
-            _toggleButton.normalBgSprite = "OptionsDropbox";
-            _toggleButton.hoveredBgSprite = "ButtonWhite";
-            _toggleButton.focusedBgSprite = "OptionsDropboxHovered";
-            _toggleButton.pressedBgSprite = "OptionsDropboxHovered";
-            _toggleButton.opacity = 0.25f;
+            _toggleButton.normalBgSprite   = "OptionsDropbox";
+            _toggleButton.hoveredBgSprite  = "ButtonWhite";
+            _toggleButton.focusedBgSprite  = "OptionsDropboxHovered";
+            _toggleButton.pressedBgSprite  = "OptionsDropboxHovered";
+            _toggleButton.opacity          = 0.25f;
         }
 
         public override void Start()
@@ -170,12 +170,12 @@ namespace ParallelRoadTool.UI.Main
         {
             if (inList)
             {
-                _toggleButton.normalBgSprite = "GenericPanel";
+                _toggleButton.normalBgSprite  = "GenericPanel";
                 _toggleButton.hoveredBgSprite = "ButtonWhite";
                 _toggleButton.focusedBgSprite = "GenericPanel";
                 _toggleButton.pressedBgSprite = "GenericPanel";
-                _toggleButton.color = netInfo.Color;
-                _toggleButton.opacity = 0.25f;
+                _toggleButton.color           = netInfo.Color;
+                _toggleButton.opacity         = 0.25f;
             }
 
             _netInfoPanel.NetInfoItem = netInfo;

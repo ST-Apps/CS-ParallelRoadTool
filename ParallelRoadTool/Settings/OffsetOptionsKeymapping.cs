@@ -23,7 +23,7 @@ namespace ParallelRoadTool.Settings
 
         public IncreaseHorizontalOffsetOptionsKeymapping()
         {
-            Label = Translations.Translate("SELECT_KEYMAPPING_INCREASE_HORIZONTAL_OFFSET_LABEL");
+            Label       = Translations.Translate("SELECT_KEYMAPPING_INCREASE_HORIZONTAL_OFFSET_LABEL");
             ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
     }
@@ -45,7 +45,7 @@ namespace ParallelRoadTool.Settings
 
         public DecreaseHorizontalOffsetOptionsKeymapping()
         {
-            Label = Translations.Translate("SELECT_KEYMAPPING_DECREASE_HORIZONTAL_OFFSET_LABEL");
+            Label       = Translations.Translate("SELECT_KEYMAPPING_DECREASE_HORIZONTAL_OFFSET_LABEL");
             ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
     }
@@ -67,7 +67,7 @@ namespace ParallelRoadTool.Settings
 
         public IncreaseVerticalOffsetOptionsKeymapping()
         {
-            Label = Translations.Translate("SELECT_KEYMAPPING_INCREASE_VERTICAL_OFFSET_LABEL");
+            Label       = Translations.Translate("SELECT_KEYMAPPING_INCREASE_VERTICAL_OFFSET_LABEL");
             ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
     }
@@ -89,7 +89,7 @@ namespace ParallelRoadTool.Settings
 
         public DecreaseVerticalOffsetOptionsKeymapping()
         {
-            Label = Translations.Translate("SELECT_KEYMAPPING_DECREASE_VERTICAL_OFFSET_LABEL");
+            Label       = Translations.Translate("SELECT_KEYMAPPING_DECREASE_VERTICAL_OFFSET_LABEL");
             ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
     }

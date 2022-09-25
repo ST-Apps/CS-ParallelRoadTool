@@ -39,14 +39,14 @@ namespace ParallelRoadTool.UI.Shared
             if (_netInfoRow == null)
             {
                 // Init our row
-                width = parent.width;
-                height = RowHeight;
+                width         = parent.width;
+                height        = RowHeight;
                 isInteractive = false;
 
                 // Set the item
-                _netInfoRow = AddUIComponent<UINetInfoTinyPanel>();
+                _netInfoRow                  = AddUIComponent<UINetInfoTinyPanel>();
                 _netInfoRow.relativePosition = Vector2.zero;
-                _netInfoRow.isInteractive = false;
+                _netInfoRow.isInteractive    = false;
             }
 
             // Set the current item
@@ -71,8 +71,8 @@ namespace ParallelRoadTool.UI.Shared
         public override void Deselect(int rowIndex)
         {
             BackgroundSpriteName = "GenericPanel";
-            BackgroundColor = _netInfoRow.color;
-            BackgroundOpacity = 0.25f;
+            BackgroundColor      = _netInfoRow.color;
+            BackgroundOpacity    = 0.25f;
         }
 
         #endregion

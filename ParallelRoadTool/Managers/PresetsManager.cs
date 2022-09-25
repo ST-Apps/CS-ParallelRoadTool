@@ -26,8 +26,8 @@ namespace ParallelRoadTool.Managers
         /// <summary>
         ///     Path for the saved presets.
         /// </summary>
-        private static readonly string PresetsFolderPath =
-            Path.Combine(Path.Combine(DataLocation.localApplicationData, Mod.SimplifiedName), "Presets");
+        private static readonly string PresetsFolderPath
+            = Path.Combine(Path.Combine(DataLocation.localApplicationData, Mod.SimplifiedName), "Presets");
 
         #endregion
 
@@ -59,8 +59,8 @@ namespace ParallelRoadTool.Managers
         /// <returns></returns>
         private static IEnumerable<NetInfoItem> ToNetInfoItems(IEnumerable<XMLNetItem> networks)
         {
-            return networks.Select(n => new NetInfoItem(Singleton<ParallelRoadToolManager>.instance.FromName(n.Name), n.HorizontalOffset,
-                                                        n.VerticalOffset, n.IsReversed));
+            return networks.Select(n => new NetInfoItem(Singleton<ParallelRoadToolManager>.instance.FromName(n.Name),
+                                                        n.HorizontalOffset, n.VerticalOffset, n.IsReversed));
         }
 
         #endregion
@@ -79,10 +79,8 @@ namespace ParallelRoadTool.Managers
             if (!Directory.Exists(PresetsFolderPath)) return new string[] { };
 
             // Get all files matching *.xml besides the auto-save one that can't be overwritten
-            var files = Directory.GetFiles(PresetsFolderPath, "*.xml")
-                                 .Select(Path.GetFileNameWithoutExtension)
-                                 .Where(f => f != AutoSaveDefaultFileName)
-                                 .ToArray();
+            var files = Directory.GetFiles(PresetsFolderPath, "*.xml").Select(Path.GetFileNameWithoutExtension)
+                                 .Where(f => f != AutoSaveDefaultFileName).ToArray();
 
             Log.Info($"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Found {files.Length} presets");
             Log._Debug($"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Files: [{string.Join(", ", files)}]");
@@ -122,23 +120,21 @@ namespace ParallelRoadTool.Managers
                 File.Delete(path);
 
             // Generate the array of elements with the serializable items
-            var xmlNetItems = networks
-                              .Select(n => new XMLNetItem
-                              {
-                                  Name = n.Name,
-                                  IsReversed = n.IsReversed,
-                                  HorizontalOffset = n.HorizontalOffset,
-                                  VerticalOffset = n.VerticalOffset
-                              })
-                              .ToArray();
+            var xmlNetItems = networks.Select(n => new XMLNetItem
+            {
+                Name             = n.Name,
+                IsReversed       = n.IsReversed,
+                HorizontalOffset = n.HorizontalOffset,
+                VerticalOffset   = n.VerticalOffset
+            }).ToArray();
 
             Log.Info(@$"[{nameof(PresetsManager)}.{nameof(SavePreset)}] Saving preset to ""{path}"" with {xmlNetItems.Length} networks");
 
             try
             {
                 // Write the array for file
-                var xmlSerializer = new XmlSerializer(xmlNetItems.GetType());
-                using var streamWriter = new StreamWriter(path);
+                var       xmlSerializer = new XmlSerializer(xmlNetItems.GetType());
+                using var streamWriter  = new StreamWriter(path);
                 xmlSerializer.Serialize(streamWriter, xmlNetItems);
             }
             catch (Exception e)
@@ -173,9 +169,9 @@ namespace ParallelRoadTool.Managers
             try
             {
                 // Deserialize the provided file
-                var xmlSerializer = new XmlSerializer(typeof(XMLNetItem[]));
-                using var streamReader = new StreamReader(path);
-                var data = (XMLNetItem[])xmlSerializer.Deserialize(streamReader);
+                var       xmlSerializer = new XmlSerializer(typeof(XMLNetItem[]));
+                using var streamReader  = new StreamReader(path);
+                var       data          = (XMLNetItem[])xmlSerializer.Deserialize(streamReader);
 
                 // Convert the deserialized results into our internal format
                 var result = ToNetInfoItems(data).ToArray();

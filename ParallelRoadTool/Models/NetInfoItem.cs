@@ -72,7 +72,7 @@ namespace ParallelRoadTool.Models
             NetInfo = netInfo;
 
             BeautifiedName = netInfo.GenerateBeautifiedNetName();
-            Color = UIHelpers.ColorFromString(Name);
+            Color          = UIHelpers.ColorFromString(Name);
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace ParallelRoadTool.Models
         public NetInfoItem(NetInfo netInfo, float horizontalOffset, float verticalOffset, bool isReversed) : this(netInfo)
         {
             HorizontalOffset = horizontalOffset;
-            VerticalOffset = verticalOffset;
-            IsReversed = isReversed;
+            VerticalOffset   = verticalOffset;
+            IsReversed       = isReversed;
         }
     }
 }

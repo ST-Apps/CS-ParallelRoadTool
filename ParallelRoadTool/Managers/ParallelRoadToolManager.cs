@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using ColossalFramework;
 using ColossalFramework.UI;
@@ -21,11 +20,10 @@ namespace ParallelRoadTool.Managers
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ParallelRoadToolManager : MonoBehaviour
     {
-
         #region Fields
 
         /// <summary>
-        /// True if auto-save has been loaded already, false if not.
+        ///     True if auto-save has been loaded already, false if not.
         /// </summary>
         private static bool _autoSaveLoaded;
 
@@ -94,13 +92,13 @@ namespace ParallelRoadTool.Managers
 
             // Previous item's offset so that we can try to separate this one from previous one without overlapping
             var prevOffset = SelectedNetworkTypes.Any() ? SelectedNetworkTypes.Last().HorizontalOffset : 0;
-            var item = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
+            var item       = new NetInfoItem(netInfo, prevOffset + netInfo.m_halfWidth * 2, 0, false);
 
             AddNetwork(item);
         }
 
         /// <summary>
-        /// Forces sorting and refreshing the current selected networks
+        ///     Forces sorting and refreshing the current selected networks
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -194,20 +192,21 @@ namespace ParallelRoadTool.Managers
             if (value.SelectedNetworkName != null)
             {
                 // Network only, we change its type and copy over our custom properties
-                SelectedNetworkTypes[value.ItemIndex] = new NetInfoItem(AvailableRoadTypes.First(n => n.name == value.SelectedNetworkName))
-                {
-                    HorizontalOffset = SelectedNetworkTypes[value.ItemIndex].HorizontalOffset,
-                    VerticalOffset = SelectedNetworkTypes[value.ItemIndex].VerticalOffset,
-                    IsReversed = SelectedNetworkTypes[value.ItemIndex].IsReversed
-                };
+                SelectedNetworkTypes[value.ItemIndex]
+                    = new NetInfoItem(AvailableRoadTypes.First(n => n.name == value.SelectedNetworkName))
+                    {
+                        HorizontalOffset = SelectedNetworkTypes[value.ItemIndex].HorizontalOffset,
+                        VerticalOffset   = SelectedNetworkTypes[value.ItemIndex].VerticalOffset,
+                        IsReversed       = SelectedNetworkTypes[value.ItemIndex].IsReversed
+                    };
             }
             else
             {
                 // Update customizable properties
                 var targetItem = SelectedNetworkTypes[value.ItemIndex];
                 targetItem.HorizontalOffset = value.HorizontalOffset;
-                targetItem.VerticalOffset = value.VerticalOffset;
-                targetItem.IsReversed = value.IsReversed;
+                targetItem.VerticalOffset   = value.VerticalOffset;
+                targetItem.IsReversed       = value.IsReversed;
             }
 
 
@@ -295,7 +294,8 @@ namespace ParallelRoadTool.Managers
                 // Initialize support data
                 SelectedNetworkTypes.Clear();
                 IsSnappingEnabled = false;
-                IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic == SimulationMetaData.MetaBool.True;
+                IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic ==
+                                    SimulationMetaData.MetaBool.True;
 
                 // Load available networks
                 LoadNetworks();
@@ -364,7 +364,7 @@ namespace ParallelRoadTool.Managers
                 SelectedNetworkTypes.Clear();
                 IsSnappingEnabled = false;
                 IsLeftHandTraffic = false;
-                _autoSaveLoaded = false;
+                _autoSaveLoaded   = false;
 
                 // Clean all the UI components
                 UIController.Cleanup();
@@ -403,17 +403,17 @@ namespace ParallelRoadTool.Managers
         /// </summary>
         private void DetachFromEvents()
         {
-            ToolControllerPatch.CurrentToolChanged -= ToolControllerPatch_CurrentToolChanged;
-            NetToolsPrefabPatch.CurrentNetInfoChanged -= NetToolsPrefabPatch_CurrentNetInfoChanged;
-            UIController.ToolToggleButtonEventCheckChanged -= UIController_ToolToggleButtonEventCheckChanged;
+            ToolControllerPatch.CurrentToolChanged             -= ToolControllerPatch_CurrentToolChanged;
+            NetToolsPrefabPatch.CurrentNetInfoChanged          -= NetToolsPrefabPatch_CurrentNetInfoChanged;
+            UIController.ToolToggleButtonEventCheckChanged     -= UIController_ToolToggleButtonEventCheckChanged;
             UIController.ToggleSnappingButtonEventCheckChanged -= UIController_ToggleSnappingButtonEventCheckChanged;
-            UIController.CloseButtonEventClicked -= UIController_ClosedButtonEventClicked;
-            UIController.AddNetworkButtonEventClicked -= UIController_AddNetworkButtonEventClicked;
-            UIController.SortNetworksButtonEventClicked -= UIControllerOnSortNetworksButtonEventClicked;
-            UIController.DeleteNetworkButtonEventClicked -= UIController_DeleteNetworkButtonEventClicked;
-            UIController.OnHorizontalOffsetKeypress -= UIController_OnHorizontalOffsetKeypress;
-            UIController.OnVerticalOffsetKeypress -= UIController_OnVerticalOffsetKeypress;
-            UIController.NetTypeEventChanged -= UIController_NetTypeEventChanged;
+            UIController.CloseButtonEventClicked               -= UIController_ClosedButtonEventClicked;
+            UIController.AddNetworkButtonEventClicked          -= UIController_AddNetworkButtonEventClicked;
+            UIController.SortNetworksButtonEventClicked        -= UIControllerOnSortNetworksButtonEventClicked;
+            UIController.DeleteNetworkButtonEventClicked       -= UIController_DeleteNetworkButtonEventClicked;
+            UIController.OnHorizontalOffsetKeypress            -= UIController_OnHorizontalOffsetKeypress;
+            UIController.OnVerticalOffsetKeypress              -= UIController_OnVerticalOffsetKeypress;
+            UIController.NetTypeEventChanged                   -= UIController_NetTypeEventChanged;
 
             if (IsInGameMode)
                 Singleton<UnlockManager>.instance.m_milestonesUpdated -= OnMilestoneUpdate;
@@ -424,17 +424,17 @@ namespace ParallelRoadTool.Managers
         /// </summary>
         private void AttachToEvents()
         {
-            ToolControllerPatch.CurrentToolChanged += ToolControllerPatch_CurrentToolChanged;
-            NetToolsPrefabPatch.CurrentNetInfoChanged += NetToolsPrefabPatch_CurrentNetInfoChanged;
-            UIController.ToolToggleButtonEventCheckChanged += UIController_ToolToggleButtonEventCheckChanged;
+            ToolControllerPatch.CurrentToolChanged             += ToolControllerPatch_CurrentToolChanged;
+            NetToolsPrefabPatch.CurrentNetInfoChanged          += NetToolsPrefabPatch_CurrentNetInfoChanged;
+            UIController.ToolToggleButtonEventCheckChanged     += UIController_ToolToggleButtonEventCheckChanged;
             UIController.ToggleSnappingButtonEventCheckChanged += UIController_ToggleSnappingButtonEventCheckChanged;
-            UIController.CloseButtonEventClicked += UIController_ClosedButtonEventClicked;
-            UIController.AddNetworkButtonEventClicked += UIController_AddNetworkButtonEventClicked;
-            UIController.SortNetworksButtonEventClicked += UIControllerOnSortNetworksButtonEventClicked;
-            UIController.DeleteNetworkButtonEventClicked += UIController_DeleteNetworkButtonEventClicked;
-            UIController.OnHorizontalOffsetKeypress += UIController_OnHorizontalOffsetKeypress;
-            UIController.OnVerticalOffsetKeypress += UIController_OnVerticalOffsetKeypress;
-            UIController.NetTypeEventChanged += UIController_NetTypeEventChanged;
+            UIController.CloseButtonEventClicked               += UIController_ClosedButtonEventClicked;
+            UIController.AddNetworkButtonEventClicked          += UIController_AddNetworkButtonEventClicked;
+            UIController.SortNetworksButtonEventClicked        += UIControllerOnSortNetworksButtonEventClicked;
+            UIController.DeleteNetworkButtonEventClicked       += UIController_DeleteNetworkButtonEventClicked;
+            UIController.OnHorizontalOffsetKeypress            += UIController_OnHorizontalOffsetKeypress;
+            UIController.OnVerticalOffsetKeypress              += UIController_OnVerticalOffsetKeypress;
+            UIController.NetTypeEventChanged                   += UIController_NetTypeEventChanged;
 
             // Subscribe to milestones updated, but only if we're not in map editor
             if (IsInGameMode)
@@ -492,7 +492,7 @@ namespace ParallelRoadTool.Managers
                 if (prefab == null) continue;
 
                 var networkName = prefab.GenerateBeautifiedNetName();
-                var atlasName = prefab.m_Atlas?.name;
+                var atlasName   = prefab.m_Atlas?.name;
 
                 // Skip items with no atlas set as they're not networks (e.g. train lines)
                 if (string.IsNullOrEmpty(atlasName))
@@ -526,8 +526,11 @@ namespace ParallelRoadTool.Managers
         public void ToggleModActiveStatus(bool force = false, bool value = false)
         {
             if (!force)
+
                 // Toggle active status flag
+            {
                 ModStatuses ^= ModStatuses.Active;
+            }
             else
             {
                 // We're forcing a specific value so set/unset the relative flag
@@ -577,16 +580,12 @@ namespace ParallelRoadTool.Managers
             var preset = PresetsManager.LoadPreset(fileName);
 
             SelectedNetworkTypes.Clear();
-            foreach (var netInfoItem in preset)
-            {
-                AddNetwork(netInfoItem);
-            }
+            foreach (var netInfoItem in preset) AddNetwork(netInfoItem);
 
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadPreset)}] {nameof(SelectedNetworkTypes)} now contains: ({string.Join(", ", SelectedNetworkTypes.Select(n => n.BeautifiedName).ToArray())}).");
 
             NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
             RefreshNetworks();
-
         }
 
         #endregion

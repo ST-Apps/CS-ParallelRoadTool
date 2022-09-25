@@ -31,8 +31,7 @@ namespace ParallelRoadTool.UI.Main
         {
             if (p.buttons != UIMouseButton.Right) return;
 
-            p = new UIMouseEventParameter(p.source, UIMouseButton.Left, p.clicks, p.ray, p.position, p.moveDelta,
-                                          p.wheelDelta);
+            p = new UIMouseEventParameter(p.source, UIMouseButton.Left, p.clicks, p.ray, p.position, p.moveDelta, p.wheelDelta);
 
             base.OnMouseDown(p);
         }
@@ -41,8 +40,7 @@ namespace ParallelRoadTool.UI.Main
         {
             if (p.buttons != UIMouseButton.Right) return;
 
-            p = new UIMouseEventParameter(p.source, UIMouseButton.Left, p.clicks, p.ray, p.position, p.moveDelta,
-                                          p.wheelDelta);
+            p = new UIMouseEventParameter(p.source, UIMouseButton.Left, p.clicks, p.ray, p.position, p.moveDelta, p.wheelDelta);
 
             base.OnMouseMove(p);
         }

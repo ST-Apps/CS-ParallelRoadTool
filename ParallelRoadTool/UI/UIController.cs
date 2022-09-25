@@ -21,6 +21,14 @@ namespace ParallelRoadTool.UI
     /// </summary>
     public class UIController : MonoBehaviour
     {
+        #region Properties
+
+        public static bool IsShiftPressed { get; private set; }
+
+        public static bool IsCtrlPressed { get; private set; }
+
+        #endregion
+
         #region Events
 
         public event EventHandler CloseButtonEventClicked;
@@ -107,8 +115,7 @@ namespace ParallelRoadTool.UI
             {
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
                       .SetMessage(Translations.Translate("LABEL_SAVE_PRESET_FAILED_TITLE"),
-                                  string.Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"), fileName, e),
-                                  true);
+                                  string.Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"), fileName, e), true);
             }
         }
 
@@ -145,8 +152,7 @@ namespace ParallelRoadTool.UI
             {
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel")
                       .SetMessage(Translations.Translate("LABEL_LOAD_PRESET_FAILED_TITLE"),
-                                  string.Format(Translations.Translate("LABEL_LOAD_PRESET_FAILED_MESSAGE"), fileName, e),
-                                  true);
+                                  string.Format(Translations.Translate("LABEL_LOAD_PRESET_FAILED_MESSAGE"), fileName, e), true);
             }
         }
 
@@ -156,14 +162,6 @@ namespace ParallelRoadTool.UI
             var popup = (UINetSelectionPopup)child;
             popup.LoadNetworks(Singleton<ParallelRoadToolManager>.instance.AvailableRoadTypes);
         }
-
-        #endregion
-
-        #region Properties
-
-        public static bool IsShiftPressed { get; private set; }
-
-        public static bool IsCtrlPressed { get; private set; }
 
         #endregion
 
@@ -190,10 +188,8 @@ namespace ParallelRoadTool.UI
         /// </summary>
         public void OnGUI()
         {
-            if (UIView.HasModalInput()
-                || UIView.HasInputFocus()
-                || !Singleton<ParallelRoadToolManager>.exists
-                || !(ToolsModifierControl.toolController.CurrentTool is NetTool))
+            if (UIView.HasModalInput() || UIView.HasInputFocus() || !Singleton<ParallelRoadToolManager>.exists ||
+                !(ToolsModifierControl.toolController.CurrentTool is NetTool))
                 return;
 
             var e = Event.current;
@@ -215,12 +211,12 @@ namespace ParallelRoadTool.UI
             if (ModSettings.KeyToggleTool.IsPressed(e)) ToggleModStatus();
             if (ModSettings.KeyIncreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(1f);
             if (ModSettings.KeyDecreaseHorizontalOffset.IsPressed(e)) AdjustNetOffset(-1f);
-            if (ModSettings.KeyIncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f, false);
+            if (ModSettings.KeyIncreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(1f,  false);
             if (ModSettings.KeyDecreaseVerticalOffset.IsPressed(e)) AdjustNetOffset(-1f, false);
 
             // Check for modifiers too
             IsShiftPressed = e.shift;
-            IsCtrlPressed = e.control;
+            IsCtrlPressed  = e.control;
         }
 
         #endregion
@@ -284,22 +280,22 @@ namespace ParallelRoadTool.UI
 
         private void AttachToEvents()
         {
-            _mainWindow.CloseButtonEventClicked += MainWindow_CloseButtonEventClicked;
-            _mainWindow.AddNetworkButtonEventClicked += MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.CloseButtonEventClicked        += MainWindow_CloseButtonEventClicked;
+            _mainWindow.AddNetworkButtonEventClicked   += MainWindow_AddNetworkButtonEventClicked;
             _mainWindow.SortNetworksButtonEventClicked += MainWindowOnSortNetworksButtonEventClicked;
-            _mainWindow.SavePresetButtonEventClicked += MainWindowOnSavePresetButtonEventClicked;
-            _mainWindow.LoadPresetButtonEventClicked += MainWindowOnLoadPresetButtonEventClicked;
-            _mainWindow.OnPopupOpened += MainWindowOnOnPopupOpened;
+            _mainWindow.SavePresetButtonEventClicked   += MainWindowOnSavePresetButtonEventClicked;
+            _mainWindow.LoadPresetButtonEventClicked   += MainWindowOnLoadPresetButtonEventClicked;
+            _mainWindow.OnPopupOpened                  += MainWindowOnOnPopupOpened;
         }
 
         private void DetachFromEvents()
         {
-            _mainWindow.CloseButtonEventClicked -= MainWindow_CloseButtonEventClicked;
-            _mainWindow.AddNetworkButtonEventClicked -= MainWindow_AddNetworkButtonEventClicked;
+            _mainWindow.CloseButtonEventClicked        -= MainWindow_CloseButtonEventClicked;
+            _mainWindow.AddNetworkButtonEventClicked   -= MainWindow_AddNetworkButtonEventClicked;
             _mainWindow.SortNetworksButtonEventClicked -= MainWindowOnSortNetworksButtonEventClicked;
-            _mainWindow.SavePresetButtonEventClicked -= MainWindowOnSavePresetButtonEventClicked;
-            _mainWindow.LoadPresetButtonEventClicked -= MainWindowOnLoadPresetButtonEventClicked;
-            _mainWindow.OnPopupOpened -= MainWindowOnOnPopupOpened;
+            _mainWindow.SavePresetButtonEventClicked   -= MainWindowOnSavePresetButtonEventClicked;
+            _mainWindow.LoadPresetButtonEventClicked   -= MainWindowOnLoadPresetButtonEventClicked;
+            _mainWindow.OnPopupOpened                  -= MainWindowOnOnPopupOpened;
         }
 
         #endregion

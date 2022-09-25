@@ -1,7 +1,6 @@
 ﻿using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
-using CSUtil.Commons;
 using ParallelRoadTool.Models;
 using ParallelRoadTool.UI.Shared;
 using ParallelRoadTool.UI.Utils;
@@ -42,9 +41,9 @@ namespace ParallelRoadTool.UI.Main
         {
             set
             {
-                _isReadOnly = value;
+                _isReadOnly              = value;
                 _netInfoPanel.IsReadOnly = value;
-                color = UIConstants.ReadOnlyColor;
+                color                    = UIConstants.ReadOnlyColor;
 
                 HideTools();
             }
@@ -103,8 +102,8 @@ namespace ParallelRoadTool.UI.Main
         /// <param name="value"></param>
         private void NetInfo_EventChanged<T>(UIComponent component, T value)
         {
-            var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text),
-                                                       _reverseCheckbox.isChecked);
+            var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text),
+                                                       float.Parse(_verticalOffsetField.text), _reverseCheckbox.isChecked);
             NetTypeEventChanged?.Invoke(null, netTypeArgs);
         }
 
@@ -132,13 +131,13 @@ namespace ParallelRoadTool.UI.Main
 
         private UINetInfoButton _netInfoPanel;
 
-        private UIPanel _offsetsPanel;
+        private UIPanel     _offsetsPanel;
         private UITextField _horizontalOffsetField;
         private UITextField _verticalOffsetField;
 
-        private UIPanel _buttonsPanel;
+        private UIPanel    _buttonsPanel;
         private UICheckBox _reverseCheckbox;
-        private UIButton _deleteButton;
+        private UIButton   _deleteButton;
 
         #endregion
 
@@ -149,24 +148,24 @@ namespace ParallelRoadTool.UI.Main
             base.Awake();
 
             // NetSetup
-            name = $"{Constants.ResourcePrefix}NetSetup";
-            backgroundSprite = "GenericPanel";
+            name                      = $"{Constants.ResourcePrefix}NetSetup";
+            backgroundSprite          = "GenericPanel";
             autoFitChildrenVertically = true;
-            autoLayout = true;
-            autoLayoutDirection = LayoutDirection.Horizontal;
+            autoLayout                = true;
+            autoLayoutDirection       = LayoutDirection.Horizontal;
 
             // NetSetup/NetInfo
-            _netInfoPanel = AddUIComponent<UINetInfoButton>();
+            _netInfoPanel        = AddUIComponent<UINetInfoButton>();
             _netInfoPanel.anchor = UIAnchorStyle.CenterVertical;
 
             // NetSetup/Offsets
-            _offsetsPanel = AddUIComponent<UIPanel>();
-            _offsetsPanel.name = $"{name}_Offsets";
-            _offsetsPanel.autoLayout = true;
-            _offsetsPanel.autoLayoutDirection = LayoutDirection.Vertical;
-            _offsetsPanel.anchor = UIAnchorStyle.CenterVertical;
+            _offsetsPanel                             = AddUIComponent<UIPanel>();
+            _offsetsPanel.name                        = $"{name}_Offsets";
+            _offsetsPanel.autoLayout                  = true;
+            _offsetsPanel.autoLayoutDirection         = LayoutDirection.Vertical;
+            _offsetsPanel.anchor                      = UIAnchorStyle.CenterVertical;
             _offsetsPanel.autoFitChildrenHorizontally = true;
-            _offsetsPanel.autoFitChildrenVertically = true;
+            _offsetsPanel.autoFitChildrenVertically   = true;
 
             // NetSetup/Offsets/Spacer
             _offsetsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2f);
@@ -174,60 +173,60 @@ namespace ParallelRoadTool.UI.Main
             // NetSetup/Offsets/Horizontal
             var horizontalOffsetPanel = _offsetsPanel.AddUIComponent<UIPanel>();
             horizontalOffsetPanel.autoFitChildrenHorizontally = true;
-            horizontalOffsetPanel.autoFitChildrenVertically = true;
-            horizontalOffsetPanel.autoLayout = true;
-            horizontalOffsetPanel.autoLayoutDirection = LayoutDirection.Horizontal;
+            horizontalOffsetPanel.autoFitChildrenVertically   = true;
+            horizontalOffsetPanel.autoLayout                  = true;
+            horizontalOffsetPanel.autoLayoutDirection         = LayoutDirection.Horizontal;
 
             // NetSetup/Offsets/Horizontal/Icon
             var horizontalOffsetIcon = horizontalOffsetPanel.AddUIComponent<UISprite>();
-            horizontalOffsetIcon.size = new Vector2(UIConstants.TinySize - 4, UIConstants.TinySize - 4);
-            horizontalOffsetIcon.atlas = UITextures.LoadSingleSpriteAtlas("HorizontalOffset");
+            horizontalOffsetIcon.size       = new Vector2(UIConstants.TinySize - 4, UIConstants.TinySize - 4);
+            horizontalOffsetIcon.atlas      = UITextures.LoadSingleSpriteAtlas("HorizontalOffset");
             horizontalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Horizontal/Text
-            _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize,
+            _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.HugeSize,
+                                                               UIConstants.TinySize,
                                                                tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
-            _horizontalOffsetField.numericalOnly =
-                _horizontalOffsetField.allowFloats =
-                    _horizontalOffsetField.allowNegative =
-                        _horizontalOffsetField.submitOnFocusLost = true;
+            _horizontalOffsetField.numericalOnly = _horizontalOffsetField.allowFloats
+                                                       = _horizontalOffsetField.allowNegative
+                                                             = _horizontalOffsetField.submitOnFocusLost = true;
 
             // NetSetup/Offsets/Vertical
             var verticalOffsetPanel = _offsetsPanel.AddUIComponent<UIPanel>();
             verticalOffsetPanel.autoFitChildrenHorizontally = true;
-            verticalOffsetPanel.autoFitChildrenVertically = true;
-            verticalOffsetPanel.autoLayout = true;
-            verticalOffsetPanel.autoLayoutDirection = LayoutDirection.Horizontal;
+            verticalOffsetPanel.autoFitChildrenVertically   = true;
+            verticalOffsetPanel.autoLayout                  = true;
+            verticalOffsetPanel.autoLayoutDirection         = LayoutDirection.Horizontal;
 
             // NetSetup/Offsets/Vertical/Icon
             var verticalOffsetIcon = verticalOffsetPanel.AddUIComponent<UISprite>();
-            verticalOffsetIcon.size = new Vector2(UIConstants.TinySize - 4, UIConstants.TinySize - 4);
-            verticalOffsetIcon.atlas = UITextures.LoadSingleSpriteAtlas("VerticalOffset");
+            verticalOffsetIcon.size       = new Vector2(UIConstants.TinySize - 4, UIConstants.TinySize - 4);
+            verticalOffsetIcon.atlas      = UITextures.LoadSingleSpriteAtlas("VerticalOffset");
             verticalOffsetIcon.spriteName = "normal";
 
             // NetSetup/Offsets/Vertical/Text
-            _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize,
+            _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.HugeSize,
+                                                             UIConstants.TinySize,
                                                              tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
             _verticalOffsetField.maxLength = 3;
-            _verticalOffsetField.numericalOnly =
-                _verticalOffsetField.allowFloats =
-                    _verticalOffsetField.allowNegative =
-                        _verticalOffsetField.submitOnFocusLost = true;
+            _verticalOffsetField.numericalOnly = _verticalOffsetField.allowFloats
+                                                     = _verticalOffsetField.allowNegative
+                                                           = _verticalOffsetField.submitOnFocusLost = true;
 
             // Manually align icons on offsets panel
-            horizontalOffsetPanel.autoLayout = false;
+            horizontalOffsetPanel.autoLayout      =  false;
             horizontalOffsetIcon.relativePosition += new Vector3(0, 2);
-            verticalOffsetPanel.autoLayout = false;
-            verticalOffsetIcon.relativePosition += new Vector3(0, 2);
+            verticalOffsetPanel.autoLayout        =  false;
+            verticalOffsetIcon.relativePosition   += new Vector3(0, 2);
 
             // NetSetup/Buttons
-            _buttonsPanel = AddUIComponent<UIPanel>();
-            _buttonsPanel.name = $"{name}_Buttons";
-            _buttonsPanel.autoLayout = true;
-            _buttonsPanel.autoLayoutDirection = LayoutDirection.Vertical;
-            _buttonsPanel.anchor = UIAnchorStyle.CenterVertical;
+            _buttonsPanel                             = AddUIComponent<UIPanel>();
+            _buttonsPanel.name                        = $"{name}_Buttons";
+            _buttonsPanel.autoLayout                  = true;
+            _buttonsPanel.autoLayoutDirection         = LayoutDirection.Vertical;
+            _buttonsPanel.anchor                      = UIAnchorStyle.CenterVertical;
             _buttonsPanel.autoFitChildrenHorizontally = true;
-            _buttonsPanel.autoFitChildrenVertically = true;
+            _buttonsPanel.autoFitChildrenVertically   = true;
 
             // NetSetup/Buttons/Spacer
             _buttonsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2f);
@@ -255,7 +254,7 @@ namespace ParallelRoadTool.UI.Main
             _netInfoPanel.width = width - _offsetsPanel.width - _buttonsPanel.width;
 
             // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
-            autoLayout = false;
+            autoLayout               = false;
             _offsetsPanel.autoLayout = false;
             _buttonsPanel.autoLayout = false;
         }
@@ -286,24 +285,24 @@ namespace ParallelRoadTool.UI.Main
 
         private void AttachToEvents()
         {
-            _deleteButton.eventClicked += DeleteButton_eventClicked;
-            _reverseCheckbox.eventCheckChanged += NetInfo_EventChanged;
+            _deleteButton.eventClicked                += DeleteButton_eventClicked;
+            _reverseCheckbox.eventCheckChanged        += NetInfo_EventChanged;
             _horizontalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
-            _horizontalOffsetField.eventMouseWheel += HorizontalOffsetFieldOnEventMouseWheel;
-            _verticalOffsetField.eventTextSubmitted += NetInfo_EventChanged;
-            _verticalOffsetField.eventMouseWheel += VerticalOffsetFieldOnEventMouseWheel;
-            _netInfoPanel.OnPopupSelectionChanged += NetInfoPanelOnOnPopupSelectionChanged;
+            _horizontalOffsetField.eventMouseWheel    += HorizontalOffsetFieldOnEventMouseWheel;
+            _verticalOffsetField.eventTextSubmitted   += NetInfo_EventChanged;
+            _verticalOffsetField.eventMouseWheel      += VerticalOffsetFieldOnEventMouseWheel;
+            _netInfoPanel.OnPopupSelectionChanged     += NetInfoPanelOnOnPopupSelectionChanged;
         }
 
         private void DetachFromEvents()
         {
-            _deleteButton.eventClicked -= DeleteButton_eventClicked;
-            _reverseCheckbox.eventCheckChanged -= NetInfo_EventChanged;
+            _deleteButton.eventClicked                -= DeleteButton_eventClicked;
+            _reverseCheckbox.eventCheckChanged        -= NetInfo_EventChanged;
             _horizontalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
-            _horizontalOffsetField.eventMouseWheel -= HorizontalOffsetFieldOnEventMouseWheel;
-            _verticalOffsetField.eventTextSubmitted -= NetInfo_EventChanged;
-            _verticalOffsetField.eventMouseWheel -= VerticalOffsetFieldOnEventMouseWheel;
-            _netInfoPanel.OnPopupSelectionChanged -= NetInfoPanelOnOnPopupSelectionChanged;
+            _horizontalOffsetField.eventMouseWheel    -= HorizontalOffsetFieldOnEventMouseWheel;
+            _verticalOffsetField.eventTextSubmitted   -= NetInfo_EventChanged;
+            _verticalOffsetField.eventMouseWheel      -= VerticalOffsetFieldOnEventMouseWheel;
+            _netInfoPanel.OnPopupSelectionChanged     -= NetInfoPanelOnOnPopupSelectionChanged;
         }
 
         /// <summary>
@@ -335,7 +334,6 @@ namespace ParallelRoadTool.UI.Main
                 _horizontalOffsetField.text = $"{currentValue}";
 
             NetInfo_EventChanged<string>(this, null);
-
         }
 
         #endregion
@@ -351,10 +349,10 @@ namespace ParallelRoadTool.UI.Main
         /// <param name="netInfo"></param>
         public void Render(NetInfoItem netInfo)
         {
-            color = _isReadOnly ? UIConstants.ReadOnlyColor : netInfo.Color;
+            color                       = _isReadOnly ? UIConstants.ReadOnlyColor : netInfo.Color;
             _horizontalOffsetField.text = $"{netInfo.HorizontalOffset}";
-            _verticalOffsetField.text = $"{netInfo.VerticalOffset}";
-            _reverseCheckbox.isChecked = netInfo.IsReversed;
+            _verticalOffsetField.text   = $"{netInfo.VerticalOffset}";
+            _reverseCheckbox.isChecked  = netInfo.IsReversed;
 
             _netInfoPanel.Render(netInfo);
         }

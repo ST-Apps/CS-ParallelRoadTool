@@ -59,13 +59,13 @@ namespace ParallelRoadTool.UI.Presets
         private void AttachToEvents()
         {
             _fileList.EventSelectionChanged += FileListOnEventSelectionChanged;
-            _loadPresetButton.eventClicked += LoadPresetButtonOnEventClicked;
+            _loadPresetButton.eventClicked  += LoadPresetButtonOnEventClicked;
         }
 
         private void DetachFromEvents()
         {
             _fileList.EventSelectionChanged -= FileListOnEventSelectionChanged;
-            _loadPresetButton.eventClicked -= LoadPresetButtonOnEventClicked;
+            _loadPresetButton.eventClicked  -= LoadPresetButtonOnEventClicked;
         }
 
         #endregion
@@ -92,9 +92,9 @@ namespace ParallelRoadTool.UI.Presets
 
         #region Components
 
-        private readonly UIList _fileList;
+        private readonly UIList               _fileList;
         private readonly UIPresetDetailsPanel _presetDetails;
-        private readonly UIButton _loadPresetButton;
+        private readonly UIButton             _loadPresetButton;
 
         #endregion
 
@@ -105,24 +105,24 @@ namespace ParallelRoadTool.UI.Presets
             Container.autoLayoutDirection = LayoutDirection.Horizontal;
 
             // Main/FileList
-            _fileList = UIList.AddUIList<UIFileListRow>(Container, 0, 0,
-                                                        Container.width / 2 - 2 * UIConstants.Padding,
+            _fileList = UIList.AddUIList<UIFileListRow>(Container, 0, 0, Container.width / 2 - 2 * UIConstants.Padding,
                                                         Container.height - 2 * UIConstants.Padding, UIConstants.TinySize);
             _fileList.RowHeight -= 4;
 
             // Main/DetailsContainer
             var detailsContainer = Container.AddUIComponent<UIPanel>();
-            detailsContainer.autoLayoutDirection = LayoutDirection.Vertical;
+            detailsContainer.autoLayoutDirection      = LayoutDirection.Vertical;
             detailsContainer.autoLayoutPadding.bottom = UIConstants.Padding;
-            detailsContainer.autoLayout = true;
-            detailsContainer.size = _fileList.size;
+            detailsContainer.autoLayout               = true;
+            detailsContainer.size                     = _fileList.size;
 
             // Main/DetailsContainer/PresetDetails
-            _presetDetails = detailsContainer.AddUIComponent<UIPresetDetailsPanel>();
+            _presetDetails      = detailsContainer.AddUIComponent<UIPresetDetailsPanel>();
             _presetDetails.size = detailsContainer.size - new Vector2(0, UIConstants.SmallSize + UIConstants.Padding);
 
             // Main/DetailsContainer/LoadButton
-            _loadPresetButton = UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"),
+            _loadPresetButton = UIButtons.AddButton(detailsContainer, 0, 0,
+                                                    Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"),
                                                     detailsContainer.width);
             _loadPresetButton.isEnabled = false;
 

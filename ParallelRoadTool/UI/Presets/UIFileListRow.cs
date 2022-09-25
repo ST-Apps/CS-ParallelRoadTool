@@ -35,7 +35,7 @@ namespace ParallelRoadTool.UI.Presets
             if (_fileName == null)
             {
                 // Init our row
-                width = parent.width;
+                width  = parent.width;
                 height = RowHeight;
 
                 // Set the label

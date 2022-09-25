@@ -17,7 +17,7 @@ namespace ParallelRoadTool.Extensions
             isSlope = false;
             if (destination.m_netAI == null || source.m_netAI == null) return destination;
 
-            var sourceWrapper = new RoadAIWrapper(source.m_netAI);
+            var sourceWrapper      = new RoadAIWrapper(source.m_netAI);
             var destinationWrapper = new RoadAIWrapper(destination.m_netAI);
 
             NetInfo result;
@@ -32,7 +32,7 @@ namespace ParallelRoadTool.Extensions
             }
             else if (source == sourceWrapper.slope || source.name.ToLowerInvariant().Contains("slope"))
             {
-                result = destinationWrapper.slope;
+                result  = destinationWrapper.slope;
                 isSlope = true;
             }
             else if (source == sourceWrapper.tunnel || source.name.ToLowerInvariant().Contains("tunnel"))

@@ -28,10 +28,8 @@ namespace ParallelRoadTool.UI.Shared
             if (modalEffect != null && !modalEffect.isVisible)
             {
                 modalEffect.Show(false);
-                ValueAnimator.Animate("ModalEffect",
-                                      delegate(float val) { modalEffect.opacity = val; },
-                                      new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut)
-                                     );
+                ValueAnimator.Animate("ModalEffect", delegate(float val) { modalEffect.opacity = val; },
+                                      new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
             }
 
             UIView.PushModal(this);

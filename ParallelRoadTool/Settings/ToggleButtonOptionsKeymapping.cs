@@ -23,7 +23,7 @@ namespace ParallelRoadTool.Settings
 
         public ToggleButtonOptionsKeymapping()
         {
-            Label = Translations.Translate("SELECT_KEYMAPPING_TOGGLE_BUTTON_LABEL");
+            Label       = Translations.Translate("SELECT_KEYMAPPING_TOGGLE_BUTTON_LABEL");
             ButtonLabel = SavedInputKey.ToLocalizedString("KEYNAME", KeySetting);
         }
     }

@@ -17,8 +17,8 @@ using UnityEngine;
 
 namespace ParallelRoadTool.Patches
 {
-    [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-                  typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
+    [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo),
+                  typeof(Color), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
     internal static class NetToolCameraPatch
     {
         /// <summary>
@@ -35,11 +35,11 @@ namespace ParallelRoadTool.Patches
 
         // ReSharper disable once UnusedMember.Local
         private static void Postfix(RenderManager.CameraInfo cameraInfo,
-                                    NetInfo info,
-                                    Color color,
-                                    NetTool.ControlPoint startPoint,
-                                    NetTool.ControlPoint middlePoint,
-                                    NetTool.ControlPoint endPoint)
+                                    NetInfo                  info,
+                                    Color                    color,
+                                    NetTool.ControlPoint     startPoint,
+                                    NetTool.ControlPoint     middlePoint,
+                                    NetTool.ControlPoint     endPoint)
         {
             try
             {
@@ -72,13 +72,14 @@ namespace ParallelRoadTool.Patches
                     {
                         m_direction = startPoint.m_direction,
                         m_elevation = startPoint.m_elevation,
-                        m_node = 0,
-                        m_outside = startPoint.m_outside,
+                        m_node      = 0,
+                        m_outside   = startPoint.m_outside,
 
                         // startPoint may have a (0,0,0) direction, in that case we use the one from the middlePoint which is accurate enough to avoid overlapping starting nodes
-                        m_position =
-                            startPoint.m_position.Offset(startPoint.m_direction == Vector3.zero ? middlePoint.m_direction : startPoint.m_direction,
-                                                         horizontalOffset, verticalOffset),
+                        m_position
+                            = startPoint.m_position
+                                        .Offset(startPoint.m_direction == Vector3.zero ? middlePoint.m_direction : startPoint.m_direction,
+                                                horizontalOffset, verticalOffset),
                         m_segment = 0
                     };
 
@@ -86,25 +87,25 @@ namespace ParallelRoadTool.Patches
                     {
                         m_direction = middlePoint.m_direction,
                         m_elevation = middlePoint.m_elevation,
-                        m_node = 0,
-                        m_outside = middlePoint.m_outside,
-                        m_position = middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
-                        m_segment = 0
+                        m_node      = 0,
+                        m_outside   = middlePoint.m_outside,
+                        m_position  = middlePoint.m_position.Offset(middlePoint.m_direction, horizontalOffset, verticalOffset),
+                        m_segment   = 0
                     };
 
                     var currentEndPoint = new NetTool.ControlPoint
                     {
                         m_direction = endPoint.m_direction,
                         m_elevation = endPoint.m_elevation,
-                        m_node = 0,
-                        m_outside = endPoint.m_outside,
-                        m_position = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
-                        m_segment = 0
+                        m_node      = 0,
+                        m_outside   = endPoint.m_outside,
+                        m_position  = endPoint.m_position.Offset(endPoint.m_direction, horizontalOffset, verticalOffset),
+                        m_segment   = 0
                     };
 
                     // Render parallel segments by shifting the position of the 3 ControlPoint
-                    NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color, currentStartPoint,
-                                                      currentMidPoint, currentEndPoint);
+                    NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color,
+                                                      currentStartPoint, currentMidPoint, currentEndPoint);
 
                     // We draw arrows only for one-way networks, just as in game
                     if (!selectedNetInfo.IsOneWayOnly()) continue;
@@ -115,19 +116,20 @@ namespace ParallelRoadTool.Patches
                         a = currentStartPoint.m_position,
                         d = currentEndPoint.m_position
                     };
-                    NetSegment.CalculateMiddlePoints(bezier.a, currentMidPoint.m_direction, bezier.d, -currentEndPoint.m_direction, true, true,
-                                                     out bezier.b, out bezier.c);
+                    NetSegment.CalculateMiddlePoints(bezier.a, currentMidPoint.m_direction, bezier.d,
+                                                     -currentEndPoint.m_direction, true, true, out bezier.b, out bezier.c);
 
                     // we can now extract both position and direction from the tangent
-                    var position = bezier.Position(0.5f);
+                    var position  = bezier.Position(0.5f);
                     var direction = bezier.Tangent(0.5f);
 
                     // Direction however will be oriented towards the middle point, so we need to rotate it by -90°
                     direction.y = 0;
-                    direction = Quaternion.Euler(0, -90, 0) * direction.normalized;
+                    direction   = Quaternion.Euler(0, -90, 0) * direction.normalized;
 
                     // We can finally draw the arrow
-                    NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
+                    NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, position, direction,
+                                                              currentRoadInfos.IsReversed);
                 }
             }
             catch (Exception e)
@@ -147,32 +149,35 @@ namespace ParallelRoadTool.Patches
         private class NetToolReversePatch
         {
             [HarmonyReversePatch]
-            [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-                          typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
-            public static void RenderOverlay(object instance,
+            [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo),
+                          typeof(Color), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint),
+                          typeof(NetTool.ControlPoint))]
+            public static void RenderOverlay(object                   instance,
                                              RenderManager.CameraInfo cameraInfo,
-                                             NetInfo info,
-                                             Color color,
-                                             NetTool.ControlPoint startPoint,
-                                             NetTool.ControlPoint middlePoint,
-                                             NetTool.ControlPoint endPoint)
+                                             NetInfo                  info,
+                                             Color                    color,
+                                             NetTool.ControlPoint     startPoint,
+                                             NetTool.ControlPoint     middlePoint,
+                                             NetTool.ControlPoint     endPoint)
             {
                 // No implementation is required as this will call the original method
-                throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
+                throw new
+                    NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
             }
 
             [HarmonyReversePatch]
-            [HarmonyPatch(typeof(NetTool), "RenderRoadAccessArrow", typeof(RenderManager.CameraInfo), typeof(Color), typeof(Vector3),
-                          typeof(Vector3), typeof(bool))]
-            public static void RenderRoadAccessArrow(object instance,
+            [HarmonyPatch(typeof(NetTool), "RenderRoadAccessArrow", typeof(RenderManager.CameraInfo), typeof(Color),
+                          typeof(Vector3), typeof(Vector3), typeof(bool))]
+            public static void RenderRoadAccessArrow(object                   instance,
                                                      RenderManager.CameraInfo cameraInfo,
-                                                     Color color,
-                                                     Vector3 position,
-                                                     Vector3 xDir,
-                                                     bool flipped)
+                                                     Color                    color,
+                                                     Vector3                  position,
+                                                     Vector3                  xDir,
+                                                     bool                     flipped)
             {
                 // No implementation is required as this will call the original method
-                throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
+                throw new
+                    NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
             }
         }
     }

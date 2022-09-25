@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
@@ -20,6 +19,14 @@ namespace ParallelRoadTool.UI.Presets
     /// </summary>
     public sealed class UISavePresetWindow : UIModalWindow
     {
+        #region Properties
+
+        public override float PanelHeight => 256;
+
+        protected override string PanelTitle => Translations.Translate("LABEL_SAVE_PRESET_WINDOW_TITLE");
+
+        #endregion
+
         #region Events
 
         public event PropertyChangedEventHandler<string> SaveButtonEventClicked;
@@ -53,15 +60,19 @@ namespace ParallelRoadTool.UI.Presets
                                                                            if (ret == 0)
                                                                            {
                                                                                // No action to do, user decided to not overwrite the file
-                                                                               Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User refused to overwrite ""{_fileNameInput.text}"".");
+                                                                               Log
+                                                                                   .Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User refused to overwrite ""{_fileNameInput.text}"".");
                                                                                return;
                                                                            }
 
                                                                            // We can overwrite and thus save the file
-                                                                           Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User accepted to overwrite ""{_fileNameInput.text}"", saving...");
-                                                                           SaveButtonEventClicked?.Invoke(this, _fileNameInput.text);
+                                                                           Log
+                                                                               .Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User accepted to overwrite ""{_fileNameInput.text}"", saving...");
+                                                                           SaveButtonEventClicked
+                                                                               ?.Invoke(this, _fileNameInput.text);
                                                                        })
-                      .SetMessage(Translations.Translate("LABEL_OVERWRITE_PRESET_TITLE"), string.Format(Translations.Translate("LABEL_OVERWRITE_PRESET_MESSAGE"), _fileNameInput.text));
+                      .SetMessage(Translations.Translate("LABEL_OVERWRITE_PRESET_TITLE"),
+                                  string.Format(Translations.Translate("LABEL_OVERWRITE_PRESET_MESSAGE"), _fileNameInput.text));
             }
             else
             {
@@ -81,14 +92,14 @@ namespace ParallelRoadTool.UI.Presets
         {
             _fileList.EventSelectionChanged += FileListOnEventSelectionChanged;
             _fileNameInput.eventTextChanged += FileNameInput_eventTextChanged;
-            _saveButton.eventClicked += SaveButtonOnEventClicked;
+            _saveButton.eventClicked        += SaveButtonOnEventClicked;
         }
 
         private void DetachFromEvents()
         {
             _fileList.EventSelectionChanged -= FileListOnEventSelectionChanged;
             _fileNameInput.eventTextChanged -= FileNameInput_eventTextChanged;
-            _saveButton.eventClicked -= SaveButtonOnEventClicked;
+            _saveButton.eventClicked        -= SaveButtonOnEventClicked;
         }
 
         #endregion
@@ -107,21 +118,13 @@ namespace ParallelRoadTool.UI.Presets
 
         #endregion
 
-        #region Properties
-
-        public override float PanelHeight => 256;
-
-        protected override string PanelTitle => Translations.Translate("LABEL_SAVE_PRESET_WINDOW_TITLE");
-
-        #endregion
-
         #region Unity
 
         #region Components
 
         private readonly UITextField _fileNameInput;
-        private readonly UIButton _saveButton;
-        private readonly UIList _fileList;
+        private readonly UIButton    _saveButton;
+        private readonly UIList      _fileList;
 
         #endregion
 
@@ -130,9 +133,9 @@ namespace ParallelRoadTool.UI.Presets
         public UISavePresetWindow() : base("PRT-Logo-Small")
         {
             var topPanel = Container.AddUIComponent<UIPanel>();
-            topPanel.relativePosition = new Vector2(0, UIConstants.Padding);
-            topPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            topPanel.autoLayout = true;
+            topPanel.relativePosition          = new Vector2(0, UIConstants.Padding);
+            topPanel.autoLayoutDirection       = LayoutDirection.Horizontal;
+            topPanel.autoLayout                = true;
             topPanel.autoFitChildrenVertically = true;
             topPanel.FitWidth(Container, UIConstants.Padding);
 
@@ -141,15 +144,16 @@ namespace ParallelRoadTool.UI.Presets
             _fileNameInput.FitWidth(topPanel, 0);
 
             // Main/Save
-            _saveButton           =  UIButtons.AddIconButton(topPanel, 0, 0, UIConstants.SmallSize, UITextures.LoadQuadSpriteAtlas("PRT-Save"));
+            _saveButton = UIButtons.AddIconButton(topPanel, 0, 0, UIConstants.SmallSize,
+                                                  UITextures.LoadQuadSpriteAtlas("PRT-Save"));
             _saveButton.isEnabled =  false; //Disabled at start
             _fileNameInput.height =  UIConstants.SmallSize;
             _fileNameInput.width  -= _saveButton.width - UIConstants.Padding;
 
             // Main/FileList
-            _fileList = UIList.AddUIList<UIFileListRow>(Container, 0, 0,
-                                                        Container.width - 2 * UIConstants.Padding,
-                                                        Container.height - topPanel.height - 3 * UIConstants.Padding, UIConstants.TinySize);
+            _fileList = UIList.AddUIList<UIFileListRow>(Container, 0, 0, Container.width - 2 * UIConstants.Padding,
+                                                        Container.height - topPanel.height - 3 * UIConstants.Padding,
+                                                        UIConstants.TinySize);
             _fileList.RowHeight -= 4;
 
             // Events

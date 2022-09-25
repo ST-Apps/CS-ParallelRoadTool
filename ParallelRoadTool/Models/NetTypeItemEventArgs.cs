@@ -40,15 +40,15 @@ namespace ParallelRoadTool.Models
 
         public NetTypeItemEventArgs(int itemIndex, float horizontalOffset, float verticalOffset, bool isReversed)
         {
-            ItemIndex = itemIndex;
+            ItemIndex        = itemIndex;
             HorizontalOffset = horizontalOffset;
-            VerticalOffset = verticalOffset;
-            IsReversed = isReversed;
+            VerticalOffset   = verticalOffset;
+            IsReversed       = isReversed;
         }
 
         public NetTypeItemEventArgs(int itemIndex, string selectedNetworkName)
         {
-            ItemIndex = itemIndex;
+            ItemIndex           = itemIndex;
             SelectedNetworkName = selectedNetworkName;
         }
     }

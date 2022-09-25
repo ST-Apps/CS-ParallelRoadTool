@@ -25,11 +25,11 @@ namespace ParallelRoadTool.UI.Main
             base.Awake();
 
             // NetworkList
-            name = $"{Constants.ResourcePrefix}NetworkList";
+            name                      = $"{Constants.ResourcePrefix}NetworkList";
             autoFitChildrenVertically = true;
-            autoLayout = true;
-            autoLayoutPadding = new RectOffset(0, 0, 0, UIConstants.Padding);
-            autoLayoutDirection = LayoutDirection.Vertical;
+            autoLayout                = true;
+            autoLayoutPadding         = new RectOffset(0, 0, 0, UIConstants.Padding);
+            autoLayoutDirection       = LayoutDirection.Vertical;
         }
 
         #endregion
@@ -38,9 +38,9 @@ namespace ParallelRoadTool.UI.Main
 
         #region Events
 
-        public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
+        public event PropertyChangedEventHandler<int>                  DeleteNetworkButtonEventClicked;
         public event PropertyChangedEventHandler<NetTypeItemEventArgs> NetTypeEventChanged;
-        public event ChildComponentEventHandler OnPopupOpened;
+        public event ChildComponentEventHandler                        OnPopupOpened;
 
         #endregion
 
@@ -82,9 +82,9 @@ namespace ParallelRoadTool.UI.Main
 
             // Events
             netSetupPanel.DeleteNetworkButtonEventClicked += NetSetupPanel_DeleteNetworkButtonEventClicked;
-            netSetupPanel.NetTypeEventChanged += NetSetupPanel_NetTypeEventChanged;
-            netSetupPanel.OnPopupOpened += NetSetupPanelOnOnPopupOpened;
-            netSetupPanel.OnPopupSelectionChanged += NetSetupPanelOnOnPopupSelectionChanged;
+            netSetupPanel.NetTypeEventChanged             += NetSetupPanel_NetTypeEventChanged;
+            netSetupPanel.OnPopupOpened                   += NetSetupPanelOnOnPopupOpened;
+            netSetupPanel.OnPopupSelectionChanged         += NetSetupPanelOnOnPopupSelectionChanged;
 
             // Finally render the panel
             netSetupPanel.Render(netInfo);
