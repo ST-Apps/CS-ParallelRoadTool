@@ -47,7 +47,8 @@ namespace ParallelRoadTool.Patches
                 if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
                     return;
 
-                if (endPoint.m_direction == Vector3.zero)
+                // Render only if we have a clear direction, otherwise results will look messy
+                if (endPoint.m_direction == startPoint.m_direction)
                     return;
 
                 // Get NetTool instance
