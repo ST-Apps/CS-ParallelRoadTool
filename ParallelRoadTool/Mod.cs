@@ -23,31 +23,27 @@ namespace ParallelRoadTool
         /// </summary>
         private const string CompatibleVersion = "1.15";
 
-        /// <summary>
-        ///     Mod's current base version.
-        /// </summary>
-        private readonly string Version = BuildConfig.applicationVersion;
-
-        // private const string Version = "3.0.0";
-
         #endregion
 
         #region Properties
 
 #if DEBUG
-        private const string Branch = "dev";
-
         /// <summary>
         ///     Gets the mod's base display name (name only).
         ///     For DEBUG builds we also include the current branch name.
         /// </summary>
-        public override string BaseName => $"[BETA] Parallel Road Tool {Version}-{Branch}";
+        public override string BaseName => $"[BETA] Parallel Road Tool";
 #else
         /// <summary>
         /// Gets the mod's base display name (name only).
         /// </summary>
         public override string BaseName => $"Parallel Road Tool {Version}";
 #endif
+
+        /// <summary>
+        /// Gets the mod's what's new message array.
+        /// </summary>
+        public override WhatsNewMessage[] WhatsNewMessages => WhatsNewMessageListing.Messages;
 
         /// <summary>
         ///     Simplified name, used for file-system operations
