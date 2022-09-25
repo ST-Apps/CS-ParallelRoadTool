@@ -142,6 +142,12 @@ namespace ParallelRoadTool.Managers
         /// <param name="e"></param>
         private void ToolControllerPatch_CurrentToolChanged(object sender, CurrentToolChangedEventArgs e)
         {
+            if (e.Tool == null)
+            {
+                Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] Received a null tool, skipping.");
+                return;
+            }
+
             Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ToolControllerPatch_CurrentToolChanged)}] Changed tool to {e.Tool.GetType().Name}.");
 
             if (e.Tool is NetTool)

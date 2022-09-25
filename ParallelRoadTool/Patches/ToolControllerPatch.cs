@@ -30,7 +30,7 @@ namespace ParallelRoadTool.Patches
         {
             Log._Debug($"[{nameof(ToolControllerPatch)}.{nameof(Postfix)}] Changed active tool to {ToolsModifierControl.toolController.CurrentTool}.");
 
-            CurrentToolChanged?.Invoke(null, new CurrentToolChangedEventArgs(ToolsModifierControl.toolController.CurrentTool));
+            CurrentToolChanged?.Invoke(null, new CurrentToolChangedEventArgs(ToolsModifierControl.toolController?.CurrentTool));
         }
     }
 }
