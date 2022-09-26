@@ -109,14 +109,6 @@ namespace ParallelRoadTool.Patches
                         m_segment = 0
                     };
 
-                    // TODO: TMP
-                    // TODO: creare struttura in PRTManager con i dati degli ultimi segmenti paralleli creati (uno per rete selezionata).
-                    // A questo aggiungiamo anche le info generate in questa intersezione.
-                    // In questo modo sia questo che NetManagerPatch usano gli stessi dati e possiamo usare questa classe
-                    // per pre-generare i punti da creare (senza fare quindi gli stessi calcoli più volte).
-                    // Praticamente questa classe diventa l'unica responsabile per la creazione del buffer di punti da creare in NetManagerPatch.
-                    // Verificare però se questo discorso vale anche per le curve o solo per le rette.
-
                     // Check if we need to look for an intersection point to move our previously created ending point.
                     // This is needed because certain angles will cause the segments to overlap.
                     // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
@@ -141,19 +133,24 @@ namespace ParallelRoadTool.Patches
                         var previousStartPoint = previousStartPointNullable.Value;
 
                         // Get the closest one between start and end
+                        var previousEndPointDistance = Vector3.Distance(previousEndPoint.m_position, currentStartPoint.m_position);
+                        var previousStartPointDistance = Vector3.Distance(previousStartPoint.m_position, currentStartPoint.m_position);
+                        var previousPoint = previousEndPoint;
+
+                        if (previousStartPointDistance < previousEndPointDistance)
+                            previousPoint = previousStartPoint;
 
                         // If the offset start point is different from previous ending point it means we're not connecting to the previous segment.
                         // If we're not connecting to the previous segment we can't reuse its data so we must stop here
                         // IMPORTANT: curved segments have start and end nodes inverted for some reason
-                        if (currentStartPoint.m_position == previousStartPoint.m_position ||
-                            currentStartPoint.m_position == previousEndPoint.m_position)
+                        if (currentStartPoint.m_position == previousPoint.m_position)
                         {
                             // Just as we did for the node before, we invert the direction to create a line
                             var previousOrientation = -NetManagerPatch.PreviousEndDirection(i);
 
                             // These points are created by getting the previous ending point and stretching it to the edge of the map in both directions
-                            var previousSegmentEndPoint   = previousEndPoint.m_position + previousOrientation * 5000;
-                            var previousSegmentStartPoint = previousEndPoint.m_position - previousOrientation * 5000;
+                            var previousSegmentEndPoint   = previousPoint.m_position + previousOrientation * 5000;
+                            var previousSegmentStartPoint = previousPoint.m_position - previousOrientation * 5000;
 
                             // We can finally compute the intersection by getting the two lines and checking if the intersect.
                             var offsetLine   = Line2.XZ(offsetSegmentStartPoint,   offsetSegmentEndPoint);
@@ -172,7 +169,7 @@ namespace ParallelRoadTool.Patches
                                 currentStartPoint.m_position = intersectionPoint;
 
                                 // Create a segment between the previous ending point and the intersection
-                                var intersectionSegment = new Segment3(previousEndPoint.m_position, intersectionPoint);
+                                var intersectionSegment = new Segment3(previousPoint.m_position, intersectionPoint);
 
                                 // Render the helper line for the segment
                                 RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo,

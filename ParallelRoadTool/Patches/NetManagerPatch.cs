@@ -303,8 +303,6 @@ namespace ParallelRoadTool.Patches
                     _clonedStartNodeId[i] = newStartNodeId;
                     _endNodeDirection[i]  = endDirection;
 
-                    Log._Debug($"Storing: {endNode}, {newEndNodeId}, {startNode}, {newStartNodeId}, {endDirection}");
-
                     if (isReversed)
                     {
                         Vector3 tempStartDirection;
