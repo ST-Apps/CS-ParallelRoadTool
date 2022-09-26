@@ -8,6 +8,7 @@ using HarmonyLib;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Managers;
 using ParallelRoadTool.Models;
+using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
@@ -52,7 +53,8 @@ namespace ParallelRoadTool.Patches
 
         // We store nodes from previous iteration so that we know which node to connect to
         private static ushort?[] _endNodeId, _clonedEndNodeId, _startNodeId, _clonedStartNodeId;
-        private static bool      _isPreviousInvert;
+        private static bool _isPreviousInvert;
+        private static Vector3[] _endNodeDirection;
 
         #endregion
 
@@ -63,15 +65,18 @@ namespace ParallelRoadTool.Patches
         /// </summary>
         public static int NetworksCount
         {
+            get => _endNodeId.Length;
+
             set
             {
                 // We don't reset nodes arrays if size didn't change, this allows us to snap to previous nodes even after changing offsets.
                 if (_endNodeId != null && _endNodeId.Length == value) return;
 
-                _endNodeId         = new ushort?[value];
-                _clonedEndNodeId   = new ushort?[value];
-                _startNodeId       = new ushort?[value];
+                _endNodeId = new ushort?[value];
+                _clonedEndNodeId = new ushort?[value];
+                _startNodeId = new ushort?[value];
                 _clonedStartNodeId = new ushort?[value];
+                _endNodeDirection = new Vector3[value];
             }
         }
 
@@ -135,19 +140,19 @@ namespace ParallelRoadTool.Patches
         /// <param name="__result"></param>
         /// <param name="__args"></param>
         /// <returns></returns>
-        private static void Postfix(out ushort     segment,
+        private static void Postfix(out ushort segment,
                                     ref Randomizer randomizer,
-                                    NetInfo        info,
-                                    TreeInfo       treeInfo,
-                                    ushort         startNode,
-                                    ushort         endNode,
-                                    Vector3        startDirection,
-                                    Vector3        endDirection,
-                                    uint           buildIndex,
-                                    uint           modifiedIndex,
-                                    bool           invert,
-                                    ref bool       __result,
-                                    IList<object>  __args)
+                                    NetInfo info,
+                                    TreeInfo treeInfo,
+                                    ushort startNode,
+                                    ushort endNode,
+                                    Vector3 startDirection,
+                                    Vector3 endDirection,
+                                    uint buildIndex,
+                                    uint modifiedIndex,
+                                    bool invert,
+                                    ref bool __result,
+                                    IList<object> __args)
         {
             try
             {
@@ -160,9 +165,9 @@ namespace ParallelRoadTool.Patches
                     return;
                 }
 
-                if (Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress           &&
+                if (Singleton<ParallelRoadToolManager>.instance.IsMouseLongPress &&
                     ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade && startNode == _startNodeId[0] &&
-                    endNode                                        == _endNodeId[0])
+                    endNode == _endNodeId[0])
                 {
                     // HACK - [ISSUE-84] Prevent executing multiple times when we have a long mouse press on the very same segment
                     Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Skipping because mouse has not been released yet from the previous upgrade.");
@@ -186,11 +191,11 @@ namespace ParallelRoadTool.Patches
                 // If we're in upgrade mode we must stop here
                 // HACK - [ISSUE 25] Enabling tool during upgrade mode so that we can add to existing roads
                 var isUpgradeActive = false;
-                var upgradeInvert   = false;
+                var upgradeInvert = false;
                 if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade)
                 {
                     isUpgradeActive = true;
-                    upgradeInvert   = invert;
+                    upgradeInvert = invert;
 
                     // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -211,7 +216,7 @@ namespace ParallelRoadTool.Patches
                     var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
 
                     var horizontalOffset = currentRoadInfos.HorizontalOffset;
-                    var verticalOffset   = currentRoadInfos.VerticalOffset;
+                    var verticalOffset = currentRoadInfos.VerticalOffset;
 
                     Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Using offsets: h {horizontalOffset} | v {verticalOffset}");
 
@@ -227,8 +232,8 @@ namespace ParallelRoadTool.Patches
                     // Left-hand drive means that any condition must be reversed
                     if (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic)
                     {
-                        invert           = !invert;
-                        isReversed       = !isReversed;
+                        invert = !invert;
+                        isReversed = !isReversed;
                         horizontalOffset = -horizontalOffset;
                     }
 
@@ -236,7 +241,7 @@ namespace ParallelRoadTool.Patches
 
                     // Get original nodes to clone them
                     var startNetNode = NetManager.instance.m_nodes.m_buffer[startNode];
-                    var endNetNode   = NetManager.instance.m_nodes.m_buffer[endNode];
+                    var endNetNode = NetManager.instance.m_nodes.m_buffer[endNode];
 
                     // Create two clone nodes by offsetting the original ones.
                     // If we're not in "invert" mode (aka final part of a curve) and we already have an ending node with the same id of our starting node, we need to use that so that the segments can be connected.
@@ -260,16 +265,16 @@ namespace ParallelRoadTool.Patches
                             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node{startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
                             break;
                         default:
-                        {
-                            // Not a special case, we offset our node and create a new one (or find one at that position)
-                            var newStartPosition
-                                = startNetNode.m_position.Offset(startDirection, horizontalOffset, verticalOffset, invert);
+                            {
+                                // Not a special case, we offset our node and create a new one (or find one at that position)
+                                var newStartPosition
+                                    = startNetNode.m_position.Offset(startDirection, horizontalOffset, verticalOffset, invert);
 
-                            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
+                                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
 
-                            newStartNodeId = NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
-                            break;
-                        }
+                                newStartNodeId = NodeUtils.NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
+                                break;
+                            }
                     }
 
                     // Same thing as startNode, but this time we don't clone if we're in "invert" mode as we may need to connect this ending node with the previous ending one.
@@ -288,7 +293,7 @@ namespace ParallelRoadTool.Patches
 
                         Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
 
-                        newEndNodeId = NodeAtPositionOrNew(ref randomizer, info, newEndPosition, verticalOffset);
+                        newEndNodeId = NodeUtils.NodeAtPositionOrNew(ref randomizer, info, newEndPosition, verticalOffset);
                     }
 
                     // Store current end nodes in case we may need to connect the following segment to them
@@ -296,6 +301,9 @@ namespace ParallelRoadTool.Patches
                     _clonedEndNodeId[i]   = newEndNodeId;
                     _startNodeId[i]       = startNode;
                     _clonedStartNodeId[i] = newStartNodeId;
+                    _endNodeDirection[i]  = endDirection;
+
+                    Log._Debug($"Storing: {endNode}, {newEndNodeId}, {startNode}, {newStartNodeId}, {endDirection}");
 
                     if (isReversed)
                     {
@@ -305,13 +313,13 @@ namespace ParallelRoadTool.Patches
                         {
                             // Straight segment, we invert both directions
                             tempStartDirection = -startDirection;
-                            tempEndDirection   = -endDirection;
+                            tempEndDirection = -endDirection;
                         }
                         else
                         {
                             // Curve, we need to swap start and end direction                        
                             tempStartDirection = endDirection;
-                            tempEndDirection   = startDirection;
+                            tempEndDirection = startDirection;
                         }
 
                         // Create the segment between the two cloned nodes, inverting start and end node
@@ -348,7 +356,7 @@ namespace ParallelRoadTool.Patches
                 // HACK - [ISSUE 25] Enabling tool during upgrade mode so that we can add to existing roads
                 if (!isUpgradeActive) return;
                 ToolsModifierControl.GetTool<NetTool>().m_mode = NetTool.Mode.Upgrade;
-                _isPreviousInvert                              = upgradeInvert;
+                _isPreviousInvert = upgradeInvert;
             }
             catch (Exception e)
             {
@@ -356,7 +364,7 @@ namespace ParallelRoadTool.Patches
                 Log._DebugOnlyError($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] CreateSegment failed.");
                 Log.Exception(e);
 
-                segment  = 0;
+                segment = 0;
                 __result = false;
             }
         }
@@ -392,18 +400,18 @@ namespace ParallelRoadTool.Patches
                 ArgumentType.Normal,
                 ArgumentType.Normal
             })]
-            public static bool CreateSegment(object         instance,
-                                             out ushort     segment,
+            public static bool CreateSegment(object instance,
+                                             out ushort segment,
                                              ref Randomizer randomizer,
-                                             NetInfo        info,
-                                             TreeInfo       treeInfo,
-                                             ushort         startNode,
-                                             ushort         endNode,
-                                             Vector3        startDirection,
-                                             Vector3        endDirection,
-                                             uint           buildIndex,
-                                             uint           modifiedIndex,
-                                             bool           invert)
+                                             NetInfo info,
+                                             TreeInfo treeInfo,
+                                             ushort startNode,
+                                             ushort endNode,
+                                             Vector3 startDirection,
+                                             Vector3 endDirection,
+                                             uint buildIndex,
+                                             uint modifiedIndex,
+                                             bool invert)
             {
                 // No implementation is required as this will call the original method
                 throw new
@@ -413,89 +421,38 @@ namespace ParallelRoadTool.Patches
 
         #region Control
 
-        #region Internals
+        #region Public API
 
         /// <summary>
-        ///     Creates a new node and returns it.
+        /// Retrieves the <see cref="NetNode"/> with the provided index.
         /// </summary>
-        /// <param name="newNodeId"></param>
-        /// <param name="randomizer"></param>
-        /// <param name="info"></param>
-        /// <param name="newNodePosition"></param>
+        /// <param name="index"></param>
+        /// <param name="isStartingNode">True for starting nodes, false for ending ones.</param>
+        /// <param name="isCloned">True for offset nodes, false for original ones.</param>
         /// <returns></returns>
-        private static void CreateNode(out ushort newNodeId, ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
+        public static NetNode? PreviousNode(int index, bool isStartingNode = false, bool isCloned = false)
         {
-            NetManager.instance.CreateNode(out newNodeId, ref randomizer, info, newNodePosition,
-                                           Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
+            // Check on the index just in case
+            if (index > NetworksCount) return null;
+
+            // Id for the returned node
+            var nodeId = isStartingNode ? (isCloned ? _clonedStartNodeId[index] : _startNodeId[index]).GetValueOrDefault(0) : (isCloned ? _clonedEndNodeId[index] : _endNodeId[index]).GetValueOrDefault(0);
+
+            // We couldn't find the node
+            if (nodeId == 0) return null;
+
+            // Extract the node
+            return NetManager.instance.m_nodes.m_buffer[nodeId];
         }
 
         /// <summary>
-        ///     Tries to find an already existing node at the given position, if there aren't we create a new one.
+        /// Retrieves the direction for the previous ending node.
         /// </summary>
-        /// <param name="randomizer"></param>
-        /// <param name="info"></param>
-        /// <param name="newNodePosition"></param>
-        /// <param name="verticalOffset"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        private static ushort NodeAtPositionOrNew(ref Randomizer randomizer,
-                                                  NetInfo        info,
-                                                  Vector3        newNodePosition,
-                                                  float          verticalOffset)
+        public static Vector3 PreviousEndDirection(int index)
         {
-            var netManager = Singleton<NetManager>.instance;
-
-            // This should be the best possible value for snapping
-            var maxDistance = info.m_halfWidth;
-
-            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
-
-            if (Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled &&
-                (PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, NetInfo.LaneType.All,
-                                              VehicleInfo.VehicleType.All, VehicleInfo.VehicleCategory.All, true, false,
-                                              maxDistance, out var posA, out var posB, out _, out _) ||
-                 PathManager
-                     .FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z),
-                                       info.m_class.m_service,          NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                                       VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _,
-                                       out _) ||
-                 PathManager
-                     .FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z),
-                                       info.m_class.m_service,          NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                                       VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _,
-                                       out _)))
-            {
-                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
-
-                if (posA.m_segment != 0)
-                {
-                    var startNodeId = netManager.m_segments.m_buffer[posA.m_segment].m_startNode;
-                    var endNodeId   = netManager.m_segments.m_buffer[posA.m_segment].m_endNode;
-
-                    var startNode = netManager.m_nodes.m_buffer[startNodeId];
-                    var endNode   = netManager.m_nodes.m_buffer[endNodeId];
-
-                    Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
-
-                    // Get node closer to current position
-                    if (startNodeId != 0 && endNodeId != 0)
-                        return (newNodePosition - startNode.m_position).sqrMagnitude <
-                               (newNodePosition - endNode.m_position).sqrMagnitude
-                                   ? startNodeId
-                                   : endNodeId;
-
-                    // endNode was not found, return startNode
-                    if (startNodeId != 0) return startNodeId;
-
-                    // startNode was not found, return endNode
-                    if (endNodeId != 0) return endNodeId;
-                }
-            }
-
-            Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPositionOrNew)}] No nodes has been found for position {newNodePosition}, creating a new one.");
-
-            // Both startNode and endNode were not found, we need to create a new one
-            CreateNode(out var newNodeId, ref randomizer, info, newNodePosition);
-            return newNodeId;
+            return _endNodeDirection[index];
         }
 
         #endregion
