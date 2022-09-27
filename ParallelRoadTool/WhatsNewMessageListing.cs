@@ -22,7 +22,12 @@ namespace ParallelRoadTool
                 Messages = new[]
                 {
                     "PRT_UPD_30_0",
-                    "PRT_UPD_30_1"
+                    "PRT_UPD_30_1",
+                    "PRT_UPD_30_2",
+                    "PRT_UPD_30_3",
+                    "PRT_UPD_30_4",
+                    "PRT_UPD_30_5",
+                    "PRT_UPD_30_6",
                 }
             }
         };
