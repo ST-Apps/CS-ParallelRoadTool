@@ -117,19 +117,8 @@ namespace ParallelRoadTool.Patches
                     var previousStartPointNullable = NetManagerPatch.PreviousNode(i, true, true);
                     if (netTool.m_mode == NetTool.Mode.Straight && previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
                     {
-                        // Since ending point's direction will point to starting point ones we need to invert its direction
-                        var currentEndPointOrientation = -endPoint.m_direction.normalized;
-
-                        // We now turn the current ending direction by 90° to face the offset direction
-                        var offsetOrientation = Quaternion.AngleAxis(-90, Vector3.up) * -endPoint.m_direction;
-
-                        // Given the offset direction we can set two points on that will be used to draw the line.
-                        // Those points are set by just moving the current ending point at the edge of the screen but still on the parallel lin.
-                        var offsetSegmentEndPoint = endPoint.m_position + offsetOrientation.normalized * horizontalOffset + currentEndPointOrientation * 10000;
-                        var offsetSegmentStartPoint = endPoint.m_position + offsetOrientation.normalized * horizontalOffset;
-
                         // We can now extract the previously created ending point
-                        var previousEndPoint = previousEndPointNullable.Value;
+                        var previousEndPoint   = previousEndPointNullable.Value;
                         var previousStartPoint = previousStartPointNullable.Value;
 
                         // Get the closest one between start and end
@@ -139,44 +128,25 @@ namespace ParallelRoadTool.Patches
 
                         if (previousStartPointDistance < previousEndPointDistance)
                             previousPoint = previousStartPoint;
+                        var intersection = NodeUtils.FindIntersectionByOffset(currentStartPoint.m_position, endPoint.m_position,
+                                                                              endPoint.m_direction, previousPoint.m_position,
+                                                                              -NetManagerPatch.PreviousEndDirection(i),
+                                                                              horizontalOffset, out var intersectionPoint, cameraInfo);
 
-                        // If the offset start point is different from previous ending point it means we're not connecting to the previous segment.
-                        // If we're not connecting to the previous segment we can't reuse its data so we must stop here
-                        // IMPORTANT: curved segments have start and end nodes inverted for some reason
-                        if (currentStartPoint.m_position == previousPoint.m_position)
+                        // If we found an intersection we can draw an helper line showing how much we will have to move the node
+                        if (intersection)
                         {
-                            // Just as we did for the node before, we invert the direction to create a line
-                            var previousOrientation = -NetManagerPatch.PreviousEndDirection(i);
+                            // Set our current point to the intersection point
+                            currentStartPoint.m_position = intersectionPoint;
 
-                            // These points are created by getting the previous ending point and stretching it to the edge of the map in both directions
-                            var previousSegmentEndPoint   = previousPoint.m_position + previousOrientation * 5000;
-                            var previousSegmentStartPoint = previousPoint.m_position - previousOrientation * 5000;
+                            // Create a segment between the previous ending point and the intersection
+                            var intersectionSegment = new Segment3(previousPoint.m_position, intersectionPoint);
 
-                            // We can finally compute the intersection by getting the two lines and checking if the intersect.
-                            var offsetLine   = Line2.XZ(offsetSegmentStartPoint,   offsetSegmentEndPoint);
-                            var previousLine = Line2.XZ(previousSegmentStartPoint, previousSegmentEndPoint);
-
-                            // Intersect returns two vectors but they're not the coordinates of the intersection point.
-                            // They're just the direction in which to find this intersection.
-                            var intersection = offsetLine.Intersect(previousLine, out var ix, out var iy);
-                            var intersectionPoint
-                                = (offsetSegmentEndPoint - offsetSegmentStartPoint) * ix + offsetSegmentStartPoint;
-
-                            // If we found an intersection we can draw an helper line showing how much we will have to move the node
-                            if (intersection)
-                            {
-                                // Set our current point to the intersection point
-                                currentStartPoint.m_position = intersectionPoint;
-
-                                // Create a segment between the previous ending point and the intersection
-                                var intersectionSegment = new Segment3(previousPoint.m_position, intersectionPoint);
-
-                                // Render the helper line for the segment
-                                RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo,
-                                                                                 currentRoadInfos.Color, intersectionSegment,
-                                                                                 currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1,
-                                                                                 1800, true, true);
-                            }
+                            // Render the helper line for the segment
+                            RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo,
+                                                                             currentRoadInfos.Color, intersectionSegment,
+                                                                             currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1,
+                                                                             1800, true, true);
                         }
                     }
 

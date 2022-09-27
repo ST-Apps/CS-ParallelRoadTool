@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using System;
+using ColossalFramework;
 using ColossalFramework.Math;
 using CSUtil.Commons;
 using ParallelRoadTool.Managers;
@@ -26,14 +27,11 @@ namespace ParallelRoadTool.Utils
         /// <summary>
         ///     Tries to find an already existing node at the given position
         /// </summary>
-        /// <param name="randomizer"></param>
         /// <param name="info"></param>
         /// <param name="newNodePosition"></param>
         /// <param name="verticalOffset"></param>
         /// <returns></returns>
-        public static ushort NodeAtPosition(NetInfo        info,
-                                            Vector3        newNodePosition,
-                                            float          verticalOffset)
+        public static ushort NodeAtPosition(NetInfo info, Vector3 newNodePosition, float verticalOffset)
         {
             var netManager = Singleton<NetManager>.instance;
 
@@ -72,8 +70,7 @@ namespace ParallelRoadTool.Utils
 
             // Get node closer to current position
             if (startNodeId != 0 && endNodeId != 0)
-                return (newNodePosition - startNode.m_position).sqrMagnitude <
-                       (newNodePosition - endNode.m_position).sqrMagnitude
+                return (newNodePosition - startNode.m_position).sqrMagnitude < (newNodePosition - endNode.m_position).sqrMagnitude
                            ? startNodeId
                            : endNodeId;
 
@@ -109,6 +106,83 @@ namespace ParallelRoadTool.Utils
             // Both startNode and endNode were not found, we need to create a new one
             CreateNode(out newNodeId, ref randomizer, info, newNodePosition);
             return newNodeId;
+        }
+
+        public static bool FindIntersectionByOffset(Vector3     startPosition,
+                                                    Vector3     endPosition,
+                                                    Vector3     direction,
+                                                    Vector3     previousPosition,
+                                                    Vector3     previousDirection,
+                                                    float       horizontalOffset,
+                                                    out Vector3 intersectionPoint,
+                                                    RenderManager.CameraInfo camera = null)
+        {
+            // With 0° 180° angles we can just return previousPosition
+            var currentAngle = Vector3.Angle(direction, previousDirection);
+            if (currentAngle == 0f || Math.Abs(currentAngle - 180f) < 5)
+            {
+                Log._Debug($"Current angle is {currentAngle}, returning false and {previousPosition}");
+                intersectionPoint = previousPosition;
+                return false;
+            }
+
+            Log._Debug($"Current angle is {currentAngle} but we didn't return false");
+
+            // Since ending point's direction will point to starting point ones we need to invert its direction
+            var currentEndPointOrientation = -direction.normalized;
+
+            // We now turn the current ending direction by 90° to face the offset direction
+            var offsetOrientation = Quaternion.AngleAxis(-90, Vector3.up) * -direction;
+
+            // Given the offset direction we can set two points on that will be used to draw the line.
+            // Those points are set by just moving the current ending point at the edge of the screen but still on the parallel lin.
+            var offsetSegmentEndPoint = endPosition + offsetOrientation.normalized * horizontalOffset +
+                                        currentEndPointOrientation                 * 1000;
+            var offsetSegmentStartPoint = endPosition + offsetOrientation.normalized * horizontalOffset;
+
+            // If the offset start point is different from previous ending point it means we're not connecting to the previous segment.
+            // If we're not connecting to the previous segment we can't reuse its data so we must stop here
+            // IMPORTANT: curved segments have start and end nodes inverted for some reason
+            if (startPosition == previousPosition)
+            {
+                // These points are created by getting the previous ending point and stretching it to the edge of the map in both directions
+                var previousSegmentEndPoint   = previousPosition + previousDirection * 500;
+                var previousSegmentStartPoint = previousPosition - previousDirection * 500;
+
+                // We can finally compute the intersection by getting the two lines and checking if the intersect.
+                var offsetLine   = Line2.XZ(offsetSegmentStartPoint,   offsetSegmentEndPoint);
+                var previousLine = Line2.XZ(previousSegmentStartPoint, previousSegmentEndPoint);
+
+                // Intersect returns two vectors but they're not the coordinates of the intersection point.
+                // They're just the direction in which to find this intersection.
+                var intersection = offsetLine.Intersect(previousLine, out var ix, out var iy);
+                intersectionPoint = (offsetSegmentEndPoint - offsetSegmentStartPoint) * ix + offsetSegmentStartPoint;
+
+                if (camera != null)
+                {
+                    if (intersection)
+                        RenderManager.instance.OverlayEffect.DrawCircle(camera, Color.magenta, intersectionPoint, 16, 1, 1800, true, true);
+
+                    var offsetSegment   = new Segment3(offsetSegmentStartPoint,   offsetSegmentEndPoint);
+                    var previousSegment = new Segment3(previousSegmentStartPoint, previousSegmentEndPoint);
+
+                    RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo,
+                                                                     Color.blue, offsetSegment,
+                                                                     0.1f, 8f, 1,
+                                                                     1800, true, true);
+                    RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo,
+                                                                     Color.green, previousSegment,
+                                                                     0.1f, 8f, 1,
+                                                                     1800, true, true);
+
+                }
+
+                // If we found an intersection we can draw an helper line showing how much we will have to move the node
+                if (intersection) return true;
+            }
+
+            intersectionPoint = Vector3.zero;
+            return false;
         }
     }
 }

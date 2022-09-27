@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using ColossalFramework;
 using ColossalFramework.Math;
 using CSUtil.Commons;
@@ -256,6 +257,44 @@ namespace ParallelRoadTool.Patches
 
                             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
                             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
+
+                            // Check if we need to look for an intersection point to move our previously created ending point.
+                            // This is needed because certain angles will cause the segments to overlap.
+                            // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
+                            // IMPORTANT: this is meant for straight roads only!
+                            var previousEndPointNullable = NetManagerPatch.PreviousNode(i, false, true);
+                            var previousStartPointNullable = NetManagerPatch.PreviousNode(i, true, true);
+                            if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Straight && previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
+                            {
+                                var newStartNode = NetManager.instance.m_nodes.m_buffer[newStartNodeId];
+
+                                // We can now extract the previously created ending point
+                                var previousEndPoint = previousEndPointNullable.Value;
+                                var previousStartPoint = previousStartPointNullable.Value;
+
+                                // Get the closest one between start and end
+                                var previousEndPointDistance = Vector3.Distance(previousEndPoint.m_position, newStartNode.m_position);
+                                var previousStartPointDistance = Vector3.Distance(previousStartPoint.m_position, newStartNode.m_position);
+                                var previousPoint = previousEndPoint;
+
+                                if (previousStartPointDistance < previousEndPointDistance)
+                                    previousPoint = previousStartPoint;
+                                var intersection = NodeUtils.FindIntersectionByOffset(newStartNode.m_position, endNetNode.m_position,
+                                                                                      endDirection, previousPoint.m_position,
+                                                                                      -NetManagerPatch.PreviousEndDirection(i),
+                                                                                      horizontalOffset, out var intersectionPoint);
+
+                                // If we found an intersection we can draw an helper line showing how much we will have to move the node
+                                if (intersection)
+                                {
+                                    Log.Info($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Moving node {newStartNodeId} from {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position} to {intersectionPoint} [{intersection}]");
+                                    
+                                    // Move the node to the newly found position
+                                    intersectionPoint.y += verticalOffset;
+                                    NetManager.instance.MoveNode(newStartNodeId, intersectionPoint);
+                                }
+                            }
+
                             break;
                         case false when _isPreviousInvert && _startNodeId[i].HasValue && _startNodeId[i].Value == startNode:
                             // We start exactly on the previous starting node
