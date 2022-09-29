@@ -54,6 +54,12 @@ namespace ParallelRoadTool.Managers
         public bool IsSnappingEnabled { get; private set; }
 
         /// <summary>
+        ///     This tells if the user wants the parallel/stacked nodes to be automatically align in case of "extreme" angles.
+        /// This will force the previously drawn node to be moved, with possibly unintended consequences.
+        /// </summary>
+        public bool IsAngleCompensationEnabled { get; private set; }
+
+        /// <summary>
         ///     True if the current map is using left-hand traffic.
         /// </summary>
         public bool IsLeftHandTraffic { get; private set; }
@@ -222,6 +228,17 @@ namespace ParallelRoadTool.Managers
         private void UIController_ToggleSnappingButtonEventCheckChanged(UIComponent component, bool value)
         {
             IsSnappingEnabled = value;
+        }
+
+
+        /// <summary>
+        /// Toggles angle compensation mode on/off
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
+        private void UIController_OnToggleAngleCompensationButtonEventCheckChanged(UIComponent component, bool value)
+        {
+            IsAngleCompensationEnabled = value;
         }
 
         /// <summary>
@@ -407,6 +424,7 @@ namespace ParallelRoadTool.Managers
             NetToolsPrefabPatch.CurrentNetInfoChanged          -= NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged     -= UIController_ToolToggleButtonEventCheckChanged;
             UIController.ToggleSnappingButtonEventCheckChanged -= UIController_ToggleSnappingButtonEventCheckChanged;
+            UIController.ToggleAngleCompensationButtonEventCheckChanged -= UIController_OnToggleAngleCompensationButtonEventCheckChanged;
             UIController.CloseButtonEventClicked               -= UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked          -= UIController_AddNetworkButtonEventClicked;
             UIController.SortNetworksButtonEventClicked        -= UIControllerOnSortNetworksButtonEventClicked;
@@ -428,6 +446,7 @@ namespace ParallelRoadTool.Managers
             NetToolsPrefabPatch.CurrentNetInfoChanged          += NetToolsPrefabPatch_CurrentNetInfoChanged;
             UIController.ToolToggleButtonEventCheckChanged     += UIController_ToolToggleButtonEventCheckChanged;
             UIController.ToggleSnappingButtonEventCheckChanged += UIController_ToggleSnappingButtonEventCheckChanged;
+            UIController.ToggleAngleCompensationButtonEventCheckChanged += UIController_OnToggleAngleCompensationButtonEventCheckChanged;
             UIController.CloseButtonEventClicked               += UIController_ClosedButtonEventClicked;
             UIController.AddNetworkButtonEventClicked          += UIController_AddNetworkButtonEventClicked;
             UIController.SortNetworksButtonEventClicked        += UIControllerOnSortNetworksButtonEventClicked;

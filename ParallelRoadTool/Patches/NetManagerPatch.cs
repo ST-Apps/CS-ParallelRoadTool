@@ -242,6 +242,9 @@ namespace ParallelRoadTool.Patches
                             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Using old node from previous iteration {_clonedEndNodeId[i].Value} instead of the given one {startNode}");
                             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] Start node {startNetNode.m_position} becomes {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position}");
 
+                            if (!Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled)
+                                break;
+
                             // Check if we need to look for an intersection point to move our previously created ending point.
                             // This is needed because certain angles will cause the segments to overlap.
                             // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
@@ -277,8 +280,8 @@ namespace ParallelRoadTool.Patches
                                 {
                                     Log.Info($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Moving node {newStartNodeId} from {NetManager.instance.m_nodes.m_buffer[newStartNodeId].m_position} to {intersectionPoint} [{intersection}]");
 
-                                    // Move the node to the newly found position
-                                    intersectionPoint.y += verticalOffset;
+                                    // Move the node to the newly found position but keep y from the offset
+                                    intersectionPoint.y = startNetNode.m_position.Offset(startDirection, horizontalOffset, verticalOffset, invert).y;
                                     NetManager.instance.MoveNode(newStartNodeId, intersectionPoint);
                                 }
                             }

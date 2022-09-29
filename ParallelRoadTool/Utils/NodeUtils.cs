@@ -42,19 +42,15 @@ namespace ParallelRoadTool.Utils
 
             // Look for nodes nearby
             if (!Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled ||
-                (!PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, NetInfo.LaneType.All,
-                                               VehicleInfo.VehicleType.All, VehicleInfo.VehicleCategory.All, true, false,
-                                               maxDistance, out var posA, out var posB, out _, out _) &&
-                 !PathManager
-                     .FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z),
-                                       info.m_class.m_service,          NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                                       VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _,
-                                       out _) &&
-                 !PathManager
-                     .FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z),
-                                       info.m_class.m_service,          NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
-                                       VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _,
-                                       out _))) return 0;
+                (!PathManager.FindPathPosition(newNodePosition, info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
+                                               VehicleInfo.VehicleCategory.All, true, false, maxDistance, out var posA, out var posB, out _, out _) &&
+                 !PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y - verticalOffset, newNodePosition.z),
+                                               info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
+                                               VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _, out _) &&
+                 !PathManager.FindPathPosition(new Vector3(newNodePosition.x, newNodePosition.y + verticalOffset, newNodePosition.z),
+                                               info.m_class.m_service, NetInfo.LaneType.All, VehicleInfo.VehicleType.All,
+                                               VehicleInfo.VehicleCategory.All, true, false, maxDistance, out posA, out posB, out _, out _)))
+                return 0;
 
             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPosition)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
 
@@ -92,10 +88,7 @@ namespace ParallelRoadTool.Utils
         /// <param name="newNodePosition"></param>
         /// <param name="verticalOffset"></param>
         /// <returns></returns>
-        public static ushort NodeAtPositionOrNew(ref Randomizer randomizer,
-                                                 NetInfo        info,
-                                                 Vector3        newNodePosition,
-                                                 float          verticalOffset)
+        public static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition, float verticalOffset)
         {
             // Check if we can find a node at the given position
             var newNodeId = NodeAtPosition(info, newNodePosition, verticalOffset);
@@ -108,25 +101,36 @@ namespace ParallelRoadTool.Utils
             return newNodeId;
         }
 
-        public static bool FindIntersectionByOffset(Vector3     startPosition,
-                                                    Vector3     endPosition,
-                                                    Vector3     direction,
-                                                    Vector3     previousPosition,
-                                                    Vector3     previousDirection,
-                                                    float       horizontalOffset,
-                                                    out Vector3 intersectionPoint,
+        /// <summary>
+        ///     Finds the intersection between the line that goes from endPosition to startPosition and the one that goes from
+        ///     previousPosition along previousDirection.
+        ///     Horizontal offset is also taken care of.
+        /// </summary>
+        /// <param name="startPosition"></param>
+        /// <param name="endPosition"></param>
+        /// <param name="direction"></param>
+        /// <param name="previousPosition"></param>
+        /// <param name="previousDirection"></param>
+        /// <param name="horizontalOffset"></param>
+        /// <param name="intersectionPoint"></param>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public static bool FindIntersectionByOffset(Vector3                  startPosition,
+                                                    Vector3                  endPosition,
+                                                    Vector3                  direction,
+                                                    Vector3                  previousPosition,
+                                                    Vector3                  previousDirection,
+                                                    float                    horizontalOffset,
+                                                    out Vector3              intersectionPoint,
                                                     RenderManager.CameraInfo camera = null)
         {
             // With 0° 180° angles we can just return previousPosition
             var currentAngle = Vector3.Angle(direction, previousDirection);
-            if (currentAngle == 0f || Math.Abs(currentAngle - 180f) < 5)
+            if (currentAngle == 0f || Math.Abs(currentAngle - 180f) < 10)
             {
-                Log._Debug($"Current angle is {currentAngle}, returning false and {previousPosition}");
                 intersectionPoint = previousPosition;
                 return false;
             }
-
-            Log._Debug($"Current angle is {currentAngle} but we didn't return false");
 
             // Since ending point's direction will point to starting point ones we need to invert its direction
             var currentEndPointOrientation = -direction.normalized;
@@ -136,8 +140,7 @@ namespace ParallelRoadTool.Utils
 
             // Given the offset direction we can set two points on that will be used to draw the line.
             // Those points are set by just moving the current ending point at the edge of the screen but still on the parallel lin.
-            var offsetSegmentEndPoint = endPosition + offsetOrientation.normalized * horizontalOffset +
-                                        currentEndPointOrientation                 * 1000;
+            var offsetSegmentEndPoint   = endPosition + offsetOrientation.normalized * horizontalOffset + currentEndPointOrientation * 1000;
             var offsetSegmentStartPoint = endPosition + offsetOrientation.normalized * horizontalOffset;
 
             // If the offset start point is different from previous ending point it means we're not connecting to the previous segment.
@@ -166,15 +169,10 @@ namespace ParallelRoadTool.Utils
                     var offsetSegment   = new Segment3(offsetSegmentStartPoint,   offsetSegmentEndPoint);
                     var previousSegment = new Segment3(previousSegmentStartPoint, previousSegmentEndPoint);
 
-                    RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo,
-                                                                     Color.blue, offsetSegment,
-                                                                     0.1f, 8f, 1,
+                    RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo, Color.blue, offsetSegment, 0.1f, 8f, 1,
                                                                      1800, true, true);
-                    RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo,
-                                                                     Color.green, previousSegment,
-                                                                     0.1f, 8f, 1,
-                                                                     1800, true, true);
-
+                    RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo, Color.green, previousSegment, 0.1f, 8f,
+                                                                     1, 1800, true, true);
                 }
 
                 // If we found an intersection we can draw an helper line showing how much we will have to move the node

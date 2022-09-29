@@ -56,6 +56,12 @@ namespace ParallelRoadTool.UI
             remove => _mainWindow.ToggleSnappingButtonEventCheckChanged -= value;
         }
 
+        public event PropertyChangedEventHandler<bool> ToggleAngleCompensationButtonEventCheckChanged
+        {
+            add => _mainWindow.ToggleAngleCompensationButtonEventCheckChanged += value;
+            remove => _mainWindow.ToggleAngleCompensationButtonEventCheckChanged -= value;
+        }
+
         public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked
         {
             add => _mainWindow.DeleteNetworkButtonEventClicked += value;

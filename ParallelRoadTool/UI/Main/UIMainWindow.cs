@@ -87,6 +87,12 @@ namespace ParallelRoadTool.UI.Main
             remove => _toggleSnappingButton.eventCheckChanged -= value;
         }
 
+        public event PropertyChangedEventHandler<bool> ToggleAngleCompensationButtonEventCheckChanged
+        {
+            add => _toggleAngleCompensationButton.eventCheckChanged += value;
+            remove => _toggleAngleCompensationButton.eventCheckChanged -= value;
+        }
+
         public event MouseEventHandler SavePresetButtonEventClicked
         {
             add => _savePresetButton.eventClicked += value;
@@ -117,6 +123,7 @@ namespace ParallelRoadTool.UI.Main
         private UIButton        _loadPresetButton;
         private UINetListPanel  _networkListPanel;
         private UICheckBox      _toggleSnappingButton;
+        private UICheckBox      _toggleAngleCompensationButton;
         private UIButton        _addNetworkButton;
         private UIButton        _sortNetworksButton;
         private UINetSetupPanel _currentNetworkSetupPanel;
@@ -304,6 +311,14 @@ namespace ParallelRoadTool.UI.Main
                                                           UITextures.LoadQuadSpriteAtlas("PRT-Sort"),
                                                           Translations.Translate("TOOLTIP_SORT_NETWORKS_BUTTON"));
             _sortNetworksButton.name = $"{toolsPanel.name}_SortNetworks";
+
+            // Main/Toolbar/Tools/ToggleNodeModeButton
+            var nodeModeIcon = UITextures.LoadSpriteAtlas("PRT-NodeMove", new[]{"NodeMove", "NodeMovePressed"});
+            _toggleAngleCompensationButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, nodeModeIcon.name, "NodeMovePressed",
+                                                               "NodeMove", backgroundSprite: "OptionBase",
+                                                               tooltip: Translations.Translate("TOOLTIP_ANGLE_COMPENSATION_TOGGLE_BUTTON"),
+                                                               height: UIConstants.MediumSize, width: UIConstants.MediumSize);
+            _toggleAngleCompensationButton.name = $"{toolsPanel.name}_ToggleNodeMode";
 
             // Main/Toolbar/Tools/ToggleSnappingButton
             _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UITextures.InGameAtlas.name, "SnappingPressed",
