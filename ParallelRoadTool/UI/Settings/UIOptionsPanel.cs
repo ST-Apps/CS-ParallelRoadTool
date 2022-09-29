@@ -30,22 +30,32 @@ namespace ParallelRoadTool.UI.Settings
             var topGroup = (UIHelper)helper.AddGroup(Mod.Instance.Name);
             ((UIPanel)topGroup.self).padding.left = 0;
 
-            // Main/Warning
+
 #if DEBUG
+
+            // Main/Warning
             _warningText                   = ((UIPanel)topGroup.self).AddUIComponent<UILabel>();
             _warningText.text              = Translations.Translate("BETA_WARNING_TEXT");
             _warningText.textColor         = Color.magenta;
             _warningText.textAlignment     = UIHorizontalAlignment.Center;
             _warningText.verticalAlignment = UIVerticalAlignment.Middle;
+
+            topGroup.AddSpace(UIConstants.TinySize / 2);
+
+            // Main/RenderDebugCheckbox
+            topGroup.AddCheckbox(Translations.Translate("CHECKBOX_RENDER_DEBUG_LABEL"), ModSettings.RenderDebugOverlay,
+                                 value => ModSettings.RenderDebugOverlay = value);
+
+            topGroup.AddSpace(UIConstants.TinySize / 2);
 #endif
 
             // Main/Language
-            _languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"),
-                                                                 Translations.LanguageList, Translations.Index, index =>
-                                                                 {
-                                                                     Translations.Index = index;
-                                                                     OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
-                                                                 });
+            _languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"), Translations.LanguageList,
+                                                                 Translations.Index, index =>
+                                                                                     {
+                                                                                         Translations.Index = index;
+                                                                                         OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
+                                                                                     });
 
             // Main/Keybindings
             var keyBindingsGroup = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_KEY_BINDINGS_NAME"));

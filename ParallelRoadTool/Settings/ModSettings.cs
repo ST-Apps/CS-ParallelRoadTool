@@ -43,6 +43,13 @@ namespace ParallelRoadTool.Settings
         /// </summary>
         [XmlIgnore] public static readonly Keybinding KeyDecreaseVerticalOffset = new(KeyCode.Minus, true, true, false);
 
+#if DEBUG
+        /// <summary>
+        ///     Toggles debug overlay while drawing segments.
+        /// </summary>
+        [XmlIgnore] public static bool RenderDebugOverlay;
+#endif
+
         #endregion
 
         #region Serializable
@@ -96,6 +103,18 @@ namespace ParallelRoadTool.Settings
             get => KeyDecreaseVerticalOffset;
             set => KeyDecreaseVerticalOffset.SetKey(value.Encode());
         }
+
+#if DEBUG
+        /// <summary>
+        ///     Toggles debug overlay while drawing segments.
+        /// </summary>
+        [XmlElement(nameof(RenderDebugOverlay))]
+        public bool XMLRenderDebugOverlay
+        {
+            get => RenderDebugOverlay;
+            set => RenderDebugOverlay = value;
+        }
+#endif
 
         #endregion
 

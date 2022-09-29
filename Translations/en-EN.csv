@@ -29,6 +29,7 @@ Unless you want to test the new features, please move to the stable version on W
 "SELECT_KEYMAPPING_DECREASE_VERTICAL_OFFSET_LABEL","Decrease vertical offset"
 "BUTTON_RESET_TOOL_WINDOW_POSITION_LABEL","Reset window's position"
 "BUTTON_RESET_TOOL_BUTTON_POSITION_LABEL","Reset button's position"
+"CHECKBOX_RENDER_DEBUG_LABEL","render debug overlays"
 "TOOLTIP_TOOL_TOGGLE_BUTTON","Parallel Road Tool"
 "TOOLTIP_SAVE_BUTTON","Save preset"
 "TOOLTIP_LOAD_BUTTON","Load preset"

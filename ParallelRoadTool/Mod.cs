@@ -37,7 +37,7 @@ namespace ParallelRoadTool
         /// <summary>
         /// Gets the mod's base display name (name only).
         /// </summary>
-        public override string BaseName => $"Parallel Road Tool {Version}";
+        public override string BaseName => "Parallel Road Tool";
 #endif
 
         /// <summary>

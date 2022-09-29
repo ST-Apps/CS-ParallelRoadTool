@@ -4,6 +4,7 @@ using ColossalFramework.Math;
 using CSUtil.Commons;
 using ParallelRoadTool.Managers;
 using ParallelRoadTool.Patches;
+using ParallelRoadTool.Settings;
 using UnityEngine;
 
 namespace ParallelRoadTool.Utils
@@ -161,7 +162,8 @@ namespace ParallelRoadTool.Utils
                 var intersection = offsetLine.Intersect(previousLine, out var ix, out var iy);
                 intersectionPoint = (offsetSegmentEndPoint - offsetSegmentStartPoint) * ix + offsetSegmentStartPoint;
 
-                if (camera != null)
+#if DEBUG
+                if (camera != null && ModSettings.RenderDebugOverlay)
                 {
                     if (intersection)
                         RenderManager.instance.OverlayEffect.DrawCircle(camera, Color.magenta, intersectionPoint, 16, 1, 1800, true, true);
@@ -174,6 +176,7 @@ namespace ParallelRoadTool.Utils
                     RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo, Color.green, previousSegment, 0.1f, 8f,
                                                                      1, 1800, true, true);
                 }
+#endif
 
                 // If we found an intersection we can draw an helper line showing how much we will have to move the node
                 if (intersection) return true;
