@@ -6,6 +6,16 @@ namespace ParallelRoadTool.Utils;
 
 internal static class ControlPointUtils
 {
+    /// <summary>
+    ///     Given 3 <see cref="NetTool.ControlPoint" /> we generate the corresponding 3 by offsetting the original ones.
+    /// </summary>
+    /// <param name="startPoint"></param>
+    /// <param name="middlePoint"></param>
+    /// <param name="endPoint"></param>
+    /// <param name="horizontalOffset"></param>
+    /// <param name="currentStartPoint"></param>
+    /// <param name="currentMiddlePoint"></param>
+    /// <param name="currentEndPoint"></param>
     public static void GenerateOffsetControlPoints(NetTool.ControlPoint     startPoint,
                                                    NetTool.ControlPoint     middlePoint,
                                                    NetTool.ControlPoint     endPoint,

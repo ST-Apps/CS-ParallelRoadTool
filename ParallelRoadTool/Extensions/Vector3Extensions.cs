@@ -23,30 +23,25 @@ public static class Vector3Extensions
         return offsetPoint;
     }
 
-    public static Vector3 RotateXZ(this Vector3 direction, float angle = 90)
+    /// <summary>
+    ///     Rotates the provided vector alongside the vertical axis by angle.
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    public static Vector3 RotateXZ(this Vector3 vector, float angle = 90)
     {
-        return Quaternion.Euler(0, angle, 0) * direction;
+        return Quaternion.Euler(0, angle, 0) * vector;
     }
 
-    public static Vector3 MoveOffset(this Vector3 point, Vector3 direction, float horizontalOffset, float verticalOffset)
-    {
-        // TODO: verticalOffset
-        return point + horizontalOffset * direction.RotateXZ().normalized; // with { x = direction.z, y = 0, z = direction.x};
-    }
-
-    // TODO: tmp
-    //normalizeTo: function(len)
-    //{
-    //    var mag = Math.sqrt(this.x * this.x + this.y * this.y);
-    //    if (mag > 0)
-    //    {
-    //        mag    =  len / mag;
-    //        this.x *= mag;
-    //        this.y *= mag;
-    //    }
-    //    return this;
-    //}
-
+    /// <summary>
+    ///     To be fair I have no idea on what this does, ported it from
+    ///     <a href="https://codepen.io/brunoimbrizi/pen/VYEWgY?editors=0010">here</a>.
+    ///     I guess it applies the offset to vector while also normalizing it.
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
     public static Vector3 NormalizeWithOffset(this Vector3 vector, float offset)
     {
         if (vector.magnitude <= 0) return vector;
@@ -54,5 +49,4 @@ public static class Vector3Extensions
         var offsetMagnitude = offset / vector.magnitude;
         return vector with { x = vector.x * offsetMagnitude, z = vector.z * offsetMagnitude };
     }
-
 }
