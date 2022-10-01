@@ -40,13 +40,14 @@ public static class Vector3Extensions
     ///     I guess it applies the offset to vector while also normalizing it.
     /// </summary>
     /// <param name="vector"></param>
-    /// <param name="offset"></param>
+    /// <param name="horizontalOffset"></param>
+    /// <param name="verticalOffset"></param>
     /// <returns></returns>
-    public static Vector3 NormalizeWithOffset(this Vector3 vector, float offset)
+    public static Vector3 NormalizeWithOffset(this Vector3 vector, float horizontalOffset, float verticalOffset = 0)
     {
         if (vector.magnitude <= 0) return vector;
 
-        var offsetMagnitude = offset / vector.magnitude;
-        return vector with { x = vector.x * offsetMagnitude, z = vector.z * offsetMagnitude };
+        var offsetMagnitude = horizontalOffset / vector.magnitude;
+        return vector with { x = vector.x * offsetMagnitude, y = vector.y + verticalOffset, z = vector.z * offsetMagnitude };
     }
 }

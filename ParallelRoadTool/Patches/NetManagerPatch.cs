@@ -119,6 +119,14 @@ internal static class NetManagerPatch
                 return;
             }
 
+            if (ToolsModifierControl.GetTool<NetTool>().m_mode == NetTool.Mode.Upgrade && invert)
+            {
+                // HACK - [ISSUE-100] Prevent executing if user is reversing road direction using the upgrade tool
+                Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Skipping because we're reversing a road's direction using update tool.");
+
+                return;
+            }
+
             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] Adding {Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count} parallel segments");
 
             if (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic)

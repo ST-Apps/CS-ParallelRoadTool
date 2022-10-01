@@ -69,7 +69,6 @@
     <Compile Include="Patches\NetAIPatch.cs" />
     <Compile Include="Patches\NetManagerPatch.cs" />
     <Compile Include="Patches\NetToolCameraPatch.cs" />
-    <Compile Include="Patches\NetToolNodePatch.cs" />
     <Compile Include="Patches\NetToolsPrefabPatch.cs" />
     <Compile Include="Patches\ToolControllerPatch.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
