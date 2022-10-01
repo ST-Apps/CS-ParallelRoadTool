@@ -23,6 +23,12 @@ namespace ParallelRoadTool.Patches;
               typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
 internal static class NetToolCameraPatch
 {
+    #region Fields
+
+    public static readonly FastList<NetTool.ControlPoint[]> ControlPointsBuffer = new();
+
+    #endregion
+
     /// <summary>
     ///     Overlay's core method.
     ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
@@ -57,6 +63,9 @@ internal static class NetToolCameraPatch
             if (startPoint.m_direction == Vector3.zero)
                 startPoint.m_direction = middlePoint.m_position - startPoint.m_position;
 
+            if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
+                ControlPointsBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
+
             // Get NetTool instance
             var netTool = ToolsModifierControl.GetTool<NetTool>();
 
@@ -76,7 +85,7 @@ internal static class NetToolCameraPatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, out var currentStartPoint,
+                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, out var currentStartPoint,
                                                               out var currentMiddlePoint, out var currentEndPoint);
 
 #if DEBUG
@@ -144,6 +153,14 @@ internal static class NetToolCameraPatch
                 // Render the overlay for current offset segment
                 NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color, currentStartPoint, currentMiddlePoint,
                                                   currentEndPoint);
+
+                // Save to buffer
+                ControlPointsBuffer[i]    ??= new NetTool.ControlPoint[3];
+                ControlPointsBuffer[i][0] =   currentStartPoint;
+                ControlPointsBuffer[i][1] =   currentMiddlePoint;
+                ControlPointsBuffer[i][2] =   currentEndPoint;
+
+                Log._Debug($">>> Rendering points: [{currentStartPoint.m_position}, {currentMiddlePoint.m_position}, {currentEndPoint.m_position}] - original points were [{startPoint.m_position}, {middlePoint.m_position}, {endPoint.m_position}]");
 
                 // We draw arrows only for one-way networks, just as in game
                 if (!selectedNetInfo.IsOneWayOnly()) continue;

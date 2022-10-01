@@ -20,18 +20,18 @@ using UnityEngine;
 
 namespace ParallelRoadTool.Patches
 {
-    //[HarmonyPatch(typeof(NetManager), nameof(NetManager.CreateSegment),
-    //              new[]
-    //              {
-    //                  typeof(ushort), typeof(Randomizer), typeof(NetInfo), typeof(TreeInfo), typeof(ushort), typeof(ushort),
-    //                  typeof(Vector3), typeof(Vector3), typeof(uint), typeof(uint), typeof(bool)
-    //              },
-    //              new[]
-    //              {
-    //                  ArgumentType.Out, ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
-    //                  ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
-    //                  ArgumentType.Normal
-    //              })]
+    [HarmonyPatch(typeof(NetManager), nameof(NetManager.CreateSegment),
+                  new[]
+                  {
+                      typeof(ushort), typeof(Randomizer), typeof(NetInfo), typeof(TreeInfo), typeof(ushort), typeof(ushort),
+                      typeof(Vector3), typeof(Vector3), typeof(uint), typeof(uint), typeof(bool)
+                  },
+                  new[]
+                  {
+                      ArgumentType.Out, ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
+                      ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
+                      ArgumentType.Normal
+                  })]
     internal static class NetManagerPatch
     {
         #region Fields
