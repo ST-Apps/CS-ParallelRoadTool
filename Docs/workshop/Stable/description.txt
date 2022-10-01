@@ -1,3 +1,4 @@
+[img]https://i.imgur.com/ys8eGPj.png[/img]
 [h1][b]Parallel Road Tool[/b][/h1]
 helps you easily drawing parallel and stacked networks.
 Main features are:
@@ -16,9 +17,23 @@ Main features are:
 [quote]
 [h1]Current version: [b]3.0.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
-[*] Updated mod to work with version 1.15.0-f5 (Plazas and Promenades update, thanks for [url=https://github.com/sabz612damax]sabz612damax[/url])
+[*] Moved mod core to Harmony for better compatibility with other mods
+[*] Fully redesigned and faster UI
+[*] Improved logic used to enable/disable the mod for a more consistent behavior
+[*] Added button to sort networks based on their horizontal distance
+[*] Added scrollwheel support to horizontal/vertical offsets texts
+[*] Improved straight roads handling for certain angles
+[*] Fixed a bug preventing trees to be applied to parallel/stacked segments
 [/list]
 [/quote]
+
+[HR][/HR] 
+[h1]Recommended additional mods[/h1]
+[list] 
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1844442251]Fine Road Tool[/url] - To build specific road type
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1844440354]Fine Road Anarchy[/url] - To ignore build errors
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2862881785]Network Anarchy Beta[/url] - (modern replacement for Fine Road Anarchy)
+[/list]
 
 [quote]
 [h1]Support my work[/h1]
@@ -34,41 +49,17 @@ Donate using PayPal:
 [/quote] 
 
 [quote]
-[h1]Known limitations/issues[/h1] 
-[list] 
-[*][url=https://steamcommunity.com/workshop/filedetails/?id=802066100][b]Fine Road Anarchy[/b][/url] [b]is highly recommended![/b] ([i]mod works without it but you won't be able to connect some segments without an anarchy mod[/i])
-[*]Sharp angles produce weird results, curves work better
-[*]Roads will always follow terrain elevation 
-[*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
-[/list]
-[/quote]
-
-[quote]
 [h1][b]Supported languages (% translated)[/b][/h1]
 [list]
-[*] Chinese (100 %) (thanks to [url=https://steamcommunity.com/id/TimiYang]TimiYang[/url])
-[*] Dutch (100 %) (thanks to [url=https://github.com/Zippr1]Zippr1[/url])
 [*] English (100 %)
-[*] French (100 %) (thanks to [url=https://github.com/mjm92150]mjm92150[/url])
-[*] German (100 %) (thanks to [url=https://github.com/TheGoldenMan99]TheGoldenMan99[/url] and [url=https://github.com/Fungopus]Fungopus[/url] and [url=https://github.com/xlf1024]xlf1024[/url])
-[*] Italian (100 %) (thanks to [url=https://github.com/tdemeola]tdemeola[/url])
-[*] Japanese (100%) (thanks to [url=https://github.com/mzch]mzch[/url])
-[*] Portuguese (100%) (thanks to [url=https://github.com/BentoGambin]BentoGambin[/url])
-[*] Russian (100 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
-[*] Spanish (100 %) (thanks to ‡ Ðalveen ‡)
 [/list]
 
-The language is automatically determined based on your settings in "Options" -> "Gameplay".
-Please [b]open an issue on [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues]GitHub[/url][/b] if you want to help translate this mod, add missing translations or correct translation mistakes.
+[HR][/HR]
+[h1]Translations[/h1]
+If you want to help improve existing translations or you want to translate into your own language (ask to add it to the translation project).
+[url=https://crowdin.com/project/macsergey-other-mods][img]https://i.imgur.com/uG2NKvG.png[/img][/url]
+
 [/quote] 
-
-[quote]
-[h1]Features that may come somewhere in the future[/h1] 
-[list] 
-[*]Ability to toggle on/off terrain conforming
-[*]Ability to center cursor on the middle point between all the selected roads 
-[/list]
-[/quote]
 
 [quote]
 [h1]Source code[/h1]
@@ -87,7 +78,7 @@ If there's no issue for the thing you'd like to work on, feel free to open a new
 [/quote]
 
 [quote]
-[h1]Thanks to[/h1]
+[h1](v2.*) Thanks to[/h1]
 [list]
 [*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
 [*][url=https://steamcommunity.com/id/samsamts]SamsamTS[/url] for his FineRoadAnarchy mod, which provided me the basics for this one
