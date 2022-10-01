@@ -141,8 +141,8 @@ namespace ParallelRoadTool.Utils
 
             // Given the offset direction we can set two points on that will be used to draw the line.
             // Those points are set by just moving the current ending point at the edge of the screen but still on the parallel lin.
-            var offsetSegmentEndPoint   = endPosition + offsetOrientation.normalized * horizontalOffset + currentEndPointOrientation * 1000;
-            var offsetSegmentStartPoint = endPosition + offsetOrientation.normalized * horizontalOffset;
+            var offsetSegmentEndPoint   = endPosition + offsetOrientation.normalized * horizontalOffset + currentEndPointOrientation * 500;
+            var offsetSegmentStartPoint = endPosition + offsetOrientation.normalized * horizontalOffset - currentEndPointOrientation * 500;
 
             // If the offset start point is different from previous ending point it means we're not connecting to the previous segment.
             // If we're not connecting to the previous segment we can't reuse its data so we must stop here
