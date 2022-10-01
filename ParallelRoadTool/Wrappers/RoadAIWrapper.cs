@@ -4,7 +4,9 @@ namespace ParallelRoadTool.Wrappers
 {
     public class RoadAIWrapper
     {
-        private readonly NetAI m_ai;
+        #region Fields
+
+        private readonly NetAI     m_ai;
         private readonly FieldInfo m_bridge;
 
         private readonly FieldInfo m_elevated;
@@ -12,27 +14,9 @@ namespace ParallelRoadTool.Wrappers
         private readonly FieldInfo m_slope;
         private readonly FieldInfo m_tunnel;
 
-        public RoadAIWrapper(NetAI ai)
-        {
-            m_ai = ai;
+        #endregion
 
-            try
-            {
-                m_elevated = m_ai.GetType().GetField("m_elevatedInfo");
-                m_bridge = m_ai.GetType().GetField("m_bridgeInfo");
-                m_slope = m_ai.GetType().GetField("m_slopeInfo");
-                m_tunnel = m_ai.GetType().GetField("m_tunnelInfo");
-                m_invisible = m_ai.GetType().GetField("m_invisible");
-            }
-            catch
-            {
-                m_elevated = null;
-                m_bridge = null;
-                m_slope = null;
-                m_tunnel = null;
-                m_invisible = null;
-            }
-        }
+        #region Properties
 
         public bool hasElevation => m_elevated != null && m_bridge != null && m_slope != null && m_tunnel != null;
 
@@ -82,9 +66,33 @@ namespace ParallelRoadTool.Wrappers
             }
         }
 
+        #endregion
+
+        public RoadAIWrapper(NetAI ai)
+        {
+            m_ai = ai;
+
+            try
+            {
+                m_elevated  = m_ai.GetType().GetField("m_elevatedInfo");
+                m_bridge    = m_ai.GetType().GetField("m_bridgeInfo");
+                m_slope     = m_ai.GetType().GetField("m_slopeInfo");
+                m_tunnel    = m_ai.GetType().GetField("m_tunnelInfo");
+                m_invisible = m_ai.GetType().GetField("m_invisible");
+            }
+            catch
+            {
+                m_elevated  = null;
+                m_bridge    = null;
+                m_slope     = null;
+                m_tunnel    = null;
+                m_invisible = null;
+            }
+        }
+
         public bool IsInvisible()
         {
-            if (m_invisible != null) return (bool) m_invisible.GetValue(m_ai);
+            if (m_invisible != null) return (bool)m_invisible.GetValue(m_ai);
 
             return false;
         }

@@ -14,7 +14,7 @@ Main features are:
 [b]Tested on C:S version 1.15.0-f5[/b]
 
 [quote]
-[h1]Current version: [b]2.0.5[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]3.0.0[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
 [list]
 [*] Updated mod to work with version 1.15.0-f5 (Plazas and Promenades update, thanks for [url=https://github.com/sabz612damax]sabz612damax[/url])
 [/list]

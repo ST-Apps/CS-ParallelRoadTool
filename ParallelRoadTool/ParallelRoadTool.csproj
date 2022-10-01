@@ -10,6 +10,7 @@
     <RootNamespace>ParallelRoadTool</RootNamespace>
     <AssemblyName>ParallelRoadTool</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <LangVersion>10.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -22,7 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8</LangVersion>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,11 +34,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>D:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CitiesHarmony.API, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\CitiesHarmony.API.2.1.0\lib\net35\CitiesHarmony.API.dll</HintPath>
+    </Reference>
+    <Reference Include="CitiesHarmony.Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\CitiesHarmony.Harmony.2.2.0\lib\net35\CitiesHarmony.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="ColossalManaged">
       <HintPath>D:\Games\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
@@ -52,105 +59,73 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Detours\NetAIDetour.cs" />
-    <Compile Include="Detours\NetManagerDetour.cs" />
-    <Compile Include="Detours\NetToolDetour.cs" />
-    <Compile Include="Extensions\LocaleManagerExtensions.cs" />
-    <Compile Include="Models\LocalizedString.cs" />
-    <Compile Include="Models\LocalizedStringKey.cs" />
-    <Compile Include="Models\NameList.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Loading.cs" />
+    <Compile Include="Managers\PresetsManager.cs" />
+    <Compile Include="Mod.cs" />
+    <Compile Include="Models\CurrentNetInfoPrefabChangedEventArgs.cs" />
+    <Compile Include="Models\CurrentToolChangedEventArgs.cs" />
+    <Compile Include="Models\ModStatuses.cs" />
+    <Compile Include="Patches\NetAIPatch.cs" />
+    <Compile Include="Patches\NetManagerPatch.cs" />
+    <Compile Include="Patches\NetToolCameraPatch.cs" />
+    <Compile Include="Patches\NetToolNodePatch.cs" />
+    <Compile Include="Patches\NetToolsPrefabPatch.cs" />
+    <Compile Include="Patches\ToolControllerPatch.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
-    <Compile Include="Models\NetTypeItem.cs" />
+    <Compile Include="Models\NetInfoItem.cs" />
     <Compile Include="Models\NetTypeItemEventArgs.cs" />
-    <Compile Include="Models\PresetNetItem.cs" />
-    <Compile Include="ParallelRoadTool.cs" />
-    <Compile Include="ModInfo.cs" />
-    <Compile Include="UI\UIFastList.cs" />
-    <Compile Include="UI\UILoadWindow.cs" />
-    <Compile Include="UI\UISaveLoadFileRow.cs" />
-    <Compile Include="UI\UISaveWindow.cs" />
-    <Compile Include="UI\OptionsKeymapping.cs" />
-    <Compile Include="Loader.cs" />
+    <Compile Include="Models\XMLNetItem.cs" />
+    <Compile Include="Managers\ParallelRoadToolManager.cs" />
+    <Compile Include="Settings\OffsetOptionsKeymapping.cs" />
+    <Compile Include="Settings\ToggleButtonOptionsKeymapping.cs" />
+    <Compile Include="Settings\ModSettings.cs" />
+    <Compile Include="UI\Main\UINetSelectionPopup.cs" />
+    <Compile Include="UI\Presets\UIFileListRow.cs" />
+    <Compile Include="UI\Presets\UILoadPresetWindow.cs" />
+    <Compile Include="UI\Presets\UIPresetDetailsPanel.cs" />
+    <Compile Include="UI\Presets\UISavePresetWindow.cs" />
+    <Compile Include="UI\Shared\UIModalWindow.cs" />
+    <Compile Include="UI\Shared\UINetItemListRow.cs" />
+    <Compile Include="UI\Shared\UIWindow.cs" />
+    <Compile Include="UI\Utils\UIConstants.cs" />
+    <Compile Include="UI\UIController.cs" />
+    <Compile Include="UI\Main\UIMainWindow.cs" />
+    <Compile Include="UI\Main\UINetInfoButton.cs" />
+    <Compile Include="UI\Shared\UINetInfoPanel.cs" />
+    <Compile Include="UI\Main\UINetSetupPanel.cs" />
+    <Compile Include="UI\Main\UINetListPanel.cs" />
+    <Compile Include="UI\Main\UIToolToggleButton.cs" />
+    <Compile Include="UI\Utils\UIHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\HarmonyUtils.cs" />
+    <Compile Include="Utils\ControlPointUtils.cs" />
     <Compile Include="Utils\Log.cs" />
-    <Compile Include="Utils\PresetsUtils.cs" />
-    <Compile Include="Utils\ResourceLoader.cs" />
+    <Compile Include="Utils\NodeUtils.cs" />
+    <Compile Include="WhatsNewMessageListing.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
-    <Compile Include="UI\Base\UIRightDragHandle.cs" />
-    <Compile Include="UI\UIMainWindow.cs" />
-    <Compile Include="UI\UINetList.cs" />
-    <Compile Include="UI\UINetTypeItem.cs" />
-    <Compile Include="Utils\UIUtil.cs" />
-    <Compile Include="UI\UIOptionsPanel.cs" />
-    <Compile Include="Utils\LocalizationManager.cs" />
+    <Compile Include="UI\Main\UIRightDragHandle.cs" />
+    <Compile Include="UI\Settings\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\ru.xml" />
-    <EmbeddedResource Include="Assets\Localizations\zh.xml" />
-    <EmbeddedResource Include="Assets\Icons\Tutorial.png" />
-    <EmbeddedResource Include="Assets\Localizations\en.xml" />
-    <EmbeddedResource Include="Assets\Icons\Reverse.png" />
-    <EmbeddedResource Include="Assets\Icons\ReverseDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\ReverseFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\ReverseHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\ReversePressed.png" />
-    <EmbeddedResource Include="Assets\Icons\Parallel.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\ParallelPressed.png" />
-    <EmbeddedResource Include="Assets\Icons\Remove.png" />
-    <EmbeddedResource Include="Assets\Icons\Add.png" />
-    <EmbeddedResource Include="Assets\Icons\DragCursor.png" />
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\es.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\ja.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\de.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\fr.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Localizations\it.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Icons\FindIt.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItDisabled.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItFocused.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItHovered.png" />
-    <EmbeddedResource Include="Assets\Icons\FindItPressed.png" />
-    <EmbeddedResource Include="Assets\Icons\Load.png" />
-    <EmbeddedResource Include="Assets\Icons\Save.png" />
-    <Content Include="Assets\Localizations\nl.xml" />
-    <Content Include="Assets\Localizations\pt.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Submodules\RedirectionFramework\RedirectionFramework.csproj">
-      <Project>{aa84f143-e218-45ed-aaeb-6ec3af1f176e}</Project>
-      <Name>RedirectionFramework</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
+  <Import Project="..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
 del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\*.dll"
 
 xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
-xcopy /y "$(TargetDir)RedirectionFramework.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
+xcopy /y "$(SolutionDir)packages\CitiesHarmony.API.2.1.0\lib\net35\CitiesHarmony.API.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\"
 
-cd "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
+mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\Translations"
+del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\Translations\*.csv"
+xcopy /y "$(SolutionDir)\..\Translations\" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\Translations" /s /e
 
-ren RedirectionFramework.dll 0RedirectionFramework.dll
-ren $(TargetFileName) 1$(TargetFileName)</PostBuildEvent>
+mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\Resources"
+del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\Resources\*.png"
+xcopy /y "$(SolutionDir)\..\Resources\*.png" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)\Resources" /s /e</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

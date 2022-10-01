@@ -1,4 +1,5 @@
-﻿using ParallelRoadTool.Wrappers;
+﻿using System.Text.RegularExpressions;
+using ParallelRoadTool.Wrappers;
 
 namespace ParallelRoadTool.Extensions
 {
@@ -16,7 +17,7 @@ namespace ParallelRoadTool.Extensions
             isSlope = false;
             if (destination.m_netAI == null || source.m_netAI == null) return destination;
 
-            var sourceWrapper = new RoadAIWrapper(source.m_netAI);
+            var sourceWrapper      = new RoadAIWrapper(source.m_netAI);
             var destinationWrapper = new RoadAIWrapper(destination.m_netAI);
 
             NetInfo result;
@@ -31,7 +32,7 @@ namespace ParallelRoadTool.Extensions
             }
             else if (source == sourceWrapper.slope || source.name.ToLowerInvariant().Contains("slope"))
             {
-                result = destinationWrapper.slope;
+                result  = destinationWrapper.slope;
                 isSlope = true;
             }
             else if (source == sourceWrapper.tunnel || source.name.ToLowerInvariant().Contains("tunnel"))
@@ -44,9 +45,31 @@ namespace ParallelRoadTool.Extensions
             }
 
             // Sanity check, of them may be null
-            result = result ?? destination;
+            result ??= destination;
 
             return result;
+        }
+
+        /// <summary>
+        ///     Localizes, when possible, <see cref="NetInfo.name" /> and trims some spaces.
+        /// </summary>
+        /// <param name="netInfo"></param>
+        /// <returns></returns>
+        public static string GenerateBeautifiedNetName(this NetInfo netInfo)
+        {
+            // Trim string and then remove duplicate spaces
+            return Regex.Replace(netInfo.GetUncheckedLocalizedTitle().Trim(), " {2,}", " ");
+        }
+
+        /// <summary>
+        ///     Returns true if the <see cref="NetInfo" /> doesn't have any backward facing lane.
+        /// </summary>
+        /// <param name="netInfo"></param>
+        /// <returns></returns>
+        public static bool IsOneWayOnly(this NetInfo netInfo)
+        {
+            // One-way roads only have forward lanes
+            return !netInfo.m_hasBackwardVehicleLanes;
         }
     }
 }
