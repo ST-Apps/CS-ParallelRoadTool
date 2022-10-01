@@ -79,10 +79,6 @@ internal static class NetToolCameraPatch
                 ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset,
                                                               out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint);
 
-                // Render the overlay for current offset segment
-                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color, currentStartPoint, currentMiddlePoint,
-                                                  currentEndPoint);
-
 #if DEBUG
                 if (ModSettings.RenderDebugOverlay)
                 {
@@ -144,6 +140,10 @@ internal static class NetToolCameraPatch
                         }
                     }
                 }
+
+                // Render the overlay for current offset segment
+                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color, currentStartPoint, currentMiddlePoint,
+                                                  currentEndPoint);
 
                 // We draw arrows only for one-way networks, just as in game
                 if (!selectedNetInfo.IsOneWayOnly()) continue;
