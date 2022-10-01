@@ -6,10 +6,22 @@ namespace ParallelRoadTool.Utils;
 
 internal static class ControlPointUtils
 {
+    /// <summary>
+    ///     Clones and offsets the provided triple of control points.
+    /// </summary>
+    /// <param name="startPoint"></param>
+    /// <param name="middlePoint"></param>
+    /// <param name="endPoint"></param>
+    /// <param name="horizontalOffset"></param>
+    /// <param name="verticalOffset"></param>
+    /// <param name="currentStartPoint"></param>
+    /// <param name="currentMiddlePoint"></param>
+    /// <param name="currentEndPoint"></param>
     public static void GenerateOffsetControlPoints(NetTool.ControlPoint     startPoint,
                                                    NetTool.ControlPoint     middlePoint,
                                                    NetTool.ControlPoint     endPoint,
                                                    float                    horizontalOffset,
+                                                   float                    verticalOffset,
                                                    out NetTool.ControlPoint currentStartPoint,
                                                    out NetTool.ControlPoint currentMiddlePoint,
                                                    out NetTool.ControlPoint currentEndPoint)
@@ -33,8 +45,17 @@ internal static class ControlPointUtils
         var currentMiddlePosition = (middlePointEndPosition - currentEndPosition) * ix + currentEndPosition;
 
         // Finally set offset control points by copying everything but the position
-        currentStartPoint  = startPoint with { m_position = new Vector3(currentStartPosition.x,   startPoint.m_position.y, currentStartPosition.z) };
-        currentMiddlePoint = middlePoint with { m_position = new Vector3(currentMiddlePosition.x, startPoint.m_position.y, currentMiddlePosition.z) };
-        currentEndPoint    = endPoint with { m_position = new Vector3(currentEndPosition.x,       startPoint.m_position.y, currentEndPosition.z) };
+        currentStartPoint = startPoint with
+        {
+            m_position = new Vector3(currentStartPosition.x, startPoint.m_position.y + verticalOffset, currentStartPosition.z)
+        };
+        currentMiddlePoint = middlePoint with
+        {
+            m_position = new Vector3(currentMiddlePosition.x, middlePoint.m_position.y + verticalOffset, currentMiddlePosition.z)
+        };
+        currentEndPoint = endPoint with
+        {
+            m_position = new Vector3(currentEndPosition.x, endPoint.m_position.y + verticalOffset, currentEndPosition.z)
+        };
     }
 }
