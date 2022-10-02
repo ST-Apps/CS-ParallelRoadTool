@@ -1,4 +1,8 @@
-﻿using ColossalFramework.Math;
+﻿using System;
+using System.Reflection;
+using ColossalFramework;
+using ColossalFramework.Math;
+using HarmonyLib;
 using ParallelRoadTool.Extensions;
 using UnityEngine;
 
@@ -13,6 +17,7 @@ internal static class ControlPointUtils
     /// <param name="middlePoint"></param>
     /// <param name="endPoint"></param>
     /// <param name="horizontalOffset"></param>
+    /// <param name="verticalOffset"></param>
     /// <param name="currentStartPoint"></param>
     /// <param name="currentMiddlePoint"></param>
     /// <param name="currentEndPoint"></param>
@@ -46,15 +51,57 @@ internal static class ControlPointUtils
         // Finally set offset control points by copying everything but the position
         currentStartPoint = startPoint with
         {
+            m_node = 0,
+            m_segment = 0,
             m_position = new Vector3(currentStartPosition.x, startPoint.m_position.y + verticalOffset, currentStartPosition.z)
         };
         currentMiddlePoint = middlePoint with
         {
+            m_node = 0,
+            m_segment = 0,
             m_position = new Vector3(currentMiddlePosition.x, middlePoint.m_position.y + verticalOffset, currentMiddlePosition.z)
         };
         currentEndPoint = endPoint with
         {
+            m_node = 0,
+            m_segment = 0,
             m_position = new Vector3(currentEndPosition.x, endPoint.m_position.y + verticalOffset, currentEndPosition.z)
         };
+
+        //var m_mouseRay = Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(currentStartPoint.m_position));
+        //var m_mouseRayLength = Camera.main.farClipPlane;
+        //ToolBase.RaycastInput input = new ToolBase.RaycastInput(m_mouseRay, m_mouseRayLength);
+        //Vector3 origin = input.m_ray.origin;
+        //Vector3 normalized = input.m_ray.direction.normalized;
+        //Vector3 _b = input.m_ray.origin + normalized * input.m_length;
+        //Segment3 ray = new Segment3(origin, _b);
+        //ToolBase.RaycastOutput output = new ToolBase.RaycastOutput();
+        //if (Singleton<NetManager>.instance.RayCast(input.m_buildObject as NetInfo, ray, input.m_netSnap, input.m_segmentNameOnly,
+        //                                           input.m_netService.m_service, input.m_netService2.m_service, input.m_netService.m_subService,
+        //                                           input.m_netService2.m_subService, input.m_netService.m_itemLayers,
+        //                                           input.m_netService2.m_itemLayers, input.m_ignoreNodeFlags, input.m_ignoreSegmentFlags, out var a,
+        //                                           out output.m_netNode, out output.m_netSegment))
+        //{
+
+        //    //var rayCastMethod = typeof(ToolBase).GetMethod("RayCast", BindingFlags.NonPublic | BindingFlags.Static);
+        //    //ToolBase.RaycastOutput output = new ToolBase.RaycastOutput();
+        //    //var args = new object[] { input, output };
+        //    //rayCastMethod.Invoke(null, args);
+        //    //tmpPatch.RayCast(input, out var output);
+        //    if (output.m_netNode != 0)
+        //        currentStartPoint.m_node = output.m_netNode;
+        //}
     }
+
+    //[HarmonyPatch]
+    //internal static class tmpPatch
+    //{
+    //    [HarmonyReversePatch]
+    //    [HarmonyPatch(typeof(ToolBase), "RayCast", typeof(ToolBase.RaycastInput), typeof(ToolBase.RaycastOutput))]
+    //    internal static bool RayCast(ToolBase.RaycastInput input, out ToolBase.RaycastOutput output)
+    //    {
+    //        // No implementation is required as this will call the original method
+    //        throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
+    //    }
+    //}
 }

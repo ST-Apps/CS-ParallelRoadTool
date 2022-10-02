@@ -85,8 +85,8 @@ internal static class NetToolCameraPatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, out var currentStartPoint,
-                                                              out var currentMiddlePoint, out var currentEndPoint);
+                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset,
+                                                              out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint);
 
 #if DEBUG
                 if (ModSettings.RenderDebugOverlay)
@@ -108,7 +108,9 @@ internal static class NetToolCameraPatch
                 }
 #endif
 
-                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled)
+                #region Angle Compensation
+
+                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
                 {
                     // Check if we need to look for an intersection point to move our previously created ending point.
                     // This is needed because certain angles will cause the segments to overlap.
@@ -116,7 +118,7 @@ internal static class NetToolCameraPatch
                     // IMPORTANT: this is meant for straight roads only!
                     var previousEndPointNullable = NetManagerPatch.PreviousNode(i,   false, true);
                     var previousStartPointNullable = NetManagerPatch.PreviousNode(i, true,  true);
-                    if (netTool.m_mode == NetTool.Mode.Straight && previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
+                    if (previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
                     {
                         // We can now extract the previously created ending point
                         var previousEndPoint = previousEndPointNullable.Value;
@@ -150,6 +152,8 @@ internal static class NetToolCameraPatch
                     }
                 }
 
+                #endregion
+
                 // Render the overlay for current offset segment
                 NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color, currentStartPoint, currentMiddlePoint,
                                                   currentEndPoint);
@@ -159,8 +163,6 @@ internal static class NetToolCameraPatch
                 ControlPointsBuffer[i][0] =   currentStartPoint;
                 ControlPointsBuffer[i][1] =   currentMiddlePoint;
                 ControlPointsBuffer[i][2] =   currentEndPoint;
-
-                Log._Debug($">>> Rendering points: [{currentStartPoint.m_position}, {currentMiddlePoint.m_position}, {currentEndPoint.m_position}] - original points were [{startPoint.m_position}, {middlePoint.m_position}, {endPoint.m_position}]");
 
                 // We draw arrows only for one-way networks, just as in game
                 if (!selectedNetInfo.IsOneWayOnly()) continue;
