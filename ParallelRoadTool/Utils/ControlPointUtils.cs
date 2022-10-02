@@ -1,6 +1,5 @@
 ﻿using ColossalFramework.Math;
 using ParallelRoadTool.Extensions;
-using UnityEngine;
 
 namespace ParallelRoadTool.Utils;
 
@@ -32,7 +31,9 @@ internal static class ControlPointUtils
 
         // Move start and end point to the correct direction
         var currentStartPosition = startPoint.m_position + currentStartDirection;
-        var currentEndPosition = endPoint.m_position     + currentEndDirection;
+        currentStartPosition.y = startPoint.m_position.y + verticalOffset;
+        var currentEndPosition = endPoint.m_position + currentEndDirection;
+        currentEndPosition.y = endPoint.m_position.y + verticalOffset;
 
         // Get two intersection points for the pairs (start, mid) and (mid, end)
         var middlePointStartPosition = middlePoint.m_position + currentStartDirection;
@@ -41,21 +42,13 @@ internal static class ControlPointUtils
         var middlePointEndLine = Line2.XZ(currentEndPosition,     middlePointEndPosition);
 
         // Now that we have the intersection we can get our actual middle point shifted by horizontalOffset
-        middlePointStartLine.Intersect(middlePointEndLine, out var ix, out var iy);
+        middlePointStartLine.Intersect(middlePointEndLine, out var ix, out _);
         var currentMiddlePosition = (middlePointEndPosition - currentEndPosition) * ix + currentEndPosition;
+        currentMiddlePosition.y = middlePoint.m_position.y + verticalOffset;
 
-        // Finally set offset control points by copying everything but the position
-        currentStartPoint = startPoint with
-        {
-            m_position = new Vector3(currentStartPosition.x, startPoint.m_position.y + verticalOffset, currentStartPosition.z)
-        };
-        currentMiddlePoint = middlePoint with
-        {
-            m_position = new Vector3(currentMiddlePosition.x, middlePoint.m_position.y + verticalOffset, currentMiddlePosition.z)
-        };
-        currentEndPoint = endPoint with
-        {
-            m_position = new Vector3(currentEndPosition.x, endPoint.m_position.y + verticalOffset, currentEndPosition.z)
-        };
+        // Finally set offset control points by copying everything but the position and references to nodes/segments
+        currentStartPoint  = startPoint with { m_node = 0, m_segment = 0, m_position = currentStartPosition };
+        currentMiddlePoint = middlePoint with { m_node = 0, m_segment = 0, m_position = currentMiddlePosition };
+        currentEndPoint    = endPoint with { m_node = 0, m_segment = 0, m_position = currentEndPosition };
     }
 }

@@ -99,7 +99,7 @@ internal static class NetToolCameraPatch
                 }
 #endif
 
-                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled)
+                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
                 {
                     // Check if we need to look for an intersection point to move our previously created ending point.
                     // This is needed because certain angles will cause the segments to overlap.
@@ -107,7 +107,7 @@ internal static class NetToolCameraPatch
                     // IMPORTANT: this is meant for straight roads only!
                     var previousEndPointNullable = NetManagerPatch.PreviousNode(i,   false, true);
                     var previousStartPointNullable = NetManagerPatch.PreviousNode(i, true,  true);
-                    if (netTool.m_mode == NetTool.Mode.Straight && previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
+                    if (previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
                     {
                         // We can now extract the previously created ending point
                         var previousEndPoint = previousEndPointNullable.Value;
