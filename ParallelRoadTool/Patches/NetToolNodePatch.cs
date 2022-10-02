@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
@@ -15,75 +17,31 @@ namespace ParallelRoadTool.Patches;
               typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
 internal class NetToolNodePatch
 {
-    #region Fields
-
-    public static readonly FastList<NetTool.ControlPoint[]> ControlPointsBuffer = new();
-    public static readonly FastList<ushort[]>               NodesBuffer         = new();
-
-    #endregion
-
-    protected static bool FindNode(out ushort newNodeId, NetInfo info, Vector3 position)
-    {
-        return FindCloseNode(out newNodeId, info, position);
-    }
-
-    public static ref NetNode GetNode(ushort nodeId)
-    {
-        return ref NetManager.instance.m_nodes.m_buffer[nodeId];
-    }
-
-    private static bool FindCloseNode(out ushort nodeId, NetInfo info, Vector3 position)
-    {
-        var gridMinX = MinCell(position.x);
-        var gridMinZ = MinCell(position.z);
-        var gridMaxX = MaxCell(position.x);
-        var gridMaxZ = MaxCell(position.z);
-        for (var i = gridMinZ; i <= gridMaxZ; i++)
-        {
-            for (var j = gridMinX; j <= gridMaxX; j++)
-            {
-                nodeId = NetManager.instance.m_nodeGrid[i * 270 + j];
-                ref var node = ref GetNode(nodeId);
-
-                if (info.m_class == node.Info.m_class && (position - node.m_position).magnitude < 0.5f)
-                    return true;
-            }
-        }
-
-        nodeId = 0;
-        return false;
-    }
-
-    private static int MinCell(float value)
-    {
-        return Mathf.Max((int)((value - 16f) / 64f + 135f) - 1, 0);
-    }
-
-    private static int MaxCell(float value)
-    {
-        return Mathf.Min((int)((value + 16f) / 64f + 135f) + 1, 269);
-    }
-
-    internal static void Prefix(NetInfo              info,
-                                bool                 needMoney,
-                                bool                 switchDirection,
+    internal static void Prefix(NetInfo info,
+                                bool needMoney,
+                                bool switchDirection,
                                 NetTool.ControlPoint startPoint,
                                 NetTool.ControlPoint middlePoint,
-                                NetTool.ControlPoint endPoint)
+                                NetTool.ControlPoint endPoint,
+                                out ushort __state)
     {
+        __state = 0;
+
         // We only run if the mod is set as Active
         if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
+        {
             return;
+        }
 
         // If start direction is not set we manually compute it
         if (startPoint.m_direction == Vector3.zero)
             startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
 
-        if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
-        {
-            ControlPointsBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
-            NodesBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
-        }
+        //if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
+        //{
+        //    ControlPointsBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
+        //    NodesBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
+        //}
 
         // Get NetTool instance
         var netTool = ToolsModifierControl.GetTool<NetTool>();
@@ -111,7 +69,7 @@ internal class NetToolNodePatch
             // Check if we already have a node in either start or end point
             if (currentStartPoint.m_node == 0 || currentStartPoint.m_node == currentEndPoint.m_node)
             {
-                var nodeAt = NodeUtils.NodeAtPosition(currentStartPoint.m_position);
+                var nodeAt = NodeUtils.NodeIdAtPosition(currentStartPoint.m_position);
                 if (nodeAt != 0)
                 {
                     currentStartPoint.m_node = nodeAt;
@@ -119,13 +77,20 @@ internal class NetToolNodePatch
                     Log._Debug($">>> Set current start point as {currentStartPoint.m_node} with segment {currentStartPoint.m_segment}");
                 }
 
-                nodeAt = NodeUtils.NodeAtPosition(currentEndPoint.m_position);
+                nodeAt = NodeUtils.NodeIdAtPosition(currentEndPoint.m_position);
                 if (nodeAt != 0)
                 {
                     currentEndPoint.m_node = nodeAt;
 
                     Log._Debug($">>> Set current end point as {currentEndPoint.m_node} with segment {currentStartPoint.m_segment}");
                 }
+            }
+
+            if (currentStartPoint.m_node == 0 && Nodes.TryGetValue(startPoint.m_node, out var newStartNodeId))
+            {
+                currentStartPoint.m_node = newStartNodeId;
+
+                Log._Debug($">>> Set current start point as {currentStartPoint.m_node} from object data");
             }
 
             #region Angle Compensation
@@ -189,8 +154,27 @@ internal class NetToolNodePatch
 
                 Log._Debug($">>> Segment creation failed because {toolErrors:g}");
             }
+            else
+            {
+                __state = NodeUtils.NodeIdAtPosition(currentEndPoint.m_position);
+            }
         }
     }
+
+    internal static void Postfix(NetInfo              info,
+                                 bool                 needMoney,
+                                 bool                 switchDirection,
+                                 NetTool.ControlPoint startPoint,
+                                 NetTool.ControlPoint middlePoint,
+                                 NetTool.ControlPoint endPoint,
+                                 ushort           __state)
+    {
+        var endNodeId = NodeUtils.NodeIdAtPosition(endPoint.m_position);
+
+        Nodes[endNodeId] = __state;
+    }
+
+    private static Dictionary<ushort, ushort> Nodes = new();
 
     [HarmonyPatch]
     private class NetToolReversePatch
@@ -198,10 +182,10 @@ internal class NetToolNodePatch
         [HarmonyReversePatch]
         [HarmonyPatch(typeof(NetTool), "CreateNodeImpl", typeof(NetInfo), typeof(bool), typeof(bool), typeof(NetTool.ControlPoint),
                       typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
-        public static bool CreateNodeImpl(object               instance,
-                                          NetInfo              info,
-                                          bool                 needMoney,
-                                          bool                 switchDirection,
+        public static bool CreateNodeImpl(object instance,
+                                          NetInfo info,
+                                          bool needMoney,
+                                          bool switchDirection,
                                           NetTool.ControlPoint startPoint,
                                           NetTool.ControlPoint middlePoint,
                                           NetTool.ControlPoint endPoint)
@@ -210,4 +194,7 @@ internal class NetToolNodePatch
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
         }
     }
+
+    //public static readonly FastList<NetTool.ControlPoint[]> ControlPointsBuffer = new();
+    //public static readonly FastList<ushort[]>               NodesBuffer         = new();
 }

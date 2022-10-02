@@ -39,7 +39,7 @@ internal class NodeUtils
         // This should be the best possible value for snapping
         var maxDistance = info.m_halfWidth;
 
-        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPosition)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
+        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeIdAtPosition)}] Trying to find an existing node at position {newNodePosition} (+- {verticalOffset}) with maxDistance = {maxDistance}");
 
         // Look for nodes nearby
         if (!Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled ||
@@ -53,7 +53,7 @@ internal class NodeUtils
                                            true, false, maxDistance, out posA, out posB, out _, out _)))
             return 0;
 
-        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPosition)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
+        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeIdAtPosition)}] FindPathPosition worked with posA.segment = {posA.m_segment} and posB.segment = {posB.m_segment}");
 
         if (posA.m_segment == 0) return 0;
 
@@ -63,7 +63,7 @@ internal class NodeUtils
         var startNode = netManager.m_nodes.m_buffer[startNodeId];
         var endNode = netManager.m_nodes.m_buffer[endNodeId];
 
-        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPosition)}] posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
+        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeIdAtPosition)}] posA.segment is not 0, we got two nodes: {startNodeId} [{startNode.m_position}] and {endNodeId} [{endNode.m_position}]");
 
         // Get node closer to current position
         if (startNodeId != 0 && endNodeId != 0)
@@ -95,7 +95,7 @@ internal class NodeUtils
         var newNodeId = NodeAtPosition(info, newNodePosition, verticalOffset);
         if (newNodeId != 0) return newNodeId;
 
-        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeAtPosition)}] No nodes has been found for position {newNodePosition}, creating a new one.");
+        Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeIdAtPosition)}] No nodes has been found for position {newNodePosition}, creating a new one.");
 
         // Both startNode and endNode were not found, we need to create a new one
         CreateNode(out newNodeId, ref randomizer, info, newNodePosition);
@@ -196,7 +196,7 @@ internal class NodeUtils
         return ref NetManager.instance.m_nodes.m_buffer[nodeId];
     }
 
-    public static ushort NodeAtPosition(Vector3 position, NetInfo info = null)
+    public static ushort NodeIdAtPosition(Vector3 position, NetInfo info = null)
     {
         SearchRange(position, out var rangeRow, out var rangeColumn);
         ushort nodeId = 0;
