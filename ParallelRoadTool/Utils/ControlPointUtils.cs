@@ -100,6 +100,6 @@ internal static class ControlPointUtils
                                  bool                 isReversed)
     {
         return NetTool.CreateNode(netInfo, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
-                                  false, true, true, false, isReversed, 0, out _, out _, out _, out _) != ToolBase.ToolErrors.None;
+                                  false, true, true, false, isReversed, 0, out _, out _, out _, out _) == ToolBase.ToolErrors.None;
     }
 }
