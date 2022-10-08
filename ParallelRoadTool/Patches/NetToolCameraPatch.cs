@@ -43,21 +43,17 @@ internal static class NetToolCameraPatch
 
     // ReSharper disable once UnusedMember.Local
     private static void Prefix(RenderManager.CameraInfo cameraInfo,
-                                NetInfo                  info,
-                                Color                    color,
-                                NetTool.ControlPoint     startPoint,
-                                NetTool.ControlPoint     middlePoint,
-                                NetTool.ControlPoint     endPoint)
+                               NetInfo                  info,
+                               Color                    color,
+                               NetTool.ControlPoint     startPoint,
+                               NetTool.ControlPoint     middlePoint,
+                               NetTool.ControlPoint     endPoint)
     {
         try
         {
             // We only run if the mod is set as Active
             if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
                 return;
-
-            // Render only if we have a clear direction, otherwise results will look messy
-            //if (endPoint.m_direction == startPoint.m_direction)
-            //    return;
 
             // Render only if we have at least two distinct points
             if (startPoint.m_position == endPoint.m_position)
@@ -67,17 +63,19 @@ internal static class NetToolCameraPatch
             if (startPoint.m_direction == Vector3.zero)
                 startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
 
+            // Initialize current buffer
             if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
                 ControlPointsBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
 
             // Get NetTool instance
             var netTool = ToolsModifierControl.GetTool<NetTool>();
 
+            // Iterate over selected network and render the overlay for each of them
             for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
             {
                 var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
 
-                // Horizontal offset must be negated to appear on the correct side of the original segment
+                // Horizontal offset must be negated to appear on the correct side of the original segment if we're on left-handed drive
                 var horizontalOffset = currentRoadInfos.HorizontalOffset * (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic ? 1 : -1);
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
@@ -89,7 +87,7 @@ internal static class NetToolCameraPatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset,
+                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo,
                                                               out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint);
 
 #if DEBUG
@@ -114,6 +112,7 @@ internal static class NetToolCameraPatch
 
                 #region Angle Compensation
 
+                // TODO: move to controlpointutils
                 if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
                 {
                     // Check if we need to look for an intersection point to move our previously created ending point.
@@ -158,17 +157,23 @@ internal static class NetToolCameraPatch
 
                 #endregion
 
+                // Check if current node can be created. If not change color to red.
+                var currentColor = currentRoadInfos.Color;
+                if (NetTool.CreateNode(info, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
+                                       false, true, true, false, currentRoadInfos.IsReversed, 0, out _, out _, out _, out _) !=
+                    ToolBase.ToolErrors.None)
+                    currentColor = Color.red;
+
                 // Render the overlay for current offset segment
-                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color, currentStartPoint, currentMiddlePoint,
+                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint,
                                                   currentEndPoint);
 
                 // Save to buffer
+                // TODO: move to controlpointutils
                 ControlPointsBuffer[i]    ??= new NetTool.ControlPoint[3];
                 ControlPointsBuffer[i][0] =   currentStartPoint;
                 ControlPointsBuffer[i][1] =   currentMiddlePoint;
                 ControlPointsBuffer[i][2] =   currentEndPoint;
-
-                Log._Debug($">>> BUFFER CONTAINS START: {ControlPointsBuffer[i][0].m_position}");
 
                 // We draw arrows only for one-way networks, just as in game
                 if (!selectedNetInfo.IsOneWayOnly()) continue;
@@ -187,7 +192,6 @@ internal static class NetToolCameraPatch
                 direction   = Quaternion.Euler(0, -90, 0) * direction.normalized;
 
                 // We can finally draw the arrow
-                // TODO: can we use middle point's position and direction?
                 NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
             }
         }
