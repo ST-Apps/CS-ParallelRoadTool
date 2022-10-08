@@ -42,7 +42,7 @@ internal static class NetToolCameraPatch
     /// <param name="endPoint"></param>
 
     // ReSharper disable once UnusedMember.Local
-    private static void Postfix(RenderManager.CameraInfo cameraInfo,
+    private static void Prefix(RenderManager.CameraInfo cameraInfo,
                                 NetInfo                  info,
                                 Color                    color,
                                 NetTool.ControlPoint     startPoint,
@@ -56,12 +56,16 @@ internal static class NetToolCameraPatch
                 return;
 
             // Render only if we have a clear direction, otherwise results will look messy
-            if (endPoint.m_direction == startPoint.m_direction)
+            //if (endPoint.m_direction == startPoint.m_direction)
+            //    return;
+
+            // Render only if we have at least two distinct points
+            if (startPoint.m_position == endPoint.m_position)
                 return;
 
             // If start direction is not set we manually compute it
             if (startPoint.m_direction == Vector3.zero)
-                startPoint.m_direction = middlePoint.m_position - startPoint.m_position;
+                startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
 
             if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
                 ControlPointsBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
@@ -164,6 +168,8 @@ internal static class NetToolCameraPatch
                 ControlPointsBuffer[i][1] =   currentMiddlePoint;
                 ControlPointsBuffer[i][2] =   currentEndPoint;
 
+                Log._Debug($">>> BUFFER CONTAINS START: {ControlPointsBuffer[i][0].m_position}");
+
                 // We draw arrows only for one-way networks, just as in game
                 if (!selectedNetInfo.IsOneWayOnly()) continue;
 
@@ -188,7 +194,7 @@ internal static class NetToolCameraPatch
         catch (Exception e)
         {
             // Log the exception
-            Log._DebugOnlyError($"[{nameof(NetToolCameraPatch)}.{nameof(Postfix)}] CreateSegment failed.");
+            Log._DebugOnlyError($"[{nameof(NetToolCameraPatch)}.{nameof(Prefix)}] RenderOverlay failed.");
             Log.Exception(e);
         }
     }

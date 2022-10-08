@@ -198,6 +198,7 @@ internal class NodeUtils
 
     public static ushort NodeIdAtPosition(Vector3 position, NetInfo info = null)
     {
+        Log._Debug($">>> Looking for node at {position}");
         SearchRange(position, out var rangeRow, out var rangeColumn);
         ushort nodeId = 0;
 
