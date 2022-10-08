@@ -179,20 +179,8 @@ internal static class NetToolCameraPatch
                 if (!selectedNetInfo.IsOneWayOnly()) continue;
 
                 // Draw direction arrow by getting the tangent between starting and ending point
-                var bezier = new Bezier3 { a = currentStartPoint.m_position, d = currentEndPoint.m_position };
-                NetSegment.CalculateMiddlePoints(bezier.a, currentMiddlePoint.m_direction, bezier.d, -currentEndPoint.m_direction, true, true,
-                                                 out bezier.b, out bezier.c);
-
-                // we can now extract both position and direction from the tangent
-                var position = bezier.Position(0.5f);
-                var direction = bezier.Tangent(0.5f);
-
-                // Direction however will be oriented towards the middle point, so we need to rotate it by -90°
-                direction.y = 0;
-                direction   = Quaternion.Euler(0, -90, 0) * direction.normalized;
-
-                // We can finally draw the arrow
-                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
+                var arrowControlPoint = ControlPointUtils.GenerateMiddlePoint(currentStartPoint, currentEndPoint);
+                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position, arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
             }
         }
         catch (Exception e)

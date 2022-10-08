@@ -59,4 +59,20 @@ internal static class ControlPointUtils
         if (currentEndPoint.m_position.AtPosition(selectedNetInfo, out currentEndPoint.m_node, out currentEndPoint.m_segment))
             Log._Debug($">>> currentEndPoint: {currentEndPoint.m_node} - {currentEndPoint.m_segment}");
     }
+
+    public static NetTool.ControlPoint GenerateMiddlePoint(NetTool.ControlPoint startPoint, NetTool.ControlPoint endPoint)
+    {
+        var bezier = new Bezier3 { a = startPoint.m_position, d = endPoint.m_position };
+        NetSegment.CalculateMiddlePoints(bezier.a, startPoint.m_direction, bezier.d, -endPoint.m_direction, true, true, out bezier.b, out bezier.c);
+
+        // we can now extract both position and direction from the tangent
+        var position = bezier.Position(0.5f);
+        var direction = bezier.Tangent(0.5f);
+
+        // Direction however will be oriented towards the middle point, so we need to rotate it by -90°
+        direction.y = 0;
+        direction   = Quaternion.Euler(0, -90, 0) * direction.normalized;
+
+        return new NetTool.ControlPoint { m_direction = direction, m_position = position };
+    }
 }
