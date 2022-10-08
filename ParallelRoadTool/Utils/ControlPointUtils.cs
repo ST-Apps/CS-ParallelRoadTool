@@ -60,6 +60,13 @@ internal static class ControlPointUtils
             Log._Debug($">>> currentEndPoint: {currentEndPoint.m_node} - {currentEndPoint.m_segment}");
     }
 
+    /// <summary>
+    ///     Generates the middle <see cref="NetTool.ControlPoint" /> between two <see cref="NetTool.ControlPoint" /> using a
+    ///     <see cref="Bezier3" /> curve and getting its tangent.
+    /// </summary>
+    /// <param name="startPoint"></param>
+    /// <param name="endPoint"></param>
+    /// <returns></returns>
     public static NetTool.ControlPoint GenerateMiddlePoint(NetTool.ControlPoint startPoint, NetTool.ControlPoint endPoint)
     {
         var bezier = new Bezier3 { a = startPoint.m_position, d = endPoint.m_position };
@@ -74,5 +81,25 @@ internal static class ControlPointUtils
         direction   = Quaternion.Euler(0, -90, 0) * direction.normalized;
 
         return new NetTool.ControlPoint { m_direction = direction, m_position = position };
+    }
+
+    /// <summary>
+    ///     Checks if the segment between the provided <see cref="NetTool.ControlPoint" /> can be created by verifying if the
+    ///     result <see cref="ToolBase.ToolErrors" /> is <see cref="ToolBase.ToolErrors.None" />
+    /// </summary>
+    /// <param name="netInfo"></param>
+    /// <param name="currentStartPoint"></param>
+    /// <param name="currentMiddlePoint"></param>
+    /// <param name="currentEndPoint"></param>
+    /// <param name="isReversed"></param>
+    /// <returns></returns>
+    public static bool CanCreate(NetInfo              netInfo,
+                                 NetTool.ControlPoint currentStartPoint,
+                                 NetTool.ControlPoint currentMiddlePoint,
+                                 NetTool.ControlPoint currentEndPoint,
+                                 bool                 isReversed)
+    {
+        return NetTool.CreateNode(netInfo, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
+                                  false, true, true, false, isReversed, 0, out _, out _, out _, out _) != ToolBase.ToolErrors.None;
     }
 }

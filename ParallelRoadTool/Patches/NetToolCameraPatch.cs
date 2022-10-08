@@ -159,14 +159,11 @@ internal static class NetToolCameraPatch
 
                 // Check if current node can be created. If not change color to red.
                 var currentColor = currentRoadInfos.Color;
-                if (NetTool.CreateNode(info, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
-                                       false, true, true, false, currentRoadInfos.IsReversed, 0, out _, out _, out _, out _) !=
-                    ToolBase.ToolErrors.None)
+                if (!ControlPointUtils.CanCreate(info, currentStartPoint, currentMiddlePoint, currentEndPoint, currentRoadInfos.IsReversed))
                     currentColor = Color.red;
 
                 // Render the overlay for current offset segment
-                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint,
-                                                  currentEndPoint);
+                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
                 // Save to buffer
                 // TODO: move to controlpointutils
