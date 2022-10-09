@@ -70,49 +70,14 @@ internal class NetToolNodePatch
                 var currentMiddlePoint = NetToolCameraPatch.ControlPointsBuffer[i][1];
                 var currentEndPoint = NetToolCameraPatch.ControlPointsBuffer[i][2];
 
-                //if (currentRoadInfos.IsReversed)
-                //{
-                //    // Swap control points
-                //    // We also need to swap node references if any
-                //    var tmpEndpoint = currentStartPoint;
-                //    currentStartPoint = currentEndPoint;
-                //    currentEndPoint   = tmpEndpoint;
+                // If snapping is off we need to manually create the nodes beforehand
+                if (!Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled)
+                {
+                    NodeUtils.CreateNode(out currentStartPoint.m_node, selectedNetInfo, currentStartPoint.m_position);
+                    NodeUtils.CreateNode(out currentEndPoint.m_node,   selectedNetInfo, currentEndPoint.m_position);
 
-                //    // Reverse direction too
-                //    currentStartPoint.m_direction  *= -1;
-                //    currentEndPoint.m_direction    *= -1;
-
-                //    // Swap middle point too if it's in the same position as the end one
-                //    if (middlePoint.m_position == endPoint.m_position)
-                //        currentMiddlePoint = currentEndPoint;
-                //}
-
-                // Check if we already have a node in either start or end point
-                //if (currentStartPoint.m_node == 0 || currentStartPoint.m_node == currentEndPoint.m_node)
-                //{
-                //    var nodeAt = NodeUtils.NodeIdAtPosition(currentStartPoint.m_position);
-                //    if (nodeAt != 0)
-                //    {
-                //        currentStartPoint.m_node = nodeAt;
-
-                //        Log._Debug($">>> Set current start point as {currentStartPoint.m_node} with segment {currentStartPoint.m_segment}");
-                //    }
-
-                //    nodeAt = NodeUtils.NodeIdAtPosition(currentEndPoint.m_position);
-                //    if (nodeAt != 0)
-                //    {
-                //        currentEndPoint.m_node = nodeAt;
-
-                //        Log._Debug($">>> Set current end point as {currentEndPoint.m_node} with segment {currentStartPoint.m_segment}");
-                //    }
-                //}
-
-                //if (currentStartPoint.m_node == 0 && Nodes.TryGetValue(startPoint.m_node, out var newStartNodeId))
-                //{
-                //    currentStartPoint.m_node = newStartNodeId;
-
-                //    Log._Debug($">>> Set current start point as {currentStartPoint.m_node} from object data");
-                //}
+                    Log.Info($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Snapping is off, manually created nodes with ids: ({currentStartPoint.m_node}, {currentEndPoint.m_node})");
+                }
 
                 #region Angle Compensation
 
@@ -143,11 +108,10 @@ internal class NetToolNodePatch
 
                 // TODO: TMP
 
-
-                //Log._Debug($">>> Found nodes {currentStartPoint.m_node}, {currentMiddlePoint.m_node}, {currentEndPoint.m_node}");
-                //Log._Debug($">>> Original nodes {startPoint.m_node}, {middlePoint.m_node}, {endPoint.m_node}");
-                //Log._Debug($">>> Trying with points: [{currentStartPoint.m_position}, {currentMiddlePoint.m_position}, {currentEndPoint.m_position}] - original points were [{startPoint.m_position}, {middlePoint.m_position}, {endPoint.m_position}]");
-
+                // After lots of tries this is what looks like being the easiest option to deal with inverting a network's direction.
+                // To invert the current network we temporarily invert traffic direction for the current game.
+                // This will force the CreateSegment method to receive true for the invert parameter and thus to create every segment in the opposite direction.
+                // This value will be restored once we will be done with all of the segments we need to create.
                 if (currentRoadInfos.IsReversed)
                 {
                     Log._Debug($">>> Inverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
@@ -206,14 +170,12 @@ internal class NetToolNodePatch
                     //Log._Debug($">>> Segment reverse failed because {toolErrors:g}");
                 }
 
-                if (currentRoadInfos.IsReversed)
-                {
-                    Log._Debug($">>> Inverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
+                if (!currentRoadInfos.IsReversed) continue;
+                Log._Debug($">>> Reverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
 
-                    Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic.Invert();
+                Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic.Invert();
 
-                    Log._Debug($">>> Inverted: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
-                }
+                Log._Debug($">>> Reverted: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
             }
         }
         catch (Exception e)

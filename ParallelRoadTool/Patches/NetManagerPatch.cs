@@ -303,7 +303,7 @@ namespace ParallelRoadTool.Patches
                             Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [START] {startNetNode.m_position} --> {newStartPosition} | isLeftHand = {Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic} | invert = {invert}  | isSlope = {isSlope}");
 
                             newStartNodeId
-                                = NodeUtils.NodeAtPositionOrNew(ref randomizer, info, newStartPosition, verticalOffset);
+                                = NodeUtils.NodeAtPositionOrNew(info, newStartPosition, verticalOffset);
                             break;
                         }
                     }
@@ -324,7 +324,7 @@ namespace ParallelRoadTool.Patches
 
                         Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(Postfix)}] [END] {endNetNode.m_position} --> {newEndPosition} | isEnteringSlope = {isEnteringSlope} | invert = {invert} | isSlope = {isSlope}");
 
-                        newEndNodeId = NodeUtils.NodeAtPositionOrNew(ref randomizer, info, newEndPosition, verticalOffset);
+                        newEndNodeId = NodeUtils.NodeAtPositionOrNew(info, newEndPosition, verticalOffset);
                     }
 
                     // Store current end nodes in case we may need to connect the following segment to them

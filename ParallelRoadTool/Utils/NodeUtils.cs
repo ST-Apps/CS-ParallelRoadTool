@@ -15,13 +15,12 @@ internal class NodeUtils
     ///     Creates a new node and returns it.
     /// </summary>
     /// <param name="newNodeId"></param>
-    /// <param name="randomizer"></param>
     /// <param name="info"></param>
     /// <param name="newNodePosition"></param>
     /// <returns></returns>
-    private static void CreateNode(out ushort newNodeId, ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition)
+    public static void CreateNode(out ushort newNodeId, NetInfo info, Vector3 newNodePosition)
     {
-        NetManager.instance.CreateNode(out newNodeId, ref randomizer, info, newNodePosition,
+        NetManager.instance.CreateNode(out newNodeId, ref Singleton<SimulationManager>.instance.m_randomizer, info, newNodePosition,
                                        Singleton<SimulationManager>.instance.m_currentBuildIndex + 1);
     }
 
@@ -84,12 +83,11 @@ internal class NodeUtils
     /// <summary>
     ///     Tries to find an already existing node at the given position, if there aren't we create a new one.
     /// </summary>
-    /// <param name="randomizer"></param>
     /// <param name="info"></param>
     /// <param name="newNodePosition"></param>
     /// <param name="verticalOffset"></param>
     /// <returns></returns>
-    public static ushort NodeAtPositionOrNew(ref Randomizer randomizer, NetInfo info, Vector3 newNodePosition, float verticalOffset)
+    public static ushort NodeAtPositionOrNew(NetInfo info, Vector3 newNodePosition, float verticalOffset)
     {
         // Check if we can find a node at the given position
         var newNodeId = NodeAtPosition(info, newNodePosition, verticalOffset);
@@ -98,7 +96,7 @@ internal class NodeUtils
         Log._Debug($"[{nameof(NetManagerPatch)}.{nameof(NodeIdAtPosition)}] No nodes has been found for position {newNodePosition}, creating a new one.");
 
         // Both startNode and endNode were not found, we need to create a new one
-        CreateNode(out newNodeId, ref randomizer, info, newNodePosition);
+        CreateNode(out newNodeId, info, newNodePosition);
         return newNodeId;
     }
 
