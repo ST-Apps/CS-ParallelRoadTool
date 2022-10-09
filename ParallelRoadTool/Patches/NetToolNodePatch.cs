@@ -66,9 +66,9 @@ internal class NetToolNodePatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Retrieve control points from buffer
-                var currentStartPoint = NetToolCameraPatch.ControlPointsBuffer[i][0];
-                var currentMiddlePoint = NetToolCameraPatch.ControlPointsBuffer[i][1];
-                var currentEndPoint = NetToolCameraPatch.ControlPointsBuffer[i][2];
+                Singleton<ParallelRoadToolManager>.instance.PullControlPoints(i, out var currentStartPoint, out var currentMiddlePoint,
+                                                                              out var currentEndPoint);
+
 
                 // If snapping is off we need to manually create the nodes beforehand
                 if (!Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled)

@@ -23,12 +23,6 @@ namespace ParallelRoadTool.Patches;
               typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
 internal static class NetToolCameraPatch
 {
-    #region Fields
-
-    public static readonly FastList<NetTool.ControlPoint[]> ControlPointsBuffer = new();
-
-    #endregion
-
     /// <summary>
     ///     Overlay's core method.
     ///     First we render the base overlay, then we render an overlay for each of the selected roads, shifting them with the
@@ -61,10 +55,6 @@ internal static class NetToolCameraPatch
 
             // Reset start direction because it feels like it's never right
             startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
-
-            // Initialize current buffer
-            if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
-                ControlPointsBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
 
             // Get NetTool instance
             var netTool = ToolsModifierControl.GetTool<NetTool>();
@@ -166,10 +156,7 @@ internal static class NetToolCameraPatch
 
                 // Save to buffer
                 // TODO: move to controlpointutils
-                ControlPointsBuffer[i]    ??= new NetTool.ControlPoint[3];
-                ControlPointsBuffer[i][0] =   currentStartPoint;
-                ControlPointsBuffer[i][1] =   currentMiddlePoint;
-                ControlPointsBuffer[i][2] =   currentEndPoint;
+                Singleton<ParallelRoadToolManager>.instance.PushControlPoints(i, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
                 // We draw arrows only for one-way networks, just as in game
                 if (!selectedNetInfo.IsOneWayOnly()) continue;
