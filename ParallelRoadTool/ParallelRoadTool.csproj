@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\MetaBoolExtensions.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="Managers\PresetsManager.cs" />
     <Compile Include="Mod.cs" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
@@ -71,7 +70,22 @@ internal class NetToolNodePatch
                 var currentMiddlePoint = NetToolCameraPatch.ControlPointsBuffer[i][1];
                 var currentEndPoint = NetToolCameraPatch.ControlPointsBuffer[i][2];
 
-                Log._Debug($">>>> RETRIEVED FROM BUFFER START: {currentStartPoint.m_position} | {NetToolCameraPatch.ControlPointsBuffer[i][0].m_position}");
+                //if (currentRoadInfos.IsReversed)
+                //{
+                //    // Swap control points
+                //    // We also need to swap node references if any
+                //    var tmpEndpoint = currentStartPoint;
+                //    currentStartPoint = currentEndPoint;
+                //    currentEndPoint   = tmpEndpoint;
+
+                //    // Reverse direction too
+                //    currentStartPoint.m_direction  *= -1;
+                //    currentEndPoint.m_direction    *= -1;
+
+                //    // Swap middle point too if it's in the same position as the end one
+                //    if (middlePoint.m_position == endPoint.m_position)
+                //        currentMiddlePoint = currentEndPoint;
+                //}
 
                 // Check if we already have a node in either start or end point
                 //if (currentStartPoint.m_node == 0 || currentStartPoint.m_node == currentEndPoint.m_node)
@@ -134,6 +148,15 @@ internal class NetToolNodePatch
                 //Log._Debug($">>> Original nodes {startPoint.m_node}, {middlePoint.m_node}, {endPoint.m_node}");
                 //Log._Debug($">>> Trying with points: [{currentStartPoint.m_position}, {currentMiddlePoint.m_position}, {currentEndPoint.m_position}] - original points were [{startPoint.m_position}, {middlePoint.m_position}, {endPoint.m_position}]");
 
+                if (currentRoadInfos.IsReversed)
+                {
+                    Log._Debug($">>> Inverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
+
+                    Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic.Invert();
+
+                    Log._Debug($">>> Inverted: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
+                }
+
                 // Draw the offset segment for the current network
                 if (!NetToolReversePatch.CreateNodeImpl(netTool, selectedNetInfo, needMoney, switchDirection, currentStartPoint, currentMiddlePoint,
                                                         currentEndPoint))
@@ -164,6 +187,32 @@ internal class NetToolNodePatch
                 else
                 {
                     __state = NodeUtils.NodeIdAtPosition(currentEndPoint.m_position);
+
+                    //if (!currentRoadInfos.IsReversed) continue;
+
+                    //var startNodeId = NodeUtils.NodeIdAtPosition(currentStartPoint.m_position);
+                    //var endNodeId = NodeUtils.NodeIdAtPosition(currentEndPoint.m_position);
+
+                    //Log._Debug($">>> REVERSING FROM {startNodeId} to {endNodeId}");
+
+                    //if (NetToolReversePatch.CreateNodeImpl(netTool, selectedNetInfo, needMoney, true, currentStartPoint with { m_node = startNodeId },
+                    //                                       currentMiddlePoint with { m_node = 0 }, currentEndPoint with { m_node = endNodeId }))
+                    //    continue;
+                    //var toolErrors = NetTool.CreateNode(info, currentStartPoint with { m_node = startNodeId }, currentMiddlePoint with { m_node = 0 },
+                    //                                    currentEndPoint with { m_node = endNodeId }, NetTool.m_nodePositionsSimulation, 1000, true,
+                    //                                    false, true, needMoney, false, switchDirection, 0, out var node1, out var segment,
+                    //                                    out var cost, out var productionRate);
+
+                    //Log._Debug($">>> Segment reverse failed because {toolErrors:g}");
+                }
+
+                if (currentRoadInfos.IsReversed)
+                {
+                    Log._Debug($">>> Inverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
+
+                    Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic.Invert();
+
+                    Log._Debug($">>> Inverted: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
                 }
             }
         }

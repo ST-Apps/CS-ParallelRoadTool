@@ -59,9 +59,8 @@ internal static class NetToolCameraPatch
             if (startPoint.m_position == endPoint.m_position)
                 return;
 
-            // If start direction is not set we manually compute it
-            if (startPoint.m_direction == Vector3.zero)
-                startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
+            // Reset start direction because it feels like it's never right
+            startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
 
             // Initialize current buffer
             if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
