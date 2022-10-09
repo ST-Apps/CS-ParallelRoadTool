@@ -44,13 +44,25 @@ internal static class ControlPointUtils
         var middlePointEndLine = Line2.XZ(currentEndPosition,     middlePointEndPosition);
 
         // Now that we have the intersection we can get our actual middle point shifted by horizontalOffset
-        middlePointStartLine.Intersect(middlePointEndLine, out var ix, out var iy);
+        middlePointStartLine.Intersect(middlePointEndLine, out var ix, out _);
         var currentMiddlePosition = (middlePointEndPosition - currentEndPosition) * ix + currentEndPosition + Vector3.up * verticalOffset;
 
         // Finally set offset control points by copying everything but the position
-        currentStartPoint  = startPoint with { m_node = 0, m_segment = 0, m_position = currentStartPosition };
-        currentMiddlePoint = middlePoint with { m_node = 0, m_segment = 0, m_position = currentMiddlePosition };
-        currentEndPoint    = endPoint with { m_node = 0, m_segment = 0, m_position = currentEndPosition };
+        currentStartPoint = startPoint with
+        {
+            m_node = 0, m_segment = 0, m_position = currentStartPosition, m_elevation = startPoint.m_elevation + verticalOffset
+        };
+        currentMiddlePoint = middlePoint with
+        {
+            m_node = 0, m_segment = 0, m_position = currentMiddlePosition
+        };
+        currentEndPoint = endPoint with
+        {
+            m_node = 0, m_segment = 0, m_position = currentEndPosition, m_elevation = endPoint.m_elevation + verticalOffset
+        };
+
+        // Fix middle point's elevation
+        currentMiddlePoint.m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2;
 
         // Check if already have nodes at position and use them
         if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))
