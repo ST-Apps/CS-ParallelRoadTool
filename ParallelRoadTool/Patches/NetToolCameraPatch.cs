@@ -18,7 +18,6 @@ using UnityEngine;
 // ReSharper disable InconsistentNaming
 
 // TODO: angle compensation (pair the offset node to any original one and use it to found the angle target)
-// TODO: when using curve/freeform for a straight road it doesn't work
 // TODO: check what happens when drawing multiple segments if snapping is off - it doesn't work, we need to have snapping always on for consecutive segments)
 namespace ParallelRoadTool.Patches;
 

@@ -16,11 +16,10 @@ internal static class ControlPointUtils
     /// <param name="horizontalOffset"></param>
     /// <param name="verticalOffset"></param>
     /// <param name="selectedNetInfo"></param>
+    /// <param name="netMode"></param>
     /// <param name="currentStartPoint"></param>
     /// <param name="currentMiddlePoint"></param>
     /// <param name="currentEndPoint"></param>
-    /// <param name="middlePointStartPosition"></param>
-    /// <param name="middlePointEndPosition"></param>
     public static void GenerateOffsetControlPoints(NetTool.ControlPoint     startPoint,
                                                    NetTool.ControlPoint     middlePoint,
                                                    NetTool.ControlPoint     endPoint,
@@ -50,17 +49,27 @@ internal static class ControlPointUtils
             m_node = 0, m_segment = 0, m_position = currentEndPosition, m_elevation = endPoint.m_elevation + verticalOffset
         };
 
-        // Now that we have the intersection we can get our actual middle point shifted by horizontalOffset
-        var currentMiddlePosition = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition, endPoint.m_direction);
-
-        // Finally set the point
-        currentMiddlePoint = middlePoint with
+        // If we're on straight mode we just set middlePoint as endPoint because we don't need more than 2 control points
+        if (netMode == NetTool.Mode.Straight)
         {
-            m_node = 0,
-            m_segment = 0,
-            m_position = currentMiddlePosition,
-            m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
-        };
+            currentMiddlePoint = currentEndPoint with { m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2 };
+        }
+        else
+        {
+            // If not on straight mode we compute the middle point by getting the intersection between startPoint and endPoint
+            // Both points will be projected in the respective directions to find the intersection
+            var currentMiddlePosition
+                = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition, endPoint.m_direction);
+
+            // Finally set the point
+            currentMiddlePoint = middlePoint with
+            {
+                m_node = 0,
+                m_segment = 0,
+                m_position = currentMiddlePosition,
+                m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
+            };
+        }
 
         // Check if already have nodes at position and use them
         if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))
