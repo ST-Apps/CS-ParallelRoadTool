@@ -1,6 +1,8 @@
-﻿using ColossalFramework.Math;
+﻿using ColossalFramework;
+using ColossalFramework.Math;
 using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
+using ParallelRoadTool.Managers;
 using UnityEngine;
 
 namespace ParallelRoadTool.Utils;
@@ -71,12 +73,26 @@ internal static class ControlPointUtils
             };
         }
 
-        // Check if already have nodes at position and use them
-        if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))
-            Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentStartPoint.m_position} with nodeId={currentStartPoint.m_node} and segmentId={currentStartPoint.m_segment} (start)");
+        // Check if already have nodes at position and use them, but only if snapping is on
+        if (Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled)
+        {
+            if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))
+                Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentStartPoint.m_position} with nodeId={currentStartPoint.m_node} and segmentId={currentStartPoint.m_segment} (start)");
 
-        if (currentEndPoint.m_position.AtPosition(selectedNetInfo, out currentEndPoint.m_node, out currentEndPoint.m_segment))
-            Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentEndPoint.m_position} with nodeId={currentEndPoint.m_node} and segmentId={currentEndPoint.m_segment} (end)");
+            if (currentEndPoint.m_position.AtPosition(selectedNetInfo, out currentEndPoint.m_node, out currentEndPoint.m_segment))
+                Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentEndPoint.m_position} with nodeId={currentEndPoint.m_node} and segmentId={currentEndPoint.m_segment} (end)");
+        }
+
+        // If nodes are still 0 we can check if we have some matching the ones in our buffer
+        if (currentStartPoint.m_node == 0 && ParallelRoadToolManager.NodesBuffer.TryGetValue(startPoint.m_node, out currentStartPoint.m_node) && currentStartPoint.m_node == 0)
+        {
+            Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Set currentStartPoint's node to {currentStartPoint.m_node} from buffer (start)");
+        }
+
+        if (currentEndPoint.m_node == 0 && ParallelRoadToolManager.NodesBuffer.TryGetValue(endPoint.m_node, out currentEndPoint.m_node) && currentEndPoint.m_node == 0)
+        {
+            Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Set currentEndPoint's node to {currentEndPoint.m_node} from buffer (start)");
+        }
     }
 
     /// <summary>

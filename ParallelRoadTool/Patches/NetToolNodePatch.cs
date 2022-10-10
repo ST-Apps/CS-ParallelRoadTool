@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
@@ -16,21 +15,17 @@ namespace ParallelRoadTool.Patches;
               typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
 internal class NetToolNodePatch
 {
-    #region Fields
-
-    private static readonly Dictionary<ushort, ushort> Nodes = new();
-
-    #endregion
-
     internal static void Prefix(NetInfo              info,
                                 bool                 needMoney,
                                 bool                 switchDirection,
                                 NetTool.ControlPoint startPoint,
                                 NetTool.ControlPoint middlePoint,
                                 NetTool.ControlPoint endPoint,
-                                out ushort           __state)
+
+                                // State contains, for each parallel segment, the pair containing new start and end nodes ids
+                                out ushort[][] __state)
     {
-        __state = 0;
+        __state = new ushort[Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count][];
 
         // We only run if the mod is set as Active
         if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
@@ -40,12 +35,6 @@ internal class NetToolNodePatch
             // If start direction is not set we manually compute it
             if (startPoint.m_direction == Vector3.zero)
                 startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
-
-            //if (ControlPointsBuffer.m_size < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count)
-            //{
-            //    ControlPointsBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
-            //    NodesBuffer.EnsureCapacity(Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count);
-            //}
 
             // Get NetTool instance
             var netTool = ToolsModifierControl.GetTool<NetTool>();
@@ -71,13 +60,13 @@ internal class NetToolNodePatch
 
 
                 // If snapping is off we need to manually create the nodes beforehand
-                if (!Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled)
-                {
-                    NodeUtils.CreateNode(out currentStartPoint.m_node, selectedNetInfo, currentStartPoint.m_position);
-                    NodeUtils.CreateNode(out currentEndPoint.m_node,   selectedNetInfo, currentEndPoint.m_position);
+                //if (!Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled)
+                //{
+                //    NodeUtils.CreateNode(out currentStartPoint.m_node, selectedNetInfo, currentStartPoint.m_position);
+                //    NodeUtils.CreateNode(out currentEndPoint.m_node,   selectedNetInfo, currentEndPoint.m_position);
 
-                    Log.Info($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Snapping is off, manually created nodes with ids: ({currentStartPoint.m_node}, {currentEndPoint.m_node})");
-                }
+                //    Log.Info($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Snapping is off, manually created nodes with ids: ({currentStartPoint.m_node}, {currentEndPoint.m_node})");
+                //}
 
                 #region Angle Compensation
 
@@ -89,24 +78,20 @@ internal class NetToolNodePatch
                 {
                     var newStartNode = NetManager.instance.m_nodes.m_buffer[currentStartPoint.m_node];
 
-                    var previousPoint = newStartNode;
                     var intersection = NodeUtils.FindIntersectionByOffset(newStartNode.m_position, endPoint.m_position, endPoint.m_direction,
-                                                                          previousPoint.m_position, -currentStartPoint.m_direction, horizontalOffset,
+                                                                          newStartNode.m_position, -currentStartPoint.m_direction, horizontalOffset,
                                                                           out var intersectionPoint);
 
                     // If we found an intersection we can draw an helper line showing how much we will have to move the node
                     if (intersection)
                     {
                         // Move the node to the newly found position but keep y from the offset
-                        intersectionPoint.y
-                            += startPoint.m_elevation; // startNetNode.m_position.Offset(startDirection, horizontalOffset, verticalOffset, invert).y;
+                        intersectionPoint.y += startPoint.m_elevation;
                         NetManager.instance.MoveNode(currentStartPoint.m_node, intersectionPoint);
                     }
                 }
 
                 #endregion
-
-                // TODO: TMP
 
                 // After lots of tries this is what looks like being the easiest option to deal with inverting a network's direction.
                 // To invert the current network we temporarily invert traffic direction for the current game.
@@ -125,49 +110,23 @@ internal class NetToolNodePatch
                 if (!NetToolReversePatch.CreateNodeImpl(netTool, selectedNetInfo, needMoney, switchDirection, currentStartPoint, currentMiddlePoint,
                                                         currentEndPoint))
                 {
-                    //// Try to find nodes on given positions
-                    //FindCloseNode(out currentStartPoint.m_node,  selectedNetInfo, currentStartPoint.m_position);
-                    //FindCloseNode(out currentMiddlePoint.m_node, selectedNetInfo, currentMiddlePoint.m_position);
-                    //FindCloseNode(out currentEndPoint.m_node,    selectedNetInfo, currentEndPoint.m_position);
-
-                    //NodesBuffer[i]    ??= new ushort[3];
-                    //NodesBuffer[i][0] =   currentStartPoint.m_node;
-                    //NodesBuffer[i][1] =   currentMiddlePoint.m_node;
-                    //NodesBuffer[i][2] =   currentEndPoint.m_node;
-
-                    //ControlPointsBuffer[i]    ??= new NetTool.ControlPoint[3];
-                    //ControlPointsBuffer[i][0] =   currentStartPoint;
-                    //ControlPointsBuffer[i][1] =   currentMiddlePoint;
-                    //ControlPointsBuffer[i][2] =   currentEndPoint;
-
-                    //Log._Debug($">>> Got nodes {currentStartPoint.m_node}, {currentMiddlePoint.m_node}, {currentEndPoint.m_node}");
-
                     var toolErrors = NetTool.CreateNode(info, currentStartPoint, currentMiddlePoint, currentEndPoint,
                                                         NetTool.m_nodePositionsSimulation, 1000, true, false, true, needMoney, false, switchDirection,
-                                                        0, out var node1, out var segment, out var cost, out var productionRate);
+                                                        0, out _, out _, out _, out _);
 
                     Log._Debug($">>> Segment creation failed because {toolErrors:g}");
                 }
                 else
                 {
-                    __state = NodeUtils.NodeIdAtPosition(currentEndPoint.m_position);
+                    // Creation completed, we store the new ids so that we can match everything later
+                    // If nodes are 0 we retrieve them back from their position
+                    if (currentStartPoint.m_node == 0)
+                        currentStartPoint.m_position.AtPosition(info, out currentStartPoint.m_node, out _);
+                    if (currentEndPoint.m_node == 0)
+                        currentEndPoint.m_position.AtPosition(info, out currentEndPoint.m_node, out _);
 
-                    //if (!currentRoadInfos.IsReversed) continue;
-
-                    //var startNodeId = NodeUtils.NodeIdAtPosition(currentStartPoint.m_position);
-                    //var endNodeId = NodeUtils.NodeIdAtPosition(currentEndPoint.m_position);
-
-                    //Log._Debug($">>> REVERSING FROM {startNodeId} to {endNodeId}");
-
-                    //if (NetToolReversePatch.CreateNodeImpl(netTool, selectedNetInfo, needMoney, true, currentStartPoint with { m_node = startNodeId },
-                    //                                       currentMiddlePoint with { m_node = 0 }, currentEndPoint with { m_node = endNodeId }))
-                    //    continue;
-                    //var toolErrors = NetTool.CreateNode(info, currentStartPoint with { m_node = startNodeId }, currentMiddlePoint with { m_node = 0 },
-                    //                                    currentEndPoint with { m_node = endNodeId }, NetTool.m_nodePositionsSimulation, 1000, true,
-                    //                                    false, true, needMoney, false, switchDirection, 0, out var node1, out var segment,
-                    //                                    out var cost, out var productionRate);
-
-                    //Log._Debug($">>> Segment reverse failed because {toolErrors:g}");
+                    // We can now store them in the temporary state that is passed between prefix and postifx
+                    __state[i] = new[] { currentStartPoint.m_node, currentEndPoint.m_node };
                 }
 
                 if (!currentRoadInfos.IsReversed) continue;
@@ -192,11 +151,32 @@ internal class NetToolNodePatch
                                  NetTool.ControlPoint startPoint,
                                  NetTool.ControlPoint middlePoint,
                                  NetTool.ControlPoint endPoint,
-                                 ushort               __state)
+                                 ushort[][]           __state)
     {
-        var endNodeId = NodeUtils.NodeIdAtPosition(endPoint.m_position);
+        // We only run if the mod is set as Active
+        if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
 
-        Nodes[endNodeId] = __state;
+        // Skip if state is not set (e.g. node creation failed in previous step)
+        if (__state[0] == null)
+            return;
+
+        // If nodes are 0 we retrieve them back from their position
+        if (startPoint.m_node == 0)
+            startPoint.m_position.AtPosition(info, out startPoint.m_node, out _);
+        if (endPoint.m_node == 0)
+            endPoint.m_position.AtPosition(info, out endPoint.m_node, out _);
+
+        // Here we will have the ids for the original start and nodes so that we can match them with what we have in our state
+        ParallelRoadToolManager.NodesBuffer[startPoint.m_node] = __state[0][0];
+        ParallelRoadToolManager.NodesBuffer[endPoint.m_node]   = __state[0][1];
+
+        // We now set matching nodes for other eventual parallel segments we might have
+        for (var i = 1; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
+        {
+            if (__state[i] == null) continue;
+            ParallelRoadToolManager.NodesBuffer[__state[i - 1][0]] = __state[i][0];
+            ParallelRoadToolManager.NodesBuffer[__state[i - 1][1]] = __state[i][1];
+        }
     }
 
     [HarmonyPatch]
