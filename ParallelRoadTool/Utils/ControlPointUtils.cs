@@ -19,57 +19,77 @@ internal static class ControlPointUtils
     /// <param name="currentStartPoint"></param>
     /// <param name="currentMiddlePoint"></param>
     /// <param name="currentEndPoint"></param>
+    /// <param name="middlePointStartPosition"></param>
+    /// <param name="middlePointEndPosition"></param>
     public static void GenerateOffsetControlPoints(NetTool.ControlPoint     startPoint,
                                                    NetTool.ControlPoint     middlePoint,
                                                    NetTool.ControlPoint     endPoint,
                                                    float                    horizontalOffset,
                                                    float                    verticalOffset,
                                                    NetInfo                  selectedNetInfo,
+                                                   NetTool.Mode             netMode,
                                                    out NetTool.ControlPoint currentStartPoint,
                                                    out NetTool.ControlPoint currentMiddlePoint,
-                                                   out NetTool.ControlPoint currentEndPoint)
+                                                   out NetTool.ControlPoint currentEndPoint,
+                                                   out Vector3              middlePointStartPosition,
+                                                   out Vector3              middlePointEndPosition)
     {
         // To offset both starting and ending point we need to get the right direction
-        var currentStartDirection = startPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
-        var currentEndDirection = endPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
+        var startDirection = startPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
+        var endDirection = endPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
 
         // Move start and end point to the correct direction
-        var currentStartPosition = startPoint.m_position + currentStartDirection + Vector3.up * verticalOffset;
-        var currentEndPosition = endPoint.m_position     + currentEndDirection   + Vector3.up * verticalOffset;
-
-        // Get two intersection points for the pairs (start, mid) and (mid, end)
-        var middlePointStartPosition = middlePoint.m_position + currentStartDirection;
-        var middlePointEndPosition = middlePoint.m_position   + currentEndDirection;
-        var middlePointStartLine = Line2.XZ(currentStartPosition, middlePointStartPosition);
-        var middlePointEndLine = Line2.XZ(currentEndPosition,     middlePointEndPosition);
-
-        // Now that we have the intersection we can get our actual middle point shifted by horizontalOffset
-        middlePointStartLine.Intersect(middlePointEndLine, out var ix, out _);
-        var currentMiddlePosition = (middlePointEndPosition - currentEndPosition) * ix + currentEndPosition + Vector3.up * verticalOffset;
+        var currentStartPosition = startPoint.m_position + startDirection + Vector3.up * verticalOffset;
+        var currentEndPosition = endPoint.m_position     + endDirection   + Vector3.up * verticalOffset;
 
         // Finally set offset control points by copying everything but the position
         currentStartPoint = startPoint with
         {
             m_node = 0, m_segment = 0, m_position = currentStartPosition, m_elevation = startPoint.m_elevation + verticalOffset
         };
-        currentMiddlePoint = middlePoint with
-        {
-            m_node = 0, m_segment = 0, m_position = currentMiddlePosition
-        };
         currentEndPoint = endPoint with
         {
             m_node = 0, m_segment = 0, m_position = currentEndPosition, m_elevation = endPoint.m_elevation + verticalOffset
         };
 
-        // Fix middle point's elevation
-        currentMiddlePoint.m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2;
+        // Setup middle point if needed (e.g. middlePoint != endPoint when curving)
+        //if (middlePoint.m_position != endPoint.m_position && netMode != NetTool.Mode.Straight)
+        //{
+        // Get two intersection points for the pairs (start, mid) and (mid, end)
+        middlePointStartPosition = middlePoint.m_position + startDirection;
+        middlePointEndPosition   = middlePoint.m_position + endDirection;
+        var middlePointStartLine = Line2.XZ(currentStartPosition, middlePointStartPosition);
+        var middlePointEndLine = Line2.XZ(currentEndPosition,     middlePointEndPosition);
+
+        // Now that we have the intersection we can get our actual middle point shifted by horizontalOffset
+        middlePointStartLine.Intersect(middlePointEndLine, out var ix, out var iy);
+        var currentMiddlePosition = (middlePointEndPosition - currentEndPosition) * iy + currentEndPosition + Vector3.up * verticalOffset;
+
+        currentMiddlePosition = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition, endPoint.m_direction);
+
+        // Finally set the point
+        currentMiddlePoint = middlePoint with
+        {
+            m_node = 0,
+            m_segment = 0,
+            m_position = currentMiddlePosition,
+            m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
+        };
+
+        //}
+        //else
+        //{
+        //    currentMiddlePoint       = currentEndPoint;
+        //    middlePointStartPosition = currentStartPosition;
+        //    middlePointEndPosition   = currentEndPosition;
+        //}
 
         // Check if already have nodes at position and use them
         if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))
-            Log._Debug($">>> currentStartPoint: {currentStartPoint.m_node} - {currentStartPoint.m_segment}");
+            Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentStartPoint.m_position} with nodeId={currentStartPoint.m_node} and segmentId={currentStartPoint.m_segment} (start)");
 
         if (currentEndPoint.m_position.AtPosition(selectedNetInfo, out currentEndPoint.m_node, out currentEndPoint.m_segment))
-            Log._Debug($">>> currentEndPoint: {currentEndPoint.m_node} - {currentEndPoint.m_segment}");
+            Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentEndPoint.m_position} with nodeId={currentEndPoint.m_node} and segmentId={currentEndPoint.m_segment} (end)");
     }
 
     /// <summary>

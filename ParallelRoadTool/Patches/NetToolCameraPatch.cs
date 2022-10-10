@@ -17,6 +17,10 @@ using UnityEngine;
 // ReSharper disable UnusedType.Global
 // ReSharper disable InconsistentNaming
 
+// TODO: angle compensation (pair the offset node to any original one and use it to found the angle target)
+// TODO: when using curve/freeform for a straight road it doesn't work
+// TODO: middle point detection for curves is not precise enough (if you drag the segment too much it will move in the opposite direction while the original one won't)
+// TODO: check what happens when drawing multiple segments if snapping is off
 namespace ParallelRoadTool.Patches;
 
 [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
@@ -76,8 +80,9 @@ internal static class NetToolCameraPatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo,
-                                                              out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint);
+                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, netTool.m_mode,
+                                                              out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint,
+                                                              out var middlePointStartPosition, out var middlePointEndPosition);
 
 #if DEBUG
                 if (ModSettings.RenderDebugOverlay)
@@ -94,8 +99,16 @@ internal static class NetToolCameraPatch
                     var currentMiddlePointSegment = new Segment3(currentMiddlePoint.m_position,
                                                                  currentMiddlePoint.m_position +
                                                                  currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100);
-                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.red, middlePointSegment, currentMiddlePointSegment,
+                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.green, middlePointSegment, currentMiddlePointSegment,
                                                                      info.m_halfWidth, 1, 1, 1800, true, true);
+
+                    // Middle intersections
+                    var middlePointStartSegment = new Segment3(currentStartPoint.m_position, middlePointStartPosition);
+                    var middlePointEndSegment = new Segment3(currentEndPoint.m_position,     middlePointEndPosition);
+                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.white, middlePointStartSegment, info.m_halfWidth, 1, 1, 1800,
+                                                                     true, true);
+                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.black, middlePointEndSegment, info.m_halfWidth, 1, 1, 1800,
+                                                                     true, true);
                 }
 #endif
 
@@ -152,7 +165,8 @@ internal static class NetToolCameraPatch
                     currentColor = Color.red;
 
                 // Render the overlay for current offset segment
-                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint, currentEndPoint);
+                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint,
+                                                  currentEndPoint);
 
                 // Save to buffer
                 // TODO: move to controlpointutils
@@ -163,7 +177,8 @@ internal static class NetToolCameraPatch
 
                 // Draw direction arrow by getting the tangent between starting and ending point
                 var arrowControlPoint = ControlPointUtils.GenerateMiddlePoint(currentStartPoint, currentEndPoint);
-                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position, arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
+                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position,
+                                                          arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
             }
         }
         catch (Exception e)

@@ -138,7 +138,7 @@ internal class NodeUtils
         var offsetOrientation = Quaternion.AngleAxis(-90, Vector3.up) * -direction;
 
         // Given the offset direction we can set two points on that will be used to draw the line.
-        // Those points are set by just moving the current ending point at the edge of the screen but still on the parallel lin.
+        // Those points are set by just moving the current ending point at the edge of the screen but still on the parallel line.
         var offsetSegmentEndPoint = endPosition   + offsetOrientation.normalized * horizontalOffset + currentEndPointOrientation * 1000;
         var offsetSegmentStartPoint = endPosition + offsetOrientation.normalized * horizontalOffset;
 

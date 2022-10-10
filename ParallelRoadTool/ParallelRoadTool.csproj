@@ -103,6 +103,7 @@
     <Compile Include="Utils\ControlPointUtils.cs" />
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Utils\NodeUtils.cs" />
+    <Compile Include="Utils\VectorUtils.cs" />
     <Compile Include="WhatsNewMessageListing.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Main\UIRightDragHandle.cs" />
