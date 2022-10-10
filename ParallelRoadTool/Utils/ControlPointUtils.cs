@@ -30,9 +30,7 @@ internal static class ControlPointUtils
                                                    NetTool.Mode             netMode,
                                                    out NetTool.ControlPoint currentStartPoint,
                                                    out NetTool.ControlPoint currentMiddlePoint,
-                                                   out NetTool.ControlPoint currentEndPoint,
-                                                   out Vector3              middlePointStartPosition,
-                                                   out Vector3              middlePointEndPosition)
+                                                   out NetTool.ControlPoint currentEndPoint)
     {
         // To offset both starting and ending point we need to get the right direction
         var startDirection = startPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
@@ -52,20 +50,8 @@ internal static class ControlPointUtils
             m_node = 0, m_segment = 0, m_position = currentEndPosition, m_elevation = endPoint.m_elevation + verticalOffset
         };
 
-        // Setup middle point if needed (e.g. middlePoint != endPoint when curving)
-        //if (middlePoint.m_position != endPoint.m_position && netMode != NetTool.Mode.Straight)
-        //{
-        // Get two intersection points for the pairs (start, mid) and (mid, end)
-        middlePointStartPosition = middlePoint.m_position + startDirection;
-        middlePointEndPosition   = middlePoint.m_position + endDirection;
-        var middlePointStartLine = Line2.XZ(currentStartPosition, middlePointStartPosition);
-        var middlePointEndLine = Line2.XZ(currentEndPosition,     middlePointEndPosition);
-
         // Now that we have the intersection we can get our actual middle point shifted by horizontalOffset
-        middlePointStartLine.Intersect(middlePointEndLine, out var ix, out var iy);
-        var currentMiddlePosition = (middlePointEndPosition - currentEndPosition) * iy + currentEndPosition + Vector3.up * verticalOffset;
-
-        currentMiddlePosition = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition, endPoint.m_direction);
+        var currentMiddlePosition = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition, endPoint.m_direction);
 
         // Finally set the point
         currentMiddlePoint = middlePoint with
@@ -75,14 +61,6 @@ internal static class ControlPointUtils
             m_position = currentMiddlePosition,
             m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
         };
-
-        //}
-        //else
-        //{
-        //    currentMiddlePoint       = currentEndPoint;
-        //    middlePointStartPosition = currentStartPosition;
-        //    middlePointEndPosition   = currentEndPosition;
-        //}
 
         // Check if already have nodes at position and use them
         if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))

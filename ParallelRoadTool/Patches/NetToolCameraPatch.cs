@@ -19,8 +19,7 @@ using UnityEngine;
 
 // TODO: angle compensation (pair the offset node to any original one and use it to found the angle target)
 // TODO: when using curve/freeform for a straight road it doesn't work
-// TODO: middle point detection for curves is not precise enough (if you drag the segment too much it will move in the opposite direction while the original one won't)
-// TODO: check what happens when drawing multiple segments if snapping is off
+// TODO: check what happens when drawing multiple segments if snapping is off - it doesn't work, we need to have snapping always on for consecutive segments)
 namespace ParallelRoadTool.Patches;
 
 [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
@@ -80,9 +79,9 @@ internal static class NetToolCameraPatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, netTool.m_mode,
-                                                              out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint,
-                                                              out var middlePointStartPosition, out var middlePointEndPosition);
+                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo,
+                                                              netTool.m_mode, out var currentStartPoint, out var currentMiddlePoint,
+                                                              out var currentEndPoint);
 
 #if DEBUG
                 if (ModSettings.RenderDebugOverlay)
@@ -103,8 +102,10 @@ internal static class NetToolCameraPatch
                                                                      info.m_halfWidth, 1, 1, 1800, true, true);
 
                     // Middle intersections
-                    var middlePointStartSegment = new Segment3(currentStartPoint.m_position, middlePointStartPosition);
-                    var middlePointEndSegment = new Segment3(currentEndPoint.m_position,     middlePointEndPosition);
+                    var middlePointStartSegment = new Segment3(currentStartPoint.m_position,
+                                                               currentStartPoint.m_position + currentStartPoint.m_direction.normalized * 1000);
+                    var middlePointEndSegment = new Segment3(currentEndPoint.m_position,
+                                                             currentEndPoint.m_position - currentEndPoint.m_direction.normalized * 1000);
                     RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.white, middlePointStartSegment, info.m_halfWidth, 1, 1, 1800,
                                                                      true, true);
                     RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.black, middlePointEndSegment, info.m_halfWidth, 1, 1, 1800,
