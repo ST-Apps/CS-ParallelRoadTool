@@ -18,7 +18,6 @@ using VectorUtils = ParallelRoadTool.Utils.VectorUtils;
 // ReSharper disable UnusedType.Global
 // ReSharper disable InconsistentNaming
 
-// TODO: angle compensation (pair the offset node to any original one and use it to found the angle target)
 namespace ParallelRoadTool.Patches;
 
 [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
