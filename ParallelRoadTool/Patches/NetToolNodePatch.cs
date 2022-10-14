@@ -10,7 +10,7 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
-// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -50,32 +50,21 @@ internal class NetToolNodePatch
             {
                 var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
 
-                // Horizontal offset must be negated to appear on the correct side of the original segment
-                var horizontalOffset = currentRoadInfos.HorizontalOffset * (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic ? 1 : -1);
-                var verticalOffset = currentRoadInfos.VerticalOffset;
-
                 // If the user didn't select a NetInfo we'll use the one he's using for the main road                
                 var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
 
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
+                if (currentRoadInfos.VerticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Retrieve control points from buffer
                 Singleton<ParallelRoadToolManager>.instance.PullControlPoints(i, out var currentStartPoint, out var currentMiddlePoint,
                                                                               out var currentEndPoint);
 
-
-                #region Angle Compensation
-
-                // Check if we need to look for an intersection point to move our previously created ending point.
-                // This is needed because certain angles will cause the segments to overlap.
-                // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
+                // The correct position with angle compensation on is computed during overlay phase, so we just move the starting node because it will contain the correct position.
                 // IMPORTANT: this is meant for straight roads only!
                 if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
                     NetManager.instance.MoveNode(currentStartPoint.m_node, currentStartPoint.m_position);
-
-                #endregion
 
                 // After lots of tries this is what looks like being the easiest option to deal with inverting a network's direction.
                 // To invert the current network we temporarily invert traffic direction for the current game.
@@ -83,11 +72,11 @@ internal class NetToolNodePatch
                 // This value will be restored once we will be done with all of the segments we need to create.
                 if (currentRoadInfos.IsReversed)
                 {
-                    Log._Debug($">>> Inverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
+                    Log._Debug($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Inverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
 
                     Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic.Invert();
 
-                    Log._Debug($">>> Inverted: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
+                    Log._Debug($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Inverted: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
                 }
 
                 // Draw the offset segment for the current network
@@ -98,7 +87,7 @@ internal class NetToolNodePatch
                                                         NetTool.m_nodePositionsSimulation, 1000, true, false, true, needMoney, false, switchDirection,
                                                         0, out _, out _, out _, out _);
 
-                    Log._Debug($">>> Segment creation failed because {toolErrors:g}");
+                    Log.Error($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Segment creation failed because {toolErrors:g}");
                 }
                 else
                 {
@@ -109,12 +98,12 @@ internal class NetToolNodePatch
                     if (currentEndPoint.m_node == 0)
                         currentEndPoint.m_position.AtPosition(info, out currentEndPoint.m_node, out _);
 
-                    // We can now store them in the temporary state that is passed between prefix and postifx
+                    // We can now store them in the temporary state that is passed between prefix and postfix
                     __state[i] = new[] { currentStartPoint, currentEndPoint };
                 }
 
                 if (!currentRoadInfos.IsReversed) continue;
-                Log._Debug($">>> Reverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
+                Log._Debug($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Reverting: {Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic:g}");
 
                 Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic.Invert();
 
@@ -146,7 +135,7 @@ internal class NetToolNodePatch
         if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
 
         // Skip if state is not set (e.g. node creation failed in previous step)
-        if (!__state.TryGetValue(0, out var oldPoint))
+        if (!__state.TryGetValue(0, out _))
             return;
 
         // If nodes are 0 we retrieve them back from their position
@@ -155,11 +144,11 @@ internal class NetToolNodePatch
         if (endPoint.m_node == 0)
             endPoint.m_position.AtPosition(info, out endPoint.m_node, out _);
 
-        // TODO: improve comments
         // TODO: clear the buffer everytime we start building on Prefix? This should prevent ugly cases where people add new segments after a while
-        // Here we will have the ids for the original start and nodes so that we can match them with what we have in our state
+        // Push all the generated ControlPoints for both start and end nodes.
+        // They will be used as a reference in order to match and connect nodes later.
         Singleton<ParallelRoadToolManager>.instance.PushGeneratedNodes(startPoint.m_node, __state.Select(s => s.Value[0]).ToArray());
-        Singleton<ParallelRoadToolManager>.instance.PushGeneratedNodes(endPoint.m_node, __state.Select(s => s.Value[1]).ToArray());
+        Singleton<ParallelRoadToolManager>.instance.PushGeneratedNodes(endPoint.m_node,   __state.Select(s => s.Value[1]).ToArray());
     }
 
     [HarmonyPatch]
@@ -180,7 +169,4 @@ internal class NetToolNodePatch
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
         }
     }
-
-    //public static readonly FastList<NetTool.ControlPoint[]> ControlPointsBuffer = new();
-    //public static readonly FastList<ushort[]>               NodesBuffer         = new();
 }

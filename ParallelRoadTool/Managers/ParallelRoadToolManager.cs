@@ -31,7 +31,6 @@ public class ParallelRoadToolManager : MonoBehaviour
     /// <summary>
     ///     Buffer where nodes metadata will be stored while building.
     ///     This will map any node created with this mod with their corresponding offset one.
-    ///     TODO: tmp
     /// </summary>
     private readonly Dictionary<ushort, NetTool.ControlPoint[]> _nodesBuffer = new();
 
@@ -139,7 +138,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Toggles mod off by setting <see cref="ModStatuses" /> to not have the <see cref="ModStatuses.Active" /> flag.
+    ///     Toggles mod off by setting <see cref="ModStatuses" /> to not have the <see cref="ModStatuses" /> Active flag.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -177,7 +176,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Toggles the mod on/off by flipping the <see cref="ModStatuses.Active" /> flag on <see cref="ModStatuses" />.
+    ///     Toggles the mod on/off by flipping the <see cref="ModStatuses" /> Active flag on <see cref="ModStatuses" />.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="value"></param>
