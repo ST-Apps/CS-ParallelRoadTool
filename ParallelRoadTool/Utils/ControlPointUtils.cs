@@ -28,6 +28,7 @@ internal static class ControlPointUtils
                                                    float                    horizontalOffset,
                                                    float                    verticalOffset,
                                                    NetInfo                  selectedNetInfo,
+                                                   int networkIndex,
                                                    NetTool.Mode             netMode,
                                                    out NetTool.ControlPoint currentStartPoint,
                                                    out NetTool.ControlPoint currentMiddlePoint,
@@ -84,15 +85,15 @@ internal static class ControlPointUtils
         }
 
         // If nodes are still 0 we can check if we have some matching the ones in our buffer
-        if (currentStartPoint.m_node == 0 && ParallelRoadToolManager.NodesBuffer.TryGetValue(startPoint.m_node, out var tempCurrentStartPoint) && tempCurrentStartPoint.m_node != 0)
+        if (currentStartPoint.m_node == 0 && ParallelRoadToolManager.NodesBuffer.TryGetValue(startPoint.m_node, out var tempCurrentStartPoint) && tempCurrentStartPoint[networkIndex].m_node != 0)
         {
-            currentStartPoint.m_node = tempCurrentStartPoint.m_node;
+            currentStartPoint.m_node = tempCurrentStartPoint[networkIndex].m_node;
             Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Set currentStartPoint's node to {currentStartPoint.m_node} from buffer (start)");
         }
 
-        if (currentEndPoint.m_node == 0 && ParallelRoadToolManager.NodesBuffer.TryGetValue(endPoint.m_node, out var tempCurrentEndPoint) && tempCurrentEndPoint.m_node != 0)
+        if (currentEndPoint.m_node == 0 && ParallelRoadToolManager.NodesBuffer.TryGetValue(endPoint.m_node, out var tempCurrentEndPoint) && tempCurrentEndPoint[networkIndex].m_node != 0)
         {
-            currentEndPoint.m_node = tempCurrentEndPoint.m_node;
+            currentEndPoint.m_node = tempCurrentEndPoint[networkIndex].m_node;
             Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Set currentEndPoint's node to {currentEndPoint.m_node} from buffer (start)");
         }
     }

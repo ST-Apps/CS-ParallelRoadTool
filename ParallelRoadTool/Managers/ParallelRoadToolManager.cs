@@ -34,10 +34,11 @@ public class ParallelRoadToolManager : MonoBehaviour
     private readonly List<NetTool.ControlPoint[]> _controlPointsBuffer = new();
 
     /// <summary>
-    /// Buffer where nodes metadata will be stored while building
+    /// Buffer where nodes metadata will be stored while building.
+    /// This will map any node created with this mod with their corresponding offset one.
     /// TODO: tmp
     /// </summary>
-    public static readonly Dictionary<ushort, NetTool.ControlPoint> NodesBuffer = new();
+    public static readonly Dictionary<ushort, NetTool.ControlPoint[]> NodesBuffer = new();
 
     #endregion
 

@@ -78,7 +78,9 @@ internal static class NetToolCameraPatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo,
+                // TODO: se qui genero sempre a partire da start invece che da current start poi non mi trovo con i contenuti di NodesBuffer
+                // TODO: questo significa che NodesBuffer deve diventare Dict<nodeId, controlpoint[]> e avere, per ogni start, in posizione i il corrispondente
+                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, i,
                                                               netTool.m_mode, out var currentStartPoint, out var currentMiddlePoint,
                                                               out var currentEndPoint);
 
@@ -125,10 +127,10 @@ internal static class NetToolCameraPatch
                     ParallelRoadToolManager.NodesBuffer.TryGetValue(startPoint.m_node, out var previousEndPoint))
                 {
                     // Skip for angle of 180° or 0
-                    var angle = Vector3.Angle(-currentEndPoint.m_direction, previousEndPoint.m_direction);
+                    var angle = Vector3.Angle(-currentEndPoint.m_direction, previousEndPoint[i].m_direction);
                     if (Math.Abs(angle - 180f) > 0.1f && angle != 0f)
                     {
-                        var intersectionPoint = VectorUtils.Intersection(previousEndPoint.m_position, previousEndPoint.m_direction,
+                        var intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
                                                                          currentEndPoint.m_position, currentEndPoint.m_direction);
 
                         if (intersectionPoint != Vector3.up)
@@ -137,7 +139,7 @@ internal static class NetToolCameraPatch
                             currentStartPoint.m_position = intersectionPoint;
 
                             // Create a segment between the previous ending point and the intersection
-                            var intersectionSegment = new Segment3(previousEndPoint.m_position, intersectionPoint);
+                            var intersectionSegment = new Segment3(previousEndPoint[i].m_position, intersectionPoint);
 
                             // Render the helper line for the segment
                             RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo, currentRoadInfos.Color,

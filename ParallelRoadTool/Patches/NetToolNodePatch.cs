@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Managers;
 using ParallelRoadTool.Models;
-using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
@@ -67,9 +67,7 @@ internal class NetToolNodePatch
                 // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
                 // IMPORTANT: this is meant for straight roads only!
                 if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
-                {
                     NetManager.instance.MoveNode(currentStartPoint.m_node, currentStartPoint.m_position);
-                }
 
                 #endregion
 
@@ -137,7 +135,7 @@ internal class NetToolNodePatch
         if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
 
         // Skip if state is not set (e.g. node creation failed in previous step)
-        if (__state[0] == null)
+        if (!__state.TryGetValue(0, out var oldPoint))
             return;
 
         // If nodes are 0 we retrieve them back from their position
@@ -147,16 +145,26 @@ internal class NetToolNodePatch
             endPoint.m_position.AtPosition(info, out endPoint.m_node, out _);
 
         // Here we will have the ids for the original start and nodes so that we can match them with what we have in our state
-        ParallelRoadToolManager.NodesBuffer[startPoint.m_node] = __state[0][0];
-        ParallelRoadToolManager.NodesBuffer[endPoint.m_node]   = __state[0][1];
+        //ParallelRoadToolManager.NodesBuffer[startPoint.m_node] = oldPoint[0];
+        //ParallelRoadToolManager.NodesBuffer[endPoint.m_node]   = oldPoint[1];
+        ParallelRoadToolManager.NodesBuffer[startPoint.m_node]
+            = new NetTool.ControlPoint[Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count];
+        ParallelRoadToolManager.NodesBuffer[endPoint.m_node]   = new NetTool.ControlPoint[Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count];
 
-        // We now set matching nodes for other eventual parallel segments we might have
-        for (var i = 1; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
+        for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
         {
-            if (__state[i] == null) continue;
-            ParallelRoadToolManager.NodesBuffer[__state[i - 1][0].m_node] = __state[i][0];
-            ParallelRoadToolManager.NodesBuffer[__state[i - 1][1].m_node] = __state[i][1];
+            ParallelRoadToolManager.NodesBuffer[startPoint.m_node][i] = __state[i][0];
+            ParallelRoadToolManager.NodesBuffer[endPoint.m_node][i]   = __state[i][1];
         }
+
+
+        //// We now set matching nodes for other eventual parallel segments we might have
+        //for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
+        //{
+        //    if (!__state.TryGetValue(i, out var currentPoint) || !__state.TryGetValue(i + 1, out var nextPoint)) continue;
+        //    ParallelRoadToolManager.NodesBuffer[currentPoint[0].m_node] = nextPoint[0];
+        //    ParallelRoadToolManager.NodesBuffer[currentPoint[1].m_node] = nextPoint[1];
+        //}
     }
 
     [HarmonyPatch]
