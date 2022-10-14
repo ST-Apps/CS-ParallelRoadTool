@@ -23,22 +23,22 @@ public class ParallelRoadToolManager : MonoBehaviour
     #region Fields
 
     /// <summary>
-    ///     True if auto-save has been loaded already, false if not.
-    /// </summary>
-    private static bool _autoSaveLoaded;
-
-    /// <summary>
     ///     Buffer where all the <see cref="NetTool.ControlPoint" /> generated during the overlay are stored.
     ///     These points will be retrieved just before network creation so that we don't have to recompute them.
     /// </summary>
     private readonly List<NetTool.ControlPoint[]> _controlPointsBuffer = new();
 
     /// <summary>
-    /// Buffer where nodes metadata will be stored while building.
-    /// This will map any node created with this mod with their corresponding offset one.
-    /// TODO: tmp
+    ///     Buffer where nodes metadata will be stored while building.
+    ///     This will map any node created with this mod with their corresponding offset one.
+    ///     TODO: tmp
     /// </summary>
-    public static readonly Dictionary<ushort, NetTool.ControlPoint[]> NodesBuffer = new();
+    private readonly Dictionary<ushort, NetTool.ControlPoint[]> _nodesBuffer = new();
+
+    /// <summary>
+    ///     True if auto-save has been loaded already, false if not.
+    /// </summary>
+    private static bool _autoSaveLoaded;
 
     #endregion
 
@@ -323,6 +323,7 @@ public class ParallelRoadToolManager : MonoBehaviour
             // Initialize support data
             SelectedNetworkTypes.Clear();
             _controlPointsBuffer.Clear();
+            _nodesBuffer.Clear();
             IsSnappingEnabled = false;
             IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic == SimulationMetaData.MetaBool.True;
 
@@ -392,6 +393,7 @@ public class ParallelRoadToolManager : MonoBehaviour
             AvailableRoadTypes.Clear();
             SelectedNetworkTypes.Clear();
             _controlPointsBuffer.Clear();
+            _nodesBuffer.Clear();
             IsSnappingEnabled = false;
             IsLeftHandTraffic = false;
             _autoSaveLoaded   = false;
@@ -425,8 +427,6 @@ public class ParallelRoadToolManager : MonoBehaviour
         SelectedNetworkTypes.Add(item);
         _controlPointsBuffer.Add(new NetTool.ControlPoint[3]);
         UIController.AddNetwork(item);
-
-        NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
     }
 
     /// <summary>
@@ -492,9 +492,6 @@ public class ParallelRoadToolManager : MonoBehaviour
 
         // Update the UI
         UIController.RefreshNetworks(SelectedNetworkTypes);
-
-        // Update networks count to patches
-        NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
     }
 
     /// <summary>
@@ -619,7 +616,6 @@ public class ParallelRoadToolManager : MonoBehaviour
 
         Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(LoadPreset)}] {nameof(SelectedNetworkTypes)} now contains: ({string.Join(", ", SelectedNetworkTypes.Select(n => n.BeautifiedName).ToArray())}).");
 
-        NetManagerPatch.NetworksCount = SelectedNetworkTypes.Count;
         RefreshNetworks();
     }
 
@@ -635,10 +631,22 @@ public class ParallelRoadToolManager : MonoBehaviour
         _controlPointsBuffer[index][0] = startPoint;
         _controlPointsBuffer[index][1] = middlePoint;
         _controlPointsBuffer[index][2] = endPoint;
+
+        Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(PushControlPoints)}] Pushed control points: {startPoint.m_position}, {middlePoint.m_position}, {endPoint.m_position}");
     }
 
     /// <summary>
-    /// Retrieves the three <see cref="NetTool.ControlPoint" /> that describe a network from our buffer. 
+    ///     Empties the buffer, to be called after we built a set of networks
+    /// </summary>
+    public void ClearControlPoints()
+    {
+        for (var i = 0; i < _controlPointsBuffer.Count; i++) _controlPointsBuffer[i] = new NetTool.ControlPoint[3];
+
+        Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(ClearControlPoints)}] Cleared control points.");
+    }
+
+    /// <summary>
+    ///     Retrieves the three <see cref="NetTool.ControlPoint" /> that describe a network from our buffer.
     /// </summary>
     /// <param name="index"></param>
     /// <param name="startPoint"></param>
@@ -652,6 +660,30 @@ public class ParallelRoadToolManager : MonoBehaviour
         startPoint  = _controlPointsBuffer[index][0];
         middlePoint = _controlPointsBuffer[index][1];
         endPoint    = _controlPointsBuffer[index][2];
+
+        Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(PullControlPoints)}] Pulled control points: {startPoint.m_position}, {middlePoint.m_position}, {endPoint.m_position}");
+    }
+
+    /// <summary>
+    ///     Stores the set of generated <see cref="NetTool.ControlPoint" /> for the provided original node.
+    ///     We store a number of <see cref="NetTool.ControlPoint" /> that matches <see cref="SelectedNetworkTypes" />'s size.
+    /// </summary>
+    /// <param name="originalNodeId"></param>
+    /// <param name="generatedControlPoints"></param>
+    public void PushGeneratedNodes(ushort originalNodeId, NetTool.ControlPoint[] generatedControlPoints)
+    {
+        _nodesBuffer[originalNodeId] = generatedControlPoints;
+    }
+
+    /// <summary>
+    ///     Retrieves the set of generated <see cref="NetTool.ControlPoint" /> for the provided original node.
+    /// </summary>
+    /// <param name="originalNodeId"></param>
+    /// <param name="generaControlPoints"></param>
+    /// <returns></returns>
+    public bool PullGeneratedNodes(ushort originalNodeId, out NetTool.ControlPoint[] generaControlPoints)
+    {
+        return _nodesBuffer.TryGetValue(originalNodeId, out generaControlPoints);
     }
 
     #endregion

@@ -10,6 +10,12 @@ using ParallelRoadTool.Models;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedParameter.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+// ReSharper disable InconsistentNaming
+
 namespace ParallelRoadTool.Patches;
 
 [HarmonyPatch(typeof(NetTool), "CreateNodeImpl", typeof(NetInfo), typeof(bool), typeof(bool), typeof(NetTool.ControlPoint),
@@ -121,6 +127,11 @@ internal class NetToolNodePatch
             Log._DebugOnlyError($"[{nameof(NetToolNodePatch)}.{nameof(Postfix)}] CreateNodeImpl failed.");
             Log.Exception(e);
         }
+        finally
+        {
+            // We can now clear control points' buffer to get ready for building again
+            Singleton<ParallelRoadToolManager>.instance.ClearControlPoints();
+        }
     }
 
     internal static void Postfix(NetInfo                                 info,
@@ -144,27 +155,11 @@ internal class NetToolNodePatch
         if (endPoint.m_node == 0)
             endPoint.m_position.AtPosition(info, out endPoint.m_node, out _);
 
+        // TODO: improve comments
+        // TODO: clear the buffer everytime we start building on Prefix? This should prevent ugly cases where people add new segments after a while
         // Here we will have the ids for the original start and nodes so that we can match them with what we have in our state
-        //ParallelRoadToolManager.NodesBuffer[startPoint.m_node] = oldPoint[0];
-        //ParallelRoadToolManager.NodesBuffer[endPoint.m_node]   = oldPoint[1];
-        ParallelRoadToolManager.NodesBuffer[startPoint.m_node]
-            = new NetTool.ControlPoint[Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count];
-        ParallelRoadToolManager.NodesBuffer[endPoint.m_node]   = new NetTool.ControlPoint[Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count];
-
-        for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
-        {
-            ParallelRoadToolManager.NodesBuffer[startPoint.m_node][i] = __state[i][0];
-            ParallelRoadToolManager.NodesBuffer[endPoint.m_node][i]   = __state[i][1];
-        }
-
-
-        //// We now set matching nodes for other eventual parallel segments we might have
-        //for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
-        //{
-        //    if (!__state.TryGetValue(i, out var currentPoint) || !__state.TryGetValue(i + 1, out var nextPoint)) continue;
-        //    ParallelRoadToolManager.NodesBuffer[currentPoint[0].m_node] = nextPoint[0];
-        //    ParallelRoadToolManager.NodesBuffer[currentPoint[1].m_node] = nextPoint[1];
-        //}
+        Singleton<ParallelRoadToolManager>.instance.PushGeneratedNodes(startPoint.m_node, __state.Select(s => s.Value[0]).ToArray());
+        Singleton<ParallelRoadToolManager>.instance.PushGeneratedNodes(endPoint.m_node, __state.Select(s => s.Value[1]).ToArray());
     }
 
     [HarmonyPatch]

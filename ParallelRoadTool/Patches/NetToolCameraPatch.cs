@@ -14,7 +14,7 @@ using VectorUtils = ParallelRoadTool.Utils.VectorUtils;
 
 // ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Local
-// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable InconsistentNaming
 
@@ -35,8 +35,6 @@ internal static class NetToolCameraPatch
     /// <param name="startPoint"></param>
     /// <param name="middlePoint"></param>
     /// <param name="endPoint"></param>
-
-    // ReSharper disable once UnusedMember.Local
     private static void Prefix(RenderManager.CameraInfo cameraInfo,
                                NetInfo                  info,
                                Color                    color,
@@ -77,15 +75,13 @@ internal static class NetToolCameraPatch
                     selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
                 // Generate offset points for the current network
-                // TODO: se qui genero sempre a partire da start invece che da current start poi non mi trovo con i contenuti di NodesBuffer
-                // TODO: questo significa che NodesBuffer deve diventare Dict<nodeId, controlpoint[]> e avere, per ogni start, in posizione i il corrispondente
                 ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, i,
                                                               netTool.m_mode, out var currentStartPoint, out var currentMiddlePoint,
                                                               out var currentEndPoint);
 
 #if DEBUG
 
-                // TODO: move this to a dedicated class maybe
+                // TODO: move this to a dedicated class maybe - todo when the actions system will be ready
                 if (ModSettings.RenderDebugOverlay)
                 {
                     // Middle points
@@ -117,22 +113,23 @@ internal static class NetToolCameraPatch
 
                 #region Angle Compensation
 
-                // TODO: move to controlpointutils
+                // TODO: move to controlpointutils - todo when the actions system will be ready
                 // Check if we need to look for an intersection point to move our previously created ending point.
                 // This is needed because certain angles will cause the segments to overlap.
                 // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
                 // IMPORTANT: this is meant for straight roads only!
                 if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight &&
-                    ParallelRoadToolManager.NodesBuffer.TryGetValue(startPoint.m_node, out var previousEndPoint))
+                    Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint))
                 {
                     // Skip for angle of 180° or 0
                     var angle = Vector3.Angle(-currentEndPoint.m_direction, previousEndPoint[i].m_direction);
                     if (Math.Abs(angle - 180f) > 0.1f && angle != 0f)
                     {
                         var intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
-                                                                         currentEndPoint.m_position, currentEndPoint.m_direction);
+                                                                         currentEndPoint.m_position, currentEndPoint.m_direction, out var startLine,
+                                                                         out var endLine);
 
-                        if (intersectionPoint != Vector3.up)
+                        if (intersectionPoint != Vector3.zero)
                         {
                             // Set our current point to the intersection point
                             currentStartPoint.m_position = intersectionPoint;
@@ -141,10 +138,10 @@ internal static class NetToolCameraPatch
                             var intersectionSegment = new Segment3(previousEndPoint[i].m_position, intersectionPoint);
 
                             // Render the helper line for the segment
-                            RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo, currentRoadInfos.Color,
-                                                                             intersectionSegment, currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1,
-                                                                             1800, true, true);
+                            RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, currentRoadInfos.Color, intersectionSegment,
+                                                                             currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1, 1800, true, true);
                         }
+
                     }
                 }
 
@@ -160,7 +157,7 @@ internal static class NetToolCameraPatch
                                                   currentEndPoint);
 
                 // Save to buffer
-                // TODO: move to controlpointutils
+                // TODO: move to controlpointutils - todo when the actions system will be ready
                 Singleton<ParallelRoadToolManager>.instance.PushControlPoints(i, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
                 // We draw arrows only for one-way networks, just as in game
