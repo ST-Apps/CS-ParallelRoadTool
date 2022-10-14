@@ -37,7 +37,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     /// Buffer where nodes metadata will be stored while building
     /// TODO: tmp
     /// </summary>
-    public static readonly Dictionary<ushort, ushort> NodesBuffer = new();
+    public static readonly Dictionary<ushort, NetTool.ControlPoint> NodesBuffer = new();
 
     #endregion
 

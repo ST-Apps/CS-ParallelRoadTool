@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ColossalFramework;
 using CSUtil.Commons;
 using HarmonyLib;
@@ -23,9 +24,9 @@ internal class NetToolNodePatch
                                 NetTool.ControlPoint endPoint,
 
                                 // State contains, for each parallel segment, the pair containing new start and end nodes ids
-                                out ushort[][] __state)
+                                out Dictionary<int, NetTool.ControlPoint[]> __state)
     {
-        __state = new ushort[Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count][];
+        __state = new Dictionary<int, NetTool.ControlPoint[]>();
 
         // We only run if the mod is set as Active
         if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
@@ -59,15 +60,6 @@ internal class NetToolNodePatch
                                                                               out var currentEndPoint);
 
 
-                // If snapping is off we need to manually create the nodes beforehand
-                //if (!Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled)
-                //{
-                //    NodeUtils.CreateNode(out currentStartPoint.m_node, selectedNetInfo, currentStartPoint.m_position);
-                //    NodeUtils.CreateNode(out currentEndPoint.m_node,   selectedNetInfo, currentEndPoint.m_position);
-
-                //    Log.Info($"[{nameof(NetToolNodePatch)}.{nameof(Prefix)}] Snapping is off, manually created nodes with ids: ({currentStartPoint.m_node}, {currentEndPoint.m_node})");
-                //}
-
                 #region Angle Compensation
 
                 // Check if we need to look for an intersection point to move our previously created ending point.
@@ -76,19 +68,7 @@ internal class NetToolNodePatch
                 // IMPORTANT: this is meant for straight roads only!
                 if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
                 {
-                    var newStartNode = NetManager.instance.m_nodes.m_buffer[currentStartPoint.m_node];
-
-                    var intersection = NodeUtils.FindIntersectionByOffset(newStartNode.m_position, endPoint.m_position, endPoint.m_direction,
-                                                                          newStartNode.m_position, -currentStartPoint.m_direction, horizontalOffset,
-                                                                          out var intersectionPoint);
-
-                    // If we found an intersection we can draw an helper line showing how much we will have to move the node
-                    if (intersection)
-                    {
-                        // Move the node to the newly found position but keep y from the offset
-                        intersectionPoint.y += startPoint.m_elevation;
-                        NetManager.instance.MoveNode(currentStartPoint.m_node, intersectionPoint);
-                    }
+                    NetManager.instance.MoveNode(currentStartPoint.m_node, currentStartPoint.m_position);
                 }
 
                 #endregion
@@ -126,7 +106,7 @@ internal class NetToolNodePatch
                         currentEndPoint.m_position.AtPosition(info, out currentEndPoint.m_node, out _);
 
                     // We can now store them in the temporary state that is passed between prefix and postifx
-                    __state[i] = new[] { currentStartPoint.m_node, currentEndPoint.m_node };
+                    __state[i] = new[] { currentStartPoint, currentEndPoint };
                 }
 
                 if (!currentRoadInfos.IsReversed) continue;
@@ -145,13 +125,13 @@ internal class NetToolNodePatch
         }
     }
 
-    internal static void Postfix(NetInfo              info,
-                                 bool                 needMoney,
-                                 bool                 switchDirection,
-                                 NetTool.ControlPoint startPoint,
-                                 NetTool.ControlPoint middlePoint,
-                                 NetTool.ControlPoint endPoint,
-                                 ushort[][]           __state)
+    internal static void Postfix(NetInfo                                 info,
+                                 bool                                    needMoney,
+                                 bool                                    switchDirection,
+                                 NetTool.ControlPoint                    startPoint,
+                                 NetTool.ControlPoint                    middlePoint,
+                                 NetTool.ControlPoint                    endPoint,
+                                 Dictionary<int, NetTool.ControlPoint[]> __state)
     {
         // We only run if the mod is set as Active
         if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
@@ -174,8 +154,8 @@ internal class NetToolNodePatch
         for (var i = 1; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
         {
             if (__state[i] == null) continue;
-            ParallelRoadToolManager.NodesBuffer[__state[i - 1][0]] = __state[i][0];
-            ParallelRoadToolManager.NodesBuffer[__state[i - 1][1]] = __state[i][1];
+            ParallelRoadToolManager.NodesBuffer[__state[i - 1][0].m_node] = __state[i][0];
+            ParallelRoadToolManager.NodesBuffer[__state[i - 1][1].m_node] = __state[i][1];
         }
     }
 

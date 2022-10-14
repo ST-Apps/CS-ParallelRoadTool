@@ -10,6 +10,7 @@ using ParallelRoadTool.Settings;
 using ParallelRoadTool.Utils;
 using ParallelRoadTool.Wrappers;
 using UnityEngine;
+using VectorUtils = ParallelRoadTool.Utils.VectorUtils;
 
 // ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Local
@@ -82,6 +83,8 @@ internal static class NetToolCameraPatch
                                                               out var currentEndPoint);
 
 #if DEBUG
+
+                // TODO: move this to a dedicated class maybe
                 if (ModSettings.RenderDebugOverlay)
                 {
                     // Middle points
@@ -114,39 +117,27 @@ internal static class NetToolCameraPatch
                 #region Angle Compensation
 
                 // TODO: move to controlpointutils
-                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
+                // Check if we need to look for an intersection point to move our previously created ending point.
+                // This is needed because certain angles will cause the segments to overlap.
+                // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
+                // IMPORTANT: this is meant for straight roads only!
+                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight &&
+                    ParallelRoadToolManager.NodesBuffer.TryGetValue(startPoint.m_node, out var previousEndPoint))
                 {
-                    // Check if we need to look for an intersection point to move our previously created ending point.
-                    // This is needed because certain angles will cause the segments to overlap.
-                    // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
-                    // IMPORTANT: this is meant for straight roads only!
-                    var previousEndPointNullable = NetManagerPatch.PreviousNode(i,   false, true);
-                    var previousStartPointNullable = NetManagerPatch.PreviousNode(i, true,  true);
-                    if (previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
+                    // Skip for angle of 180° or 0
+                    var angle = Vector3.Angle(-currentEndPoint.m_direction, previousEndPoint.m_direction);
+                    if (Math.Abs(angle - 180f) > 0.1f && angle != 0f)
                     {
-                        // We can now extract the previously created ending point
-                        var previousEndPoint = previousEndPointNullable.Value;
-                        var previousStartPoint = previousStartPointNullable.Value;
+                        var intersectionPoint = VectorUtils.Intersection(previousEndPoint.m_position, previousEndPoint.m_direction,
+                                                                         currentEndPoint.m_position, currentEndPoint.m_direction);
 
-                        // Get the closest one between start and end
-                        var previousEndPointDistance = Vector3.Distance(previousEndPoint.m_position,     currentStartPoint.m_position);
-                        var previousStartPointDistance = Vector3.Distance(previousStartPoint.m_position, currentStartPoint.m_position);
-                        var previousPoint = previousEndPoint;
-
-                        if (previousStartPointDistance < previousEndPointDistance)
-                            previousPoint = previousStartPoint;
-                        var intersection = NodeUtils.FindIntersectionByOffset(currentStartPoint.m_position, endPoint.m_position, endPoint.m_direction,
-                                                                              previousPoint.m_position, -NetManagerPatch.PreviousEndDirection(i),
-                                                                              horizontalOffset, out var intersectionPoint, cameraInfo);
-
-                        // If we found an intersection we can draw an helper line showing how much we will have to move the node
-                        if (intersection)
+                        if (intersectionPoint != Vector3.up)
                         {
                             // Set our current point to the intersection point
                             currentStartPoint.m_position = intersectionPoint;
 
                             // Create a segment between the previous ending point and the intersection
-                            var intersectionSegment = new Segment3(previousPoint.m_position, intersectionPoint);
+                            var intersectionSegment = new Segment3(previousEndPoint.m_position, intersectionPoint);
 
                             // Render the helper line for the segment
                             RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo, currentRoadInfos.Color,
