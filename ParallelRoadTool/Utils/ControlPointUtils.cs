@@ -3,6 +3,7 @@ using ColossalFramework.Math;
 using CSUtil.Commons;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.Managers;
+using ParallelRoadTool.UI;
 using UnityEngine;
 
 namespace ParallelRoadTool.Utils;
@@ -35,6 +36,15 @@ internal static class ControlPointUtils
                                                    out NetTool.ControlPoint currentMiddlePoint,
                                                    out NetTool.ControlPoint currentEndPoint)
     {
+        // If ALT is pressed we switch the horizontal offset.
+        // This is useful to upgrade curved roads when they appear on the wrong side.
+        // Curved roads have some weird things happening with directions so that two close segments will have opposite start/end direction signs.
+        // This difference causes the two close segments to be upgraded on two different sides, leading to weird results.
+        if (ModifiersManager.IsAltPressed)
+        {
+            horizontalOffset *= -1;
+        }
+
         // To offset both starting and ending point we need to get the right direction
         var startDirection = startPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
         var endDirection = endPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
