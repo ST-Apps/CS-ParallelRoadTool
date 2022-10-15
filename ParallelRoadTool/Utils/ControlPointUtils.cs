@@ -75,8 +75,8 @@ internal static class ControlPointUtils
             };
         }
 
-        // Check if already have nodes at position and use them, but only if snapping is on
-        if (Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled)
+        // Check if already have nodes at position and use them, but only if snapping is on (disable it for upgrade mode to prevent unintended results)
+        if (Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled && netMode != NetTool.Mode.Upgrade)
         {
             if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))
                 Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentStartPoint.m_position} with nodeId={currentStartPoint.m_node} and segmentId={currentStartPoint.m_segment} (start)");
