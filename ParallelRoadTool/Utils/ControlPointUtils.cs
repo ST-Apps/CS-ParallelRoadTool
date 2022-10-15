@@ -53,26 +53,42 @@ internal static class ControlPointUtils
             m_node = 0, m_segment = 0, m_position = currentEndPosition, m_elevation = endPoint.m_elevation + verticalOffset
         };
 
-        // If we're on straight mode we just set middlePoint as endPoint because we don't need more than 2 control points
-        if (netMode == NetTool.Mode.Straight)
+        switch (netMode)
         {
-            currentMiddlePoint = currentEndPoint with { m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2 };
-        }
-        else
-        {
-            // If not on straight mode we compute the middle point by getting the intersection between startPoint and endPoint
-            // Both points will be projected in the respective directions to find the intersection
-            var currentMiddlePosition
-                = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition, endPoint.m_direction, out _, out _);
-
-            // Finally set the point
-            currentMiddlePoint = middlePoint with
+            // If we're on straight mode we just set middlePoint as endPoint because we don't need more than 2 control points
+            case NetTool.Mode.Straight:
+                currentMiddlePoint = currentEndPoint with { m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2 };
+                break;
+            case NetTool.Mode.Upgrade:
             {
-                m_node = 0,
-                m_segment = 0,
-                m_position = currentMiddlePosition,
-                m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
-            };
+                var middleDirection = middlePoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
+                var currentMiddlePosition = middlePoint.m_position + middleDirection + Vector3.up * verticalOffset;
+
+                currentMiddlePoint = middlePoint with
+                {
+                    m_node = 0, m_segment = 0, m_position = currentMiddlePosition, m_elevation = middlePoint.m_elevation + verticalOffset
+                };
+                break;
+            }
+            case NetTool.Mode.Curved:
+            case NetTool.Mode.Freeform:
+            default:
+            {
+                // If not on straight mode we compute the middle point by getting the intersection between startPoint and endPoint
+                // Both points will be projected in the respective directions to find the intersection
+                var currentMiddlePosition = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition,
+                                                                     endPoint.m_direction, out _, out _);
+
+                // Finally set the point
+                currentMiddlePoint = middlePoint with
+                {
+                    m_node = 0,
+                    m_segment = 0,
+                    m_position = currentMiddlePosition,
+                    m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
+                };
+                break;
+            }
         }
 
         // Check if already have nodes at position and use them, but only if snapping is on (disable it for upgrade mode to prevent unintended results)
@@ -86,15 +102,17 @@ internal static class ControlPointUtils
         }
 
         // If nodes are still 0 we can check if we have some matching the ones in our buffer
-        if (currentStartPoint.m_node == 0 && Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var tempCurrentStartPoint) &&
-            networkIndex             < tempCurrentStartPoint.Length && tempCurrentStartPoint[networkIndex].m_node != 0)
+        if (currentStartPoint.m_node == 0 &&
+            Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var tempCurrentStartPoint) &&
+            networkIndex < tempCurrentStartPoint.Length && tempCurrentStartPoint[networkIndex].m_node != 0)
         {
             currentStartPoint.m_node = tempCurrentStartPoint[networkIndex].m_node;
             Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Set currentStartPoint's node to {currentStartPoint.m_node} from buffer (start)");
         }
 
-        if (currentEndPoint.m_node == 0 && Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(endPoint.m_node, out var tempCurrentEndPoint) &&
-            networkIndex           < tempCurrentEndPoint.Length && tempCurrentEndPoint[networkIndex].m_node != 0)
+        if (currentEndPoint.m_node == 0 &&
+            Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(endPoint.m_node, out var tempCurrentEndPoint) &&
+            networkIndex < tempCurrentEndPoint.Length && tempCurrentEndPoint[networkIndex].m_node != 0)
         {
             currentEndPoint.m_node = tempCurrentEndPoint[networkIndex].m_node;
             Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Set currentEndPoint's node to {currentEndPoint.m_node} from buffer (start)");
