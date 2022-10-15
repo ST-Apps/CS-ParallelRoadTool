@@ -29,6 +29,7 @@ Main features are:
 [*] Added button to sort networks based on their horizontal distance
 [*] Added scrollwheel support to horizontal/vertical offsets texts
 [*] Improved straight roads handling for certain angles
+[*] Pressing ALT will now switch building side (use this if upgrading curves produces unexpected results)
 [*] Fixed a bug preventing trees to be applied to parallel/stacked segments
 [/list]
 [/quote]
