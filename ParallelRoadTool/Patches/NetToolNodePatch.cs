@@ -83,7 +83,7 @@ internal class NetToolNodePatch
                 }
 
                 // Draw the offset segment for the current network
-                if (!NetToolReversePatch.CreateNodeImpl(netTool, selectedNetInfo, needMoney, switchDirection, currentStartPoint, currentMiddlePoint,
+                if (!NetToolReversePatch.CreateNodeImpl(netTool, selectedNetInfo, false, false, currentStartPoint, currentMiddlePoint,
                                                         currentEndPoint))
                 {
                     var toolErrors = NetTool.CreateNode(info, currentStartPoint, currentMiddlePoint, currentEndPoint,
