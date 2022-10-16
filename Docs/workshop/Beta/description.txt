@@ -12,49 +12,102 @@ Main features are:
 [/list]
 
 [quote]
-[h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b][/h1]
+[h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b].[/h1]
 [h1][b]The beta version is meant for testing only and it can be unstable.[/b][/h1]
 [b]Tested on C:S version 1.15.0-f5[/b]
 [/quote]
 
-[h1]For new features and/or debugging, you can subscribe to the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1400711138]beta version[/url][/h1]
-[b]Tested on C:S version 1.15.0-f5[/b]
-
 [quote]
-[h1]Current version: [b]3.0.0-dev[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]3.0.0-dev[/b][/h1]
 [list]
 [*] Moved mod core to Harmony for better compatibility with other mods
+[*] Completely rewritten mod's core logic/engine
 [*] Fully redesigned and faster UI
 [*] Improved logic used to enable/disable the mod for a more consistent behavior
 [*] Added button to sort networks based on their horizontal distance
 [*] Added button to enable/disable automatic horizontal offset adjusting when changing the main selected network (parallel networks will be shifted to match new network's width)
-[*] Added button to enable/disable automatic angle compensation: building straight networks with "extreme" angles will cause nodes to be moved to produce more pleasing results
+[*] Added button to enable/disable automatic angle compensation: building straight networks with sharp angles can now cause nodes to be moved to produce more pleasing results
 [*] Added scrollwheel support to horizontal/vertical offsets texts
 [*] Pressing ALT will now switch building side (use this if upgrading curves produces unexpected results)
 [*] Fixed a bug preventing trees to be applied to parallel/stacked segments
 [/list]
+
+[h1]Source code: [url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url][/h1]
+
 [/quote]
 
-[HR][/HR] 
+[quote]
+[h1]Main buttons[/h1]
+[table]
+	[tr]
+		[th]
+			Button
+		[/th]
+		[th]
+			Description
+		[/th]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Save.png[/img]
+		[/td]
+		[td]
+			Saves the current configuration as a preset that can be loaded at a different time.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Load.png[/img]
+		[/td]
+		[td]
+			Loads a saved preset into your current configuration.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Sort.png[/img]
+		[/td]
+		[td]
+			Sorts the selected networks by using the horizontal offset in a descending order.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Angle.png[/img]
+		[/td]
+		[td]
+			Toggles the angle compensation feature on/off. This feature prevents segments from overlapping when creating straight roads connected using sharp angles.
+			This works by moving the previous node in order to have a better angle for your parallel segments.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Width.png[/img]
+		[/td]
+		[td]
+			Toggles the auto width adjustment feature on/off. This feature automatically adjusts the horizontal offset from the main selected network everytime this changes.
+			The final result is to preserve the relative distance between the original sements and the parallel ones, avoiding overlapping when selecting a larger main network.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Snap.png[/img]
+		[/td]
+		[td]
+			Toggles the snapping feature on/off. This feature allows parallel segments to snap to existing nodes that were not created by this mod.
+		[/td]
+	[/tr]
+[/table]
+[/quote]
+
+[quote]
 [h1]Recommended additional mods[/h1]
 [list] 
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1844442251]Fine Road Tool[/url] - To build specific road type
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1844440354]Fine Road Anarchy[/url] - To ignore build errors
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2862881785]Network Anarchy Beta[/url] - (modern replacement for Fine Road Anarchy)
 [/list]
-
-[quote]
-[h1]Support my work[/h1]
-Star the project on GitHub:
-
-[url=https://github.com/ST-Apps/CS-ParallelRoadTool][img]https://i.imgur.com/zejzAZn.png[/img][/url] 
-
-[b]or[/b]
-
-Donate using PayPal:
-
-[url=paypal.me/STApps][img]https://i.imgur.com/HKFbi4p.jpg[/img][/url]
-[/quote] 
+[/quote]
 
 [quote]
 [h1][b]Supported languages (% translated)[/b][/h1]
@@ -70,8 +123,16 @@ If you want to help improve existing translations or you want to translate into 
 [/quote] 
 
 [quote]
-[h1]Source code[/h1]
-[url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url]
+[h1]Support my work[/h1]
+Star the project on GitHub:
+
+[url=https://github.com/ST-Apps/CS-ParallelRoadTool][img]https://i.imgur.com/zejzAZn.png[/img][/url] 
+
+[HR][/HR]
+
+Donate using PayPal:
+
+[url=paypal.me/STApps][img]https://raw.githubusercontent.com/aha999/DonateButtons/master/paypal-donate-icon-7.png[/img][/url]
 [/quote]
 
 [quote]
@@ -86,6 +147,13 @@ If there's no issue for the thing you'd like to work on, feel free to open a new
 [/quote]
 
 [quote]
+[h1](v3.*) Thanks to[/h1]
+[list]
+[*] ... TODO ...
+[/list]
+
+[hr][/hr]
+
 [h1](v2.*) Thanks to[/h1]
 [list]
 [*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
