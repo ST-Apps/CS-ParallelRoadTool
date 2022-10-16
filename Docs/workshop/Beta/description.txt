@@ -31,9 +31,7 @@ Main features are:
 [*] Pressing ALT will now switch building side (use this if upgrading curves produces unexpected results)
 [*] Fixed a bug preventing trees to be applied to parallel/stacked segments
 [/list]
-
 [h1]Source code: [url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url][/h1]
-
 [/quote]
 
 [quote]
