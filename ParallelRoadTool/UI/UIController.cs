@@ -21,14 +21,6 @@ namespace ParallelRoadTool.UI;
 /// </summary>
 public class UIController : MonoBehaviour
 {
-        #region Properties
-
-        public static bool IsShiftPressed { get; private set; }
-
-        public static bool IsCtrlPressed { get; private set; }
-
-        #endregion
-
     #region Events
 
     public event EventHandler CloseButtonEventClicked;
@@ -60,6 +52,12 @@ public class UIController : MonoBehaviour
     {
         add => _mainWindow.ToggleAngleCompensationButtonEventCheckChanged += value;
         remove => _mainWindow.ToggleAngleCompensationButtonEventCheckChanged -= value;
+    }
+
+    public event PropertyChangedEventHandler<bool> ToggleAutoWidthButtonEventCheckChanged
+    {
+        add => _mainWindow.ToggleAutoWidthButtonEventCheckChanged += value;
+        remove => _mainWindow.ToggleAutoWidthButtonEventCheckChanged -= value;
     }
 
     public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked

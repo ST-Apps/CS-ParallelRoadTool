@@ -34,11 +34,14 @@ internal class NetToolNodePatch
     {
         __state = new Dictionary<int, NetTool.ControlPoint[]>();
 
-        // We only run if the mod is set as Active
-        if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
-
         try
         {
+            // We only run if the mod is set as Active
+            if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active)) return;
+
+            // Prevent mod from running if user is just inverting a segment's direction
+            if (switchDirection) return;
+
             // If start direction is not set we manually compute it
             if (startPoint.m_direction == Vector3.zero)
                 startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;

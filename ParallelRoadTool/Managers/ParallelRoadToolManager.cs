@@ -35,6 +35,11 @@ public class ParallelRoadToolManager : MonoBehaviour
     private readonly Dictionary<ushort, NetTool.ControlPoint[]> _nodesBuffer = new();
 
     /// <summary>
+    ///     Currently selected <see cref="NetInfo" /> using game's <see cref="NetTool" />.
+    /// </summary>
+    private NetInfo _currentNetInfo;
+
+    /// <summary>
     ///     True if auto-save has been loaded already, false if not.
     /// </summary>
     private static bool _autoSaveLoaded;
@@ -70,6 +75,12 @@ public class ParallelRoadToolManager : MonoBehaviour
     ///     This will force the previously drawn node to be moved, with possibly unintended consequences.
     /// </summary>
     public bool IsAngleCompensationEnabled { get; private set; }
+
+    /// <summary>
+    ///     This tells if we need to adjust horizontal offsets when <see cref="_currentNetInfo" /> changes, so that we avoid
+    ///     overlapping and keep the same relative distance between segments.
+    /// </summary>
+    public bool IsAutoWidthEnabled { get; private set; }
 
     /// <summary>
     ///     True if the current map is using left-hand traffic.
@@ -195,7 +206,22 @@ public class ParallelRoadToolManager : MonoBehaviour
     /// <param name="e"></param>
     private void NetToolsPrefabPatch_CurrentNetInfoChanged(object sender, CurrentNetInfoPrefabChangedEventArgs e)
     {
+        Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(NetToolsPrefabPatch_CurrentNetInfoChanged)}] Changing current network from: {_currentNetInfo?.name} to {e.Prefab.name} and shifting horizontal distances.");
+
+        // This prevents unintentional overlapping when changing to a different type of starting road.
+        // To do so we just shift all the selected networks horizontally so that we can match the new network's width.
+        if (IsAutoWidthEnabled && _currentNetInfo != null)
+            foreach (var selectedNetwork in SelectedNetworkTypes)
+            {
+                var newHorizontalOffset = Math.Sign(selectedNetwork.HorizontalOffset) *
+                                          (Math.Abs(selectedNetwork.HorizontalOffset) - _currentNetInfo.m_halfWidth * 2 + e.Prefab.m_halfWidth * 2);
+                Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(NetToolsPrefabPatch_CurrentNetInfoChanged)}] Offset for {selectedNetwork.BeautifiedName} was {selectedNetwork.HorizontalOffset}, now changed to {newHorizontalOffset}.");
+                selectedNetwork.HorizontalOffset = newHorizontalOffset;
+            }
+
+        _currentNetInfo = e.Prefab;
         UIController.UpdateCurrentNetwork(e.Prefab);
+        RefreshNetworks();
     }
 
     /// <summary>
@@ -241,7 +267,6 @@ public class ParallelRoadToolManager : MonoBehaviour
         IsSnappingEnabled = value;
     }
 
-
     /// <summary>
     ///     Toggles angle compensation mode on/off
     /// </summary>
@@ -250,6 +275,16 @@ public class ParallelRoadToolManager : MonoBehaviour
     private void UIController_OnToggleAngleCompensationButtonEventCheckChanged(UIComponent component, bool value)
     {
         IsAngleCompensationEnabled = value;
+    }
+
+    /// <summary>
+    ///     Toggles automatic horizontal offsets adjusting on/off
+    /// </summary>
+    /// <param name="component"></param>
+    /// <param name="value"></param>
+    private void UIControllerOnToggleAutoWidthButtonEventCheckChanged(UIComponent component, bool value)
+    {
+        IsAutoWidthEnabled = value;
     }
 
     /// <summary>
@@ -438,6 +473,7 @@ public class ParallelRoadToolManager : MonoBehaviour
         UIController.ToolToggleButtonEventCheckChanged              -= UIController_ToolToggleButtonEventCheckChanged;
         UIController.ToggleSnappingButtonEventCheckChanged          -= UIController_ToggleSnappingButtonEventCheckChanged;
         UIController.ToggleAngleCompensationButtonEventCheckChanged -= UIController_OnToggleAngleCompensationButtonEventCheckChanged;
+        UIController.ToggleAutoWidthButtonEventCheckChanged         -= UIControllerOnToggleAutoWidthButtonEventCheckChanged;
         UIController.CloseButtonEventClicked                        -= UIController_ClosedButtonEventClicked;
         UIController.AddNetworkButtonEventClicked                   -= UIController_AddNetworkButtonEventClicked;
         UIController.SortNetworksButtonEventClicked                 -= UIControllerOnSortNetworksButtonEventClicked;
@@ -460,6 +496,7 @@ public class ParallelRoadToolManager : MonoBehaviour
         UIController.ToolToggleButtonEventCheckChanged              += UIController_ToolToggleButtonEventCheckChanged;
         UIController.ToggleSnappingButtonEventCheckChanged          += UIController_ToggleSnappingButtonEventCheckChanged;
         UIController.ToggleAngleCompensationButtonEventCheckChanged += UIController_OnToggleAngleCompensationButtonEventCheckChanged;
+        UIController.ToggleAutoWidthButtonEventCheckChanged         += UIControllerOnToggleAutoWidthButtonEventCheckChanged;
         UIController.CloseButtonEventClicked                        += UIController_ClosedButtonEventClicked;
         UIController.AddNetworkButtonEventClicked                   += UIController_AddNetworkButtonEventClicked;
         UIController.SortNetworksButtonEventClicked                 += UIControllerOnSortNetworksButtonEventClicked;

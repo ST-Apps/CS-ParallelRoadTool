@@ -34,6 +34,7 @@ Unless you want to test the new features, please move to the stable version on W
 "TOOLTIP_SAVE_BUTTON","Save preset"
 "TOOLTIP_LOAD_BUTTON","Load preset"
 "TOOLTIP_SNAPPING_TOGGLE_BUTTON","Snap to existing nodes"
+"TOOLTIP_AUTO_WIDTH_TOGGLE_BUTTON","Adjust horizontal offsets when main network changes"
 "TOOLTIP_ANGLE_COMPENSATION_TOGGLE_BUTTON","Angle compensation"
 "TOOLTIP_SORT_NETWORKS_BUTTON","Sort networks by horizontal distance (ascending)"
 "TOOLTIP_ADD_NETWORK_BUTTON","Add network"

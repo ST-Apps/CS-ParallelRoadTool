@@ -93,6 +93,12 @@ namespace ParallelRoadTool.UI.Main
             remove => _toggleAngleCompensationButton.eventCheckChanged -= value;
         }
 
+        public event PropertyChangedEventHandler<bool> ToggleAutoWidthButtonEventCheckChanged
+        {
+            add => _toggleAutoWidthButton.eventCheckChanged += value;
+            remove => _toggleAutoWidthButton.eventCheckChanged -= value;
+        }
+
         public event MouseEventHandler SavePresetButtonEventClicked
         {
             add => _savePresetButton.eventClicked += value;
@@ -124,6 +130,7 @@ namespace ParallelRoadTool.UI.Main
         private UINetListPanel  _networkListPanel;
         private UICheckBox      _toggleSnappingButton;
         private UICheckBox      _toggleAngleCompensationButton;
+        private UICheckBox      _toggleAutoWidthButton;
         private UIButton        _addNetworkButton;
         private UIButton        _sortNetworksButton;
         private UINetSetupPanel _currentNetworkSetupPanel;
@@ -311,6 +318,14 @@ namespace ParallelRoadTool.UI.Main
                                                           UITextures.LoadQuadSpriteAtlas("PRT-Sort"),
                                                           Translations.Translate("TOOLTIP_SORT_NETWORKS_BUTTON"));
             _sortNetworksButton.name = $"{toolsPanel.name}_SortNetworks";
+
+            // Main/Toolbar/Tools/ToggleAutoWidthButton
+            var autoWidthIcon = UITextures.LoadSpriteAtlas("PRT-AutoWidth", new[] { "AutoWidth", "AutoWidthPressed" });
+            _toggleAutoWidthButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, autoWidthIcon.name, "AutoWidthPressed",
+                                                                "AutoWidth", backgroundSprite: "OptionBase",
+                                                                tooltip: Translations.Translate("TOOLTIP_AUTO_WIDTH_TOGGLE_BUTTON"),
+                                                                height: UIConstants.MediumSize, width: UIConstants.MediumSize);
+            _toggleAutoWidthButton.name = $"{toolsPanel.name}_ToggleAutoWidth";
 
             // Main/Toolbar/Tools/ToggleNodeModeButton
             var nodeModeIcon = UITextures.LoadSpriteAtlas("PRT-NodeMove", new[]{"NodeMove", "NodeMovePressed"});
