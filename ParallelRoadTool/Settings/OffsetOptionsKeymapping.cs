@@ -13,7 +13,7 @@ namespace ParallelRoadTool.Settings
     {
         #region Properties
 
-        protected sealed override InputKey KeySetting
+        public sealed override InputKey KeySetting
         {
             get => ModSettings.KeyIncreaseHorizontalOffset.Encode();
             set => ModSettings.KeyIncreaseHorizontalOffset.SetKey(value);
@@ -35,7 +35,7 @@ namespace ParallelRoadTool.Settings
     {
         #region Properties
 
-        protected sealed override InputKey KeySetting
+        public sealed override InputKey KeySetting
         {
             get => ModSettings.KeyDecreaseHorizontalOffset.Encode();
             set => ModSettings.KeyDecreaseHorizontalOffset.SetKey(value);
@@ -57,7 +57,7 @@ namespace ParallelRoadTool.Settings
     {
         #region Properties
 
-        protected sealed override InputKey KeySetting
+        public sealed override InputKey KeySetting
         {
             get => ModSettings.KeyIncreaseVerticalOffset.Encode();
             set => ModSettings.KeyIncreaseVerticalOffset.SetKey(value);
@@ -79,7 +79,7 @@ namespace ParallelRoadTool.Settings
     {
         #region Properties
 
-        protected sealed override InputKey KeySetting
+        public sealed override InputKey KeySetting
         {
             get => ModSettings.KeyDecreaseVerticalOffset.Encode();
             set => ModSettings.KeyDecreaseVerticalOffset.SetKey(value);

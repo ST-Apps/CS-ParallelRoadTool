@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using AlgernonCommons.Utils;
 using ColossalFramework;
 using ColossalFramework.UI;
 using CSUtil.Commons;
@@ -117,7 +119,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     {
         var netInfo = ToolsModifierControl.GetTool<NetTool>().Prefab;
 
-        Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network [{netInfo.GenerateBeautifiedNetName()}]");
+        Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(UIController_AddNetworkButtonEventClicked)}] Adding a new network [{PrefabUtils.GetDisplayName(netInfo)}]");
 
         // Previous item's offset so that we can try to separate this one from previous one without overlapping
         var prevOffset = SelectedNetworkTypes.Any() ? SelectedNetworkTypes.Last().HorizontalOffset : 0;
@@ -559,7 +561,7 @@ public class ParallelRoadToolManager : MonoBehaviour
             var prefab = PrefabCollection<NetInfo>.GetPrefab(i);
             if (prefab == null) continue;
 
-            var networkName = prefab.GenerateBeautifiedNetName();
+            var networkName = PrefabUtils.GetDisplayName(prefab);
             var atlasName = prefab.m_Atlas?.name;
 
             // Skip items with no atlas set as they're not networks (e.g. train lines)
@@ -626,7 +628,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     /// <returns></returns>
     public NetInfo FromName(string networkName)
     {
-        return AvailableRoadTypes.FirstOrDefault(n => n.name == networkName || n.GenerateBeautifiedNetName() == networkName);
+        return AvailableRoadTypes.FirstOrDefault(n => n.name == networkName || PrefabUtils.GetDisplayName(n) == networkName);
     }
 
     /// <summary>

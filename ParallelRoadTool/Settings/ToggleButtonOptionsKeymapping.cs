@@ -13,7 +13,7 @@ namespace ParallelRoadTool.Settings
     {
         #region Properties
 
-        protected sealed override InputKey KeySetting
+        public sealed override InputKey KeySetting
         {
             get => ModSettings.KeyToggleTool.Encode();
             set => ModSettings.KeyToggleTool.SetKey(value);

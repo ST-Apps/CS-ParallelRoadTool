@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using AlgernonCommons.Utils;
+using ColossalFramework.UI;
 using ParallelRoadTool.Extensions;
 using ParallelRoadTool.UI.Utils;
 using UnityEngine;
@@ -71,7 +72,7 @@ namespace ParallelRoadTool.Models
         {
             NetInfo = netInfo;
 
-            BeautifiedName = netInfo.GenerateBeautifiedNetName();
+            BeautifiedName = PrefabUtils.GetDisplayName(netInfo); //netInfo.GenerateBeautifiedNetName();
             Color          = UIHelpers.ColorFromString(Name);
         }
 
