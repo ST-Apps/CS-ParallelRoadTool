@@ -59,9 +59,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionBase.cs" />
+    <Compile Include="Actions\ActionFactory.cs" />
+    <Compile Include="Actions\CreateSegmentAction.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\MetaBoolExtensions.cs" />
     <Compile Include="Loading.cs" />
+    <Compile Include="Managers\ActionsManager.cs" />
     <Compile Include="Managers\ModifiersManager.cs" />
     <Compile Include="Managers\PresetsManager.cs" />
     <Compile Include="Mod.cs" />
@@ -111,6 +115,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

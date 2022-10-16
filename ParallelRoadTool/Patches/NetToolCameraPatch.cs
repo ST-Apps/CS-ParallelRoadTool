@@ -49,126 +49,120 @@ internal static class NetToolCameraPatch
             if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
                 return;
 
-            // Render only if we have at least two distinct points
-            if (startPoint.m_position == endPoint.m_position)
-                return;
+            ActionsManager.GenerateQueue(info, startPoint, middlePoint, endPoint);
+            ActionsManager.Render();
 
-            // Reset start direction because it feels like it's never right
-            startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
+//            // Iterate over selected network and render the overlay for each of them
+//            for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
+//            {
+//                var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
 
-            // Get NetTool instance
-            var netTool = ToolsModifierControl.GetTool<NetTool>();
+//                // Horizontal offset must be negated to appear on the correct side of the original segment if we're on left-handed drive
+//                var horizontalOffset = currentRoadInfos.HorizontalOffset * (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic ? 1 : -1);
+//                var verticalOffset = currentRoadInfos.VerticalOffset;
 
-            // Iterate over selected network and render the overlay for each of them
-            for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
-            {
-                var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
+//                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
+//                var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
 
-                // Horizontal offset must be negated to appear on the correct side of the original segment if we're on left-handed drive
-                var horizontalOffset = currentRoadInfos.HorizontalOffset * (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic ? 1 : -1);
-                var verticalOffset = currentRoadInfos.VerticalOffset;
+//                // If the user is using a vertical offset we try getting the relative elevated net info and use it
+//                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
+//                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
 
-                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
-                var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
+//                // Generate offset points for the current network
+//                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, i,
+//                                                              netTool.m_mode, out var currentStartPoint, out var currentMiddlePoint,
+//                                                              out var currentEndPoint);
 
-                // If the user is using a vertical offset we try getting the relative elevated net info and use it
-                if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
-                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+//#if DEBUG
 
-                // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, i,
-                                                              netTool.m_mode, out var currentStartPoint, out var currentMiddlePoint,
-                                                              out var currentEndPoint);
+//                // TODO: move this to a dedicated class maybe - todo when the actions system will be ready
+//                if (ModSettings.RenderDebugOverlay)
+//                {
+//                    // Middle points
+//                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.red, middlePoint.m_position, info.m_halfWidth, 1, 1800, true,
+//                                                                    true);
+//                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.blue, currentMiddlePoint.m_position, info.m_halfWidth, 1, 1800,
+//                                                                    true, true);
 
-#if DEBUG
+//                    // Middle directions
+//                    var middlePointSegment = new Segment3(middlePoint.m_position,
+//                                                          middlePoint.m_position + middlePoint.m_direction.RotateXZ(-45).normalized * 100);
+//                    var currentMiddlePointSegment = new Segment3(currentMiddlePoint.m_position,
+//                                                                 currentMiddlePoint.m_position +
+//                                                                 currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100);
+//                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.green, middlePointSegment, currentMiddlePointSegment,
+//                                                                     info.m_halfWidth, 1, 1, 1800, true, true);
 
-                // TODO: move this to a dedicated class maybe - todo when the actions system will be ready
-                if (ModSettings.RenderDebugOverlay)
-                {
-                    // Middle points
-                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.red, middlePoint.m_position, info.m_halfWidth, 1, 1800, true,
-                                                                    true);
-                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.blue, currentMiddlePoint.m_position, info.m_halfWidth, 1, 1800,
-                                                                    true, true);
+//                    // Middle intersections
+//                    var middlePointStartSegment = new Segment3(currentStartPoint.m_position,
+//                                                               currentStartPoint.m_position + currentStartPoint.m_direction.normalized * 1000);
+//                    var middlePointEndSegment = new Segment3(currentEndPoint.m_position,
+//                                                             currentEndPoint.m_position - currentEndPoint.m_direction.normalized * 1000);
+//                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.white, middlePointStartSegment, info.m_halfWidth, 1, 1, 1800,
+//                                                                     true, true);
+//                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.black, middlePointEndSegment, info.m_halfWidth, 1, 1, 1800,
+//                                                                     true, true);
+//                }
+//#endif
 
-                    // Middle directions
-                    var middlePointSegment = new Segment3(middlePoint.m_position,
-                                                          middlePoint.m_position + middlePoint.m_direction.RotateXZ(-45).normalized * 100);
-                    var currentMiddlePointSegment = new Segment3(currentMiddlePoint.m_position,
-                                                                 currentMiddlePoint.m_position +
-                                                                 currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100);
-                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.green, middlePointSegment, currentMiddlePointSegment,
-                                                                     info.m_halfWidth, 1, 1, 1800, true, true);
+//                #region Angle Compensation
 
-                    // Middle intersections
-                    var middlePointStartSegment = new Segment3(currentStartPoint.m_position,
-                                                               currentStartPoint.m_position + currentStartPoint.m_direction.normalized * 1000);
-                    var middlePointEndSegment = new Segment3(currentEndPoint.m_position,
-                                                             currentEndPoint.m_position - currentEndPoint.m_direction.normalized * 1000);
-                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.white, middlePointStartSegment, info.m_halfWidth, 1, 1, 1800,
-                                                                     true, true);
-                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.black, middlePointEndSegment, info.m_halfWidth, 1, 1, 1800,
-                                                                     true, true);
-                }
-#endif
+//                // TODO: move to controlpointutils - todo when the actions system will be ready
+//                // Check if we need to look for an intersection point to move our previously created ending point.
+//                // This is needed because certain angles will cause the segments to overlap.
+//                // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
+//                // IMPORTANT: this is meant for straight roads only!
+//                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight &&
+//                    Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint))
+//                {
+//                    // Skip for angle of 180° or 0
+//                    var angle = Vector3.Angle(-currentEndPoint.m_direction, previousEndPoint[i].m_direction);
+//                    if (Math.Abs(angle - 180f) > 0.1f && angle != 0f)
+//                    {
+//                        var intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
+//                                                                         currentEndPoint.m_position, currentEndPoint.m_direction, out var startLine,
+//                                                                         out var endLine);
 
-                #region Angle Compensation
+//                        if (intersectionPoint != Vector3.zero)
+//                        {
+//                            // Set our current point to the intersection point
+//                            currentStartPoint.m_position = intersectionPoint;
 
-                // TODO: move to controlpointutils - todo when the actions system will be ready
-                // Check if we need to look for an intersection point to move our previously created ending point.
-                // This is needed because certain angles will cause the segments to overlap.
-                // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
-                // IMPORTANT: this is meant for straight roads only!
-                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight &&
-                    Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint))
-                {
-                    // Skip for angle of 180° or 0
-                    var angle = Vector3.Angle(-currentEndPoint.m_direction, previousEndPoint[i].m_direction);
-                    if (Math.Abs(angle - 180f) > 0.1f && angle != 0f)
-                    {
-                        var intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
-                                                                         currentEndPoint.m_position, currentEndPoint.m_direction, out var startLine,
-                                                                         out var endLine);
+//                            // Create a segment between the previous ending point and the intersection
+//                            var intersectionSegment = new Segment3(previousEndPoint[i].m_position, intersectionPoint);
 
-                        if (intersectionPoint != Vector3.zero)
-                        {
-                            // Set our current point to the intersection point
-                            currentStartPoint.m_position = intersectionPoint;
+//                            // Render the helper line for the segment
+//                            RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, currentRoadInfos.Color, intersectionSegment,
+//                                                                             currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1, 1800, true, true);
+//                        }
 
-                            // Create a segment between the previous ending point and the intersection
-                            var intersectionSegment = new Segment3(previousEndPoint[i].m_position, intersectionPoint);
+//                    }
+//                }
 
-                            // Render the helper line for the segment
-                            RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, currentRoadInfos.Color, intersectionSegment,
-                                                                             currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1, 1800, true, true);
-                        }
+//                #endregion
 
-                    }
-                }
+//                // Check if current node can be created. If not change color to red.
+//                var currentColor = currentRoadInfos.Color;
+//                if (!ControlPointUtils.CanCreate(info, currentStartPoint, currentMiddlePoint, currentEndPoint, currentRoadInfos.IsReversed))
+//                    currentColor = Color.red;
 
-                #endregion
+//                // Render the overlay for current offset segment
+//                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint,
+//                                                  currentEndPoint);
 
-                // Check if current node can be created. If not change color to red.
-                var currentColor = currentRoadInfos.Color;
-                if (!ControlPointUtils.CanCreate(info, currentStartPoint, currentMiddlePoint, currentEndPoint, currentRoadInfos.IsReversed))
-                    currentColor = Color.red;
+//                // Save to buffer
+//                // TODO: move to controlpointutils - todo when the actions system will be ready
+//                Singleton<ParallelRoadToolManager>.instance.PushControlPoints(i, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
-                // Render the overlay for current offset segment
-                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint,
-                                                  currentEndPoint);
+//                // We draw arrows only for one-way networks, just as in game
+//                if (!selectedNetInfo.IsOneWayOnly()) continue;
 
-                // Save to buffer
-                // TODO: move to controlpointutils - todo when the actions system will be ready
-                Singleton<ParallelRoadToolManager>.instance.PushControlPoints(i, currentStartPoint, currentMiddlePoint, currentEndPoint);
+//                // Draw direction arrow by getting the tangent between starting and ending point
+//                var arrowControlPoint = ControlPointUtils.GenerateMiddlePoint(currentStartPoint, currentEndPoint);
+//                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position,
+//                                                          arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
+//            }
 
-                // We draw arrows only for one-way networks, just as in game
-                if (!selectedNetInfo.IsOneWayOnly()) continue;
-
-                // Draw direction arrow by getting the tangent between starting and ending point
-                var arrowControlPoint = ControlPointUtils.GenerateMiddlePoint(currentStartPoint, currentEndPoint);
-                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position,
-                                                          arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
-            }
         }
         catch (Exception e)
         {
