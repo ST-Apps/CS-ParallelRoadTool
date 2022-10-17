@@ -170,6 +170,7 @@ internal class UINetSelectionPopup : UIPanel
         else
         {
             var filteredData = new FastList<object>();
+            searchQuery = searchQuery.ToLower();
 
             // We iterate over the available items and populate a list with all the matching items
             foreach (var netObject in _netItems)
