@@ -10,6 +10,7 @@ using ColossalFramework;
 using CSUtil.Commons;
 using ICities;
 using Managers;
+using System.Collections.Generic;
 using UI.Settings;
 using UnityEngine;
 
@@ -18,6 +19,11 @@ using UnityEngine;
 /// </summary>
 public sealed class Loading : PatcherLoadingBase<UIOptionsPanel, PatcherBase>
 {
+    /// <summary>
+    ///     Gets a list of permitted loading modes.
+    /// </summary>
+    protected override List<AppMode> PermittedModes => new() { AppMode.Game, AppMode.MapEditor, AppMode.AssetEditor };
+
     public override void OnReleased()
     {
         Object.DestroyImmediate(Singleton<ParallelRoadToolManager>.instance);

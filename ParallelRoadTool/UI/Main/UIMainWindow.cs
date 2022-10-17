@@ -121,6 +121,7 @@ public class UIMainWindow : UIPanel
         // Main
         name = $"{Constants.ResourcePrefix}MainWindow";
         backgroundSprite = "UnlockingPanel2";
+        atlas = UITextures.InGameAtlas;
         size = new Vector2(512, 256);
         autoFitChildrenVertically = true;
         autoLayout = true;
