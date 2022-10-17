@@ -175,7 +175,7 @@ internal class UINetSetupPanel : UIPanel
         var reverseAtlas = UITextures.LoadSpriteAtlas("PRT-Reverse", new[] { "Reverse", "ReversePressed" });
         _reverseCheckbox = UICheckBoxes.AddIconToggle(_buttonsPanel, 0, 0, reverseAtlas.name, "ReversePressed", "Reverse",
                                                       backgroundSprite: "OptionBase",
-                                                      tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"), height: UIConstants.TinySize,
+                                                      tooltip: Translations.Translate("TOOLTIP_INVERT_DIRECTION_TOGGLE_BUTTON"), height: UIConstants.TinySize,
                                                       width: UIConstants.TinySize);
     }
 
