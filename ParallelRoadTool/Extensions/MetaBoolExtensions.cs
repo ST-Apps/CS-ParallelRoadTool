@@ -1,4 +1,9 @@
-﻿namespace ParallelRoadTool.Extensions;
+﻿// <copyright file="MetaBoolExtensions.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+namespace ParallelRoadTool.Extensions;
 
 public static class MetaBoolExtensions
 {
@@ -12,8 +17,8 @@ public static class MetaBoolExtensions
         metaBool = metaBool switch
         {
             SimulationMetaData.MetaBool.False => SimulationMetaData.MetaBool.True,
-            SimulationMetaData.MetaBool.True  => SimulationMetaData.MetaBool.False,
-            _                                 => SimulationMetaData.MetaBool.Undefined
+            SimulationMetaData.MetaBool.True => SimulationMetaData.MetaBool.False,
+            _ => SimulationMetaData.MetaBool.Undefined
         };
     }
 }

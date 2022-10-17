@@ -1,10 +1,15 @@
-﻿using System;
+﻿// <copyright file="Log.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+namespace CSUtil.Commons;
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using UnityEngine;
-
-namespace CSUtil.Commons;
 #if !DEBUG
 #if TRACE
 #error TRACE is defined outside of a DEBUG build, please remove
@@ -13,8 +18,6 @@ namespace CSUtil.Commons;
 
 public static class Log
 {
-    #region Fields
-
     private static readonly object LogLock = new();
 
     private static readonly string LogFilename = Path.Combine(Application.dataPath, Path.Combine("Logs", "ParallelRoadTtool.log"));
@@ -23,17 +26,28 @@ public static class Log
 
     private static string s_previousLine = string.Empty;
 
-    #endregion
-
     static Log()
     {
         try
         {
-            if (File.Exists(LogFilename)) File.Delete(LogFilename);
+            if (File.Exists(LogFilename))
+            {
+                File.Delete(LogFilename);
+            }
         }
         catch (Exception)
         {
         }
+    }
+
+    private enum LogLevel
+    {
+        Trace,
+        Debug,
+        Info,
+        Warning,
+        Error,
+        Exception
     }
 
     /// <summary>
@@ -69,7 +83,10 @@ public static class Log
     [Conditional("DEBUG")]
     public static void _DebugIf(bool cond, Func<string> s)
     {
-        if (cond) LogToFile(s(), LogLevel.Debug);
+        if (cond)
+        {
+            LogToFile(s(), LogLevel.Debug);
+        }
     }
 
     [Conditional("TRACE")]
@@ -103,7 +120,10 @@ public static class Log
     [Conditional("DEBUG")]
     public static void _DebugOnlyWarningIf(bool cond, Func<string> s)
     {
-        if (cond) LogToFile(s(), LogLevel.Warning);
+        if (cond)
+        {
+            LogToFile(s(), LogLevel.Warning);
+        }
     }
 
     public static void Warning(string s)
@@ -125,7 +145,10 @@ public static class Log
     /// <param name="s">The function which returns text to log</param>
     public static void WarningIf(bool cond, Func<string> s)
     {
-        if (cond) LogToFile(s(), LogLevel.Warning);
+        if (cond)
+        {
+            LogToFile(s(), LogLevel.Warning);
+        }
     }
 
     public static void Error(string s)
@@ -136,7 +159,7 @@ public static class Log
     public static void Exception(Exception e)
     {
         LogToFile($"{e.GetType().FullName} detected, message is: {e.Message}", LogLevel.Exception);
-        LogToFile(e.StackTrace,                                                LogLevel.Exception);
+        LogToFile(e.StackTrace, LogLevel.Exception);
     }
 
     public static void ErrorFormat(string format, params object[] args)
@@ -172,12 +195,14 @@ public static class Log
 
             using (var w = File.AppendText(LogFilename))
             {
-                var secs = Sw.ElapsedTicks     / Stopwatch.Frequency;
+                var secs = Sw.ElapsedTicks / Stopwatch.Frequency;
                 var fraction = Sw.ElapsedTicks % Stopwatch.Frequency;
                 var line = $"[{level}] " + $"{secs:n0}.{fraction:D7}: " + $"{log}";
 
                 if (log != s_previousLine)
+                {
                     w.WriteLine(line);
+                }
 
                 s_previousLine = log;
 
@@ -192,15 +217,5 @@ public static class Log
         {
             Monitor.Exit(LogLock);
         }
-    }
-
-    private enum LogLevel
-    {
-        Trace,
-        Debug,
-        Info,
-        Warning,
-        Error,
-        Exception
     }
 }

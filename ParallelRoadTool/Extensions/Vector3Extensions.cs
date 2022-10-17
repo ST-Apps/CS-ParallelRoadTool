@@ -1,8 +1,13 @@
-﻿using ColossalFramework;
-using ColossalFramework.Math;
-using UnityEngine;
+﻿// <copyright file="Vector3Extensions.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 namespace ParallelRoadTool.Extensions;
+
+using ColossalFramework;
+using ColossalFramework.Math;
+using UnityEngine;
 
 public static class Vector3Extensions
 {
@@ -27,7 +32,10 @@ public static class Vector3Extensions
     /// <returns></returns>
     public static Vector3 NormalizeWithOffset(this Vector3 vector, float offset)
     {
-        if (vector.magnitude <= 0) return vector;
+        if (vector.magnitude <= 0)
+        {
+            return vector;
+        }
 
         var offsetMagnitude = offset / vector.magnitude;
         return vector with { x = vector.x * offsetMagnitude, z = vector.z * offsetMagnitude };
@@ -43,7 +51,7 @@ public static class Vector3Extensions
     /// <returns></returns>
     public static bool AtPosition(this Vector3 position, NetInfo netInfo, out ushort nodeId, out ushort segmentId)
     {
-        nodeId    = 0;
+        nodeId = 0;
         segmentId = 0;
 
         var positionRay = Camera.main.ScreenPointToRay(Camera.main.WorldToScreenPoint(position));
@@ -55,7 +63,7 @@ public static class Vector3Extensions
 
         var startPoint = input.m_ray.origin;
         var normalizedDirection = input.m_ray.direction.normalized;
-        var endPoint = input.m_ray.origin + normalizedDirection * input.m_length;
+        var endPoint = input.m_ray.origin + (normalizedDirection * input.m_length);
         var ray = new Segment3(startPoint, endPoint);
         var output = new ToolBase.RaycastOutput();
 
@@ -63,13 +71,19 @@ public static class Vector3Extensions
                                                     input.m_netService2.m_service, input.m_netService.m_subService, input.m_netService2.m_subService,
                                                     input.m_netService.m_itemLayers, input.m_netService2.m_itemLayers, input.m_ignoreNodeFlags,
                                                     input.m_ignoreSegmentFlags, out _, out output.m_netNode, out output.m_netSegment))
+        {
             return false;
+        }
 
         if (output.m_netNode != 0)
+        {
             nodeId = output.m_netNode;
+        }
 
         if (output.m_netSegment != 0)
+        {
             segmentId = output.m_netSegment;
+        }
 
         return nodeId != 0 || segmentId != 0;
     }

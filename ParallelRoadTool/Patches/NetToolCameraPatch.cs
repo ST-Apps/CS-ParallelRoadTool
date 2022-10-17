@@ -1,26 +1,29 @@
-﻿using System;
+﻿// <copyright file="NetToolCameraPatch.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+namespace ParallelRoadTool.Patches;
+
+using System;
 using ColossalFramework;
 using ColossalFramework.Math;
 using CSUtil.Commons;
+using Extensions;
 using HarmonyLib;
-using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Managers;
-using ParallelRoadTool.Models;
-using ParallelRoadTool.Settings;
-using ParallelRoadTool.UI;
-using ParallelRoadTool.Utils;
-using ParallelRoadTool.Wrappers;
+using Managers;
+using Models;
+using Settings;
 using UnityEngine;
-using VectorUtils = ParallelRoadTool.Utils.VectorUtils;
+using Utils;
+using Wrappers;
+using VectorUtils = Utils.VectorUtils;
 
 // ReSharper disable ClassNeverInstantiated.Local
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable InconsistentNaming
-
-namespace ParallelRoadTool.Patches;
-
 [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
               typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
 internal static class NetToolCameraPatch
@@ -37,21 +40,25 @@ internal static class NetToolCameraPatch
     /// <param name="middlePoint"></param>
     /// <param name="endPoint"></param>
     private static void Prefix(RenderManager.CameraInfo cameraInfo,
-                               NetInfo                  info,
-                               Color                    color,
-                               NetTool.ControlPoint     startPoint,
-                               NetTool.ControlPoint     middlePoint,
-                               NetTool.ControlPoint     endPoint)
+                               NetInfo info,
+                               Color color,
+                               NetTool.ControlPoint startPoint,
+                               NetTool.ControlPoint middlePoint,
+                               NetTool.ControlPoint endPoint)
     {
         try
         {
             // We only run if the mod is set as Active
             if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
+            {
                 return;
+            }
 
             // Render only if we have at least two distinct points
             if (startPoint.m_position == endPoint.m_position)
+            {
                 return;
+            }
 
             // Reset start direction because it feels like it's never right
             startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
@@ -68,12 +75,14 @@ internal static class NetToolCameraPatch
                 var horizontalOffset = currentRoadInfos.HorizontalOffset * (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic ? 1 : -1);
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
-                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
+                // If the user didn't select a NetInfo we'll use the one he's using for the main road
                 var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
 
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
-                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+                {
+                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).Elevated ?? selectedNetInfo;
+                }
 
                 // Generate offset points for the current network
                 ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, i,
@@ -93,18 +102,18 @@ internal static class NetToolCameraPatch
 
                     // Middle directions
                     var middlePointSegment = new Segment3(middlePoint.m_position,
-                                                          middlePoint.m_position + middlePoint.m_direction.RotateXZ(-45).normalized * 100);
+                                                          middlePoint.m_position + (middlePoint.m_direction.RotateXZ(-45).normalized * 100));
                     var currentMiddlePointSegment = new Segment3(currentMiddlePoint.m_position,
                                                                  currentMiddlePoint.m_position +
-                                                                 currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100);
+                                                                 (currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100));
                     RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.green, middlePointSegment, currentMiddlePointSegment,
                                                                      info.m_halfWidth, 1, 1, 1800, true, true);
 
                     // Middle intersections
                     var middlePointStartSegment = new Segment3(currentStartPoint.m_position,
-                                                               currentStartPoint.m_position + currentStartPoint.m_direction.normalized * 1000);
+                                                               currentStartPoint.m_position + (currentStartPoint.m_direction.normalized * 1000));
                     var middlePointEndSegment = new Segment3(currentEndPoint.m_position,
-                                                             currentEndPoint.m_position - currentEndPoint.m_direction.normalized * 1000);
+                                                             currentEndPoint.m_position - (currentEndPoint.m_direction.normalized * 1000));
                     RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.white, middlePointStartSegment, info.m_halfWidth, 1, 1, 1800,
                                                                      true, true);
                     RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.black, middlePointEndSegment, info.m_halfWidth, 1, 1, 1800,
@@ -142,7 +151,6 @@ internal static class NetToolCameraPatch
                             RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, currentRoadInfos.Color, intersectionSegment,
                                                                              currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1, 1800, true, true);
                         }
-
                     }
                 }
 
@@ -151,7 +159,9 @@ internal static class NetToolCameraPatch
                 // Check if current node can be created. If not change color to red.
                 var currentColor = currentRoadInfos.Color;
                 if (!ControlPointUtils.CanCreate(info, currentStartPoint, currentMiddlePoint, currentEndPoint, currentRoadInfos.IsReversed))
+                {
                     currentColor = Color.red;
+                }
 
                 // Render the overlay for current offset segment
                 NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint,
@@ -162,7 +172,10 @@ internal static class NetToolCameraPatch
                 Singleton<ParallelRoadToolManager>.instance.PushControlPoints(i, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
                 // We draw arrows only for one-way networks, just as in game
-                if (!selectedNetInfo.IsOneWayOnly()) continue;
+                if (!selectedNetInfo.IsOneWayOnly())
+                {
+                    continue;
+                }
 
                 // Draw direction arrow by getting the tangent between starting and ending point
                 var arrowControlPoint = ControlPointUtils.GenerateMiddlePoint(currentStartPoint, currentEndPoint);
@@ -189,13 +202,13 @@ internal static class NetToolCameraPatch
         [HarmonyReversePatch]
         [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
                       typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
-        public static void RenderOverlay(object                   instance,
+        public static void RenderOverlay(object instance,
                                          RenderManager.CameraInfo cameraInfo,
-                                         NetInfo                  info,
-                                         Color                    color,
-                                         NetTool.ControlPoint     startPoint,
-                                         NetTool.ControlPoint     middlePoint,
-                                         NetTool.ControlPoint     endPoint)
+                                         NetInfo info,
+                                         Color color,
+                                         NetTool.ControlPoint startPoint,
+                                         NetTool.ControlPoint middlePoint,
+                                         NetTool.ControlPoint endPoint)
         {
             // No implementation is required as this will call the original method
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
@@ -204,12 +217,12 @@ internal static class NetToolCameraPatch
         [HarmonyReversePatch]
         [HarmonyPatch(typeof(NetTool), "RenderRoadAccessArrow", typeof(RenderManager.CameraInfo), typeof(Color), typeof(Vector3), typeof(Vector3),
                       typeof(bool))]
-        public static void RenderRoadAccessArrow(object                   instance,
+        public static void RenderRoadAccessArrow(object instance,
                                                  RenderManager.CameraInfo cameraInfo,
-                                                 Color                    color,
-                                                 Vector3                  position,
-                                                 Vector3                  xDir,
-                                                 bool                     flipped)
+                                                 Color color,
+                                                 Vector3 position,
+                                                 Vector3 xDir,
+                                                 bool flipped)
         {
             // No implementation is required as this will call the original method
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");

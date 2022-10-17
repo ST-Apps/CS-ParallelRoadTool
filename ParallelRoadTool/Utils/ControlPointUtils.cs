@@ -1,12 +1,16 @@
-﻿using ColossalFramework;
-using ColossalFramework.Math;
-using CSUtil.Commons;
-using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Managers;
-using ParallelRoadTool.UI;
-using UnityEngine;
+﻿// <copyright file="ControlPointUtils.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 namespace ParallelRoadTool.Utils;
+
+using ColossalFramework;
+using ColossalFramework.Math;
+using CSUtil.Commons;
+using Extensions;
+using Managers;
+using UnityEngine;
 
 internal static class ControlPointUtils
 {
@@ -24,14 +28,14 @@ internal static class ControlPointUtils
     /// <param name="currentStartPoint"></param>
     /// <param name="currentMiddlePoint"></param>
     /// <param name="currentEndPoint"></param>
-    public static void GenerateOffsetControlPoints(NetTool.ControlPoint     startPoint,
-                                                   NetTool.ControlPoint     middlePoint,
-                                                   NetTool.ControlPoint     endPoint,
-                                                   float                    horizontalOffset,
-                                                   float                    verticalOffset,
-                                                   NetInfo                  selectedNetInfo,
-                                                   int                      networkIndex,
-                                                   NetTool.Mode             netMode,
+    public static void GenerateOffsetControlPoints(NetTool.ControlPoint startPoint,
+                                                   NetTool.ControlPoint middlePoint,
+                                                   NetTool.ControlPoint endPoint,
+                                                   float horizontalOffset,
+                                                   float verticalOffset,
+                                                   NetInfo selectedNetInfo,
+                                                   int networkIndex,
+                                                   NetTool.Mode netMode,
                                                    out NetTool.ControlPoint currentStartPoint,
                                                    out NetTool.ControlPoint currentMiddlePoint,
                                                    out NetTool.ControlPoint currentEndPoint)
@@ -50,8 +54,8 @@ internal static class ControlPointUtils
         var endDirection = endPoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
 
         // Move start and end point to the correct direction
-        var currentStartPosition = startPoint.m_position + startDirection + Vector3.up * verticalOffset;
-        var currentEndPosition = endPoint.m_position     + endDirection   + Vector3.up * verticalOffset;
+        var currentStartPosition = startPoint.m_position + startDirection + (Vector3.up * verticalOffset);
+        var currentEndPosition = endPoint.m_position + endDirection + (Vector3.up * verticalOffset);
 
         // Finally set offset control points by copying everything but the position
         currentStartPoint = startPoint with
@@ -72,7 +76,7 @@ internal static class ControlPointUtils
             case NetTool.Mode.Upgrade:
             {
                 var middleDirection = middlePoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
-                var currentMiddlePosition = middlePoint.m_position + middleDirection + Vector3.up * verticalOffset;
+                var currentMiddlePosition = middlePoint.m_position + middleDirection + (Vector3.up * verticalOffset);
 
                 currentMiddlePoint = middlePoint with
                 {
@@ -80,6 +84,7 @@ internal static class ControlPointUtils
                 };
                 break;
             }
+
             case NetTool.Mode.Curved:
             case NetTool.Mode.Freeform:
             default:
@@ -105,10 +110,14 @@ internal static class ControlPointUtils
         if (Singleton<ParallelRoadToolManager>.instance.IsSnappingEnabled && netMode != NetTool.Mode.Upgrade)
         {
             if (currentStartPoint.m_position.AtPosition(selectedNetInfo, out currentStartPoint.m_node, out currentStartPoint.m_segment))
+            {
                 Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentStartPoint.m_position} with nodeId={currentStartPoint.m_node} and segmentId={currentStartPoint.m_segment} (start)");
+            }
 
             if (currentEndPoint.m_position.AtPosition(selectedNetInfo, out currentEndPoint.m_node, out currentEndPoint.m_segment))
+            {
                 Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(GenerateOffsetControlPoints)}] Found a node at {currentEndPoint.m_position} with nodeId={currentEndPoint.m_node} and segmentId={currentEndPoint.m_segment} (end)");
+            }
         }
 
         // If nodes are still 0 we can check if we have some matching the ones in our buffer
@@ -147,7 +156,7 @@ internal static class ControlPointUtils
 
         // Direction however will be oriented towards the middle point, so we need to rotate it by -90°
         direction.y = 0;
-        direction   = Quaternion.Euler(0, -90, 0) * direction.normalized;
+        direction = Quaternion.Euler(0, -90, 0) * direction.normalized;
 
         return new NetTool.ControlPoint { m_direction = direction, m_position = position };
     }
@@ -162,11 +171,11 @@ internal static class ControlPointUtils
     /// <param name="currentEndPoint"></param>
     /// <param name="isReversed"></param>
     /// <returns></returns>
-    public static bool CanCreate(NetInfo              netInfo,
+    public static bool CanCreate(NetInfo netInfo,
                                  NetTool.ControlPoint currentStartPoint,
                                  NetTool.ControlPoint currentMiddlePoint,
                                  NetTool.ControlPoint currentEndPoint,
-                                 bool                 isReversed)
+                                 bool isReversed)
     {
         return NetTool.CreateNode(netInfo, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
                                   false, true, true, false, isReversed, 0, out _, out _, out _, out _) == ToolBase.ToolErrors.None;

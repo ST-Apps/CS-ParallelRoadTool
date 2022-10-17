@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\MetaBoolExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="Managers\ModifiersManager.cs" />
     <Compile Include="Managers\PresetsManager.cs" />
@@ -109,7 +110,15 @@
     <Compile Include="UI\Settings\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,53 +1,48 @@
-﻿using AlgernonCommons.UI;
+﻿// <copyright file="UIWindow.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
+
+namespace ParallelRoadTool.UI.Shared;
+
+using AlgernonCommons.UI;
 using ColossalFramework.UI;
-using ParallelRoadTool.UI.Utils;
 using UnityEngine;
+using Utils;
 
-namespace ParallelRoadTool.UI.Shared
+/// <summary>
+///     Base class for a generic closable and draggable window.
+/// </summary>
+public abstract class UIWindow : StandalonePanel
 {
-    /// <summary>
-    ///     Base class for a generic closable and draggable window.
-    /// </summary>
-    public abstract class UIWindow : StandalonePanel
+    protected UIPanel Container;
+
+    protected UIWindow(string iconAtlasName)
     {
-        #region Unity
+        var spriteAtlas = UITextures.LoadSingleSpriteAtlas(iconAtlasName);
+        SetIcon(spriteAtlas, "normal");
 
-        #region Components
+        // Main/ContainerPanel
+        Container = AddUIComponent<UIPanel>();
+        Container.name = nameof(Container);
+        Container.backgroundSprite = "GenericPanel";
+        Container.autoLayoutDirection = LayoutDirection.Vertical;
+        Container.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
+        Container.autoLayoutPadding.bottom = 0;
+        Container.autoLayout = true;
+        Container.relativePosition = new Vector2(UIConstants.Padding, spriteAtlas["normal"].height + UIConstants.Padding);
+        Container.FitWidth(this, UIConstants.Padding);
+        Container.height = PanelHeight - spriteAtlas["normal"].height - (2 * UIConstants.Padding);
+    }
 
-        protected UIPanel Container;
-
-        #endregion
-
-        #region Lifecycle
-
-        protected UIWindow(string iconAtlasName)
+    protected override void OnKeyDown(UIKeyEventParameter p)
+    {
+        if (!Input.GetKey(KeyCode.Escape))
         {
-            var spriteAtlas = UITextures.LoadSingleSpriteAtlas(iconAtlasName);
-            SetIcon(spriteAtlas, "normal");
-
-            // Main/ContainerPanel
-            Container = AddUIComponent<UIPanel>();
-            Container.name = nameof(Container);
-            Container.backgroundSprite = "GenericPanel";
-            Container.autoLayoutDirection = LayoutDirection.Vertical;
-            Container.autoLayoutPadding = UIHelpers.RectOffsetFromPadding(UIConstants.Padding);
-            Container.autoLayoutPadding.bottom = 0;
-            Container.autoLayout = true;
-            Container.relativePosition = new Vector2(UIConstants.Padding, spriteAtlas["normal"].height + UIConstants.Padding);
-            Container.FitWidth(this, UIConstants.Padding);
-            Container.height = PanelHeight - spriteAtlas["normal"].height - 2 * UIConstants.Padding;
+            return;
         }
 
-        protected override void OnKeyDown(UIKeyEventParameter p)
-        {
-            if (!Input.GetKey(KeyCode.Escape)) return;
-
-            p.Use();
-            Close();
-        }
-
-        #endregion
-
-        #endregion
+        p.Use();
+        Close();
     }
 }
