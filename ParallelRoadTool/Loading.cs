@@ -22,7 +22,7 @@ public sealed class Loading : PatcherLoadingBase<UIOptionsPanel, PatcherBase>
     /// <summary>
     ///     Gets a list of permitted loading modes.
     /// </summary>
-    protected override List<AppMode> PermittedModes => new() { AppMode.Game, AppMode.MapEditor, AppMode.AssetEditor };
+    protected override List<AppMode> PermittedModes => new () { AppMode.Game, AppMode.MapEditor, AppMode.AssetEditor };
 
     public override void OnReleased()
     {

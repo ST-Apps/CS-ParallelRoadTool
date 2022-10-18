@@ -18,7 +18,7 @@ using UnityEngine;
 
 public static class Log
 {
-    private static readonly object LogLock = new();
+    private static readonly object LogLock = new ();
 
     private static readonly string LogFilename = Path.Combine(Application.dataPath, Path.Combine("Logs", "ParallelRoadTtool.log"));
 

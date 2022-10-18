@@ -10,6 +10,7 @@ using ColossalFramework.Math;
 using CSUtil.Commons;
 using Extensions;
 using Managers;
+using Patches;
 using UnityEngine;
 
 internal static class ControlPointUtils
@@ -28,17 +29,18 @@ internal static class ControlPointUtils
     /// <param name="currentStartPoint"></param>
     /// <param name="currentMiddlePoint"></param>
     /// <param name="currentEndPoint"></param>
-    public static void GenerateOffsetControlPoints(NetTool.ControlPoint startPoint,
-                                                   NetTool.ControlPoint middlePoint,
-                                                   NetTool.ControlPoint endPoint,
-                                                   float horizontalOffset,
-                                                   float verticalOffset,
-                                                   NetInfo selectedNetInfo,
-                                                   int networkIndex,
-                                                   NetTool.Mode netMode,
-                                                   out NetTool.ControlPoint currentStartPoint,
-                                                   out NetTool.ControlPoint currentMiddlePoint,
-                                                   out NetTool.ControlPoint currentEndPoint)
+    public static void GenerateOffsetControlPoints(
+        NetTool.ControlPoint startPoint,
+        NetTool.ControlPoint middlePoint,
+        NetTool.ControlPoint endPoint,
+        float horizontalOffset,
+        float verticalOffset,
+        NetInfo selectedNetInfo,
+        int networkIndex,
+        NetTool.Mode netMode,
+        out NetTool.ControlPoint currentStartPoint,
+        out NetTool.ControlPoint currentMiddlePoint,
+        out NetTool.ControlPoint currentEndPoint)
     {
         // If ALT is pressed we switch the horizontal offset.
         // This is useful to upgrade curved roads when they appear on the wrong side.
@@ -91,8 +93,13 @@ internal static class ControlPointUtils
             {
                 // If not on straight mode we compute the middle point by getting the intersection between startPoint and endPoint
                 // Both points will be projected in the respective directions to find the intersection
-                var currentMiddlePosition = VectorUtils.Intersection(currentStartPosition, startPoint.m_direction, currentEndPosition,
-                                                                     endPoint.m_direction, out _, out _);
+                var currentMiddlePosition = VectorUtils.Intersection(
+                                                                     currentStartPosition,
+                                                                     startPoint.m_direction,
+                                                                     currentEndPosition,
+                                                                     endPoint.m_direction,
+                                                                     out _,
+                                                                     out _);
 
                 // Finally set the point
                 currentMiddlePoint = middlePoint with
@@ -177,7 +184,7 @@ internal static class ControlPointUtils
                                  NetTool.ControlPoint currentEndPoint,
                                  bool isReversed)
     {
-        return NetTool.CreateNode(netInfo, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
-                                  false, true, true, false, isReversed, 0, out _, out _, out _, out _) == ToolBase.ToolErrors.None;
+        return NetToolReversePatch.CreateNode(netInfo, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
+                                              false, true, true, false, isReversed, 0, out _, out _, out _, out _) == ToolBase.ToolErrors.None;
     }
 }

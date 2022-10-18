@@ -24,27 +24,27 @@ public class ModSettings : SettingsXMLBase
     /// <summary>
     ///     Tool toggle key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyToggleTool = new(KeyCode.P, true, false, false);
+    [XmlIgnore] public static readonly Keybinding KeyToggleTool = new (KeyCode.P, true, false, false);
 
     /// <summary>
     ///     Increase horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyIncreaseHorizontalOffset = new(KeyCode.Equals, true, false, false);
+    [XmlIgnore] public static readonly Keybinding KeyIncreaseHorizontalOffset = new (KeyCode.Equals, true, false, false);
 
     /// <summary>
     ///     Decrease horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyDecreaseHorizontalOffset = new(KeyCode.Minus, true, false, false);
+    [XmlIgnore] public static readonly Keybinding KeyDecreaseHorizontalOffset = new (KeyCode.Minus, true, false, false);
 
     /// <summary>
     ///     Increase horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyIncreaseVerticalOffset = new(KeyCode.Equals, true, true, false);
+    [XmlIgnore] public static readonly Keybinding KeyIncreaseVerticalOffset = new (KeyCode.Equals, true, true, false);
 
     /// <summary>
     ///     Decrease horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyDecreaseVerticalOffset = new(KeyCode.Minus, true, true, false);
+    [XmlIgnore] public static readonly Keybinding KeyDecreaseVerticalOffset = new (KeyCode.Minus, true, true, false);
 
 #if DEBUG
     /// <summary>

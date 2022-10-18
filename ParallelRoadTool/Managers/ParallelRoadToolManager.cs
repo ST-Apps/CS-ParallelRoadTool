@@ -34,13 +34,13 @@ public class ParallelRoadToolManager : MonoBehaviour
     ///     Buffer where all the <see cref="NetTool.ControlPoint" /> generated during the overlay are stored.
     ///     These points will be retrieved just before network creation so that we don't have to recompute them.
     /// </summary>
-    private readonly List<NetTool.ControlPoint[]> _controlPointsBuffer = new();
+    private readonly List<NetTool.ControlPoint[]> _controlPointsBuffer = new ();
 
     /// <summary>
     ///     Buffer where nodes metadata will be stored while building.
     ///     This will map any node created with this mod with their corresponding offset one.
     /// </summary>
-    private readonly Dictionary<ushort, NetTool.ControlPoint[]> _nodesBuffer = new();
+    private readonly Dictionary<ushort, NetTool.ControlPoint[]> _nodesBuffer = new ();
 
     /// <summary>
     ///     Currently selected <see cref="NetInfo" /> using game's <see cref="NetTool" />.
@@ -61,7 +61,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     ///     <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
     ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
     /// </summary>
-    public List<NetInfoItem> SelectedNetworkTypes { get; } = new();
+    public List<NetInfoItem> SelectedNetworkTypes { get; } = new ();
 
     /// <summary>
     ///     <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
@@ -121,10 +121,10 @@ public class ParallelRoadToolManager : MonoBehaviour
 
             // Initialize support data
             SelectedNetworkTypes.Clear();
-            _controlPointsBuffer.Clear();
-            _nodesBuffer.Clear();
             IsSnappingEnabled = false;
             IsLeftHandTraffic = Singleton<SimulationManager>.instance.m_metaData.m_invertTraffic == SimulationMetaData.MetaBool.True;
+            _controlPointsBuffer.Clear();
+            _nodesBuffer.Clear();
 
             // Load available networks
             LoadNetworks();
@@ -191,11 +191,11 @@ public class ParallelRoadToolManager : MonoBehaviour
             // Reset data structures
             AvailableRoadTypes.Clear();
             SelectedNetworkTypes.Clear();
-            _controlPointsBuffer.Clear();
-            _nodesBuffer.Clear();
             IsSnappingEnabled = false;
             IsLeftHandTraffic = false;
             _autoSaveLoaded = false;
+            _controlPointsBuffer.Clear();
+            _nodesBuffer.Clear();
 
             // Clean all the UI components
             UIController.Cleanup();
@@ -217,6 +217,8 @@ public class ParallelRoadToolManager : MonoBehaviour
     ///     Flips the status for <see cref="ModStatuses" /> Active flag, effectively activating/disactivating the mod.
     ///     This change propagates to <see cref="UIController" /> to update the UI accordingly.
     /// </summary>
+    /// <param name="force"></param>
+    /// <param name="value"></param>
     public void ToggleModActiveStatus(bool force = false, bool value = false)
     {
         if (!force)
@@ -327,10 +329,11 @@ public class ParallelRoadToolManager : MonoBehaviour
     /// <param name="startPoint"></param>
     /// <param name="middlePoint"></param>
     /// <param name="endPoint"></param>
-    public void PullControlPoints(int index,
-                                  out NetTool.ControlPoint startPoint,
-                                  out NetTool.ControlPoint middlePoint,
-                                  out NetTool.ControlPoint endPoint)
+    public void PullControlPoints(
+        int index,
+        out NetTool.ControlPoint startPoint,
+        out NetTool.ControlPoint middlePoint,
+        out NetTool.ControlPoint endPoint)
     {
         startPoint = _controlPointsBuffer[index][0];
         middlePoint = _controlPointsBuffer[index][1];
@@ -500,7 +503,7 @@ public class ParallelRoadToolManager : MonoBehaviour
             {
                 HorizontalOffset = SelectedNetworkTypes[value.ItemIndex].HorizontalOffset,
                 VerticalOffset = SelectedNetworkTypes[value.ItemIndex].VerticalOffset,
-                IsReversed = SelectedNetworkTypes[value.ItemIndex].IsReversed
+                IsReversed = SelectedNetworkTypes[value.ItemIndex].IsReversed,
             };
         }
         else

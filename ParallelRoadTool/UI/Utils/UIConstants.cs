@@ -66,23 +66,23 @@ internal static class UIConstants
     /// <summary>
     ///     Fixed size for a tiny <see cref="NetInfo" /> thumbnail
     /// </summary>
-    internal static readonly Vector2 ThumbnailTinySize = new(TinySize, TinySize);
+    internal static readonly Vector2 ThumbnailTinySize = new (TinySize, TinySize);
 
     /// <summary>
     ///     Fixed size for a large <see cref="NetInfo" /> thumbnail
     /// </summary>
-    internal static readonly Vector2 ThumbnailLargeSize = new(LargeSize, LargeSize);
+    internal static readonly Vector2 ThumbnailLargeSize = new (LargeSize, LargeSize);
 
     /// <summary>
     ///     Fixed size for a generic <see cref="UINetInfoPanel" />
     /// </summary>
-    internal static readonly Vector2 NetInfoPanelLargeSize = new(NetInfoPanelLargeWidth, NetInfoPanelLargeHeight);
+    internal static readonly Vector2 NetInfoPanelLargeSize = new (NetInfoPanelLargeWidth, NetInfoPanelLargeHeight);
 
     /// <summary>
     ///     Fixed size for a generic <see cref="UINetInfoPanel" />
     /// </summary>
-    internal static readonly Vector2 NetInfoPanelTinySize = new(NetInfoPanelTinyWidth, NetInfoPanelTinyHeight);
+    internal static readonly Vector2 NetInfoPanelTinySize = new (NetInfoPanelTinyWidth, NetInfoPanelTinyHeight);
 
     // Taken from vanilla road building's overlay color
-    internal static readonly Color ReadOnlyColor = new(0, 0.710f, 1, 0.5f);
+    internal static readonly Color ReadOnlyColor = new (0, 0.710f, 1, 0.5f);
 }

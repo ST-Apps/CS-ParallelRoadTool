@@ -19,7 +19,7 @@ internal static class WhatsNewMessageListing
     internal static WhatsNewMessage[] Messages =>
         new WhatsNewMessage[]
         {
-            new()
+            new ()
             {
                 Version = new Version("3.0"),
                 MessagesAreKeys = true,

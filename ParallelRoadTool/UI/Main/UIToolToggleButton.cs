@@ -20,9 +20,9 @@ using Utils;
 /// </summary>
 public class UIToolToggleButton : UIRightDragHandle
 {
-    private static readonly SavedInt SavedToggleX = new("toggleX", Constants.SettingsFileName, -1000, true);
+    private static readonly SavedInt SavedToggleX = new ("toggleX", Constants.SettingsFileName, -1000, true);
 
-    private static readonly SavedInt SavedToggleY = new("toggleY", Constants.SettingsFileName, -1000, true);
+    private static readonly SavedInt SavedToggleY = new ("toggleY", Constants.SettingsFileName, -1000, true);
 
     private readonly UICheckBox _toggleCheckBox;
 

@@ -15,7 +15,7 @@ using Utils;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class UINetListPanel : UIPanel
 {
-    private static readonly object Lock = new();
+    private static readonly object Lock = new ();
 
     public event PropertyChangedEventHandler<int> DeleteNetworkButtonEventClicked;
 

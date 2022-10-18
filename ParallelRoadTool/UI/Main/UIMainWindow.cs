@@ -28,13 +28,13 @@ public class UIMainWindow : UIPanel
     ///     Saved X position for the current components. Defaults at -1000 and it's saved in
     ///     <see cref="Constants.SettingsFileName" />
     /// </summary>
-    private static readonly SavedInt SavedWindowX = new("windowX", Constants.SettingsFileName, -1000, true);
+    private static readonly SavedInt SavedWindowX = new ("windowX", Constants.SettingsFileName, -1000, true);
 
     /// <summary>
     ///     Saved Y position for the current components. Defaults at -1000 and it's saved in
     ///     <see cref="Constants.SettingsFileName" />
     /// </summary>
-    private static readonly SavedInt SavedWindowY = new("windowY", Constants.SettingsFileName, -1000, true);
+    private static readonly SavedInt SavedWindowY = new ("windowY", Constants.SettingsFileName, -1000, true);
 
     private UIButton _closeButton;
     private UIDragHandle _dragHandle;

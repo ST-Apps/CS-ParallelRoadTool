@@ -10,6 +10,7 @@ using AlgernonCommons.Notifications;
 using AlgernonCommons.Patching;
 using AlgernonCommons.Translation;
 using ColossalFramework.UI;
+using HarmonyLib;
 using ICities;
 using Settings;
 using UI.Settings;
@@ -73,6 +74,7 @@ public sealed class Mod : PatcherMod<UIOptionsPanel, PatcherBase>, IUserMod
     /// </summary>
     public override void OnEnabled()
     {
+        Harmony.DEBUG = true;
         // Disable mod if version isn't compatible.
         if (!BuildConfig.applicationVersion.StartsWith(CompatibleVersion))
         {

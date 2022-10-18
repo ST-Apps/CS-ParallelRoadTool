@@ -22,7 +22,7 @@ internal class UINetInfoButton : UIPanel
     /// <summary>
     ///     Used to prevent concurrent executions on <see cref="ToggleButtonOnEventClicked" />.
     /// </summary>
-    private static readonly object Lock = new();
+    private static readonly object Lock = new ();
 
     private UINetInfoPanel _netInfoPanel;
     private UIButton _toggleButton;
