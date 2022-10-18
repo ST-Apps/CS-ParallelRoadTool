@@ -132,26 +132,21 @@ internal static class NetToolCameraPatch
                 if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight &&
                     Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint))
                 {
-                    // Skip for angle of 180° or 0
-                    var angle = Vector3.Angle(-currentEndPoint.m_direction, previousEndPoint[i].m_direction);
-                    if (Math.Abs(angle - 180f) > 0.1f && angle != 0f)
+                    var intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
+                                                                     currentEndPoint.m_position, currentEndPoint.m_direction, out var startLine,
+                                                                     out var endLine);
+
+                    if (intersectionPoint != Vector3.zero)
                     {
-                        var intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
-                                                                         currentEndPoint.m_position, currentEndPoint.m_direction, out var startLine,
-                                                                         out var endLine);
+                        // Set our current point to the intersection point
+                        currentStartPoint.m_position = intersectionPoint;
 
-                        if (intersectionPoint != Vector3.zero)
-                        {
-                            // Set our current point to the intersection point
-                            currentStartPoint.m_position = intersectionPoint;
+                        // Create a segment between the previous ending point and the intersection
+                        var intersectionSegment = new Segment3(previousEndPoint[i].m_position, intersectionPoint);
 
-                            // Create a segment between the previous ending point and the intersection
-                            var intersectionSegment = new Segment3(previousEndPoint[i].m_position, intersectionPoint);
-
-                            // Render the helper line for the segment
-                            RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, currentRoadInfos.Color, intersectionSegment,
-                                                                             currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1, 1800, true, true);
-                        }
+                        // Render the helper line for the segment
+                        RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, currentRoadInfos.Color, intersectionSegment,
+                                                                         currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1, 1800, true, true);
                     }
                 }
 
