@@ -39,12 +39,13 @@ internal static class NetToolCameraPatch
     /// <param name="startPoint"></param>
     /// <param name="middlePoint"></param>
     /// <param name="endPoint"></param>
-    private static void Prefix(RenderManager.CameraInfo cameraInfo,
-                               NetInfo info,
-                               Color color,
-                               NetTool.ControlPoint startPoint,
-                               NetTool.ControlPoint middlePoint,
-                               NetTool.ControlPoint endPoint)
+    private static void Postfix(
+        RenderManager.CameraInfo cameraInfo,
+        NetInfo info,
+        Color color,
+        NetTool.ControlPoint startPoint,
+        NetTool.ControlPoint middlePoint,
+        NetTool.ControlPoint endPoint)
     {
         try
         {
@@ -164,8 +165,7 @@ internal static class NetToolCameraPatch
                 }
 
                 // Render the overlay for current offset segment
-                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint,
-                                                  currentEndPoint);
+                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
                 // Save to buffer
                 // TODO: move to controlpointutils - todo when the actions system will be ready
@@ -179,14 +179,13 @@ internal static class NetToolCameraPatch
 
                 // Draw direction arrow by getting the tangent between starting and ending point
                 var arrowControlPoint = ControlPointUtils.GenerateMiddlePoint(currentStartPoint, currentEndPoint);
-                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position,
-                                                          arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
+                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position, arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
             }
         }
         catch (Exception e)
         {
             // Log the exception
-            Log._DebugOnlyError($"[{nameof(NetToolCameraPatch)}.{nameof(Prefix)}] RenderOverlay failed.");
+            Log._DebugOnlyError($"[{nameof(NetToolCameraPatch)}.{nameof(Postfix)}] RenderOverlay failed.");
             Log.Exception(e);
         }
     }

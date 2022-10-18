@@ -6,6 +6,7 @@
 namespace ParallelRoadTool.Patches;
 
 using System;
+using System.Reflection;
 using ColossalFramework;
 using CSUtil.Commons;
 using Extensions;
@@ -13,6 +14,7 @@ using HarmonyLib;
 using Managers;
 using Models;
 using UnityEngine;
+using Utils;
 using Wrappers;
 using static ToolBase;
 
@@ -71,17 +73,23 @@ internal class NetToolNodePatch
             for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
             {
                 // Retrieve control points from buffer
-                Singleton<ParallelRoadToolManager>.instance.PullControlPoints(i, out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint);
+                Singleton<ParallelRoadToolManager>.instance.PullControlPoints(i, out var currentStartPoint, out _, out _);
 
                 // The correct position with angle compensation on is computed during overlay phase, so we just move the starting node because it will contain the correct position.
                 // IMPORTANT: this is meant for straight roads only!
-                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled &&
-                    netTool.m_mode == NetTool.Mode.Straight
-                    && currentStartPoint.m_node != 0)
+                if (!Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled || netTool.m_mode != NetTool.Mode.Straight ||
+                    currentStartPoint.m_node == 0)
                 {
-                    Log._Debug($">>>>> MOVING NODE WITH ID {currentStartPoint.m_node} to {currentStartPoint.m_position}");
-                    NetManager.instance.MoveNode(currentStartPoint.m_node, currentStartPoint.m_position);
+                    continue;
                 }
+
+                // HACK - After moving to this patch from CreateNodeImpl, angle compensation started to change Y position for nodes and this is an unintended behavior.
+                // HACK - For this reason we manually set the Y position back by getting it from the current position before moving the node.
+                var currentNode = NodeUtils.FromId(currentStartPoint.m_node);
+                currentStartPoint.m_position.y = currentNode.m_position.y;
+
+                // We can now move the node to the correct place
+                NetManager.instance.MoveNode(currentStartPoint.m_node, currentStartPoint.m_position);
             }
         }
         catch (Exception e)
