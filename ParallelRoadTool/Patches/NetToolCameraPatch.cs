@@ -86,56 +86,41 @@ internal static class NetToolCameraPatch
                 }
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset, selectedNetInfo, i,
-                                                              netTool.m_mode, out var currentStartPoint, out var currentMiddlePoint,
-                                                              out var currentEndPoint);
+                ControlPointUtils.GenerateOffsetControlPoints(
+                    startPoint,
+                    middlePoint,
+                    endPoint,
+                    horizontalOffset,
+                    verticalOffset,
+                    selectedNetInfo,
+                    i,
+                    netTool.m_mode,
+                    out var currentStartPoint,
+                    out var currentMiddlePoint,
+                    out var currentEndPoint);
 
-                #region Angle Compensation
-
-                // TODO: move to controlpointutils - todo when the actions system will be ready
-                // Check if we need to look for an intersection point to move our previously created ending point.
-                // This is needed because certain angles will cause the segments to overlap.
-                // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
-                // IMPORTANT: this is meant for straight roads only!
-                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight &&
-                    Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint))
+                // If angle compensation is on and we need to move startPoint we also draw an overlay
+                // segment connecting startPoint's old position and the new one.
+                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled
+                    && netTool.m_mode == NetTool.Mode.Straight
+                    && Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint)
+                    && currentStartPoint.m_position != previousEndPoint[i].m_position)
                 {
+                    // Create a segment between the previous ending point and the intersection
+                    var intersectionSegment = new Segment3(previousEndPoint[i].m_position, currentStartPoint.m_position);
 
-                    var intersectionPoint = Vector3.zero;
-
-                    if (middlePoint.m_direction == endPoint.m_direction)
-                    {
-                        intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
-                                                                         currentEndPoint.m_position, currentEndPoint.m_direction, out var startLine,
-                                                                         out var endLine);
-                    } else
-                    {
-                        // Bending mode!
-                        intersectionPoint = VectorUtils.Intersection(previousEndPoint[i].m_position, previousEndPoint[i].m_direction,
-                                                                         currentStartPoint.m_position, currentStartPoint.m_direction, out var startLine,
-                                                                         out var endLine);
-                    }
-
-                    if (intersectionPoint != Vector3.zero)
-                    {
-                        // Set our current point to the intersection point
-                        currentStartPoint.m_position = intersectionPoint;
-
-                        // Create a segment between the previous ending point and the intersection
-                        var intersectionSegment = new Segment3(previousEndPoint[i].m_position, intersectionPoint);
-
-                        // Render the helper line for the segment
-                        RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, currentRoadInfos.Color, intersectionSegment,
-                                                                         currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1, 1800, true, true);
-
-                        RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.magenta, new Segment3(previousEndPoint[i].m_position, previousEndPoint[i].m_position + (previousEndPoint[i].m_direction * 1000)),
-                                                                         1, 8f, 1, 1800, true, true);
-                        RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.cyan, new Segment3(currentEndPoint.m_position, currentEndPoint.m_position + (currentEndPoint.m_direction * 1000)),
-                                                                         1, 8f, 1, 1800, true, true);
-                    }
+                    // Render the helper line for the segment
+                    RenderManager.instance.OverlayEffect.DrawSegment(
+                        cameraInfo,
+                        currentRoadInfos.Color,
+                        intersectionSegment,
+                        currentRoadInfos.NetInfo.m_halfWidth * 2,
+                        8f,
+                        1,
+                        1800,
+                        true,
+                        true);
                 }
-
-                #endregion
 
 #if DEBUG
 
@@ -150,7 +135,7 @@ internal static class NetToolCameraPatch
 
                     // Middle directions
                     var middlePointSegment = new Segment3(middlePoint.m_position,
-                                                          middlePoint.m_position + (middlePoint.m_direction * 1000));
+                                                          middlePoint.m_position + (middlePoint.m_direction.RotateXZ(-45).normalized * 100));
                     var currentMiddlePointSegment = new Segment3(currentMiddlePoint.m_position,
                                                                  currentMiddlePoint.m_position +
                                                                  (currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100));
@@ -177,7 +162,6 @@ internal static class NetToolCameraPatch
                 }
 
                 // Render the overlay for current offset segment
-                // TODO: cosa succede se endpoint si sovrappone a midpoint durante le curve? Appaiono un sacco di cerchi senza senso!
                 NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
                 // Save to buffer

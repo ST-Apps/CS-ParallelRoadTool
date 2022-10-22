@@ -74,6 +74,69 @@ internal static class ControlPointUtils
             // If we're on straight mode we just set middlePoint as endPoint because we don't need more than 2 control points
             case NetTool.Mode.Straight:
                 currentMiddlePoint = currentEndPoint with { m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2 };
+
+                // Handle angle compensation feature.
+                // Check if we need to look for an intersection point to move our previously created ending point.
+                // This is needed because certain angles will cause the segments to overlap.
+                // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
+                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled &&
+                    Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint))
+                {
+                    // Initialize the intersection point that we will use to move currentStartPoint to
+                    var intersectionPoint = Vector3.zero;
+
+                    // This means that we're trying to build a perfectly straight segment, so we use endPoint's direction
+                    if (middlePoint.m_direction == endPoint.m_direction)
+                    {
+                        intersectionPoint = VectorUtils.Intersection(
+                            previousEndPoint[networkIndex].m_position,
+                            previousEndPoint[networkIndex].m_direction,
+                            currentEndPoint.m_position,
+                            currentEndPoint.m_direction,
+                            out var startLine,
+                            out var endLine);
+                    }
+                    else
+                    {
+                        // Otherwise we're in bending mode so we need to consider startPoint's direction
+                        intersectionPoint = VectorUtils.Intersection(
+                            previousEndPoint[networkIndex].m_position,
+                            previousEndPoint[networkIndex].m_direction,
+                            currentStartPoint.m_position,
+                            currentStartPoint.m_direction,
+                            out var startLine,
+                            out var endLine);
+                    }
+
+                    // We found a valid intersection point, set startPoint's position to that one
+                    if (intersectionPoint != Vector3.zero)
+                    {
+                        currentStartPoint.m_position = intersectionPoint;
+
+                        // If we are in bending mode we also need to update middle point's position, just as we would do for curves
+                        if (middlePoint.m_direction != endPoint.m_direction)
+                        {
+                            // In this case we also need to update middle point because this is not a straight segment anymore
+                            var currentMiddlePosition = VectorUtils.Intersection(
+                                currentStartPosition,
+                                startPoint.m_direction,
+                                currentEndPosition,
+                                endPoint.m_direction,
+                                out _,
+                                out _);
+
+                            // Finally set the point
+                            currentMiddlePoint = middlePoint with
+                            {
+                                m_node = 0,
+                                m_segment = 0,
+                                m_position = currentMiddlePosition == Vector3.zero ? currentEndPoint.m_position : currentMiddlePosition,
+                                m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
+                            };
+                        }
+                    }
+                }
+
                 break;
             case NetTool.Mode.Upgrade:
             {
@@ -94,12 +157,12 @@ internal static class ControlPointUtils
                 // If not on straight mode we compute the middle point by getting the intersection between startPoint and endPoint
                 // Both points will be projected in the respective directions to find the intersection
                 var currentMiddlePosition = VectorUtils.Intersection(
-                                                                     currentStartPosition,
-                                                                     startPoint.m_direction,
-                                                                     currentEndPosition,
-                                                                     endPoint.m_direction,
-                                                                     out _,
-                                                                     out _);
+                    currentStartPosition,
+                    startPoint.m_direction,
+                    currentEndPosition,
+                    endPoint.m_direction,
+                    out _,
+                    out _);
 
                 // Finally set the point
                 currentMiddlePoint = middlePoint with
