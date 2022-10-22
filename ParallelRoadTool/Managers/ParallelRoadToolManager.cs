@@ -350,6 +350,13 @@ public class ParallelRoadToolManager : MonoBehaviour
     /// <param name="generatedControlPoints"></param>
     public void PushGeneratedNodes(ushort originalNodeId, NetTool.ControlPoint[] generatedControlPoints)
     {
+
+        if (originalNodeId == 0)
+        {
+            // Skip zero nodes because they're not valid and shouldn't be saved
+            return;
+        }
+
         _nodesBuffer[originalNodeId] = generatedControlPoints;
     }
 
