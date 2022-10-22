@@ -17,15 +17,16 @@ using Settings;
 using UnityEngine;
 using Utils;
 using Wrappers;
-using VectorUtils = Utils.VectorUtils;
 
-// ReSharper disable ClassNeverInstantiated.Local
-// ReSharper disable UnusedParameter.Local
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedType.Global
-// ReSharper disable InconsistentNaming
-[HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-              typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
+[HarmonyPatch(
+    typeof(NetTool),
+    nameof(NetTool.RenderOverlay),
+    typeof(RenderManager.CameraInfo),
+    typeof(NetInfo),
+    typeof(Color),
+    typeof(NetTool.ControlPoint),
+    typeof(NetTool.ControlPoint),
+    typeof(NetTool.ControlPoint))]
 internal static class NetToolCameraPatch
 {
     /// <summary>
@@ -196,29 +197,44 @@ internal static class NetToolCameraPatch
     private class NetToolReversePatch
     {
         [HarmonyReversePatch]
-        [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-                      typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
-        public static void RenderOverlay(object instance,
-                                         RenderManager.CameraInfo cameraInfo,
-                                         NetInfo info,
-                                         Color color,
-                                         NetTool.ControlPoint startPoint,
-                                         NetTool.ControlPoint middlePoint,
-                                         NetTool.ControlPoint endPoint)
+        [HarmonyPatch(
+            typeof(NetTool),
+            nameof(NetTool.RenderOverlay),
+            typeof(RenderManager.CameraInfo),
+            typeof(NetInfo),
+            typeof(Color),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint))]
+        public static void RenderOverlay(
+            object instance,
+            RenderManager.CameraInfo cameraInfo,
+            NetInfo info,
+            Color color,
+            NetTool.ControlPoint startPoint,
+            NetTool.ControlPoint middlePoint,
+            NetTool.ControlPoint endPoint)
         {
             // No implementation is required as this will call the original method
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
         }
 
         [HarmonyReversePatch]
-        [HarmonyPatch(typeof(NetTool), "RenderRoadAccessArrow", typeof(RenderManager.CameraInfo), typeof(Color), typeof(Vector3), typeof(Vector3),
-                      typeof(bool))]
-        public static void RenderRoadAccessArrow(object instance,
-                                                 RenderManager.CameraInfo cameraInfo,
-                                                 Color color,
-                                                 Vector3 position,
-                                                 Vector3 xDir,
-                                                 bool flipped)
+        [HarmonyPatch(
+            typeof(NetTool),
+            "RenderRoadAccessArrow",
+            typeof(RenderManager.CameraInfo),
+            typeof(Color),
+            typeof(Vector3),
+            typeof(Vector3),
+            typeof(bool))]
+        public static void RenderRoadAccessArrow(
+            object instance,
+            RenderManager.CameraInfo cameraInfo,
+            Color color,
+            Vector3 position,
+            Vector3 xDir,
+            bool flipped)
         {
             // No implementation is required as this will call the original method
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
