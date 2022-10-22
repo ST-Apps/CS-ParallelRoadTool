@@ -117,11 +117,12 @@ internal static class ControlPointUtils
                         if (middlePoint.m_direction != endPoint.m_direction)
                         {
                             // In this case we also need to update middle point because this is not a straight segment anymore
+                            // We use middle point for intersection because it's more accurate than endpoint
                             var currentMiddlePosition = VectorUtils.Intersection(
                                 currentStartPosition,
                                 startPoint.m_direction,
-                                currentEndPosition,
-                                endPoint.m_direction,
+                                middlePoint.m_position,
+                                middlePoint.m_direction.RotateXZ(-45).normalized,
                                 out _,
                                 out _);
 

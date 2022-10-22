@@ -128,9 +128,9 @@ internal static class NetToolCameraPatch
                 if (ModSettings.RenderDebugOverlay)
                 {
                     // Middle points
-                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.red, middlePoint.m_position, info.m_halfWidth, 1, 1800, true,
+                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.blue, middlePoint.m_position, info.m_halfWidth, 1, 1800, true,
                                                                     true);
-                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.blue, currentMiddlePoint.m_position, info.m_halfWidth, 1, 1800,
+                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, currentRoadInfos.Color, currentMiddlePoint.m_position, info.m_halfWidth, 1, 1800,
                                                                     true, true);
 
                     // Middle directions
