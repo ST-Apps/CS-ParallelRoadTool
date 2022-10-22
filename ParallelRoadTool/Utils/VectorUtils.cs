@@ -26,7 +26,7 @@ internal static class VectorUtils
 
         // Skip for angle of 180° or 0
         var angle = Vector3.Angle(endDirection, startDirection);
-        if (Math.Abs(angle - 180f) <= 1f && angle != 0f)
+        if (Math.Abs(angle - 180f) <= 1f || angle == 0f)
         {
             startLine = Line2.XZ(Vector3.zero, Vector3.zero);
             endLine = Line2.XZ(Vector3.zero, Vector3.zero);
