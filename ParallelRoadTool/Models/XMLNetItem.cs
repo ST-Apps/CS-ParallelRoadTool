@@ -1,39 +1,39 @@
-﻿using System.Xml.Serialization;
+﻿// <copyright file="XMLNetItem.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
-namespace ParallelRoadTool.Models
+namespace ParallelRoadTool.Models;
+
+using System.Xml.Serialization;
+
+/// <summary>
+///     Wrapper for all the network's properties that we want to save in a preset.
+/// </summary>
+[XmlRoot(ElementName = "NetItem")]
+public class XMLNetItem
 {
     /// <summary>
-    ///     Wrapper for all the network's properties that we want to save in a preset.
+    ///     Horizontal offset, relative to the main network
     /// </summary>
-    [XmlRoot(ElementName = "NetItem")]
-    public class XMLNetItem
-    {
-        #region Properties
+    [XmlElement]
+    public float HorizontalOffset { get; set; }
 
-        /// <summary>
-        ///     Horizontal offset, relative to the main network
-        /// </summary>
-        [XmlElement]
-        public float HorizontalOffset { get; set; }
+    /// <summary>
+    ///     True if the direction is reversed
+    /// </summary>
+    [XmlElement]
+    public bool IsReversed { get; set; }
 
-        /// <summary>
-        ///     True if the direction is reversed
-        /// </summary>
-        [XmlElement]
-        public bool IsReversed { get; set; }
+    /// <summary>
+    ///     Name of the network. This is in-game's basic name, not the display one.
+    /// </summary>
+    [XmlElement]
+    public string Name { get; set; }
 
-        /// <summary>
-        ///     Name of the network. This is in-game's basic name, not the display one.
-        /// </summary>
-        [XmlElement]
-        public string Name { get; set; }
-
-        /// <summary>
-        ///     Vertical offset, relative to the main network
-        /// </summary>
-        [XmlElement]
-        public float VerticalOffset { get; set; }
-
-        #endregion
-    }
+    /// <summary>
+    ///     Vertical offset, relative to the main network
+    /// </summary>
+    [XmlElement]
+    public float VerticalOffset { get; set; }
 }

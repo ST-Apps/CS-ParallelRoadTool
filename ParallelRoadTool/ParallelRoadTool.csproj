@@ -60,16 +60,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\MetaBoolExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Loading.cs" />
+    <Compile Include="Managers\ModifiersManager.cs" />
     <Compile Include="Managers\PresetsManager.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Models\CurrentNetInfoPrefabChangedEventArgs.cs" />
     <Compile Include="Models\CurrentToolChangedEventArgs.cs" />
     <Compile Include="Models\ModStatuses.cs" />
     <Compile Include="Patches\NetAIPatch.cs" />
-    <Compile Include="Patches\NetManagerPatch.cs" />
     <Compile Include="Patches\NetToolCameraPatch.cs" />
     <Compile Include="Patches\NetToolsPrefabPatch.cs" />
+    <Compile Include="Patches\NetToolNodePatch.cs" />
     <Compile Include="Patches\ToolControllerPatch.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
@@ -101,13 +104,22 @@
     <Compile Include="Utils\ControlPointUtils.cs" />
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Utils\NodeUtils.cs" />
+    <Compile Include="Utils\VectorUtils.cs" />
     <Compile Include="WhatsNewMessageListing.cs" />
     <Compile Include="Wrappers\RoadAIWrapper.cs" />
     <Compile Include="UI\Main\UIRightDragHandle.cs" />
     <Compile Include="UI\Settings\UIOptionsPanel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,26 +1,32 @@
-﻿using System;
-using ColossalFramework;
-using ColossalFramework.Math;
-using CSUtil.Commons;
-using HarmonyLib;
-using ParallelRoadTool.Extensions;
-using ParallelRoadTool.Managers;
-using ParallelRoadTool.Models;
-using ParallelRoadTool.Settings;
-using ParallelRoadTool.Utils;
-using ParallelRoadTool.Wrappers;
-using UnityEngine;
-
-// ReSharper disable ClassNeverInstantiated.Local
-// ReSharper disable UnusedParameter.Local
-// ReSharper disable UnusedMember.Local
-// ReSharper disable UnusedType.Global
-// ReSharper disable InconsistentNaming
+﻿// <copyright file="NetToolCameraPatch.cs" company="ST-Apps (S. Tenuta)">
+// Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 namespace ParallelRoadTool.Patches;
 
-[HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-              typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
+using System;
+using ColossalFramework;
+using ColossalFramework.Math;
+using CSUtil.Commons;
+using Extensions;
+using HarmonyLib;
+using Managers;
+using Models;
+using Settings;
+using UnityEngine;
+using Utils;
+using Wrappers;
+
+[HarmonyPatch(
+    typeof(NetTool),
+    nameof(NetTool.RenderOverlay),
+    typeof(RenderManager.CameraInfo),
+    typeof(NetInfo),
+    typeof(Color),
+    typeof(NetTool.ControlPoint),
+    typeof(NetTool.ControlPoint),
+    typeof(NetTool.ControlPoint))]
 internal static class NetToolCameraPatch
 {
     /// <summary>
@@ -34,142 +40,150 @@ internal static class NetToolCameraPatch
     /// <param name="startPoint"></param>
     /// <param name="middlePoint"></param>
     /// <param name="endPoint"></param>
-
-    // ReSharper disable once UnusedMember.Local
-    private static void Postfix(RenderManager.CameraInfo cameraInfo,
-                                NetInfo                  info,
-                                Color                    color,
-                                NetTool.ControlPoint     startPoint,
-                                NetTool.ControlPoint     middlePoint,
-                                NetTool.ControlPoint     endPoint)
+    private static void Postfix(
+        RenderManager.CameraInfo cameraInfo,
+        NetInfo info,
+        Color color,
+        NetTool.ControlPoint startPoint,
+        NetTool.ControlPoint middlePoint,
+        NetTool.ControlPoint endPoint)
     {
         try
         {
             // We only run if the mod is set as Active
             if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
+            {
                 return;
+            }
 
-            // Render only if we have a clear direction, otherwise results will look messy
-            if (endPoint.m_direction == startPoint.m_direction)
+            // Render only if we have at least two distinct points
+            if (startPoint.m_position == endPoint.m_position)
+            {
                 return;
+            }
 
-            // If start direction is not set we manually compute it
-            if (startPoint.m_direction == Vector3.zero)
-                startPoint.m_direction = middlePoint.m_position - startPoint.m_position;
+            // Reset start direction because it feels like it's never right
+            startPoint.m_direction = (middlePoint.m_position - startPoint.m_position).normalized;
 
             // Get NetTool instance
             var netTool = ToolsModifierControl.GetTool<NetTool>();
 
+            // Iterate over selected network and render the overlay for each of them
             for (var i = 0; i < Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes.Count; i++)
             {
                 var currentRoadInfos = Singleton<ParallelRoadToolManager>.instance.SelectedNetworkTypes[i];
 
-                // Horizontal offset must be negated to appear on the correct side of the original segment
+                // Horizontal offset must be negated to appear on the correct side of the original segment if we're on left-handed drive
                 var horizontalOffset = currentRoadInfos.HorizontalOffset * (Singleton<ParallelRoadToolManager>.instance.IsLeftHandTraffic ? 1 : -1);
                 var verticalOffset = currentRoadInfos.VerticalOffset;
 
-                // If the user didn't select a NetInfo we'll use the one he's using for the main road                
+                // If the user didn't select a NetInfo we'll use the one he's using for the main road
                 var selectedNetInfo = info.GetNetInfoWithElevation(currentRoadInfos.NetInfo ?? info, out _);
 
                 // If the user is using a vertical offset we try getting the relative elevated net info and use it
                 if (verticalOffset > 0 && selectedNetInfo.m_netAI.GetCollisionType() != ItemClass.CollisionType.Elevated)
-                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).elevated ?? selectedNetInfo;
+                {
+                    selectedNetInfo = new RoadAIWrapper(selectedNetInfo.m_netAI).Elevated ?? selectedNetInfo;
+                }
 
                 // Generate offset points for the current network
-                ControlPointUtils.GenerateOffsetControlPoints(startPoint, middlePoint, endPoint, horizontalOffset, verticalOffset,
-                                                              out var currentStartPoint, out var currentMiddlePoint, out var currentEndPoint);
+                ControlPointUtils.GenerateOffsetControlPoints(
+                    startPoint,
+                    middlePoint,
+                    endPoint,
+                    horizontalOffset,
+                    verticalOffset,
+                    selectedNetInfo,
+                    i,
+                    netTool.m_mode,
+                    out var currentStartPoint,
+                    out var currentMiddlePoint,
+                    out var currentEndPoint);
+
+                // If angle compensation is on and we need to move startPoint we also draw an overlay
+                // segment connecting startPoint's old position and the new one.
+                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled
+                    && netTool.m_mode == NetTool.Mode.Straight
+                    && Singleton<ParallelRoadToolManager>.instance.PullGeneratedNodes(startPoint.m_node, out var previousEndPoint)
+                    && currentStartPoint.m_position != previousEndPoint[i].m_position)
+                {
+                    // Create a segment between the previous ending point and the intersection
+                    var intersectionSegment = new Segment3(previousEndPoint[i].m_position, currentStartPoint.m_position);
+
+                    // Render the helper line for the segment
+                    RenderManager.instance.OverlayEffect.DrawSegment(
+                        cameraInfo,
+                        currentRoadInfos.Color,
+                        intersectionSegment,
+                        currentRoadInfos.NetInfo.m_halfWidth * 2,
+                        8f,
+                        1,
+                        1800,
+                        true,
+                        true);
+                }
 
 #if DEBUG
+
+                // TODO: move this to a dedicated class maybe - todo when the actions system will be ready
                 if (ModSettings.RenderDebugOverlay)
                 {
                     // Middle points
-                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.red, middlePoint.m_position, info.m_halfWidth, 1, 1800, true,
+                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.blue, middlePoint.m_position, info.m_halfWidth, 1, 1800, true,
                                                                     true);
-                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, Color.blue, currentMiddlePoint.m_position, info.m_halfWidth, 1, 1800,
+                    RenderManager.instance.OverlayEffect.DrawCircle(cameraInfo, currentRoadInfos.Color, currentMiddlePoint.m_position, info.m_halfWidth, 1, 1800,
                                                                     true, true);
 
                     // Middle directions
                     var middlePointSegment = new Segment3(middlePoint.m_position,
-                                                          middlePoint.m_position + middlePoint.m_direction.RotateXZ(-45).normalized * 100);
+                                                          middlePoint.m_position + (middlePoint.m_direction.RotateXZ(-45).normalized * 100));
                     var currentMiddlePointSegment = new Segment3(currentMiddlePoint.m_position,
                                                                  currentMiddlePoint.m_position +
-                                                                 currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100);
-                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.red, middlePointSegment, currentMiddlePointSegment,
+                                                                 (currentMiddlePoint.m_direction.RotateXZ(-45).normalized * 100));
+                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.green, middlePointSegment, currentMiddlePointSegment,
                                                                      info.m_halfWidth, 1, 1, 1800, true, true);
+
+                    // Middle intersections
+                    var middlePointStartSegment = new Segment3(currentStartPoint.m_position,
+                                                               currentStartPoint.m_position + (currentStartPoint.m_direction.normalized * 1000));
+                    var middlePointEndSegment = new Segment3(currentEndPoint.m_position,
+                                                             currentEndPoint.m_position - (currentEndPoint.m_direction.normalized * 1000));
+                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.white, middlePointStartSegment, info.m_halfWidth, 1, 1, 1800,
+                                                                     true, true);
+                    RenderManager.instance.OverlayEffect.DrawSegment(cameraInfo, Color.black, middlePointEndSegment, info.m_halfWidth, 1, 1, 1800,
+                                                                     true, true);
                 }
 #endif
 
-                if (Singleton<ParallelRoadToolManager>.instance.IsAngleCompensationEnabled && netTool.m_mode == NetTool.Mode.Straight)
+                // Check if current node can be created. If not change color to red.
+                var currentColor = currentRoadInfos.Color;
+                if (!ControlPointUtils.CanCreate(info, currentStartPoint, currentMiddlePoint, currentEndPoint, currentRoadInfos.IsReversed))
                 {
-                    // Check if we need to look for an intersection point to move our previously created ending point.
-                    // This is needed because certain angles will cause the segments to overlap.
-                    // To fix this we create a parallel line from the original segment, we extend a line from the previous ending point and check if they intersect.
-                    // IMPORTANT: this is meant for straight roads only!
-                    var previousEndPointNullable = NetManagerPatch.PreviousNode(i,   false, true);
-                    var previousStartPointNullable = NetManagerPatch.PreviousNode(i, true,  true);
-                    if (previousEndPointNullable.HasValue && previousStartPointNullable.HasValue)
-                    {
-                        // We can now extract the previously created ending point
-                        var previousEndPoint = previousEndPointNullable.Value;
-                        var previousStartPoint = previousStartPointNullable.Value;
-
-                        // Get the closest one between start and end
-                        var previousEndPointDistance = Vector3.Distance(previousEndPoint.m_position,     currentStartPoint.m_position);
-                        var previousStartPointDistance = Vector3.Distance(previousStartPoint.m_position, currentStartPoint.m_position);
-                        var previousPoint = previousEndPoint;
-
-                        if (previousStartPointDistance < previousEndPointDistance)
-                            previousPoint = previousStartPoint;
-                        var intersection = NodeUtils.FindIntersectionByOffset(currentStartPoint.m_position, endPoint.m_position, endPoint.m_direction,
-                                                                              previousPoint.m_position, -NetManagerPatch.PreviousEndDirection(i),
-                                                                              horizontalOffset, out var intersectionPoint, cameraInfo);
-
-                        // If we found an intersection we can draw an helper line showing how much we will have to move the node
-                        if (intersection)
-                        {
-                            // Set our current point to the intersection point
-                            currentStartPoint.m_position = intersectionPoint;
-
-                            // Create a segment between the previous ending point and the intersection
-                            var intersectionSegment = new Segment3(previousPoint.m_position, intersectionPoint);
-
-                            // Render the helper line for the segment
-                            RenderManager.instance.OverlayEffect.DrawSegment(RenderManager.instance.CurrentCameraInfo, currentRoadInfos.Color,
-                                                                             intersectionSegment, currentRoadInfos.NetInfo.m_halfWidth * 2, 8f, 1,
-                                                                             1800, true, true);
-                        }
-                    }
+                    currentColor = Color.red;
                 }
 
                 // Render the overlay for current offset segment
-                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentRoadInfos.Color, currentStartPoint, currentMiddlePoint,
-                                                  currentEndPoint);
+                NetToolReversePatch.RenderOverlay(netTool, cameraInfo, selectedNetInfo, currentColor, currentStartPoint, currentMiddlePoint, currentEndPoint);
+
+                // Save to buffer
+                // TODO: move to controlpointutils - todo when the actions system will be ready
+                Singleton<ParallelRoadToolManager>.instance.PushControlPoints(i, currentStartPoint, currentMiddlePoint, currentEndPoint);
 
                 // We draw arrows only for one-way networks, just as in game
-                if (!selectedNetInfo.IsOneWayOnly()) continue;
+                if (!selectedNetInfo.IsOneWayOnly())
+                {
+                    continue;
+                }
 
                 // Draw direction arrow by getting the tangent between starting and ending point
-                var bezier = new Bezier3 { a = currentStartPoint.m_position, d = currentEndPoint.m_position };
-                NetSegment.CalculateMiddlePoints(bezier.a, currentMiddlePoint.m_direction, bezier.d, -currentEndPoint.m_direction, true, true,
-                                                 out bezier.b, out bezier.c);
-
-                // we can now extract both position and direction from the tangent
-                var position = bezier.Position(0.5f);
-                var direction = bezier.Tangent(0.5f);
-
-                // Direction however will be oriented towards the middle point, so we need to rotate it by -90°
-                direction.y = 0;
-                direction   = Quaternion.Euler(0, -90, 0) * direction.normalized;
-
-                // We can finally draw the arrow
-                // TODO: can we use middle point's position and direction?
-                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, position, direction, currentRoadInfos.IsReversed);
+                var arrowControlPoint = ControlPointUtils.GenerateMiddlePoint(currentStartPoint, currentEndPoint);
+                NetToolReversePatch.RenderRoadAccessArrow(netTool, cameraInfo, Color.white, arrowControlPoint.m_position, arrowControlPoint.m_direction, currentRoadInfos.IsReversed);
             }
         }
         catch (Exception e)
         {
             // Log the exception
-            Log._DebugOnlyError($"[{nameof(NetToolCameraPatch)}.{nameof(Postfix)}] CreateSegment failed.");
+            Log._DebugOnlyError($"[{nameof(NetToolCameraPatch)}.{nameof(Postfix)}] RenderOverlay failed.");
             Log.Exception(e);
         }
     }
@@ -183,29 +197,44 @@ internal static class NetToolCameraPatch
     private class NetToolReversePatch
     {
         [HarmonyReversePatch]
-        [HarmonyPatch(typeof(NetTool), nameof(NetTool.RenderOverlay), typeof(RenderManager.CameraInfo), typeof(NetInfo), typeof(Color),
-                      typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint))]
-        public static void RenderOverlay(object                   instance,
-                                         RenderManager.CameraInfo cameraInfo,
-                                         NetInfo                  info,
-                                         Color                    color,
-                                         NetTool.ControlPoint     startPoint,
-                                         NetTool.ControlPoint     middlePoint,
-                                         NetTool.ControlPoint     endPoint)
+        [HarmonyPatch(
+            typeof(NetTool),
+            nameof(NetTool.RenderOverlay),
+            typeof(RenderManager.CameraInfo),
+            typeof(NetInfo),
+            typeof(Color),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint))]
+        public static void RenderOverlay(
+            object instance,
+            RenderManager.CameraInfo cameraInfo,
+            NetInfo info,
+            Color color,
+            NetTool.ControlPoint startPoint,
+            NetTool.ControlPoint middlePoint,
+            NetTool.ControlPoint endPoint)
         {
             // No implementation is required as this will call the original method
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
         }
 
         [HarmonyReversePatch]
-        [HarmonyPatch(typeof(NetTool), "RenderRoadAccessArrow", typeof(RenderManager.CameraInfo), typeof(Color), typeof(Vector3), typeof(Vector3),
-                      typeof(bool))]
-        public static void RenderRoadAccessArrow(object                   instance,
-                                                 RenderManager.CameraInfo cameraInfo,
-                                                 Color                    color,
-                                                 Vector3                  position,
-                                                 Vector3                  xDir,
-                                                 bool                     flipped)
+        [HarmonyPatch(
+            typeof(NetTool),
+            "RenderRoadAccessArrow",
+            typeof(RenderManager.CameraInfo),
+            typeof(Color),
+            typeof(Vector3),
+            typeof(Vector3),
+            typeof(bool))]
+        public static void RenderRoadAccessArrow(
+            object instance,
+            RenderManager.CameraInfo cameraInfo,
+            Color color,
+            Vector3 position,
+            Vector3 xDir,
+            bool flipped)
         {
             // No implementation is required as this will call the original method
             throw new NotImplementedException("This is not supposed to be happening, please report this exception with its stacktrace!");
