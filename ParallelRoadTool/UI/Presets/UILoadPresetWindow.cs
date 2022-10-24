@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using AlgernonCommons.Translation;
 using AlgernonCommons.UI;
 using ColossalFramework.UI;
+using CSUtil.Commons;
 using Managers;
 using Models;
 using Shared;
@@ -26,6 +27,7 @@ public sealed class UILoadPresetWindow : UIModalWindow
     private readonly UIList _fileList;
     private readonly UIPresetDetailsPanel _presetDetails;
     private readonly UIButton _loadPresetButton;
+    private readonly UIButton _deletePresetButton;
 
     public UILoadPresetWindow() : base("PRT-Logo-Small")
     {
@@ -47,16 +49,30 @@ public sealed class UILoadPresetWindow : UIModalWindow
         _presetDetails = detailsContainer.AddUIComponent<UIPresetDetailsPanel>();
         _presetDetails.size = detailsContainer.size - new Vector2(0, UIConstants.SmallSize + UIConstants.Padding);
 
+        // Main/DetailsContainer/ButtonsContainer
+        var buttonsContainer = detailsContainer.AddUIComponent<UIPanel>();
+        buttonsContainer.autoLayoutDirection = LayoutDirection.Horizontal;
+        buttonsContainer.autoLayoutPadding.bottom = UIConstants.Padding;
+        buttonsContainer.autoLayout = true;
+        buttonsContainer.height = UIConstants.MediumSize;
+        buttonsContainer.width = _fileList.width;
+
         // Main/DetailsContainer/LoadButton
-        _loadPresetButton = UIButtons.AddButton(detailsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"),
-                                                detailsContainer.width);
+        _loadPresetButton = UIButtons.AddButton(buttonsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"),
+                                                buttonsContainer.width/2);
         _loadPresetButton.isEnabled = false;
+
+        // Main/DetailsContainer/DeleteButton
+        _deletePresetButton = UIButtons.AddButton(buttonsContainer, 0, 0, Translations.Translate("LABEL_DELETE_PRESET_BUTTON_TITLE"),
+                                                buttonsContainer.width/2);
+        _deletePresetButton.isEnabled = false;
 
         // Events
         AttachToEvents();
     }
 
     public event PropertyChangedEventHandler<string> LoadButtonEventClicked;
+    public event PropertyChangedEventHandler<string> DeleteButtonEventClicked;
 
     public override float PanelHeight => 256;
 
@@ -77,6 +93,8 @@ public sealed class UILoadPresetWindow : UIModalWindow
         }
 
         _fileList.Data = fileList;
+        _fileList.SelectedIndex = -1;
+        _presetDetails.ClearPreset();
     }
 
     public override void OnDestroy()
@@ -92,6 +110,7 @@ public sealed class UILoadPresetWindow : UIModalWindow
         _presetDetails.LoadPreset(presetItems);
 
         _loadPresetButton.isEnabled = true;
+        _deletePresetButton.isEnabled = true;
     }
 
     private void LoadPresetButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventParam)
@@ -99,15 +118,38 @@ public sealed class UILoadPresetWindow : UIModalWindow
         LoadButtonEventClicked?.Invoke(this, (string)_fileList.SelectedItem);
     }
 
+    private void DeletePresetButtonOnEventClicked(UIComponent component, UIMouseEventParameter eventParam)
+    {
+        // Show a confirmation popup asking to delete the file
+        UIView.library.ShowModal<ConfirmPanel>("ConfirmPanel", (_, ret) =>
+        {
+            if (ret == 0)
+            {
+                // No action to do, user decided to not delete the file
+                Log.Info(@$"[{nameof(UILoadPresetWindow)}.{nameof(DeletePresetButtonOnEventClicked)}] User refused to delete ""{(string)_fileList.SelectedItem}"".");
+                return;
+            }
+
+            // We can delete and thus save the file
+            Log.Info(@$"[{nameof(UILoadPresetWindow)}.{nameof(DeletePresetButtonOnEventClicked)}] User accepted to delete ""{(string)_fileList.SelectedItem}"", deleting...");
+            
+            DeleteButtonEventClicked?.Invoke(this, (string)_fileList.SelectedItem);
+        }).SetMessage(
+            Translations.Translate("LABEL_DELETE_CONFIRMATION_PRESET_TITLE"),
+            string.Format(Translations.Translate("LABEL_DELETE_CONFIRMATION_PRESET_MESSAGE"), (string)_fileList.SelectedItem));
+    }
+
     private void AttachToEvents()
     {
         _fileList.EventSelectionChanged += FileListOnEventSelectionChanged;
         _loadPresetButton.eventClicked += LoadPresetButtonOnEventClicked;
+        _deletePresetButton.eventClicked += DeletePresetButtonOnEventClicked;
     }
 
     private void DetachFromEvents()
     {
         _fileList.EventSelectionChanged -= FileListOnEventSelectionChanged;
         _loadPresetButton.eventClicked -= LoadPresetButtonOnEventClicked;
+        _deletePresetButton.eventClicked -= DeletePresetButtonOnEventClicked;
     }
 }

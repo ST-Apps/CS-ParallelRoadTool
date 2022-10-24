@@ -73,7 +73,7 @@ public class PresetsManager
     public static bool PresetExists(string fileName)
     {
         var path = GetFullPathFromFileName(fileName);
-        return !File.Exists(path);
+        return File.Exists(path);
     }
 
     /// <summary>
@@ -124,6 +124,24 @@ public class PresetsManager
 
             throw;
         }
+    }
+
+    /// <summary>
+    ///     Simply deletes the preseet by deleting the related file (if existing).
+    /// </summary>
+    /// <param name="fileName"></param>
+    public static void DeletePreset(string fileName)
+    {
+        if (!PresetExists(fileName)) {
+            Log.Info(@$"[{nameof(PresetsManager)}.{nameof(DeletePreset)}] Preset ""{fileName}"" doesn't exist, cannot delete.");
+
+            return;
+        }
+
+        var path = GetFullPathFromFileName(fileName);
+        File.Delete(path);
+
+        Log.Info(@$"[{nameof(PresetsManager)}.{nameof(DeletePreset)}] Delete preset ""{fileName}"" at ""{path}"".");
     }
 
     /// <summary>

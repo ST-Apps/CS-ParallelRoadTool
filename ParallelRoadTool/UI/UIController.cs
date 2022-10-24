@@ -291,6 +291,7 @@ public class UIController : MonoBehaviour
 
         // Subscribe to events for the modal popup. We don't need to unsubscribe because this one will be destroyed on close
         StandalonePanelManager<UILoadPresetWindow>.Panel.LoadButtonEventClicked += PanelOnLoadButtonEventClicked;
+        StandalonePanelManager<UILoadPresetWindow>.Panel.DeleteButtonEventClicked += PanelOnDeleteButtonEventClicked;
         StandalonePanelManager<UILoadPresetWindow>.Panel.EventClose += () =>
                                                                        {
                                                                            // Restore focus for main window on modal close
@@ -316,6 +317,24 @@ public class UIController : MonoBehaviour
             UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(Translations.Translate("LABEL_LOAD_PRESET_FAILED_TITLE"),
                                                                                   string
                                                                                       .Format(Translations.Translate("LABEL_LOAD_PRESET_FAILED_MESSAGE"),
+                                                                                              fileName, e), true);
+        }
+    }
+
+    private void PanelOnDeleteButtonEventClicked(UIComponent component, string fileName)
+    {
+        try
+        {
+            Singleton<ParallelRoadToolManager>.instance.DeletePreset(fileName);
+
+            // Refresh presets list
+            StandalonePanelManager<UILoadPresetWindow>.Panel.RefreshItems(PresetsManager.ListSavedFiles());
+        }
+        catch (Exception e)
+        {
+            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(Translations.Translate("LABEL_DELETE_PRESET_FAILED_TITLE"),
+                                                                                  string
+                                                                                      .Format(Translations.Translate("LABEL_DELETE_PRESET_FAILED_MESSAGE"),
                                                                                               fileName, e), true);
         }
     }

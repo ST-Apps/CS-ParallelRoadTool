@@ -294,6 +294,17 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
+    ///     Deletes the provided preset.
+    /// </summary>
+    /// <param name="fileName"></param>
+    public void DeletePreset(string fileName)
+    {
+        PresetsManager.DeletePreset(fileName);
+
+        Log._Debug($"[{nameof(ParallelRoadToolManager)}.{nameof(DeletePreset)}] Deleted preset at {fileName}");
+    }
+
+    /// <summary>
     ///     Stores the three <see cref="NetTool.ControlPoint" /> that describe a network in our buffer.
     /// </summary>
     /// <param name="index"></param>

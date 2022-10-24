@@ -27,6 +27,11 @@ internal class UIPresetDetailsPanel : UIPanel
         autoLayout = true;
     }
 
+    public void ClearPreset()
+    {
+        _netItemsList.Clear();
+    }
+
     public void LoadPreset(IEnumerable<NetInfoItem> networks)
     {
         var items = new FastList<object>();
