@@ -282,7 +282,7 @@ public class UIMainWindow : UIPanel
         _closeButton.size = new Vector2(UIConstants.SmallSize, UIConstants.SmallSize);
         _closeButton.anchor = UIAnchorStyle.CenterVertical;
         _closeButton.AlignTo(headerPanel, UIAlignAnchor.TopRight);
-        _closeButton.relativePosition = new Vector2(_closeButton.relativePosition.x, 4);
+         _closeButton.relativePosition = new Vector2(_closeButton.relativePosition.x - 2, 6);
 
         // Main/Header/Icon
         var iconSprite = AddUIComponent<UISprite>();
@@ -301,79 +301,61 @@ public class UIMainWindow : UIPanel
         var toolbarPanel = AddUIComponent<UIPanel>();
         toolbarPanel.name = $"{name}_Toolbar";
         toolbarPanel.FitWidth(this, UIConstants.Padding);
-        toolbarPanel.height = UIConstants.MediumSize;
+        toolbarPanel.height = UIConstants.MediumSize + 4f;
+        toolbarPanel.backgroundSprite = "GenericPanel";
+        toolbarPanel.color = new Color32(206, 206, 206, 255);
+        toolbarPanel.autoLayout = true;
+        toolbarPanel.autoLayoutDirection = LayoutDirection.Horizontal;
+        toolbarPanel.autoLayoutPadding = new RectOffset(2, 0, 2, 2);
 
-        // Main/Toolbar/Options
-        var optionsPanel = toolbarPanel.AddUIComponent<UIPanel>();
-        optionsPanel.name = $"{toolbarPanel.name}_Options";
-        optionsPanel.backgroundSprite = "GenericPanel";
-        optionsPanel.color = new Color32(206, 206, 206, 255);
-        optionsPanel.size = toolbarPanel.size;
-        optionsPanel.width = (optionsPanel.width / 2) - (UIConstants.Padding / 2f);
-        optionsPanel.AlignTo(toolbarPanel, UIAlignAnchor.TopLeft);
-        optionsPanel.autoLayout = true;
-        optionsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-
-        // Main/Toolbar/Options/SavePresetButton
-        _savePresetButton = UIButtons.AddIconButton(optionsPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Save"),
-                                                    Translations.Translate("TOOLTIP_SAVE_BUTTON"));
-
-        _savePresetButton.name = $"{optionsPanel.name}_SavePreset";
-        _savePresetButton.isEnabled = false;
-
-        // Main/Toolbar/Options/LoadPresetButton
-        _loadPresetButton = UIButtons.AddIconButton(optionsPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Load"),
-                                                    Translations.Translate("TOOLTIP_LOAD_BUTTON"));
-        _loadPresetButton.name = $"{optionsPanel.name}_LoadPreset";
-
-        // Main/Toolbar/Tools
-        var toolsPanel = toolbarPanel.AddUIComponent<UIPanel>();
-        toolsPanel.name = $"{toolbarPanel.name}_Tools";
-        toolsPanel.backgroundSprite = "GenericPanel";
-        toolsPanel.color = new Color32(206, 206, 206, 255);
-        toolsPanel.size = toolbarPanel.size;
-        toolsPanel.width = (toolsPanel.width / 2) - (UIConstants.Padding / 2f);
-        toolsPanel.AlignTo(toolbarPanel, UIAlignAnchor.TopRight);
-        toolsPanel.autoLayout = true;
-        toolsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-        toolsPanel.autoLayoutStart = LayoutStart.TopRight;
+        // Main/Toolbar/Tools/AddNetworkButton
+        _addNetworkButton = UIButtons.AddIconButton(toolbarPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Add"),
+                                                    Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"));
+        _addNetworkButton.name = $"{toolbarPanel.name}_AddNetwork";
 
         // Main/Toolbar/Tools/SortNetworksButton
-        _sortNetworksButton = UIButtons.AddIconButton(toolsPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Sort"),
+        _sortNetworksButton = UIButtons.AddIconButton(toolbarPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Sort"),
                                                       Translations.Translate("TOOLTIP_SORT_NETWORKS_BUTTON"));
-        _sortNetworksButton.name = $"{toolsPanel.name}_SortNetworks";
+        _sortNetworksButton.name = $"{toolbarPanel.name}_SortNetworks";
 
         // Main/Toolbar/Tools/ToggleAutoWidthButton
         var autoWidthIcon = UITextures.LoadSpriteAtlas("PRT-AutoWidth", new[] { "AutoWidth", "AutoWidthPressed" });
-        _toggleAutoWidthButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, autoWidthIcon.name, "AutoWidthPressed", "AutoWidth",
+        _toggleAutoWidthButton = UICheckBoxes.AddIconToggle(toolbarPanel, 0, 0, autoWidthIcon.name, "AutoWidthPressed", "AutoWidth",
                                                             backgroundSprite: "OptionBase",
                                                             tooltip: Translations.Translate("TOOLTIP_AUTO_WIDTH_TOGGLE_BUTTON"),
                                                             height: UIConstants.MediumSize, width: UIConstants.MediumSize);
-        _toggleAutoWidthButton.name = $"{toolsPanel.name}_ToggleAutoWidth";
-
-        // Main/Toolbar/Tools/ToggleNodeModeButton
-        var nodeModeIcon = UITextures.LoadSpriteAtlas("PRT-NodeMove", new[] { "NodeMove", "NodeMovePressed" });
-        _toggleAngleCompensationButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, nodeModeIcon.name, "NodeMovePressed", "NodeMove",
-                                                                    backgroundSprite: "OptionBase",
-                                                                    tooltip: Translations.Translate("TOOLTIP_ANGLE_COMPENSATION_TOGGLE_BUTTON"),
-                                                                    height: UIConstants.MediumSize, width: UIConstants.MediumSize);
-        _toggleAngleCompensationButton.name = $"{toolsPanel.name}_ToggleNodeMode";
+        _toggleAutoWidthButton.name = $"{toolbarPanel.name}_ToggleAutoWidth";
 
         // Main/Toolbar/Tools/ToggleSnappingButton
-        _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolsPanel, 0, 0, UITextures.InGameAtlas.name, "SnappingPressed", "Snapping",
+        _toggleSnappingButton = UICheckBoxes.AddIconToggle(toolbarPanel, 0, 0, UITextures.InGameAtlas.name, "SnappingPressed", "Snapping",
                                                            backgroundSprite: "OptionBase",
                                                            tooltip: Translations.Translate("TOOLTIP_SNAPPING_TOGGLE_BUTTON"),
                                                            height: UIConstants.MediumSize, width: UIConstants.MediumSize);
-        _toggleSnappingButton.name = $"{toolsPanel.name}_ToggleSnapping";
+        _toggleSnappingButton.name = $"{toolbarPanel.name}_ToggleSnapping";
 
-        // Main/Toolbar/Tools/AddNetworkButton
-        _addNetworkButton = UIButtons.AddIconButton(toolsPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Add"),
-                                                    Translations.Translate("TOOLTIP_ADD_NETWORK_BUTTON"));
-        _addNetworkButton.name = $"{toolsPanel.name}_AddNetwork";
+
+        // Main/Toolbar/Tools/ToggleNodeModeButton
+        var nodeModeIcon = UITextures.LoadSpriteAtlas("PRT-NodeMove", new[] { "NodeMove", "NodeMovePressed" });
+        _toggleAngleCompensationButton = UICheckBoxes.AddIconToggle(toolbarPanel, 0, 0, nodeModeIcon.name, "NodeMovePressed", "NodeMove",
+                                                                    backgroundSprite: "OptionBase",
+                                                                    tooltip: Translations.Translate("TOOLTIP_ANGLE_COMPENSATION_TOGGLE_BUTTON"),
+                                                                    height: UIConstants.MediumSize, width: UIConstants.MediumSize);
+        _toggleAngleCompensationButton.name = $"{toolbarPanel.name}_ToggleNodeMode";
+
+        // Main/Toolbar/Options/SavePresetButton
+        _savePresetButton = UIButtons.AddIconButton(toolbarPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Save"),
+                                                    Translations.Translate("TOOLTIP_SAVE_BUTTON"));
+
+        _savePresetButton.name = $"{toolbarPanel.name}_SavePreset";
+        _savePresetButton.isEnabled = false;
+
+        // Main/Toolbar/Options/LoadPresetButton
+        _loadPresetButton = UIButtons.AddIconButton(toolbarPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Load"),
+                                                    Translations.Translate("TOOLTIP_LOAD_BUTTON"));
+        _loadPresetButton.name = $"{toolbarPanel.name}_LoadPreset";
 
         // Since our layout is now complete, we can disable autoLayout for all the panels to avoid wasting CPU cycle
-        optionsPanel.autoLayout = false;
-        toolsPanel.autoLayout = false;
+        toolbarPanel.autoLayout = false;
     }
 
     private void UpdateSavedPosition()
