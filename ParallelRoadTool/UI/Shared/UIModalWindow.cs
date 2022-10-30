@@ -14,15 +14,18 @@ using ColossalFramework.UI;
 /// </summary>
 public abstract class UIModalWindow : UIWindow
 {
-    public UIModalWindow(string iconAtlasName) : base(iconAtlasName)
+    public UIModalWindow(string iconAtlasName)
+        : base(iconAtlasName)
     {
         // Main/ModalEffect
         var modalEffect = GetUIView().panelsLibraryModalEffect;
         if (modalEffect != null && !modalEffect.isVisible)
         {
             modalEffect.Show(false);
-            ValueAnimator.Animate("ModalEffect", delegate(float val) { modalEffect.opacity = val; },
-                                  new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
+            ValueAnimator.Animate(
+                "ModalEffect",
+                (val) => { modalEffect.opacity = val; },
+                new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
         }
 
         UIView.PushModal(this);
@@ -40,8 +43,11 @@ public abstract class UIModalWindow : UIWindow
         var modalEffect = GetUIView().panelsLibraryModalEffect;
         if (modalEffect != null && modalEffect.isVisible)
         {
-            ValueAnimator.Animate("ModalEffect", delegate(float val) { modalEffect.opacity = val; },
-                                  new AnimatedFloat(1f, 0f, 0.7f, EasingType.CubicEaseOut), delegate { modalEffect.Hide(); });
+            ValueAnimator.Animate(
+                "ModalEffect",
+                (val) => { modalEffect.opacity = val; },
+                new AnimatedFloat(1f, 0f, 0.7f, EasingType.CubicEaseOut),
+                () => { modalEffect.Hide(); });
         }
 
         Unfocus();

@@ -15,17 +15,24 @@ using Models;
 using UnityEngine;
 using Wrappers;
 
-// ReSharper disable ClassNeverInstantiated.Local
-// ReSharper disable UnusedParameter.Local
-// ReSharper disable UnusedMember.Local
-// ReSharper disable UnusedType.Global
-// ReSharper disable InconsistentNaming
+/// <summary>
+///     Patch responsible for dealing with parallel networks cost.
+/// </summary>
 [HarmonyPatch(typeof(PlayerNetAI), nameof(PlayerNetAI.GetConstructionCost), typeof(Vector3), typeof(Vector3), typeof(float), typeof(float))]
 internal static class NetAIPatch
 {
-    // We compute the cost for each parallel/stacked network to get to the final cost.
-    // We then we add it to the one received as input for the original segment.
+    /// <summary>
+    ///  We compute the cost for each parallel/stacked network to get to the final cost.
+    ///  We then we add it to the one received as input for the original segment.
+    /// </summary>
+    /// <param name="startPos">Coordinates for the initial node.</param>
+    /// <param name="endPos">Coordinates for the final node.</param>
+    /// <param name="startHeight">Initial height.</param>
+    /// <param name="endHeight">Final height.</param>
+    /// <param name="__result">Injected Harmony value that overrides the return cost for the original method.</param>
+#pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     private static void Postfix(Vector3 startPos, Vector3 endPos, float startHeight, float endHeight, ref int __result)
+#pragma warning restore SA1313 // Parameter names should begin with lower-case letter
     {
         try
         {

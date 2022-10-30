@@ -17,41 +17,47 @@ using UnityEngine;
 public class ModSettings : SettingsXMLBase
 {
     /// <summary>
-    ///     Filename for our custom settings file
-    /// </summary>
-    private const string SettingsFileName = "PRT_Settings.xml";
-
-    /// <summary>
     ///     Tool toggle key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyToggleTool = new (KeyCode.P, true, false, false);
+    [XmlIgnore]
+    public static readonly Keybinding KeyToggleTool = new (KeyCode.P, true, false, false);
 
     /// <summary>
     ///     Increase horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyIncreaseHorizontalOffset = new (KeyCode.Equals, true, false, false);
+    [XmlIgnore]
+    public static readonly Keybinding KeyIncreaseHorizontalOffset = new (KeyCode.Equals, true, false, false);
 
     /// <summary>
     ///     Decrease horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyDecreaseHorizontalOffset = new (KeyCode.Minus, true, false, false);
+    [XmlIgnore]
+    public static readonly Keybinding KeyDecreaseHorizontalOffset = new (KeyCode.Minus, true, false, false);
 
     /// <summary>
     ///     Increase horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyIncreaseVerticalOffset = new (KeyCode.Equals, true, true, false);
+    [XmlIgnore]
+    public static readonly Keybinding KeyIncreaseVerticalOffset = new (KeyCode.Equals, true, true, false);
 
     /// <summary>
     ///     Decrease horizontal offset key.
     /// </summary>
-    [XmlIgnore] public static readonly Keybinding KeyDecreaseVerticalOffset = new (KeyCode.Minus, true, true, false);
+    [XmlIgnore]
+    public static readonly Keybinding KeyDecreaseVerticalOffset = new (KeyCode.Minus, true, true, false);
 
 #if DEBUG
     /// <summary>
     ///     Toggles debug overlay while drawing segments.
     /// </summary>
-    [XmlIgnore] public static bool RenderDebugOverlay;
+    [XmlIgnore]
+    public static bool RenderDebugOverlay;
 #endif
+
+    /// <summary>
+    ///     Filename for our custom settings file.
+    /// </summary>
+    private const string SettingsFileName = "PRT_Settings.xml";
 
     /// <summary>
     ///     Tool toggle key.

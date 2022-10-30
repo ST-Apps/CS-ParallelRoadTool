@@ -27,7 +27,8 @@ public sealed class UISavePresetWindow : UIModalWindow
     private readonly UIButton _saveButton;
     private readonly UIList _fileList;
 
-    public UISavePresetWindow() : base("PRT-Logo-Small")
+    public UISavePresetWindow()
+        : base("PRT-Logo-Small")
     {
         var topPanel = Container.AddUIComponent<UIPanel>();
         topPanel.relativePosition = new Vector2(0, UIConstants.Padding);
@@ -42,7 +43,7 @@ public sealed class UISavePresetWindow : UIModalWindow
 
         // Main/Save
         _saveButton = UIButtons.AddIconButton(topPanel, 0, 0, UIConstants.SmallSize, UITextures.LoadQuadSpriteAtlas("PRT-Save"));
-        _saveButton.isEnabled = false; //Disabled at start
+        _saveButton.isEnabled = false; // Disabled at start
         _fileNameInput.height = UIConstants.SmallSize;
         _fileNameInput.width -= _saveButton.width - UIConstants.Padding;
 
@@ -99,22 +100,24 @@ public sealed class UISavePresetWindow : UIModalWindow
             Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] File ""{_fileNameInput.text}"" already exists, asking for confirmation...");
 
             // Show a confirmation popup asking to overwrite the file
-            UIView.library.ShowModal<ConfirmPanel>("ConfirmPanel", (_, ret) =>
-                                                                   {
-                                                                       if (ret == 0)
-                                                                       {
-                                                                           // No action to do, user decided to not overwrite the file
-                                                                           Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User refused to overwrite ""{_fileNameInput.text}"".");
-                                                                           return;
-                                                                       }
+            UIView.library.ShowModal<ConfirmPanel>(
+                "ConfirmPanel",
+                (_, ret) =>
+                {
+                    if (ret == 0)
+                    {
+                        // No action to do, user decided to not overwrite the file
+                        Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User refused to overwrite ""{_fileNameInput.text}"".");
+                        return;
+                    }
 
-                                                                       // We can overwrite and thus save the file
-                                                                       Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User accepted to overwrite ""{_fileNameInput.text}"", saving...");
-                                                                       SaveButtonEventClicked?.Invoke(this, _fileNameInput.text);
-                                                                   }).SetMessage(Translations.Translate("LABEL_OVERWRITE_PRESET_TITLE"),
-                                                                                 string
-                                                                                     .Format(Translations.Translate("LABEL_OVERWRITE_PRESET_MESSAGE"),
-                                                                                             _fileNameInput.text));
+                    // We can overwrite and thus save the file
+                    Log.Info(@$"[{nameof(UISavePresetWindow)}.{nameof(SaveButtonOnEventClicked)}] User accepted to overwrite ""{_fileNameInput.text}"", saving...");
+                    SaveButtonEventClicked?.Invoke(this, _fileNameInput.text);
+                }).SetMessage(
+                    Translations.Translate("LABEL_OVERWRITE_PRESET_TITLE"),
+                    string.Format(
+                        Translations.Translate("LABEL_OVERWRITE_PRESET_MESSAGE"), _fileNameInput.text));
         }
         else
         {

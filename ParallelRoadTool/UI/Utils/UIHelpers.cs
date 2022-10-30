@@ -34,7 +34,7 @@ internal static class UIHelpers
     }
 
     /// <summary>
-    ///     Fits component's width to its parent while keeping margin on both left and right size
+    ///     Fits component's width to its parent while keeping margin on both left and right size.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="parent"></param>
@@ -45,7 +45,7 @@ internal static class UIHelpers
     }
 
     /// <summary>
-    ///     Fits component's height to its parent while keeping margin on both left and right size
+    ///     Fits component's height to its parent while keeping margin on both left and right size.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="parent"></param>

@@ -43,7 +43,7 @@ public class PresetsManager
     /// <summary>
     ///     Lists all the saved files, besides <see cref="AutoSaveDefaultFileName" />.
     /// </summary>
-    /// <returns></returns>
+    /// <returns><see cref="IEnumerable{T}"/> of <see cref="string"/> containing all the file names for saved presets.</returns>
     public static IEnumerable<string> ListSavedFiles()
     {
         Log.Info(@$"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Loading saved presets from ""{PresetsFolderPath}""");
@@ -55,8 +55,9 @@ public class PresetsManager
         }
 
         // Get all files matching *.xml besides the auto-save one that can't be overwritten
-        var files = Directory.GetFiles(PresetsFolderPath, "*.xml").Select(Path.GetFileNameWithoutExtension).Where(f => f != AutoSaveDefaultFileName)
-                             .ToArray();
+        var files = Directory.GetFiles(PresetsFolderPath, "*.xml")
+            .Select(Path.GetFileNameWithoutExtension).Where(f => f != AutoSaveDefaultFileName)
+            .ToArray();
 
         Log.Info($"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Found {files.Length} presets");
         Log._Debug($"[{nameof(PresetsManager)}.{nameof(ListSavedFiles)}] Files: [{string.Join(", ", files)}]");
@@ -68,8 +69,8 @@ public class PresetsManager
     ///     Checks if the preset file exists.
     ///     This is mostly used to show the overwrite modal during preset saving.
     /// </summary>
-    /// <param name="fileName"></param>
-    /// <returns></returns>
+    /// <param name="fileName">Name of the preset to check for existence.</param>
+    /// <returns>True if the preset exists.</returns>
     public static bool PresetExists(string fileName)
     {
         var path = GetFullPathFromFileName(fileName);
@@ -79,8 +80,8 @@ public class PresetsManager
     /// <summary>
     ///     Saves the provided networks to an XML preset.
     /// </summary>
-    /// <param name="networks"></param>
-    /// <param name="fileName"></param>
+    /// <param name="networks"><see cref="IEnumerable{T}"/> of <see cref="NetInfoItem"/> containing the networks that will be saved as preset.</param>
+    /// <param name="fileName">Name of the file to save the preset to.</param>
     public static void SavePreset(IEnumerable<NetInfoItem> networks, string fileName = null)
     {
         // Presets folder is missing, skip
@@ -105,7 +106,7 @@ public class PresetsManager
             Name = n.Name,
             IsReversed = n.IsReversed,
             HorizontalOffset = n.HorizontalOffset,
-            VerticalOffset = n.VerticalOffset
+            VerticalOffset = n.VerticalOffset,
         }).ToArray();
 
         Log.Info(@$"[{nameof(PresetsManager)}.{nameof(SavePreset)}] Saving preset to ""{path}"" with {xmlNetItems.Length} networks");
@@ -129,10 +130,11 @@ public class PresetsManager
     /// <summary>
     ///     Simply deletes the preseet by deleting the related file (if existing).
     /// </summary>
-    /// <param name="fileName"></param>
+    /// <param name="fileName">Name of the file to be deleted.</param>
     public static void DeletePreset(string fileName)
     {
-        if (!PresetExists(fileName)) {
+        if (!PresetExists(fileName))
+        {
             Log.Info(@$"[{nameof(PresetsManager)}.{nameof(DeletePreset)}] Preset ""{fileName}"" doesn't exist, cannot delete.");
 
             return;
@@ -147,8 +149,8 @@ public class PresetsManager
     /// <summary>
     ///     Loads the provided XML file into a collection of <see cref="NetInfoItem" />.
     /// </summary>
-    /// <param name="fileName"></param>
-    /// <returns></returns>
+    /// <param name="fileName">Name of the file to be loaded as a preset.</param>
+    /// <returns><see cref="IEnumerable{T}"/> of <see cref="NetInfoItem"/> containing all the loaded networks.</returns>
     public static IEnumerable<NetInfoItem> LoadPreset(string fileName = null)
     {
         // Default to auto-save if no filename is provided
@@ -175,7 +177,6 @@ public class PresetsManager
             var result = ToNetInfoItems(data).ToArray();
 
             Log._Debug($"[{nameof(PresetsManager)}.{nameof(LoadPreset)}] Loaded {result.Length} networks.");
-
             return result;
         }
         catch (Exception e)
@@ -190,8 +191,8 @@ public class PresetsManager
     /// <summary>
     ///     Generates the full path for a given file inside <see cref="PresetsFolderPath" />.
     /// </summary>
-    /// <param name="fileName"></param>
-    /// <returns></returns>
+    /// <param name="fileName">Name of the preset.</param>
+    /// <returns>Full path in presets folder for the given file name.</returns>
     private static string GetFullPathFromFileName(string fileName)
     {
         return Path.Combine(PresetsFolderPath, $"{fileName}.xml");
@@ -200,11 +201,14 @@ public class PresetsManager
     /// <summary>
     ///     Converts a collection of <see cref="XMLNetItem" /> to a collection of <see cref="NetInfoItem" />.
     /// </summary>
-    /// <param name="networks"></param>
-    /// <returns></returns>
+    /// <param name="networks"><see cref="IEnumerable{T}"/> of <see cref="XMLNetItem"/> that needs to be converted.</param>
+    /// <returns><see cref="IEnumerable{T}"/> of <see cref="NetInfoItem"/> containing converted items.</returns>
     private static IEnumerable<NetInfoItem> ToNetInfoItems(IEnumerable<XMLNetItem> networks)
     {
-        return networks.Select(n => new NetInfoItem(Singleton<ParallelRoadToolManager>.instance.FromName(n.Name), n.HorizontalOffset,
-                                                    n.VerticalOffset, n.IsReversed));
+        return networks.Select(n => new NetInfoItem(
+            Singleton<ParallelRoadToolManager>.instance.FromName(n.Name),
+            n.HorizontalOffset,
+            n.VerticalOffset,
+            n.IsReversed));
     }
 }

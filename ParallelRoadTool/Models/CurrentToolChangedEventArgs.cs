@@ -13,10 +13,17 @@ using System;
 /// </summary>
 public class CurrentToolChangedEventArgs : EventArgs
 {
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CurrentToolChangedEventArgs"/> class.
+    /// </summary>
+    /// <param name="tool"><see cref="ToolBase"/> item that is passed as event argument.</param>
     public CurrentToolChangedEventArgs(ToolBase tool)
     {
         Tool = tool;
     }
 
+    /// <summary>
+    ///     Gets the <see cref="ToolBase"/> item that has been passed as event argument.
+    /// </summary>
     public ToolBase Tool { get; }
 }

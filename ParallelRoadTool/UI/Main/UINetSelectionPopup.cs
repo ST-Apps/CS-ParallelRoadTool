@@ -97,7 +97,7 @@ internal class UINetSelectionPopup : UIPanel
     }
 
     /// <summary>
-    ///     Closed the popup and destroys all the resources
+    ///     Closed the popup and destroys all the resources.
     /// </summary>
     public void Close()
     {
@@ -122,8 +122,14 @@ internal class UINetSelectionPopup : UIPanel
         if (_netItemsList == null)
         {
             // We need to create this here because this panel's size is set by its container and is not know during ctor
-            _netItemsList = UIList.AddUIList<UINetItemLargeListRow>(this, 0, 0, width - (2 * UIConstants.Padding),
-                                                                    (4 * UIConstants.LargeSize) - UIConstants.Padding, UIConstants.LargeSize);
+            _netItemsList = UIList.AddUIList<UINetItemLargeListRow>(
+                this,
+                0,
+                0,
+                width - (2 * UIConstants.Padding),
+                (4 * UIConstants.LargeSize) - UIConstants.Padding,
+                UIConstants.LargeSize);
+
             _netItemsList.BackgroundSprite = null;
 
             // We also register the selection changed event here

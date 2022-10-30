@@ -10,9 +10,18 @@ namespace ParallelRoadTool.Managers;
 /// </summary>
 internal static class ModifiersManager
 {
+    /// <summary>
+    ///     Gets or sets a value indicating whether SHIFT button is pressed or not.
+    /// </summary>
     public static bool IsShiftPressed { get; set; }
 
+    /// <summary>
+    ///     Gets or sets a value indicating whether CTRL button is pressed or not.
+    /// </summary>
     public static bool IsCtrlPressed { get; set; }
 
+    /// <summary>
+    ///     Gets or sets a value indicating whether ALT button is pressed or not.
+    /// </summary>
     public static bool IsAltPressed { get; set; }
 }

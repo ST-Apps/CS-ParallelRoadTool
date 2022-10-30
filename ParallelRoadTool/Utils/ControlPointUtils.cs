@@ -62,11 +62,17 @@ internal static class ControlPointUtils
         // Finally set offset control points by copying everything but the position
         currentStartPoint = startPoint with
         {
-            m_node = 0, m_segment = 0, m_position = currentStartPosition, m_elevation = startPoint.m_elevation + verticalOffset
+            m_node = 0,
+            m_segment = 0,
+            m_position = currentStartPosition,
+            m_elevation = startPoint.m_elevation + verticalOffset
         };
         currentEndPoint = endPoint with
         {
-            m_node = 0, m_segment = 0, m_position = currentEndPosition, m_elevation = endPoint.m_elevation + verticalOffset
+            m_node = 0,
+            m_segment = 0,
+            m_position = currentEndPosition,
+            m_elevation = endPoint.m_elevation + verticalOffset
         };
 
         switch (netMode)
@@ -140,41 +146,44 @@ internal static class ControlPointUtils
 
                 break;
             case NetTool.Mode.Upgrade:
-            {
-                var middleDirection = middlePoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
-                var currentMiddlePosition = middlePoint.m_position + middleDirection + (Vector3.up * verticalOffset);
-
-                currentMiddlePoint = middlePoint with
                 {
-                    m_node = 0, m_segment = 0, m_position = currentMiddlePosition, m_elevation = middlePoint.m_elevation + verticalOffset
-                };
-                break;
-            }
+                    var middleDirection = middlePoint.m_direction.NormalizeWithOffset(horizontalOffset).RotateXZ();
+                    var currentMiddlePosition = middlePoint.m_position + middleDirection + (Vector3.up * verticalOffset);
+
+                    currentMiddlePoint = middlePoint with
+                    {
+                        m_node = 0,
+                        m_segment = 0,
+                        m_position = currentMiddlePosition,
+                        m_elevation = middlePoint.m_elevation + verticalOffset
+                    };
+                    break;
+                }
 
             case NetTool.Mode.Curved:
             case NetTool.Mode.Freeform:
             default:
-            {
-                // If not on straight mode we compute the middle point by getting the intersection between startPoint and endPoint
-                // Both points will be projected in the respective directions to find the intersection
-                var currentMiddlePosition = VectorUtils.Intersection(
-                    currentStartPosition,
-                    startPoint.m_direction,
-                    currentEndPosition,
-                    endPoint.m_direction,
-                    out _,
-                    out _);
-
-                // Finally set the point
-                currentMiddlePoint = middlePoint with
                 {
-                    m_node = 0,
-                    m_segment = 0,
-                    m_position = currentMiddlePosition == Vector3.zero ? currentEndPoint.m_position : currentMiddlePosition,
-                    m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
-                };
-                break;
-            }
+                    // If not on straight mode we compute the middle point by getting the intersection between startPoint and endPoint
+                    // Both points will be projected in the respective directions to find the intersection
+                    var currentMiddlePosition = VectorUtils.Intersection(
+                        currentStartPosition,
+                        startPoint.m_direction,
+                        currentEndPosition,
+                        endPoint.m_direction,
+                        out _,
+                        out _);
+
+                    // Finally set the point
+                    currentMiddlePoint = middlePoint with
+                    {
+                        m_node = 0,
+                        m_segment = 0,
+                        m_position = currentMiddlePosition == Vector3.zero ? currentEndPoint.m_position : currentMiddlePosition,
+                        m_elevation = (currentStartPoint.m_elevation + currentEndPoint.m_elevation) / 2
+                    };
+                    break;
+                }
         }
 
         // Check if already have nodes at position and use them, but only if snapping is on (disable it for upgrade mode to prevent unintended results)
@@ -234,7 +243,7 @@ internal static class ControlPointUtils
 
     /// <summary>
     ///     Checks if the segment between the provided <see cref="NetTool.ControlPoint" /> can be created by verifying if the
-    ///     result <see cref="ToolBase.ToolErrors" /> is <see cref="ToolBase.ToolErrors.None" />
+    ///     result <see cref="ToolBase.ToolErrors" /> is <see cref="ToolBase.ToolErrors.None" />.
     /// </summary>
     /// <param name="netInfo"></param>
     /// <param name="currentStartPoint"></param>
@@ -249,7 +258,23 @@ internal static class ControlPointUtils
         NetTool.ControlPoint currentEndPoint,
         bool isReversed)
     {
-        return NetToolReversePatch.CreateNode(netInfo, currentStartPoint, currentMiddlePoint, currentEndPoint, NetTool.m_nodePositionsSimulation, 1000, true,
-                                              false, true, true, false, isReversed, 0, out _, out _, out _, out _) == ToolBase.ToolErrors.None;
+        return NetToolReversePatch.CreateNode(
+            netInfo,
+            currentStartPoint,
+            currentMiddlePoint,
+            currentEndPoint,
+            NetTool.m_nodePositionsSimulation,
+            1000,
+            true,
+            false,
+            true,
+            true,
+            false,
+            isReversed,
+            0,
+            out _,
+            out _,
+            out _,
+            out _) == ToolBase.ToolErrors.None;
     }
 }

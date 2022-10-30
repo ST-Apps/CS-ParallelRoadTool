@@ -35,9 +35,17 @@ public class UIToolToggleButton : UIRightDragHandle
 
         // Main/Checkbox
         var toggleAtlas = UITextures.LoadQuadSpriteAtlas("PRT-Toggle");
-        _toggleCheckBox = UICheckBoxes.AddIconToggle(this, 0, 0, toggleAtlas.name, "pressed", "normal", backgroundSprite: null,
-                                                     tooltip: Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON"), height: UIConstants.MediumSize,
-                                                     width: UIConstants.MediumSize);
+        _toggleCheckBox = UICheckBoxes.AddIconToggle(
+            this,
+            0,
+            0,
+            toggleAtlas.name,
+            "pressed",
+            "normal",
+            backgroundSprite: null,
+            tooltip: Translations.Translate("TOOLTIP_TOOL_TOGGLE_BUTTON"),
+            height: UIConstants.MediumSize,
+            width: UIConstants.MediumSize);
 
         target = _toggleCheckBox;
     }

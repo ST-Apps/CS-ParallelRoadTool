@@ -53,19 +53,24 @@ public class UIOptionsPanel : UIPanel
         topGroup.AddSpace(UIConstants.TinySize / 2);
 
         // Main/RenderDebugCheckbox
-        topGroup.AddCheckbox(Translations.Translate("CHECKBOX_RENDER_DEBUG_LABEL"), ModSettings.RenderDebugOverlay,
-                             value => ModSettings.RenderDebugOverlay = value);
+        topGroup.AddCheckbox(
+            Translations.Translate("CHECKBOX_RENDER_DEBUG_LABEL"),
+            ModSettings.RenderDebugOverlay,
+            value => ModSettings.RenderDebugOverlay = value);
 
         topGroup.AddSpace(UIConstants.TinySize / 2);
 #endif
 
         // Main/Language
-        _languageDropdown = (UIDropDown)topGroup.AddDropdown(Translations.Translate("CHOOSE_LANGUAGE"), Translations.LanguageList, Translations.Index,
-                                                             index =>
-                                                             {
-                                                                 Translations.Index = index;
-                                                                 OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
-                                                             });
+        _languageDropdown = (UIDropDown)topGroup.AddDropdown(
+            Translations.Translate("CHOOSE_LANGUAGE"),
+            Translations.LanguageList,
+            Translations.Index,
+            index =>
+            {
+                Translations.Index = index;
+                OptionsPanelManager<UIOptionsPanel>.LocaleChanged();
+            });
 
         // Main/Keybindings
         var keyBindingsGroup = (UIHelper)helper.AddGroup(Translations.Translate("GROUP_KEY_BINDINGS_NAME"));

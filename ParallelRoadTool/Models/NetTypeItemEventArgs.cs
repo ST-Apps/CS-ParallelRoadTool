@@ -14,6 +14,13 @@ using System;
 /// </summary>
 public class NetTypeItemEventArgs : EventArgs
 {
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NetTypeItemEventArgs"/> class.
+    /// </summary>
+    /// <param name="itemIndex">Index of the object that triggered the event.</param>
+    /// <param name="horizontalOffset">Value for the new horizontal offset.</param>
+    /// <param name="verticalOffset">Value for the new vertical offset.</param>
+    /// <param name="isReversed">Value for the new reverse property.</param>
     public NetTypeItemEventArgs(int itemIndex, float horizontalOffset, float verticalOffset, bool isReversed)
     {
         ItemIndex = itemIndex;
@@ -22,6 +29,11 @@ public class NetTypeItemEventArgs : EventArgs
         IsReversed = isReversed;
     }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NetTypeItemEventArgs"/> class.
+    /// </summary>
+    /// <param name="itemIndex">Index of the object that triggered the event.</param>
+    /// <param name="selectedNetworkName">Name of the <see cref="NetInfoItem"/> object that was selected.</param>
     public NetTypeItemEventArgs(int itemIndex, string selectedNetworkName)
     {
         ItemIndex = itemIndex;
@@ -29,27 +41,29 @@ public class NetTypeItemEventArgs : EventArgs
     }
 
     /// <summary>
-    ///     Horizontal offset, relative to the main network
+    ///     Gets the horizontal offset relative to the main network.
     /// </summary>
     public float HorizontalOffset { get; }
 
     /// <summary>
-    ///     Vertical offset, relative to the main network
+    ///     Gets the vertical offset relative to the main network.
     /// </summary>
     public float VerticalOffset { get; }
 
     /// <summary>
-    ///     True if the direction is reversed
+    ///     Gets a value indicating whether the direction is reversed.
     /// </summary>
     public bool IsReversed { get; }
 
     /// <summary>
-    ///     Name of the newly selected network. This is in-game's basic name, not the display one.
+    ///     Gets the name of the newly selected network.
+    ///     This is in-game's basic name, not the display one.
     /// </summary>
     public string SelectedNetworkName { get; }
 
     /// <summary>
-    ///     Current index in its container
+    ///     Gets or sets the current index in its container.
+    ///     This is needed to detect the correct event source on property changes/item deletion.
     /// </summary>
     public int ItemIndex { get; set; }
 }

@@ -14,25 +14,26 @@ using System.Xml.Serialization;
 public class XMLNetItem
 {
     /// <summary>
-    ///     Horizontal offset, relative to the main network
+    ///     Gets or sets the horizontal offset relative to the main network.
     /// </summary>
     [XmlElement]
     public float HorizontalOffset { get; set; }
 
     /// <summary>
-    ///     True if the direction is reversed
+    ///     Gets or sets a value indicating whether the direction is reversed.
     /// </summary>
     [XmlElement]
     public bool IsReversed { get; set; }
 
     /// <summary>
-    ///     Name of the network. This is in-game's basic name, not the display one.
+    ///     Gets or sets the name of the network.
+    ///     This is in-game's basic name, not the display one.
     /// </summary>
     [XmlElement]
     public string Name { get; set; }
 
     /// <summary>
-    ///     Vertical offset, relative to the main network
+    ///     Gets or sets the  vertical offset relative to the main network.
     /// </summary>
     [XmlElement]
     public float VerticalOffset { get; set; }

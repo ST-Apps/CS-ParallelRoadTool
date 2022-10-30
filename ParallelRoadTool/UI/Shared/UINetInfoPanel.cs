@@ -77,21 +77,6 @@ public class UINetInfoPanel : UIPanel
         Destroy(Thumbnail);
         Destroy(Label);
     }
-
-    ///// <summary>
-    ///// To render a <see cref="NetInfoItem"/> we just to set both atlas and spriteName for <see cref="Thumbnail"/>, as well as the provided network name.
-    ///// </summary>
-    ///// <param name="netInfo"></param>
-    //public void Render(NetInfoItem netInfo)
-    //{
-    //    Log._Debug(@$"[{nameof(UINetInfoPanel)}.{nameof(Render)}] Received a new network ""{netInfo.Name}"".");
-
-    //    Thumbnail.atlas = netInfo.Atlas;
-    //    Thumbnail.spriteName = netInfo.Thumbnail;
-    //    Label.text = netInfo.BeautifiedName;
-
-    //    color = netInfo.Color;
-    //}
 }
 
 /// <summary>

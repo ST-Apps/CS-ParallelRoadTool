@@ -6,7 +6,6 @@
 namespace ParallelRoadTool.Patches;
 
 using System;
-using System.Reflection;
 using ColossalFramework;
 using CSUtil.Commons;
 using Extensions;
@@ -18,22 +17,75 @@ using Utils;
 using Wrappers;
 using static ToolBase;
 
-[HarmonyPatch(typeof(NetTool),nameof(NetTool.CreateNode),
-              new[]
-              {
-                  typeof(NetInfo), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint),
-                  typeof(FastList<NetTool.NodePosition>), typeof(int), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool),
-                  typeof(bool), typeof(ushort), typeof(ushort), typeof(ushort), typeof(int), typeof(int)
-              },
-              new[]
-              {
-                  ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
-                  ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
-                  ArgumentType.Normal, ArgumentType.Out, ArgumentType.Out, ArgumentType.Out, ArgumentType.Out
-              })]
+/// <summary>
+///     Main patch responsible for nodes/segments creation.
+///     The actual creation logic is delegated to game's non-patched method so that we can minimize the amount of things done by this patch.
+/// </summary>
+[HarmonyPatch(
+    typeof(NetTool),
+    nameof(NetTool.CreateNode),
+    new[]
+    {
+        typeof(NetInfo),
+        typeof(NetTool.ControlPoint),
+        typeof(NetTool.ControlPoint),
+        typeof(NetTool.ControlPoint),
+        typeof(FastList<NetTool.NodePosition>),
+        typeof(int),
+        typeof(bool),
+        typeof(bool),
+        typeof(bool),
+        typeof(bool),
+        typeof(bool),
+        typeof(bool),
+        typeof(ushort),
+        typeof(ushort),
+        typeof(ushort),
+        typeof(int),
+        typeof(int),
+    },
+    new[]
+    {
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Normal,
+        ArgumentType.Out,
+        ArgumentType.Out,
+        ArgumentType.Out,
+        ArgumentType.Out,
+    })]
 internal class NetToolNodePatch
 {
-
+    /// <summary>
+    ///     This method is meant to just move nodes if angle compensation is on, as thi movement must be done before creating anything else.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="startPoint"></param>
+    /// <param name="middlePoint"></param>
+    /// <param name="endPoint"></param>
+    /// <param name="nodeBuffer"></param>
+    /// <param name="maxSegments"></param>
+    /// <param name="test"></param>
+    /// <param name="visualize"></param>
+    /// <param name="autoFix"></param>
+    /// <param name="needMoney"></param>
+    /// <param name="invert"></param>
+    /// <param name="switchDir"></param>
+    /// <param name="relocateBuildingID"></param>
+    /// <param name="node"></param>
+    /// <param name="segment"></param>
+    /// <param name="cost"></param>
+    /// <param name="productionRate"></param>
     public static void Prefix(
         NetInfo info,
         NetTool.ControlPoint startPoint,
@@ -53,14 +105,8 @@ internal class NetToolNodePatch
         int cost,
         int productionRate)
     {
-        // We only run if the mod is set as Active
-        if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
-        {
-            return;
-        }
 
-        // Prevent mod from running if we're in either test, switch_dir or visualize modes
-        if (test || switchDir || visualize)
+        if (!CanRun(test, visualize, switchDir))
         {
             return;
         }
@@ -100,6 +146,26 @@ internal class NetToolNodePatch
         }
     }
 
+    /// <summary>
+    ///     Creates all the parallel/segments.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="startPoint"></param>
+    /// <param name="middlePoint"></param>
+    /// <param name="endPoint"></param>
+    /// <param name="nodeBuffer"></param>
+    /// <param name="maxSegments"></param>
+    /// <param name="test"></param>
+    /// <param name="visualize"></param>
+    /// <param name="autoFix"></param>
+    /// <param name="needMoney"></param>
+    /// <param name="invert"></param>
+    /// <param name="switchDir"></param>
+    /// <param name="relocateBuildingID"></param>
+    /// <param name="node"></param>
+    /// <param name="segment"></param>
+    /// <param name="cost"></param>
+    /// <param name="productionRate"></param>
     public static void Postfix(
         NetInfo info,
         NetTool.ControlPoint startPoint,
@@ -119,14 +185,7 @@ internal class NetToolNodePatch
         int cost,
         int productionRate)
     {
-        // We only run if the mod is set as Active
-        if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
-        {
-            return;
-        }
-
-        // Prevent mod from running if we're in either test, switch_dir or visualize modes
-        if (test || switchDir || visualize)
+        if (!CanRun(test, visualize, switchDir))
         {
             return;
         }
@@ -215,26 +274,78 @@ internal class NetToolNodePatch
             Singleton<ParallelRoadToolManager>.instance.ClearControlPoints();
         }
     }
+
+    /// <summary>
+    ///     Common checks to see if we need to run both our Prefix and Postfix methods.
+    /// </summary>
+    /// <param name="test"></param>
+    /// <param name="visualize"></param>
+    /// <param name="switchDir"></param>
+    /// <returns>True if the method can run, based on the provided parameters.</returns>
+    private static bool CanRun(bool test, bool visualize, bool switchDir)
+    {
+        // We only run if the mod is set as Active
+        if (!ParallelRoadToolManager.ModStatuses.IsFlagSet(ModStatuses.Active))
+        {
+            return false;
+        }
+
+        // Prevent mod from running if we're in either test, switch_dir or visualize modes
+        if (test || switchDir || visualize)
+        {
+            return false;
+        }
+
+        return true;
+    }
 }
 
 [HarmonyPatch]
 internal static class NetToolReversePatch
 {
     [HarmonyReversePatch]
-    [HarmonyPatch(typeof(NetTool), nameof(NetTool.CreateNode),
-                  new[]
-                  {
-                      typeof(NetInfo), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint), typeof(NetTool.ControlPoint),
-                      typeof(FastList<NetTool.NodePosition>), typeof(int), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool),
-                      typeof(bool), typeof(ushort), typeof(ushort), typeof(ushort), typeof(int), typeof(int)
-                  },
-                  new[]
-                  {
-                      ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
-                      ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal,
-                      ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Out, ArgumentType.Out, ArgumentType.Out,
-                      ArgumentType.Out
-                  })]
+    [HarmonyPatch(
+        typeof(NetTool),
+        nameof(NetTool.CreateNode),
+        new[] {
+            typeof(NetInfo),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint),
+            typeof(FastList<NetTool.NodePosition>),
+            typeof(int),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(ushort),
+            typeof(ushort),
+            typeof(ushort),
+            typeof(int),
+            typeof(int),
+        },
+        new[]
+        {
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Out,
+            ArgumentType.Out,
+            ArgumentType.Out,
+            ArgumentType.Out,
+        })]
     public static ToolErrors CreateNode(
         NetInfo info,
         NetTool.ControlPoint startPoint,

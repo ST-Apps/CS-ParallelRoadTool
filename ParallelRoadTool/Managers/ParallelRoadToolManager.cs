@@ -19,10 +19,8 @@ using UI;
 using UnityEngine;
 
 /// <summary>
-///     Mod's main controller and data storage.
+///     This class contains mod's core logic and data storage.
 /// </summary>
-
-// ReSharper disable once ClassNeverInstantiated.Global
 public class ParallelRoadToolManager : MonoBehaviour
 {
     /// <summary>
@@ -48,61 +46,65 @@ public class ParallelRoadToolManager : MonoBehaviour
     private NetInfo _currentNetInfo;
 
     /// <summary>
-    ///     True only if <see cref="AppMode" /> is <see cref="AppMode.Game" />.
+    ///     Gets or sets a value indicating whether <see cref="AppMode" /> is <see cref="AppMode.Game" />.
     /// </summary>
     public static bool IsInGameMode { get; set; }
 
     /// <summary>
-    ///     Flags for the current statuses for the mod. For more details see: <see cref="Models.ModStatuses" />.
+    ///     Gets flags for mod's current <see cref="Models.ModStatuses" />.
     /// </summary>
     public static ModStatuses ModStatuses { get; private set; } = ModStatuses.Disabled;
 
     /// <summary>
-    ///     <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
+    ///     Gets the <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
     ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
     /// </summary>
     public List<NetInfoItem> SelectedNetworkTypes { get; } = new ();
 
     /// <summary>
-    ///     <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
+    ///     Gets <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
     ///     A <see cref="NetInfo" /> can be any kind of network that the user can build.
     /// </summary>
     public List<NetInfo> AvailableRoadTypes { get; private set; }
 
     /// <summary>
-    ///     This tells if the user wants the parallel/stacked nodes to snap with already existing nodes.
+    ///     Gets a value indicating whether the user wants the parallel/stacked nodes to snap with already existing nodes.
     /// </summary>
     public bool IsSnappingEnabled { get; private set; }
 
     /// <summary>
-    ///     This tells if the user wants the parallel/stacked nodes to be automatically align in case of "extreme" angles.
+    ///     Gets a value indicating whether the user wants the parallel/stacked nodes to be automatically align in case of "extreme" angles.
     ///     This will force the previously drawn node to be moved, with possibly unintended consequences.
     /// </summary>
     public bool IsAngleCompensationEnabled { get; private set; }
 
     /// <summary>
-    ///     This tells if we need to adjust horizontal offsets when <see cref="_currentNetInfo" /> changes, so that we avoid
+    ///     Gets a value indicating whether we need to adjust horizontal offsets when <see cref="_currentNetInfo" /> changes, so that we avoid
     ///     overlapping and keep the same relative distance between segments.
     /// </summary>
     public bool IsAutoWidthEnabled { get; private set; }
 
     /// <summary>
-    ///     True if the current map is using left-hand traffic.
+    ///     Gets a value indicating whether the current map is using left-hand traffic.
     /// </summary>
     public bool IsLeftHandTraffic { get; private set; }
 
     /// <summary>
-    ///     True if we detect a mouse long press, needed to prevent multiple updates when Anarchy is on.
-    ///     HACK - [ISSUE-84]
+    ///     Gets or sets a value indicating whether we detected a mouse long press, needed to prevent multiple updates when Anarchy is on.
+    ///     HACK - [ISSUE-84].
     /// </summary>
     public bool IsMouseLongPress { get; set; }
 
     /// <summary>
-    ///     Main controller for everything UI-related
+    ///     Gets te main controller for everything UI-related.
     /// </summary>
     private static UIController UIController => Singleton<UIController>.instance;
 
-    // TODO: Awake/Start or ctor??
+    /// <summary>
+    ///     This method initializes mod's first time loading for non-UI elements.
+    ///     If <see cref="NetTool" /> is detected we initialize all the support structures, load the available networks and
+    ///     finally create the UI.
+    /// </summary>
     public void Awake()
     {
         try
@@ -146,7 +148,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     This method initializes mod's first time loading.
+    ///     This method initializes mod's first time loading for UI-only elements.
     ///     If <see cref="NetTool" /> is detected we initialize all the support structures, load the available networks and
     ///     finally create the UI.
     /// </summary>
@@ -217,8 +219,8 @@ public class ParallelRoadToolManager : MonoBehaviour
     ///     Flips the status for <see cref="ModStatuses" /> Active flag, effectively activating/disactivating the mod.
     ///     This change propagates to <see cref="UIController" /> to update the UI accordingly.
     /// </summary>
-    /// <param name="force"></param>
-    /// <param name="value"></param>
+    /// <param name="force">True if we want to forcefully disable the mod.</param>
+    /// <param name="value">Value indicating whether mod should be enabled or disabled.</param>
     public void ToggleModActiveStatus(bool force = false, bool value = false)
     {
         if (!force)
@@ -255,7 +257,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Returns the <see cref="NetInfo" /> matching the provided name
+    ///     Returns the <see cref="NetInfo" /> matching the provided name.
     /// </summary>
     /// <param name="networkName"></param>
     /// <returns></returns>
@@ -265,7 +267,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Saves the current configuration as a preset
+    ///     Saves the current configuration as a preset.
     /// </summary>
     /// <param name="fileName"></param>
     public void SavePreset(string fileName = null)
@@ -321,7 +323,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Empties the buffer, to be called after we built a set of networks
+    ///     Empties the buffer, to be called after we built a set of networks.
     /// </summary>
     public void ClearControlPoints()
     {
@@ -402,7 +404,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Forces sorting and refreshing the current selected networks
+    ///     Forces sorting and refreshing the current selected networks.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -538,7 +540,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Toggles snapping on/off
+    ///     Toggles snapping on/off.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="value"></param>
@@ -548,7 +550,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Toggles angle compensation mode on/off
+    ///     Toggles angle compensation mode on/off.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="value"></param>
@@ -558,7 +560,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Toggles automatic horizontal offsets adjusting on/off
+    ///     Toggles automatic horizontal offsets adjusting on/off.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="value"></param>
@@ -619,7 +621,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Unsubscribe from all the events that we're handling
+    ///     Unsubscribe from all the events that we're handling.
     /// </summary>
     private void DetachFromEvents()
     {
@@ -644,7 +646,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Subscribe to all the events that we're handling
+    ///     Subscribe to all the events that we're handling.
     /// </summary>
     private void AttachToEvents()
     {

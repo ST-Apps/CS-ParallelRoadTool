@@ -5,18 +5,21 @@
 
 namespace ParallelRoadTool.Extensions;
 
-using System.Text.RegularExpressions;
 using Wrappers;
 
+/// <summary>
+///     This class provides extension methods for <see cref="NetInfo"/> objects.
+/// </summary>
 public static class NetInfoExtensions
 {
     /// <summary>
     ///     Returns a destination NetInfo with the same road type (elevated, tunnel etc.) as source one.
+    ///     It uses the <see cref="RoadAIWrapper"/> to read the correct road type info and extract it.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="destination"></param>
-    /// <param name="isSlope"></param>
-    /// <returns></returns>
+    /// <param name="source"><see cref="NetInfo"/> object from which we're trying to copy the road type.</param>
+    /// <param name="destination"><see cref="NetInfo"/> object matching source's road type.</param>
+    /// <param name="isSlope">True if the matching <see cref="NetInfo"/> is a slope road type.</param>
+    /// <returns>A <see cref="NetInfo"/>with the same road type (elevated, tunnel etc.) as source one.</returns>
     public static NetInfo GetNetInfoWithElevation(this NetInfo source, NetInfo destination, out bool isSlope)
     {
         isSlope = false;
@@ -52,28 +55,18 @@ public static class NetInfoExtensions
             result = destination;
         }
 
-        // Sanity check, of them may be null
+        // Sanity check, one of them may be null
         result ??= destination;
 
         return result;
     }
 
     /// <summary>
-    ///     Localizes, when possible, <see cref="NetInfo.name" /> and trims some spaces.
+    ///     Check if the provided <see cref="NetInfo"/> is one-way only by checking if <see cref="NetInfo.m_hasBackwardVehicleLanes"/> is false.
+    ///     A one-way <see cref="NetInfo"/> will only have forward lanes.
     /// </summary>
-    /// <param name="netInfo"></param>
-    /// <returns></returns>
-    public static string GenerateBeautifiedNetName(this NetInfo netInfo)
-    {
-        // Trim string and then remove duplicate spaces
-        return Regex.Replace(netInfo.GetUncheckedLocalizedTitle().Trim(), " {2,}", " ");
-    }
-
-    /// <summary>
-    ///     Returns true if the <see cref="NetInfo" /> doesn't have any backward facing lane.
-    /// </summary>
-    /// <param name="netInfo"></param>
-    /// <returns></returns>
+    /// <param name="netInfo"><see cref="NetInfo"/> for which to check road's direction.</param>
+    /// <returns>True if the <see cref="NetInfo" /> doesn't have any backward facing lane.</returns>
     public static bool IsOneWayOnly(this NetInfo netInfo)
     {
         // One-way roads only have forward lanes

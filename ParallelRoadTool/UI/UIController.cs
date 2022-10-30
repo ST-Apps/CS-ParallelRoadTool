@@ -275,10 +275,10 @@ public class UIController : MonoBehaviour
         }
         catch (Exception e)
         {
-            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(Translations.Translate("LABEL_SAVE_PRESET_FAILED_TITLE"),
-                                                                                  string
-                                                                                      .Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"),
-                                                                                              fileName, e), true);
+            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
+                Translations.Translate("LABEL_SAVE_PRESET_FAILED_TITLE"),
+                string.Format(Translations.Translate("LABEL_SAVE_PRESET_FAILED_MESSAGE"), fileName, e),
+                true);
         }
     }
 
@@ -314,10 +314,10 @@ public class UIController : MonoBehaviour
         }
         catch (Exception e)
         {
-            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(Translations.Translate("LABEL_LOAD_PRESET_FAILED_TITLE"),
-                                                                                  string
-                                                                                      .Format(Translations.Translate("LABEL_LOAD_PRESET_FAILED_MESSAGE"),
-                                                                                              fileName, e), true);
+            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
+                Translations.Translate("LABEL_LOAD_PRESET_FAILED_TITLE"),
+                string.Format(Translations.Translate("LABEL_LOAD_PRESET_FAILED_MESSAGE"), fileName, e),
+                true);
         }
     }
 
@@ -332,10 +332,10 @@ public class UIController : MonoBehaviour
         }
         catch (Exception e)
         {
-            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(Translations.Translate("LABEL_DELETE_PRESET_FAILED_TITLE"),
-                                                                                  string
-                                                                                      .Format(Translations.Translate("LABEL_DELETE_PRESET_FAILED_MESSAGE"),
-                                                                                              fileName, e), true);
+            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
+                Translations.Translate("LABEL_DELETE_PRESET_FAILED_TITLE"),
+                string.Format(Translations.Translate("LABEL_DELETE_PRESET_FAILED_MESSAGE"), fileName, e),
+                true);
         }
     }
 

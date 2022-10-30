@@ -20,19 +20,19 @@ using Utils;
 ///     This window contains:
 ///     - an header with the closing button
 ///     - a row with all the tools and features
-///     - a list of panels used to display selected NetInfo instances
+///     - a list of panels used to display selected NetInfo instances.
 /// </summary>
 public class UIMainWindow : UIPanel
 {
     /// <summary>
     ///     Saved X position for the current components. Defaults at -1000 and it's saved in
-    ///     <see cref="Constants.SettingsFileName" />
+    ///     <see cref="Constants.SettingsFileName" />.
     /// </summary>
     private static readonly SavedInt SavedWindowX = new ("windowX", Constants.SettingsFileName, -1000, true);
 
     /// <summary>
     ///     Saved Y position for the current components. Defaults at -1000 and it's saved in
-    ///     <see cref="Constants.SettingsFileName" />
+    ///     <see cref="Constants.SettingsFileName" />.
     /// </summary>
     private static readonly SavedInt SavedWindowY = new ("windowY", Constants.SettingsFileName, -1000, true);
 
@@ -230,7 +230,7 @@ public class UIMainWindow : UIPanel
     }
 
     /// <summary>
-    ///     Stores current position in mod's preferences
+    ///     Stores current position in mod's preferences.
     /// </summary>
     /// <param name="component"></param>
     /// <param name="value"></param>
@@ -275,7 +275,7 @@ public class UIMainWindow : UIPanel
         // Main/Header/CloseButton
         _closeButton = headerPanel.AddUIComponent<UIButton>();
         _closeButton.name = $"{headerPanel.name}_CloseButton";
-        _closeButton.text = "";
+        _closeButton.text = string.Empty;
         _closeButton.normalBgSprite = "buttonclose";
         _closeButton.hoveredBgSprite = "buttonclosehover";
         _closeButton.pressedBgSprite = "buttonclosepressed";
@@ -315,15 +315,26 @@ public class UIMainWindow : UIPanel
         optionsPanel.autoLayoutDirection = LayoutDirection.Horizontal;
 
         // Main/Toolbar/Options/SavePresetButton
-        _savePresetButton = UIButtons.AddIconButton(optionsPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Save"),
-                                                    Translations.Translate("TOOLTIP_SAVE_BUTTON"));
+        _savePresetButton = UIButtons.AddIconButton(
+            optionsPanel,
+            0,
+            0,
+            UIConstants.MediumSize,
+            UITextures.LoadQuadSpriteAtlas("PRT-Save"),
+            Translations.Translate("TOOLTIP_SAVE_BUTTON"));
 
         _savePresetButton.name = $"{optionsPanel.name}_SavePreset";
         _savePresetButton.isEnabled = false;
 
         // Main/Toolbar/Options/LoadPresetButton
-        _loadPresetButton = UIButtons.AddIconButton(optionsPanel, 0, 0, UIConstants.MediumSize, UITextures.LoadQuadSpriteAtlas("PRT-Load"),
-                                                    Translations.Translate("TOOLTIP_LOAD_BUTTON"));
+        _loadPresetButton = UIButtons.AddIconButton(
+            optionsPanel,
+            0,
+            0,
+            UIConstants.MediumSize,
+            UITextures.LoadQuadSpriteAtlas("PRT-Load"),
+            Translations.Translate("TOOLTIP_LOAD_BUTTON"));
+
         _loadPresetButton.name = $"{optionsPanel.name}_LoadPreset";
 
         // Main/Toolbar/Tools

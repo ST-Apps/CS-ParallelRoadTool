@@ -29,13 +29,20 @@ public sealed class UILoadPresetWindow : UIModalWindow
     private readonly UIButton _loadPresetButton;
     private readonly UIButton _deletePresetButton;
 
-    public UILoadPresetWindow() : base("PRT-Logo-Small")
+    public UILoadPresetWindow()
+        : base("PRT-Logo-Small")
     {
         Container.autoLayoutDirection = LayoutDirection.Horizontal;
 
         // Main/FileList
-        _fileList = UIList.AddUIList<UIFileListRow>(Container, 0, 0, (Container.width / 2) - (2 * UIConstants.Padding),
-                                                    Container.height - (2 * UIConstants.Padding), UIConstants.TinySize);
+        _fileList = UIList.AddUIList<UIFileListRow>(
+            Container,
+            0,
+            0,
+            (Container.width / 2) - (2 * UIConstants.Padding),
+            Container.height - (2 * UIConstants.Padding),
+            UIConstants.TinySize);
+
         _fileList.RowHeight -= 4;
 
         // Main/DetailsContainer
@@ -58,13 +65,21 @@ public sealed class UILoadPresetWindow : UIModalWindow
         buttonsContainer.width = _fileList.width;
 
         // Main/DetailsContainer/LoadButton
-        _loadPresetButton = UIButtons.AddButton(buttonsContainer, 0, 0, Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"),
-                                                buttonsContainer.width/2);
+        _loadPresetButton = UIButtons.AddButton(
+            buttonsContainer,
+            0,
+            0,
+            Translations.Translate("LABEL_LOAD_PRESET_BUTTON_TITLE"),
+            buttonsContainer.width / 2);
         _loadPresetButton.isEnabled = false;
 
         // Main/DetailsContainer/DeleteButton
-        _deletePresetButton = UIButtons.AddButton(buttonsContainer, 0, 0, Translations.Translate("LABEL_DELETE_PRESET_BUTTON_TITLE"),
-                                                buttonsContainer.width/2);
+        _deletePresetButton = UIButtons.AddButton(
+            buttonsContainer,
+            0,
+            0,
+            Translations.Translate("LABEL_DELETE_PRESET_BUTTON_TITLE"),
+            buttonsContainer.width / 2);
         _deletePresetButton.isEnabled = false;
 
         // Events
@@ -72,6 +87,7 @@ public sealed class UILoadPresetWindow : UIModalWindow
     }
 
     public event PropertyChangedEventHandler<string> LoadButtonEventClicked;
+
     public event PropertyChangedEventHandler<string> DeleteButtonEventClicked;
 
     public override float PanelHeight => 256;
@@ -132,7 +148,7 @@ public sealed class UILoadPresetWindow : UIModalWindow
 
             // We can delete and thus save the file
             Log.Info(@$"[{nameof(UILoadPresetWindow)}.{nameof(DeletePresetButtonOnEventClicked)}] User accepted to delete ""{(string)_fileList.SelectedItem}"", deleting...");
-            
+
             DeleteButtonEventClicked?.Invoke(this, (string)_fileList.SelectedItem);
         }).SetMessage(
             Translations.Translate("LABEL_DELETE_CONFIRMATION_PRESET_TITLE"),

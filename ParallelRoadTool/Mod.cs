@@ -15,22 +15,20 @@ using ICities;
 using Settings;
 using UI.Settings;
 
-// ReSharper disable ClassNeverInstantiated.Global
 /// <summary>
 ///     The base mod class for instantiation by the game.
 /// </summary>
 public sealed class Mod : PatcherMod<UIOptionsPanel, PatcherBase>, IUserMod
 {
-    #region Fields
-
     /// <summary>
     ///     Minimum minor version that is compatible with the mod.
     /// </summary>
     private const string CompatibleVersion = "1.15";
 
-    #endregion
-
-    #region Properties
+    /// <summary>
+    ///     Simplified name, used for file-system operations.
+    /// </summary>
+    public static string SimplifiedName => "Parallel Road Tool";
 
 #if DEBUG
     /// <summary>
@@ -51,11 +49,6 @@ public sealed class Mod : PatcherMod<UIOptionsPanel, PatcherBase>, IUserMod
     public override WhatsNewMessage[] WhatsNewMessages => WhatsNewMessageListing.Messages;
 
     /// <summary>
-    ///     Simplified name, used for file-system operations
-    /// </summary>
-    public static string SimplifiedName => "Parallel Road Tool";
-
-    /// <summary>
     ///     Gets the mod's unique Harmony identifier.
     /// </summary>
     public override string HarmonyID => "it.stapps.cities.parallelroadtool";
@@ -65,16 +58,15 @@ public sealed class Mod : PatcherMod<UIOptionsPanel, PatcherBase>, IUserMod
     /// </summary>
     public string Description => Translations.Translate("MOD_DESCRIPTION");
 
-    #endregion
-
-    #region Lifecycle
-
     /// <summary>
     ///     Called by the game when the mod is enabled.
     /// </summary>
     public override void OnEnabled()
     {
+#if DEBUG
         Harmony.DEBUG = true;
+#endif
+
         // Disable mod if version isn't compatible.
         if (!BuildConfig.applicationVersion.StartsWith(CompatibleVersion))
         {
@@ -117,23 +109,15 @@ public sealed class Mod : PatcherMod<UIOptionsPanel, PatcherBase>, IUserMod
         ModSettings.Load();
     }
 
-    #endregion
-
-    #region Control
-
-    #region Internals
-
     /// <summary>
     ///     Displays a version incompatibility error.
     /// </summary>
     private static void DisplayVersionError()
     {
         var versionErrorNotification = NotificationBase.ShowNotification<ListNotification>();
-        versionErrorNotification.AddParas(Translations.Translate("WRONG_VERSION"), Translations.Translate("SHUT_DOWN"),
-                                          BuildConfig.applicationVersion);
+        versionErrorNotification.AddParas(
+            Translations.Translate("WRONG_VERSION"),
+            Translations.Translate("SHUT_DOWN"),
+            BuildConfig.applicationVersion);
     }
-
-    #endregion
-
-    #endregion
 }

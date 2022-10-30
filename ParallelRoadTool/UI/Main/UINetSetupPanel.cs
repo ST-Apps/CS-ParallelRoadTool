@@ -124,8 +124,13 @@ internal class UINetSetupPanel : UIPanel
         horizontalOffsetIcon.spriteName = "normal";
 
         // NetSetup/Offsets/Horizontal/Text
-        _horizontalOffsetField = UITextFields.AddTextField(horizontalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize,
-                                                           tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
+        _horizontalOffsetField = UITextFields.AddTextField(
+            horizontalOffsetPanel,
+            0,
+            0,
+            UIConstants.HugeSize,
+            UIConstants.TinySize,
+            tooltip: Translations.Translate("TOOLTIP_HORIZONTAL_OFFSET_TEXT"));
         _horizontalOffsetField.numericalOnly = _horizontalOffsetField.allowFloats
                                                    = _horizontalOffsetField.allowNegative = _horizontalOffsetField.submitOnFocusLost = true;
 
@@ -143,8 +148,13 @@ internal class UINetSetupPanel : UIPanel
         verticalOffsetIcon.spriteName = "normal";
 
         // NetSetup/Offsets/Vertical/Text
-        _verticalOffsetField = UITextFields.AddTextField(verticalOffsetPanel, 0, 0, UIConstants.HugeSize, UIConstants.TinySize,
-                                                         tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
+        _verticalOffsetField = UITextFields.AddTextField(
+            verticalOffsetPanel,
+            0,
+            0,
+            UIConstants.HugeSize,
+            UIConstants.TinySize,
+            tooltip: Translations.Translate("TOOLTIP_VERTICAL_OFFSET_TEXT"));
         _verticalOffsetField.maxLength = 3;
         _verticalOffsetField.numericalOnly = _verticalOffsetField.allowFloats
                                                  = _verticalOffsetField.allowNegative = _verticalOffsetField.submitOnFocusLost = true;
@@ -168,15 +178,27 @@ internal class UINetSetupPanel : UIPanel
         _buttonsPanel.AddUIComponent<UIPanel>().size = new Vector2(1, UIConstants.Padding / 2f);
 
         // NetSetup/Buttons/Delete
-        _deleteButton = UIButtons.AddIconButton(_buttonsPanel, 0, 0, UIConstants.TinySize, UITextures.LoadQuadSpriteAtlas("PRT-Remove"),
-                                                Translations.Translate("TOOLTIP_REMOVE_NETWORK_BUTTON"));
+        _deleteButton = UIButtons.AddIconButton(
+            _buttonsPanel,
+            0,
+            0,
+            UIConstants.TinySize,
+            UITextures.LoadQuadSpriteAtlas("PRT-Remove"),
+            Translations.Translate("TOOLTIP_REMOVE_NETWORK_BUTTON"));
 
         // NetSetup/Buttons/Reverse
         var reverseAtlas = UITextures.LoadSpriteAtlas("PRT-Reverse", new[] { "Reverse", "ReversePressed" });
-        _reverseCheckbox = UICheckBoxes.AddIconToggle(_buttonsPanel, 0, 0, reverseAtlas.name, "ReversePressed", "Reverse",
-                                                      backgroundSprite: "OptionBase",
-                                                      tooltip: Translations.Translate("TOOLTIP_INVERT_DIRECTION_TOGGLE_BUTTON"), height: UIConstants.TinySize,
-                                                      width: UIConstants.TinySize);
+        _reverseCheckbox = UICheckBoxes.AddIconToggle(
+            _buttonsPanel,
+            0,
+            0,
+            reverseAtlas.name,
+            "ReversePressed",
+            "Reverse",
+            backgroundSprite: "OptionBase",
+            tooltip: Translations.Translate("TOOLTIP_INVERT_DIRECTION_TOGGLE_BUTTON"),
+            height: UIConstants.TinySize,
+            width: UIConstants.TinySize);
     }
 
     public override void Start()
@@ -247,8 +269,12 @@ internal class UINetSetupPanel : UIPanel
     /// <param name="value"></param>
     private void NetInfo_EventChanged<T>(UIComponent component, T value)
     {
-        var netTypeArgs = new NetTypeItemEventArgs(CurrentIndex, float.Parse(_horizontalOffsetField.text), float.Parse(_verticalOffsetField.text),
-                                                   _reverseCheckbox.isChecked);
+        var netTypeArgs = new NetTypeItemEventArgs(
+            CurrentIndex,
+            float.Parse(_horizontalOffsetField.text),
+            float.Parse(_verticalOffsetField.text),
+            _reverseCheckbox.isChecked);
+
         NetTypeEventChanged?.Invoke(null, netTypeArgs);
     }
 

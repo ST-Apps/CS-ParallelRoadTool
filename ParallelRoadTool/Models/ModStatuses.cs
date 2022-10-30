@@ -19,8 +19,23 @@ using System;
 [Flags]
 public enum ModStatuses : byte
 {
+    /// <summary>
+    /// In this state, mod is completely disabled.
+    /// </summary>
     Disabled = 1,
+
+    /// <summary>
+    /// In this state, mod is initialized.
+    /// </summary>
     Deployed = 2,
+
+    /// <summary>
+    /// In this state, mod is enabled and ready to be toggled.
+    /// </summary>
     Enabled = 4,
-    Active = 8
+
+    /// <summary>
+    /// In this state, mod has been toggled on and being used.
+    /// </summary>
+    Active = 8,
 }

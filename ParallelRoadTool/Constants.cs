@@ -6,12 +6,12 @@
 namespace ParallelRoadTool;
 
 /// <summary>
-///     Constants and data needed for the mod to work
+///     Constants and data needed for the mod to work.
 /// </summary>
 public static class Constants
 {
     /// <summary>
-    ///     Filename for C:S's default cgs settings file
+    ///     Filename for C:S's default cgs settings file.
     /// </summary>
     public const string SettingsFileName = "ParallelRoadTool";
 

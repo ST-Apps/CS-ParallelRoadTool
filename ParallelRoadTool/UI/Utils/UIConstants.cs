@@ -44,42 +44,42 @@ internal static class UIConstants
     internal const int HugeSize = 64;
 
     /// <summary>
-    ///     Fixed width for a generic <see cref="UINetInfoPanel" />
+    ///     Fixed width for a generic <see cref="UINetInfoPanel" />.
     /// </summary>
     internal const int NetInfoPanelLargeWidth = 380;
 
     /// <summary>
-    ///     Fixed height for a generic <see cref="UINetInfoPanel" />
+    ///     Fixed height for a generic <see cref="UINetInfoPanel" />.
     /// </summary>
     internal const int NetInfoPanelLargeHeight = LargeSize + Padding + Padding;
 
     /// <summary>
-    ///     Fixed width for a generic <see cref="UINetInfoPanel" />
+    ///     Fixed width for a generic <see cref="UINetInfoPanel" />.
     /// </summary>
     internal const int NetInfoPanelTinyWidth = 220;
 
     /// <summary>
-    ///     Fixed height for a generic <see cref="UINetInfoPanel" />
+    ///     Fixed height for a generic <see cref="UINetInfoPanel" />.
     /// </summary>
     internal const int NetInfoPanelTinyHeight = TinySize + Padding + Padding;
 
     /// <summary>
-    ///     Fixed size for a tiny <see cref="NetInfo" /> thumbnail
+    ///     Fixed size for a tiny <see cref="NetInfo" /> thumbnail.
     /// </summary>
     internal static readonly Vector2 ThumbnailTinySize = new (TinySize, TinySize);
 
     /// <summary>
-    ///     Fixed size for a large <see cref="NetInfo" /> thumbnail
+    ///     Fixed size for a large <see cref="NetInfo" /> thumbnail.
     /// </summary>
     internal static readonly Vector2 ThumbnailLargeSize = new (LargeSize, LargeSize);
 
     /// <summary>
-    ///     Fixed size for a generic <see cref="UINetInfoPanel" />
+    ///     Fixed size for a generic <see cref="UINetInfoPanel" />.
     /// </summary>
     internal static readonly Vector2 NetInfoPanelLargeSize = new (NetInfoPanelLargeWidth, NetInfoPanelLargeHeight);
 
     /// <summary>
-    ///     Fixed size for a generic <see cref="UINetInfoPanel" />
+    ///     Fixed size for a generic <see cref="UINetInfoPanel" />.
     /// </summary>
     internal static readonly Vector2 NetInfoPanelTinySize = new (NetInfoPanelTinyWidth, NetInfoPanelTinyHeight);
 

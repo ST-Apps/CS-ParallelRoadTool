@@ -47,13 +47,16 @@ public static class Log
         Info,
         Warning,
         Error,
-        Exception
+        Exception,
     }
 
+#pragma warning disable IDE1006 // Stili di denominazione
+#pragma warning disable SA1300 // Element should begin with upper-case letter
+
     /// <summary>
-    ///     Will log only if debug mode
+    ///     Will log only if debug mode.
     /// </summary>
-    /// <param name="s">The text</param>
+    /// <param name="s">The text.</param>
     [Conditional("DEBUG")]
     public static void _Debug(string s)
     {
@@ -61,9 +64,9 @@ public static class Log
     }
 
     /// <summary>
-    ///     Will log only if debug mode, the string is prepared using string.Format
+    ///     Will log only if debug mode, the string is prepared using string.Format.
     /// </summary>
-    /// <param name="format">The text</param>
+    /// <param name="format">The text.</param>
     /// <param name="args"></param>
     [Conditional("DEBUG")]
     public static void _DebugFormat(string format, params object[] args)
@@ -74,10 +77,10 @@ public static class Log
     /// <summary>
     ///     Will log only if debug mode is enabled and the condition is true
     ///     NOTE: If a lambda contains values from `out` and `ref` scope args,
-    ///     then you can not use a lambda, instead use `if (cond) { Log._Debug }`
+    ///     then you can not use a lambda, instead use `if (cond) { Log._Debug }`.
     /// </summary>
-    /// <param name="cond">The condition</param>
-    /// <param name="s">The function which returns text to log</param>
+    /// <param name="cond">The condition.</param>
+    /// <param name="s">The function which returns text to log.</param>
 
     // TODO: Add log thread and replace formatted strings with lists to perform late formatting in that thread
     [Conditional("DEBUG")]
@@ -95,15 +98,18 @@ public static class Log
         LogToFile(s, LogLevel.Trace);
     }
 
+#pragma warning restore SA1300 // Element should begin with upper-case letter
+#pragma warning restore IDE1006 // Stili di denominazione
+
     public static void Info(string s)
     {
         LogToFile(s, LogLevel.Info);
     }
 
     /// <summary>
-    ///     Will log a warning only if debug mode
+    ///     Will log a warning only if debug mode.
     /// </summary>
-    /// <param name="s">The text</param>
+    /// <param name="s">The text.</param>
     [Conditional("DEBUG")]
     public static void _DebugOnlyWarning(string s)
     {
@@ -113,10 +119,10 @@ public static class Log
     /// <summary>
     ///     Log a warning only in debug mode if cond is true
     ///     NOTE: If a lambda contains values from `out` and `ref` scope args,
-    ///     then you can not use a lambda, instead use `if (cond) { Log._DebugOnlyWarning }`
+    ///     then you can not use a lambda, instead use `if (cond) { Log._DebugOnlyWarning }`.
     /// </summary>
-    /// <param name="cond">The condition</param>
-    /// <param name="s">The function which returns text to log</param>
+    /// <param name="cond">The condition.</param>
+    /// <param name="s">The function which returns text to log.</param>
     [Conditional("DEBUG")]
     public static void _DebugOnlyWarningIf(bool cond, Func<string> s)
     {
@@ -139,10 +145,10 @@ public static class Log
     /// <summary>
     ///     Log a warning only if cond is true
     ///     NOTE: If a lambda contains values from `out` and `ref` scope args,
-    ///     then you can not use a lambda, instead use `if (cond) { Log.Warning }`
+    ///     then you can not use a lambda, instead use `if (cond) { Log.Warning }`.
     /// </summary>
-    /// <param name="cond">The condition</param>
-    /// <param name="s">The function which returns text to log</param>
+    /// <param name="cond">The condition.</param>
+    /// <param name="s">The function which returns text to log.</param>
     public static void WarningIf(bool cond, Func<string> s)
     {
         if (cond)
@@ -168,9 +174,9 @@ public static class Log
     }
 
     /// <summary>
-    ///     Log error only in debug mode
+    ///     Log error only in debug mode.
     /// </summary>
-    /// <param name="s">The text</param>
+    /// <param name="s">The text.</param>
     [Conditional("DEBUG")]
     public static void _DebugOnlyError(string s)
     {
@@ -180,7 +186,7 @@ public static class Log
     /// <summary>
     ///     Writes an Error message about something not implemented. Debug only.
     /// </summary>
-    /// <param name="what">The hint about what is not implemented</param>
+    /// <param name="what">The hint about what is not implemented.</param>
     [Conditional("DEBUG")]
     public static void NotImpl(string what)
     {
