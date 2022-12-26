@@ -1,4 +1,4 @@
-[img]https://i.imgur.com/ys8eGPj.png[/img]
+[img]https://i.imgur.com/eFtUCf9.png[/img]
 [h1][b]Parallel Road Tool[/b][/h1]
 helps you easily drawing parallel and stacked networks.
 Main features are:
@@ -13,7 +13,7 @@ Main features are:
 
 [quote]
 [h1]For new features and/or debugging, you can subscribe to the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1400711138]beta version[/url][/h1]
-[b]Tested on C:S version 1.15.0-f5[/b]
+[b]Tested on C:S version 1.16.0-f3[/b]
 [/quote]
 
 [quote]
