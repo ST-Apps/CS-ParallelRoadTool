@@ -23,7 +23,7 @@ public sealed class Mod : PatcherMod<UIOptionsPanel, PatcherBase>, IUserMod
     /// <summary>
     ///     Minimum minor version that is compatible with the mod.
     /// </summary>
-    private const string CompatibleVersion = "1.15";
+    private const string CompatibleVersion = "1.16";
 
     /// <summary>
     ///     Simplified name, used for file-system operations.
