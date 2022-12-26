@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29920.165
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelRoadTool", "ParallelRoadTool.csproj", "{C323E306-D11E-48A7-9620-121E4ADC4765}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedirectionFramework", "..\Submodules\RedirectionFramework\RedirectionFramework.csproj", "{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{705B2384-F806-471F-B22C-AAB55A61576A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{EF309BA7-0A77-486A-BC80-1DC2A0D2F0A9}"
 	ProjectSection(SolutionItems) = preProject
@@ -37,6 +33,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stable", "Stable", "{AFD518
 		..\Docs\Workshop\Stable\PreviewImage.png = ..\Docs\Workshop\Stable\PreviewImage.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{B84BB1A9-0CF6-4CA5-AD32-09F06584DC33}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AlgernonCommonsPatchingShared", "..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.shproj", "{60FBD1A6-5080-453C-A4C0-857E7CEE080F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Translations", "Translations", "{341A70A6-F99C-4CDC-BB0B-2574F336E9AF}"
+	ProjectSection(SolutionItems) = preProject
+		..\Translations\en-EN.csv = ..\Translations\en-EN.csv
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,21 +52,21 @@ Global
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C323E306-D11E-48A7-9620-121E4ADC4765}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AA84F143-E218-45ED-AAEB-6EC3AF1F176E} = {705B2384-F806-471F-B22C-AAB55A61576A}
 		{CAE3D1D4-1372-4B86-8D26-9E1CA25064D5} = {EF309BA7-0A77-486A-BC80-1DC2A0D2F0A9}
 		{C19406E2-E4CB-45C3-B671-7C53985BBA3C} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}
 		{AFD5188A-5909-4890-B949-0C4CDDE5B0CC} = {CAE3D1D4-1372-4B86-8D26-9E1CA25064D5}
+		{60FBD1A6-5080-453C-A4C0-857E7CEE080F} = {B84BB1A9-0CF6-4CA5-AD32-09F06584DC33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19E91299-91FF-47EA-8505-215462D86A23}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.projitems*{60fbd1a6-5080-453c-a4c0-857e7cee080f}*SharedItemsImports = 13
+		..\Submodules\AlgernonCommons\AlgernonCommonsPatchingShared.projitems*{c323e306-d11e-48a7-9620-121e4adc4765}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal

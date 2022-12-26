@@ -1,3 +1,4 @@
+[img]https://i.imgur.com/eFtUCf9.png[/img]
 [h1][b]Parallel Road Tool[/b][/h1]
 helps you easily drawing parallel and stacked networks.
 Main features are:
@@ -10,15 +11,114 @@ Main features are:
 [*] [b]Save/load presets[/b]
 [/list]
 
+[quote]
 [h1]For new features and/or debugging, you can subscribe to the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1400711138]beta version[/url][/h1]
-[b]Tested on C:S version 1.15.0-f5[/b]
+[b]Tested on C:S version 1.16.0-f3[/b]
+[/quote]
 
 [quote]
-[h1]Current version: [b]2.0.5[/b] [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1440928803]Changelog[/url], [url=https://github.com/ST-Apps/CS-ParallelRoadTool]Source code[/url][/h1]
+[h1]Current version: [b]3.0.0[/b][/h1]
 [list]
-[*] Updated mod to work with version 1.15.0-f5 (Plazas and Promenades update, thanks for [url=https://github.com/sabz612damax]sabz612damax[/url])
+[*] Moved mod core to Harmony for better compatibility with other mods
+[*] Completely rewritten mod's core logic/engine
+[*] Fully redesigned and faster UI
+[*] Improved logic used to enable/disable the mod for a more consistent behavior
+[*] Added button to sort networks based on their horizontal distance
+[*] Added button to enable/disable automatic horizontal offset adjusting when changing the main selected network (parallel networks will be shifted to match new network's width)
+[*] Added button to enable/disable automatic angle compensation: building straight networks with sharp angles can now cause nodes to be moved to produce more pleasing results
+[*] Added scrollwheel support to horizontal/vertical offsets texts
+[*] Pressing ALT will now switch building side (use this if upgrading curves produces unexpected results)
+[*] Fixed a bug preventing trees to be applied to parallel/stacked segments
+[/list]
+[h1]Source code: [url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url][/h1]
+[/quote]
+
+[quote]
+[h1]Main buttons[/h1]
+[table]
+	[tr]
+		[th]
+			Button
+		[/th]
+		[th]
+			Description
+		[/th]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Save.png[/img]
+		[/td]
+		[td]
+			Saves the current configuration as a preset that can be loaded at a different time.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Load.png[/img]
+		[/td]
+		[td]
+			Loads a saved preset into your current configuration.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Sort.png[/img]
+		[/td]
+		[td]
+			Sorts the selected networks by using the horizontal offset in a descending order.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Angle.png[/img]
+		[/td]
+		[td]
+			Toggles the angle compensation feature on/off. This feature prevents segments from overlapping when creating straight roads connected using sharp angles.
+			This works by moving the previous node in order to have a better angle for your parallel segments.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Width.png[/img]
+		[/td]
+		[td]
+			Toggles the auto width adjustment feature on/off. This feature automatically adjusts the horizontal offset from the main selected network everytime this changes.
+			The final result is to preserve the relative distance between the original sements and the parallel ones, avoiding overlapping when selecting a larger main network.
+		[/td]
+	[/tr]
+	[tr]
+		[td]
+			[img]https://raw.githubusercontent.com/ST-Apps/CS-ParallelRoadTool/feat/net-tool-patch/Docs/workshop/Images/ICON-Snap.png[/img]
+		[/td]
+		[td]
+			Toggles the snapping feature on/off. This feature allows parallel segments to snap to existing nodes that were not created by this mod.
+		[/td]
+	[/tr]
+[/table]
+[/quote]
+
+[quote]
+[h1]Recommended additional mods[/h1]
+[list] 
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1844442251]Fine Road Tool[/url] - To build specific road type
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1844440354]Fine Road Anarchy[/url] - To ignore build errors
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2862881785]Network Anarchy Beta[/url] - (modern replacement for Fine Road Anarchy)
 [/list]
 [/quote]
+
+
+[quote]
+[h1][b]Supported languages (% translated)[/b][/h1]
+[list]
+[*] English (100 %)
+[/list]
+
+[HR][/HR]
+[h1]Translations[/h1]
+If you want to help improve existing translations or you want to translate into your own language (ask to add it to the translation project).
+[url=https://crowdin.com/project/macsergey-other-mods][img]https://i.imgur.com/uG2NKvG.png[/img][/url]
+
+[/quote] 
 
 [quote]
 [h1]Support my work[/h1]
@@ -26,53 +126,11 @@ Star the project on GitHub:
 
 [url=https://github.com/ST-Apps/CS-ParallelRoadTool][img]https://i.imgur.com/zejzAZn.png[/img][/url] 
 
-[b]or[/b]
+[HR][/HR]
 
 Donate using PayPal:
 
-[url=paypal.me/STApps][img]https://i.imgur.com/HKFbi4p.jpg[/img][/url]
-[/quote] 
-
-[quote]
-[h1]Known limitations/issues[/h1] 
-[list] 
-[*][url=https://steamcommunity.com/workshop/filedetails/?id=802066100][b]Fine Road Anarchy[/b][/url] [b]is highly recommended![/b] ([i]mod works without it but you won't be able to connect some segments without an anarchy mod[/i])
-[*]Sharp angles produce weird results, curves work better
-[*]Roads will always follow terrain elevation 
-[*]Visual overlay guides have a little issue with curves (it's hard to explain) but it's only a little visual glitch that disappears as soon as you click to set curve's angle
-[/list]
-[/quote]
-
-[quote]
-[h1][b]Supported languages (% translated)[/b][/h1]
-[list]
-[*] Chinese (100 %) (thanks to [url=https://steamcommunity.com/id/TimiYang]TimiYang[/url])
-[*] Dutch (100 %) (thanks to [url=https://github.com/Zippr1]Zippr1[/url])
-[*] English (100 %)
-[*] French (100 %) (thanks to [url=https://github.com/mjm92150]mjm92150[/url])
-[*] German (100 %) (thanks to [url=https://github.com/TheGoldenMan99]TheGoldenMan99[/url] and [url=https://github.com/Fungopus]Fungopus[/url] and [url=https://github.com/xlf1024]xlf1024[/url])
-[*] Italian (100 %) (thanks to [url=https://github.com/tdemeola]tdemeola[/url])
-[*] Japanese (100%) (thanks to [url=https://github.com/mzch]mzch[/url])
-[*] Portuguese (100%) (thanks to [url=https://github.com/BentoGambin]BentoGambin[/url])
-[*] Russian (100 %) (thanks to [url=https://steamcommunity.com/profiles/76561198006764601/]vitalii201[/url])
-[*] Spanish (100 %) (thanks to ‡ Ðalveen ‡)
-[/list]
-
-The language is automatically determined based on your settings in "Options" -> "Gameplay".
-Please [b]open an issue on [url=https://github.com/ST-Apps/CS-ParallelRoadTool/issues]GitHub[/url][/b] if you want to help translate this mod, add missing translations or correct translation mistakes.
-[/quote] 
-
-[quote]
-[h1]Features that may come somewhere in the future[/h1] 
-[list] 
-[*]Ability to toggle on/off terrain conforming
-[*]Ability to center cursor on the middle point between all the selected roads 
-[/list]
-[/quote]
-
-[quote]
-[h1]Source code[/h1]
-[url=https://github.com/ST-Apps/CS-ParallelRoadTool]GitHub[/url]
+[url=paypal.me/STApps][img]https://raw.githubusercontent.com/aha999/DonateButtons/master/paypal-donate-icon-7.png[/img][/url]
 [/quote]
 
 [quote]
@@ -87,7 +145,17 @@ If there's no issue for the thing you'd like to work on, feel free to open a new
 [/quote]
 
 [quote]
-[h1]Thanks to[/h1]
+[h1](v3.*) Thanks to[/h1]
+[list]
+[*][url=https://steamcommunity.com/profiles/76561197968592937]algernon[/url] for his awesome Commons library
+[*][url=https://steamcommunity.com/id/chameleon_tbn/]Cham�leon TBN[/url] for being so helpful during testing
+[*][url=https://steamcommunity.com/profiles/76561198063330220]macsergey[/url] for his dark magic on how to fix some annoying issues
+[*][url=https://steamcommunity.com/profiles/76561199119951016]Mbyron26[/url] for the fantastic preview images on the Workshop
+[/list]
+
+[hr][/hr]
+
+[h1](v2.*) Thanks to[/h1]
 [list]
 [*][url=https://community.simtropolis.com/profile/755624-reasonably1]reasonably1[/url] for his work on the UI
 [*][url=https://steamcommunity.com/id/samsamts]SamsamTS[/url] for his FineRoadAnarchy mod, which provided me the basics for this one
