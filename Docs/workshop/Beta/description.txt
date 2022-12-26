@@ -1,6 +1,7 @@
 ﻿[img]https://i.imgur.com/eFtUCf9.png[/img]
 [h1][b][BETA] Parallel Road Tool[/b][/h1]
 helps you easily drawing parallel and stacked networks.
+
 Main features are:
 [list]
 [*] [b]Limitless parallel/stacked configurations[/b]: you can choose [b]any network (not only roads!) and distances (both horizontal and vertical)[/b] to easily create every layout that you want
