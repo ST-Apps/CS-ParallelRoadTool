@@ -679,12 +679,24 @@ public class ParallelRoadToolManager : MonoBehaviour
         if (sort)
         {
             // Sort networks based on ascending HorizontalOffset
-            var sorted = SelectedNetworkTypes.OrderBy(r => r.HorizontalOffset).ToList();
+            // Since we need to sort the ControlPoints buffer too we include indexes in our sorted list.
+            // This way we can re-use them to move ControlPoints in the right place on the list.
+            var sorted = SelectedNetworkTypes
+                .Select((item, index) => new { Item = item, Index = index })
+                .OrderBy(r => r.Item.HorizontalOffset).ToList();
 
             // Clear and rebuild the list with the currently selected networks
             SelectedNetworkTypes.Clear();
-            SelectedNetworkTypes.AddRange(sorted);
+            SelectedNetworkTypes.AddRange(sorted.Select(i => i.Item));
+
+            // Sort control points buffer too.
+            // We clone the list to an array to select items using the right index, taken from previously sorted collection.
+            var tmpControlPoints = _controlPointsBuffer.ToArray();
             _controlPointsBuffer.Clear();
+            foreach (var item in sorted)
+            {
+                _controlPointsBuffer.Add(tmpControlPoints[item.Index]);
+            }
         }
 
         // Update the UI
