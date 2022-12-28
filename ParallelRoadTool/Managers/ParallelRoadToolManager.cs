@@ -1,4 +1,4 @@
-﻿// <copyright file="ParallelRoadToolManager.cs" company="ST-Apps (S. Tenuta)">
+// <copyright file="ParallelRoadToolManager.cs" company="ST-Apps (S. Tenuta)">
 // Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
