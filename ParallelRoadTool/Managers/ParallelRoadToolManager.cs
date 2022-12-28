@@ -1,4 +1,4 @@
-﻿// <copyright file="ParallelRoadToolManager.cs" company="ST-Apps (S. Tenuta)">
+// <copyright file="ParallelRoadToolManager.cs" company="ST-Apps (S. Tenuta)">
 // Copyright (c) ST-Apps (S. Tenuta). All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
@@ -32,13 +32,13 @@ public class ParallelRoadToolManager : MonoBehaviour
     ///     Buffer where all the <see cref="NetTool.ControlPoint" /> generated during the overlay are stored.
     ///     These points will be retrieved just before network creation so that we don't have to recompute them.
     /// </summary>
-    private readonly List<NetTool.ControlPoint[]> _controlPointsBuffer = new ();
+    private readonly List<NetTool.ControlPoint[]> _controlPointsBuffer = new();
 
     /// <summary>
     ///     Buffer where nodes metadata will be stored while building.
     ///     This will map any node created with this mod with their corresponding offset one.
     /// </summary>
-    private readonly Dictionary<ushort, NetTool.ControlPoint[]> _nodesBuffer = new ();
+    private readonly Dictionary<ushort, NetTool.ControlPoint[]> _nodesBuffer = new();
 
     /// <summary>
     ///     Currently selected <see cref="NetInfo" /> using game's <see cref="NetTool" />.
@@ -59,7 +59,7 @@ public class ParallelRoadToolManager : MonoBehaviour
     ///     Gets the <see cref="List{T}" /> containing all the selected <see cref="NetInfoItem" /> objects.
     ///     This contains all the parallel/stacked networks that will be built once a main segment is created.
     /// </summary>
-    public List<NetInfoItem> SelectedNetworkTypes { get; } = new ();
+    public List<NetInfoItem> SelectedNetworkTypes { get; } = new();
 
     /// <summary>
     ///     Gets <see cref="List{T}" /> containing all the available <see cref="NetInfo" /> objects.
@@ -693,9 +693,12 @@ public class ParallelRoadToolManager : MonoBehaviour
             // We clone the list to an array to select items using the right index, taken from previously sorted collection.
             var tmpControlPoints = _controlPointsBuffer.ToArray();
             _controlPointsBuffer.Clear();
-            foreach (var item in sorted)
+            if (tmpControlPoints.Any())
             {
-                _controlPointsBuffer.Add(tmpControlPoints[item.Index]);
+                foreach (var item in sorted)
+                {
+                    _controlPointsBuffer.Add(tmpControlPoints[item.Index]);
+                }
             }
         }
 
