@@ -20,7 +20,7 @@ public static class Log
 {
     private static readonly object LogLock = new ();
 
-    private static readonly string LogFilename = Path.Combine(Application.dataPath, Path.Combine("Logs", "ParallelRoadTtool.log"));
+    private static readonly string LogFilename = Path.Combine(Application.dataPath, Path.Combine("Logs", "ParallelRoadTool.log"));
 
     private static readonly Stopwatch Sw = Stopwatch.StartNew();
 
