@@ -54,7 +54,7 @@ public class NetInfoItem
     /// <summary>
     ///     Gets network's name, used also as a unique id.
     /// </summary>
-    public string Name => NetInfo.name;
+    public string Name => NetInfo?.name ?? "null";
 
     /// <summary>
     ///     Gets a generated name used for display purposes.
