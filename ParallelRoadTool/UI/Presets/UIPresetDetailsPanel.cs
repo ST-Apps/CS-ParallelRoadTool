@@ -29,7 +29,10 @@ internal class UIPresetDetailsPanel : UIPanel
 
     public void ClearPreset()
     {
-        _netItemsList.Clear();
+        if (_netItemsList != null)
+        {
+            _netItemsList.Clear();
+        }
     }
 
     public void LoadPreset(IEnumerable<NetInfoItem> networks)
