@@ -303,6 +303,60 @@ internal class NetToolNodePatch
 [HarmonyPatch]
 internal static class NetToolReversePatch
 {
+    [HarmonyFinalizer]
+    [HarmonyPatch(
+        typeof(NetTool),
+        nameof(NetTool.CreateNode),
+        new[]
+        {
+            typeof(NetInfo),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint),
+            typeof(NetTool.ControlPoint),
+            typeof(FastList<NetTool.NodePosition>),
+            typeof(int),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(bool),
+            typeof(ushort),
+            typeof(ushort),
+            typeof(ushort),
+            typeof(int),
+            typeof(int),
+        },
+        new[]
+        {
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Normal,
+            ArgumentType.Out,
+            ArgumentType.Out,
+            ArgumentType.Out,
+            ArgumentType.Out,
+        })]
+    static Exception Finalizer(Exception __exception)
+    {
+        if (__exception != null)
+        {
+            Log._Debug($"[{nameof(NetToolReversePatch)}.{nameof(Finalizer)}] Got exception: {__exception.Message}");
+        }
+
+        return null;
+    }
+
     [HarmonyReversePatch]
     [HarmonyPatch(
         typeof(NetTool),

@@ -11,6 +11,7 @@ using CSUtil.Commons;
 using Extensions;
 using Managers;
 using Patches;
+using System;
 using UnityEngine;
 
 internal static class ControlPointUtils
@@ -258,23 +259,32 @@ internal static class ControlPointUtils
         NetTool.ControlPoint currentEndPoint,
         bool isReversed)
     {
-        return NetToolReversePatch.CreateNode(
-            netInfo,
-            currentStartPoint,
-            currentMiddlePoint,
-            currentEndPoint,
-            NetTool.m_nodePositionsSimulation,
-            1000,
-            true,
-            false,
-            true,
-            true,
-            false,
-            isReversed,
-            0,
-            out _,
-            out _,
-            out _,
-            out _) == ToolBase.ToolErrors.None;
+        try
+        {
+            return NetToolReversePatch.CreateNode(
+                netInfo,
+                currentStartPoint,
+                currentMiddlePoint,
+                currentEndPoint,
+                NetTool.m_nodePositionsSimulation,
+                1000,
+                true,
+                false,
+                true,
+                true,
+                false,
+                isReversed,
+                0,
+                out _,
+                out _,
+                out _,
+                out _) == ToolBase.ToolErrors.None;
+        }
+        catch (Exception ex)
+        {
+            Log._Debug($"[{nameof(ControlPointUtils)}.{nameof(CanCreate)}] Caused an exception: {ex.Message}");
+            return false;
+        }
+
     }
 }
