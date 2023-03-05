@@ -19,7 +19,7 @@ Main features are:
 [/quote]
 
 [quote]
-[h1]Current version: [b]3.0.2-dev[/b][/h1]
+[h1]Current version: [b]3.0.3-dev[/b][/h1]
 [list]
 [*] Moved mod core to Harmony for better compatibility with other mods
 [*] Completely rewritten mod's core logic/engine
