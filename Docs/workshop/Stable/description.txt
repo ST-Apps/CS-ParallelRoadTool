@@ -14,11 +14,11 @@ Main features are:
 
 [quote]
 [h1]For new features and/or debugging, you can subscribe to the [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1400711138]beta version[/url][/h1]
-[b]Tested on C:S version 1.16.0-f3[/b]
+[b]Tested on C:S version 1.17.0-f3[/b]
 [/quote]
 
 [quote]
-[h1]Current version: [b]3.0.3[/b][/h1]
+[h1]Current version: [b]3.0.4[/b][/h1]
 [list]
 [*] Moved mod core to Harmony for better compatibility with other mods
 [*] Completely rewritten mod's core logic/engine

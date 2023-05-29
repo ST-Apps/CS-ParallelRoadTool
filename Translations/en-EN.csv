@@ -13,7 +13,7 @@
 "HARMONY_NOT_INSTALLED","The required Harmony 2 mod dependency was not installed","Possible cause of Harmony error - Harmony not installed."
 "HARMONY_MOD_ERROR","An old and/or broken mod is preventing Harmony 2 from operating properly","Possible cause of Harmony error - a broken mod (not this one) can cause things to stop working."
 "HARMONY_MOD_CONFLICT","Another mod may be trying to apply a conflicting Harmony patch","Possible cause of Harmony error - two mods trying to patch the same thing at once."
-"WRONG_VERSION","Loading Screen Mod Revisited is not compatible with this game version.","Warning displayed on startup if an incompatible game version is detected"
+"WRONG_VERSION","Parallel Road Tool is not compatible with this game version.","Warning displayed on startup if an incompatible game version is detected"
 "SHUT_DOWN","As a safety measure, the mod has shut down and will not operate.","Warning displayed on startup if an incompatible game version is detected"
 "MOD_DESCRIPTION","Helps you easily drawing parallel and stacked networks"
 "FAILED","failed"

@@ -15,11 +15,11 @@ Main features are:
 [quote]
 [h1][b]Stable version is [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1440928803]here[/url][/b].[/h1]
 [h1][b]The beta version is meant for testing only and it can be unstable.[/b][/h1]
-[b]Tested on C:S version 1.16.0-f3[/b]
+[b]Tested on C:S version 1.17.0-f3[/b]
 [/quote]
 
 [quote]
-[h1]Current version: [b]3.0.3-dev[/b][/h1]
+[h1]Current version: [b]3.0.4-dev[/b][/h1]
 [list]
 [*] Moved mod core to Harmony for better compatibility with other mods
 [*] Completely rewritten mod's core logic/engine
